@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="A simple, practical framework for aligning Sales and Marketing around revenue outcomes. Shared for visibility and discussion, not a pitch." />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sales + Marketing Working Together" />
+  <meta property="og:description" content="A simple framework for aligning Sales and Marketing around revenue outcomes. Shared for visibility and discussion." />
+  <meta property="og:type" content="website" />
+
+  <title>Sales + Marketing Working Together</title>
+
+  <style>
+/* Force all UI bubbles to solid white */
+.card,
+.hero,
+.topbar,
+.step,
+.mini,
+.note,
+.pill,
+.badge {
+  background: #ffffff !important;
+}
+
+    :root{
+  --bg: #b91c1c;        /* red background */
+  --panel: #ffffff;    /* white cards */
+  --panel2: #ffffff;
+  --text: #111111;     /* black text */
+  --muted: #333333;
+  --subtle: #555555;
+  --line: rgba(0,0,0,0.12);
+  --accent: #111111;
+  --accent2: #111111;
+      --warn: #fde68a;
+      --radius: 18px;
+      --shadow: 0 18px 40px rgba(0,0,0,0.45);
+      --max: 1080px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(125,211,252,0.15), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(167,243,208,0.10), transparent 50%),
+        radial-gradient(900px 600px at 60% 95%, rgba(125,211,252,0.08), transparent 55%),
+        var(--bg);
+      line-height: 1.45;
+    }
+
+    a { color: inherit; }
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    .topbar{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .dot{
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 22px rgba(125,211,252,0.45);
+      flex: 0 0 auto;
+    }
+    .brand strong{
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav{
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav a{
+      text-decoration: none;
+      font-size: 13px;
+      color: var(--subtle);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+    .nav a:hover{
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .hero{
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+    }
+    .kicker{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .kicker code{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 4.4vw, 44px);
+      letter-spacing: -0.6px;
+      line-height: 1.08;
+    }
+    .subhead{
+      max-width: 78ch;
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0 0 18px;
+    }
+
+    .hero-actions{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn{
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover{
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-1px);
+    }
+    .btn.primary{
+      border-color: rgba(125,211,252,0.45);
+      background: linear-gradient(135deg, rgba(125,211,252,0.22), rgba(167,243,208,0.18));
+    }
+
+    .pill-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .pill{
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.18);
+      padding: 7px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .grid{
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    @media (min-width: 860px){
+      .grid{
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: start;
+      }
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .card h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+    }
+    .card p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .steps{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .step{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 6px;
+    }
+    .step .label{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+    }
+    .num{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 4px 8px;
+      flex: 0 0 auto;
+    }
+    .step .desc{
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .two{
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 860px){
+      .two{
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .mini{
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+    .mini strong{
+      display: block;
+      margin-bottom: 6px;
+      letter-spacing: -0.1px;
+    }
+    .mini span{
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .note{
+      border-left: 3px solid rgba(253,230,138,0.55);
+      padding: 10px 12px;
+      background: rgba(253,230,138,0.07);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .list li{ margin: 6px 0; }
+
+    .badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.18);
+      color: var(--muted);
+      margin: 8px 8px 0 0;
+    }
+
+    footer{
+      margin-top: 18px;
+      color: var(--subtle);
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 4px;
+    }
+
+    @media print{
+      body{ background: #fff; color: #111; }
+      .topbar, .hero-actions, .nav, .btn { display: none !important; }
+      .hero{ box-shadow: none; border: 1px solid #ddd; background: #fff; }
+      .card, .step, .mini{ background: #fff; border: 1px solid #ddd; }
+      .pill, .badge{ background: #fff; }
+      .wrap{ max-width: 980px; }
+      a{ color: #111; text-decoration: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <strong>Sales + Marketing Working Together</strong>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#framework">Framework</a>
+        <a href="#handoff">Sales handoff</a>
+<section class="card" id="demand" style="margin-top:14px;">
+  <h2>How demand is created before Sales</h2>
+  <p>
+    Sales does not start with a cold list. Demand is shaped upstream through targeted list building,
+    manual vetting, and early intent signals before anything is passed to Sales.
+  </p>
+
+  <div class="two">
+    <div class="mini">
+      <strong>Targeted list creation</strong>
+      <span>Lists are built intentionally, not purchased or sprayed.</span>
+      <ul class="list">
+        <li>Defined industries and verticals</li>
+        <li>Specific company size and growth stage</li>
+        <li>Geographic relevance where needed</li>
+        <li>Accounts aligned to the actual sales motion</li>
+      </ul>
+    </div>
+
+    <div class="mini">
+      <strong>Role and title vetting</strong>
+      <span>Outreach is limited to roles that can move decisions forward.</span>
+      <ul class="list">
+        <li>Director+ ownership roles</li>
+        <li>Operators vs. researchers or gatekeepers</li>
+        <li>Titles mapped to real buying authority</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="height:12px"></div>
+
+  <div class="two">
+    <div class="mini">
+      <strong>Manual qualification before outreach</strong>
+      <span>Each account is reviewed before any message is sent.</span>
+      <ul class="list">
+        <li>Company relevance confirmed</li>
+        <li>Role responsibility checked</li>
+        <li>Message angle matched to their world</li>
+        <li>Bad-fit accounts excluded early</li>
+      </ul>
+    </div>
+
+    <div class="mini">
+      <strong>LinkedIn as the intent layer</strong>
+      <span>LinkedIn is used to observe interest before escalation.</span>
+      <ul class="list">
+        <li>Connection acceptance and timing</li>
+        <li>Replies and language used</li>
+        <li>Profile views and engagement</li>
+        <li>Signals that indicate real curiosity</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="height:12px"></div>
+
+  <div class="note">
+    <strong>Result</strong><br />
+    By the time Sales is engaged, the account is relevant, the role is correct,
+    and the conversation already has context.
+  </div>
+</section>
+
+        <a href="#helps-sales">How it helps Sales</a>
+        <a href="#operating">Operating rhythm</a>
+        <a href="#contact">Contact</a>
+      </nav>
+<a href="#example">Example</a>
+    </div>
+
+    <section class="hero" id="top">
+      <div class="kicker">
+        Simple intro framework
+        <code>shared for visibility</code>
+      </div>
+
+      <h1>Alignment that actually moves revenue</h1>
+      <p class="subhead">
+        This is a lightweight framework for how Sales and Marketing can stay aligned on the same customer, the same message, and the same next step.
+        It is not a pitch and it is not a product. It is shared for visibility and discussion.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn primary" id="btnPrint" type="button" title="Save as PDF via print dialog">
+          Download as PDF
+        </button>
+        <button class="btn" id="btnCopy" type="button" title="Copy this page link">
+          Copy page link
+        </button>
+      </div>
+
+      <div class="pill-row" aria-label="Key themes">
+        <span class="pill">One customer view</span>
+        <span class="pill">One message</span>
+        <span class="pill">Clear handoff</span>
+        <span class="pill">Closed loop learning</span>
+        <span class="pill">Weekly compounding clarity</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card" id="framework">
+        <h2>The framework</h2>
+        <p>
+          Most Sales and Marketing friction comes from two things: different definitions of a qualified opportunity and different stories being told to the same buyer.
+          The fix is a simple loop with clear ownership.
+        </p>
+
+        <ol class="steps">
+          <li class="step">
+            <div class="label"><span class="num">01</span> Agree on the buyer question</div>
+            <p class="desc">Pick one real customer question to answer this week. No multipurpose messaging.</p>
+          </li>
+          <li class="step">
+            <div class="label"><span class="num">02</span> Publish the message once</div>
+            <p class="desc">One core message, reused across email, enablement, and conversations.</p>
+          </li>
+          <li class="step">
+            <div class="label"><span class="num">03</span> Capture intent signals</div>
+            <p class="desc">Sales is activated only when intent is clear, not when activity looks good.</p>
+          </li>
+          <li class="step">
+            <div class="label"><span class="num">04</span> Route responses to action</div>
+            <p class="desc">Interest is routed to the right owner with context. No dropped balls.</p>
+          </li>
+          <li class="step">
+            <div class="label"><span class="num">05</span> Capture objections and reality</div>
+            <p class="desc">What buyers actually said, and what stalled deals. That becomes the next iteration.</p>
+          </li>
+        </ol>
+      </section>
+
+      <aside class="card">
+        <h2>What this is and is not</h2>
+        <div class="note">
+          <strong>What this is</strong><br />
+          A simple operating framework to reduce noise, tighten messaging, and improve handoffs.
+        </div>
+        <div style="height:10px"></div>
+        <div class="note">
+          <strong>What this is not</strong><br />
+          Not a pitch, not a product, not a request for time. Shared for visibility only.
+        </div>
+
+        <div style="height:14px"></div>
+
+        <h2 style="margin-top:0">Common failure modes</h2>
+        <p>These are the usual reasons alignment breaks even with smart people.</p>
+        <div class="two">
+          <div class="mini">
+            <strong>Different definitions</strong>
+            <span>Marketing measures activity. Sales measures movement. Nobody agrees what good means.</span>
+          </div>
+          <div class="mini">
+            <strong>Message drift</strong>
+            <span>Five versions of the story reach the buyer and trust drops.</span>
+          </div>
+          <div class="mini">
+            <strong>Weak handoffs</strong>
+            <span>Leads arrive without context and follow up becomes random.</span>
+          </div>
+          <div class="mini">
+            <strong>No closed loop</strong>
+            <span>Objections never make it back to improve the message.</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" id="handoff" style="margin-top:14px;">
+<section class="card" id="example" style="margin-top:14px;">
+  <h2>Example: Marketing passing intent to Sales</h2>
+
+  <p>
+    This is a real example of how Marketing activity is translated into
+    clear, prioritized Sales action instead of raw lead volume.
+  </p>
+
+  <div class="mini">
+    <strong>Email campaign snapshot</strong>
+    <ul class="list">
+      <li>Recipients: 1,386</li>
+      <li>Unique opens: 428 (24.3%)</li>
+      <li>Unique clicks: 342 (26.3%)</li>
+      <li>Unsubscribes: 4 (0.30%)</li>
+    </ul>
+  </div>
+
+  <div class="two" style="margin-top:12px;">
+    <div class="mini">
+      <strong>Tier 1 — Sales immediate</strong>
+      <span>Opened + clicked (342 contacts)</span>
+    </div>
+
+    <div class="mini">
+      <strong>Tier 2 — Sales follow-up</strong>
+      <span>Opened only (86 contacts)</span>
+    </div>
+
+    <div class="mini">
+      <strong>Tier 3–4 — No Sales action</strong>
+      <span>No engagement (958 contacts)</span>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:12px;">
+    Marketing passes context and intent.  
+    Sales decides timing, message, and next step.
+  </div>
+</section>
+
+      <h2>How information is passed to Sales</h2>
+      <p>
+        Sales gets involved only when buyer intent is explicit. When that happens, Marketing passes a short context brief.
+        It is not a lead score. It is context that lets Sales continue the same conversation.
+      </p>
+
+      <div>
+        <span class="badge">Trigger: reply</span>
+        <span class="badge">Trigger: click on a specific asset</span>
+        <span class="badge">Trigger: form question</span>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="two">
+        <div class="mini">
+          <strong>Marketing packages the context</strong>
+          <span>The handoff is always the same, so it is fast to read and easy to act on.</span>
+          <ul class="list">
+            <li><strong>Who</strong>: name, company, role</li>
+            <li><strong>What</strong>: the exact message or topic that triggered interest</li>
+            <li><strong>Why</strong>: the question, objection, or problem signal</li>
+            <li><strong>Seen</strong>: what the buyer already reviewed</li>
+            <li><strong>Next</strong>: one recommended angle, optional</li>
+          </ul>
+        </div>
+
+        <div class="mini">
+          <strong>Sales continues the same conversation</strong>
+          <span>Sales does not reset the narrative. Sales follows up with relevance and control.</span>
+          <ul class="list">
+            <li>Reference the topic they engaged with</li>
+            <li>Ask one clarifying question</li>
+            <li>Advance to the right next step</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="mini">
+        <strong>Closed loop feedback</strong>
+        <span>After the interaction, Sales shares what moved the conversation forward or what stalled it. That input shapes the next message cycle.</span>
+        <ul class="list">
+          <li>Interested: advance and note what resonated</li>
+          <li>Not now: capture timing and reason</li>
+          <li>Not relevant: capture why, so targeting improves</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="helps-sales" style="margin-top:14px;">
+      <h2>How this helps Sales</h2>
+      <p>
+        This system is designed to make Sales more effective, not busier. It reduces noise, increases context, and keeps Sales in control of live conversations.
+      </p>
+
+      <div class="two">
+        <div class="mini">
+          <strong>Sales stops chasing noise</strong>
+          <span>Sales is activated by intent signals, not by activity metrics.</span>
+        </div>
+        <div class="mini">
+          <strong>Sales starts with context</strong>
+          <span>The handoff includes what the buyer saw and what triggered interest, so follow up is relevant.</span>
+        </div>
+        <div class="mini">
+          <strong>Conversations feel smarter</strong>
+          <span>Buyers experience continuity between Marketing and Sales, which increases trust.</span>
+        </div>
+        <div class="mini">
+          <strong>Sales controls the outcome</strong>
+          <span>Marketing surfaces interest. Sales owns qualification, next steps, and revenue movement.</span>
+        </div>
+        <div class="mini">
+          <strong>Feedback improves future leads</strong>
+          <span>Sales objections and outcomes directly refine the next message cycle.</span>
+        </div>
+        <div class="mini">
+          <strong>Effort compounds</strong>
+          <span>Each week improves message clarity and reduces rework for Sales.</span>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="note">
+        <strong>Simple summary</strong><br />
+        This does not give Sales more leads. It gives Sales better starts.
+      </div>
+    </section>
+
+    <section class="card" id="operating" style="margin-top:14px;">
+      <h2>Operating rhythm</h2>
+      <p>
+        Keep it lightweight so it runs without adding meetings for the sake of meetings.
+      </p>
+
+      <ol class="steps">
+        <li class="step">
+          <div class="label"><span class="num">Weekly</span> One buyer question</div>
+          <p class="desc">Pick one question the buyer is already asking. Align messaging around answering it.</p>
+        </li>
+        <li class="step">
+          <div class="label"><span class="num">Weekly</span> One enablement asset</div>
+          <p class="desc">One page, one angle, used in email and in conversations. No decks that nobody reads.</p>
+        </li>
+        <li class="step">
+          <div class="label"><span class="num">Weekly</span> One feedback loop</div>
+          <p class="desc">Capture the top objections heard by Sales and update messaging accordingly.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card" id="contact" style="margin-top:14px;">
+      <h2>Contact</h2>
+      <p>
+        If you want to discuss how this maps to your team’s workflow, reply to the note that shared this link.
+        If not, no worries. This page stands alone.
+      </p>
+      <p style="margin-bottom:0;">
+        Tip: If you want this page to feel more official, use a branded domain and add one short line about who this is from.
+      </p>
+    </section>
+
+    <footer>
+      <div>Last updated: <span id="lastUpdated"></span></div>
+      <div>Built as a simple executive intro page</div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const el = document.getElementById("lastUpdated");
+      const d = new Date();
+      const opts = { year: "numeric", month: "short", day: "2-digit" };
+      el.textContent = d.toLocaleDateString(undefined, opts);
+
+      document.getElementById("btnPrint").addEventListener("click", function () {
+        window.print();
+      });
+
+      document.getElementById("btnCopy").addEventListener("click", async function () {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          this.textContent = "Link copied";
+          setTimeout(() => (this.textContent = "Copy page link"), 1400);
+        } catch (e) {
+          const tmp = document.createElement("input");
+          tmp.value = window.location.href;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand("copy");
+          document.body.removeChild(tmp);
+          this.textContent = "Link copied";
+          setTimeout(() => (this.textContent = "Copy page link"), 1400);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

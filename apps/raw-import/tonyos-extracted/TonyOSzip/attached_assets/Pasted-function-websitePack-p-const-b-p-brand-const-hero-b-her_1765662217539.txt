@@ -1,0 +1,216 @@
+function websitePack(p){
+  const b = p.brand || {};
+  const hero = b.hero || {};
+  const problem = b.problem || {};
+  const guide = b.guide || {};
+  const plan = b.plan || {};
+  const success = b.success || {};
+  const cta = b.cta || {};
+
+  const h1 = hero.want
+    ? `Get ${hero.want} without ${problem.external || "the chaos"}`
+    : `Clarity that turns into action`;
+
+  const sub = `For ${hero.who || "teams"} who want ${hero.want || "a better outcome"} but keep running into ${problem.external || "the same blockers"}, we bring a simple plan you can execute and track.`;
+
+  const benefits = [
+    `Less ${problem.internal || "stress"} and more control`,
+    `A clear path to ${success.win || "measurable wins"}`,
+    `A plan that does not depend on luck`
+  ];
+
+  const steps = [
+    plan.step1 || "Assess the current state",
+    plan.step2 || "Create a clear plan",
+    plan.step3 || "Execute and track weekly"
+  ];
+
+  const faq = [
+    {
+      q: "Who is this for?",
+      a: `Best fit: ${hero.who || "a defined customer"} who wants ${hero.want || "a defined outcome"}.`
+    },
+    {
+      q: "How fast can I see results?",
+      a: "Usually you see clarity immediately and early results within weeks, depending on effort and constraints."
+    },
+    {
+      q: "What do you need from me?",
+      a: "A clear goal, access to the current process, and willingness to follow the plan for 30 days."
+    }
+  ];
+
+  const testimonials = [
+    { name: "Client A", quote: `We finally got ${success.win || "predictable results"} and stopped guessing.` },
+    { name: "Client B", quote: `The plan was simple, the execution was clean, and we saw progress fast.` },
+    { name: "Client C", quote: `Best part: less chaos, more confidence, and clear weekly tracking.` }
+  ];
+
+  const about = [
+    `You are not hiring a hype machine.`,
+    `You are hiring a guide who has ${guide.empathy || "been in the messy middle"} and brings ${guide.authority || "a proven method"}.`,
+    `The goal is simple: ${success.win || "a measurable win"}.`
+  ].join(" ");
+
+  const primary = cta.primary || "Get started";
+  const secondary = cta.secondary || "See how it works";
+
+  return { h1, sub, benefits, steps, faq, testimonials, about, primary, secondary };
+}
+
+function buildLandingHTML(p){
+  const pack = websitePack(p);
+  const b = p.brand || {};
+  const hero = b.hero || {};
+  const problem = b.problem || {};
+  const success = b.success || {};
+
+  const escHtml = (s) => String(s || "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  const bullets = pack.benefits.map(x => `<li>${escHtml(x)}</li>`).join("");
+  const steps = pack.steps.map((x,i) => `<div class="step"><div class="n">${i+1}</div><div class="txt">${escHtml(x)}</div></div>`).join("");
+  const faqs = pack.faq.map(x => `
+    <details class="faq">
+      <summary>${escHtml(x.q)}</summary>
+      <div class="a">${escHtml(x.a)}</div>
+    </details>
+  `).join("");
+  const testi = pack.testimonials.map(x => `
+    <div class="tcard">
+      <div class="q">"${escHtml(x.quote)}"</div>
+      <div class="n">${escHtml(x.name)}</div>
+    </div>
+  `).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>${escHtml(p.name || "Landing Page")}</title>
+  <style>
+    :root{
+      --bg:#07070a; --bg2:#0e0f14; --card:#0f1118; --ink:#f5f7ff;
+      --muted:#b1b6c8; --line:#23283a;
+      --accent:#e11d48; --accent2:#ff3b6a;
+      --radius:18px; --shadow: 0 18px 45px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      background: radial-gradient(1100px 600px at 10% -10%, rgba(225,29,72,.18), transparent 60%),
+                  radial-gradient(900px 700px at 90% -20%, rgba(255,59,106,.10), transparent 55%),
+                  linear-gradient(180deg, var(--bg) 0%, #04040a 100%);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 16px 60px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      padding:14px 14px; border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .brand{font-weight:900; letter-spacing:.2px}
+    .hero{margin-top:18px; padding:22px; border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03); border-radius: var(--radius); box-shadow: var(--shadow);}
+    h1{margin:0; font-size:42px; line-height:1.05}
+    .sub{margin-top:10px; color:var(--muted); font-size:16px; max-width:72ch}
+    .cta{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      padding:12px 14px; border-radius:14px; font-weight:900; cursor:pointer;
+      border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.05); color:var(--ink);
+      text-decoration:none; display:inline-block;
+    }
+    .btn.primary{
+      border-color: rgba(225,29,72,.45);
+      background: linear-gradient(135deg, rgba(225,29,72,.95), rgba(255,59,106,.85));
+      box-shadow: 0 16px 40px rgba(225,29,72,.20);
+    }
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px}
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} h1{font-size:34px}}
+    .card{
+      padding:16px; border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .h{font-weight:900}
+    .p{color:var(--muted); margin-top:8px; line-height:1.5}
+    ul{margin:10px 0 0 18px; color:var(--muted); line-height:1.6}
+    .steps{display:flex; flex-direction:column; gap:10px; margin-top:10px}
+    .step{display:flex; gap:10px; align-items:flex-start; padding:12px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.08); background: rgba(0,0,0,.18);}
+    .n{width:28px; height:28px; border-radius:12px; display:grid; place-items:center; font-weight:900;
+      background: rgba(225,29,72,.16); border:1px solid rgba(225,29,72,.35);}
+    .txt{color:var(--muted)}
+    .faq{border:1px solid rgba(255,255,255,.08); border-radius:16px; background: rgba(0,0,0,.18); padding:12px}
+    summary{cursor:pointer; font-weight:900}
+    .a{color:var(--muted); margin-top:8px; line-height:1.5}
+    .tgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
+    @media(max-width:980px){ .tgrid{grid-template-columns:1fr} }
+    .tcard{border:1px solid rgba(255,255,255,.08); border-radius:16px; background: rgba(0,0,0,.18); padding:12px}
+    .q{color:var(--muted); line-height:1.5}
+    .tcard .n{margin-top:10px; width:auto; height:auto; display:block; padding:6px 10px}
+    .foot{margin-top:18px; color:rgba(177,182,200,.75); font-size:12px; text-align:center}
+    .mini{margin-top:10px; color:rgba(177,182,200,.75); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">${escHtml(p.name || "Landing Page")}</div>
+      <div class="mini">Customer: ${escHtml(hero.who || "—")} | Goal: ${escHtml(hero.want || "—")}</div>
+    </div>
+
+    <div class="hero">
+      <h1>${escHtml(pack.h1)}</h1>
+      <div class="sub">${escHtml(pack.sub)}</div>
+      <div class="cta">
+        <a class="btn primary" href="#contact">${escHtml(pack.primary)}</a>
+        <a class="btn" href="#plan">${escHtml(pack.secondary)}</a>
+      </div>
+      <div class="mini">Problem: ${escHtml(problem.external || "—")} | Success: ${escHtml(success.win || "—")}</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="h">What you get</div>
+        <ul>${bullets}</ul>
+      </div>
+      <div class="card" id="plan">
+        <div class="h">The plan</div>
+        <div class="steps">${steps}</div>
+      </div>
+
+      <div class="card">
+        <div class="h">About</div>
+        <div class="p">${escHtml(pack.about)}</div>
+      </div>
+
+      <div class="card">
+        <div class="h">FAQ</div>
+        <div class="steps" style="margin-top:10px">${faqs}</div>
+      </div>
+
+      <div class="card" style="grid-column:1 / -1">
+        <div class="h">Proof</div>
+        <div class="tgrid">${testi}</div>
+      </div>
+
+      <div class="card" id="contact" style="grid-column:1 / -1">
+        <div class="h">Next step</div>
+        <div class="p">
+          If you want ${escHtml(hero.want || "a clearer outcome")} without ${escHtml(problem.external || "the usual mess")},
+          start with a simple conversation
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="mailto:you@example.com">Email me</a>
+          <a class="btn" href="#">Add Calendly link</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">Generated by StoryBrand OS | Local-first | No lock-in</div>
+  </div>
+</body>
+</html>`;
+}

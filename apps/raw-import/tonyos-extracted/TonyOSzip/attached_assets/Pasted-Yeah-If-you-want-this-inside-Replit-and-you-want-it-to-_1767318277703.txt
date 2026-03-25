@@ -1,0 +1,1081 @@
+Yeah. If you want this inside Replit and you want it to actually work end to end, here’s a full, clean MVP you can paste in as a new Replit project
+
+This gives you:
+
+TonyOS Resume Builder page (simple web UI)
+
+Guided “Experience Wizard” that forces outcomes and metrics
+
+Bullet generator (rule-driven, no fluff)
+
+Job Description paste + match scoring + missing keywords
+
+Version history saved in SQLite
+
+Export to PDF
+
+Export to DOCX
+
+No gimmicks, ATS-safe formatting
+
+What to do in Replit
+1) Create a new Replit
+
+Choose: Node.js
+
+2) Create this file structure
+tonyos-resume-builder/
+  server.js
+  package.json
+  resume.db (auto created)
+  /public
+    index.html
+    style.css
+    app.js
+
+3) Paste the code below into each file
+
+Then click Run
+
+package.json
+{
+  "name": "tonyos-resume-builder",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "docx": "^9.5.0",
+    "express": "^4.19.2",
+    "pdfkit": "^0.15.0",
+    "sqlite3": "^5.1.7"
+  }
+}
+
+server.js
+const path = require("path");
+const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+const PDFDocument = require("pdfkit");
+const { Document, Packer, Paragraph, TextRun } = require("docx");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+
+const db = new sqlite3.Database("./resume.db");
+
+// ---------- DB init ----------
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS resumes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      data_json TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS versions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      resume_id INTEGER NOT NULL,
+      label TEXT NOT NULL,
+      data_json TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY(resume_id) REFERENCES resumes(id)
+    )
+  `);
+});
+
+// ---------- Helpers ----------
+function nowISO() {
+  return new Date().toISOString();
+}
+
+function safeTrim(s) {
+  return (s || "").toString().trim();
+}
+
+function splitKeywords(text) {
+  const raw = (text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s+#/.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const stop = new Set([
+    "the","and","or","a","an","to","of","in","for","with","on","at","by","from","as",
+    "is","are","was","were","be","been","being","this","that","these","those",
+    "you","your","we","our","they","their","i","me","my","it","its",
+    "will","can","may","should","must","not","no","yes",
+    "job","role","work","team","teams","experience","years","year",
+    "responsible","responsibilities","required","preferred","skills"
+  ]);
+
+  const tokens = raw.split(" ").filter(t => t.length >= 3 && !stop.has(t));
+  const freq = new Map();
+  for (const t of tokens) freq.set(t, (freq.get(t) || 0) + 1);
+
+  // return top unique tokens by frequency
+  return [...freq.entries()]
+    .sort((a,b) => b[1] - a[1])
+    .slice(0, 40)
+    .map(([t]) => t);
+}
+
+// Simple bullet rule checks
+const FLUFF_PHRASES = [
+  "responsible for",
+  "worked on",
+  "helped with",
+  "assisted",
+  "participated in",
+  "tasked with",
+  "involved in"
+];
+
+function bulletScore(bullet) {
+  const s = safeTrim(bullet);
+  if (!s) return 0;
+
+  let score = 50;
+
+  const lower = s.toLowerCase();
+  for (const p of FLUFF_PHRASES) {
+    if (lower.includes(p)) score -= 15;
+  }
+
+  // reward metrics or scale
+  if (/\b\d+(\.\d+)?%?\b/.test(s)) score += 20;
+  if (/\b(\$|m\b|mm\b|k\b|b\b|arr\b|roi\b|cagr\b|sql\b|mql\b)\b/i.test(s)) score += 10;
+
+  // punish too long
+  if (s.length > 160) score -= 10;
+  if (s.length > 220) score -= 20;
+
+  // reward strong verb start
+  if (/^(Led|Built|Owned|Drove|Improved|Reduced|Increased|Launched|Implemented|Automated|Designed|Managed|Developed|Scaled|Optimized|Standardized|Rebuilt|Created)\b/i.test(s)) {
+    score += 10;
+  }
+
+  // clamp
+  if (score < 0) score = 0;
+  if (score > 100) score = 100;
+  return score;
+}
+
+function generateBulletsFromAnswers(answers) {
+  const company = safeTrim(answers.company);
+  const title = safeTrim(answers.title);
+  const goal = safeTrim(answers.businessGoal);
+  const change = safeTrim(answers.whatChanged);
+  const metric = safeTrim(answers.metricMoved);
+  const tools = safeTrim(answers.tools);
+  const scope = safeTrim(answers.scope);
+
+  // Build ATS safe bullets. If metric missing, use proxy language.
+  const metricLine = metric
+    ? metric
+    : "Improved key performance metrics with measurable operational impact";
+
+  const bullets = [];
+
+  if (change) {
+    bullets.push(`Led improvements at ${company} by ${change}${metric ? `, resulting in ${metric}` : ""}`);
+  } else if (goal) {
+    bullets.push(`Drove initiatives aligned to ${goal}${metric ? `, delivering ${metric}` : ""}`);
+  } else {
+    bullets.push(`Delivered impact in the ${title} role with focus on execution and measurable outcomes`);
+  }
+
+  if (goal) bullets.push(`Aligned cross functional work to ${goal} and maintained stakeholder visibility on progress and results`);
+  bullets.push(`Implemented repeatable workflows and standards to increase consistency, speed, and quality across the function`);
+  if (tools) bullets.push(`Used ${tools} to streamline reporting, execution, and decision making for internal teams`);
+  if (scope) bullets.push(`Operated at ${scope} scope to support scale and reduce risk in day to day operations`);
+  bullets.push(`${metricLine}`);
+
+  // clean duplicates and score
+  const uniq = [];
+  const seen = new Set();
+  for (const b of bullets) {
+    const key = b.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniq.push(b);
+    }
+  }
+
+  // return top 5
+  return uniq.slice(0, 5).map(text => ({ text, score: bulletScore(text) }));
+}
+
+function computeMatchScore(resumeData) {
+  const jd = safeTrim(resumeData.jobDescription);
+  const resumeText = JSON.stringify(resumeData).toLowerCase();
+
+  if (!jd) {
+    return { score: 0, keywords: [], missing: [], note: "No job description provided" };
+  }
+
+  const keywords = splitKeywords(jd);
+  let hits = 0;
+  const missing = [];
+
+  for (const k of keywords) {
+    if (resumeText.includes(k)) hits += 1;
+    else missing.push(k);
+  }
+
+  const score = Math.round((hits / Math.max(1, keywords.length)) * 100);
+  return { score, keywords, missing: missing.slice(0, 15), note: "" };
+}
+
+// ---------- API ----------
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true, time: nowISO() });
+});
+
+// Create new resume
+app.post("/api/resumes", (req, res) => {
+  const title = safeTrim(req.body.title) || "Untitled Resume";
+  const data = req.body.data || {};
+
+  db.run(
+    `INSERT INTO resumes (title, data_json, created_at) VALUES (?, ?, ?)`,
+    [title, JSON.stringify(data), nowISO()],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID });
+    }
+  );
+});
+
+// List resumes
+app.get("/api/resumes", (req, res) => {
+  db.all(
+    `SELECT id, title, created_at FROM resumes ORDER BY id DESC LIMIT 50`,
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ items: rows });
+    }
+  );
+});
+
+// Get one resume
+app.get("/api/resumes/:id", (req, res) => {
+  const id = Number(req.params.id);
+  db.get(`SELECT * FROM resumes WHERE id = ?`, [id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: "Not found" });
+
+    res.json({
+      id: row.id,
+      title: row.title,
+      created_at: row.created_at,
+      data: JSON.parse(row.data_json)
+    });
+  });
+});
+
+// Update resume
+app.put("/api/resumes/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const title = safeTrim(req.body.title);
+  const data = req.body.data || {};
+
+  db.run(
+    `UPDATE resumes SET title = COALESCE(?, title), data_json = ? WHERE id = ?`,
+    [title || null, JSON.stringify(data), id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ ok: true, changes: this.changes });
+    }
+  );
+});
+
+// Create version snapshot
+app.post("/api/resumes/:id/versions", (req, res) => {
+  const resumeId = Number(req.params.id);
+  const label = safeTrim(req.body.label) || "Snapshot";
+  const data = req.body.data || {};
+
+  db.run(
+    `INSERT INTO versions (resume_id, label, data_json, created_at) VALUES (?, ?, ?, ?)`,
+    [resumeId, label, JSON.stringify(data), nowISO()],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID });
+    }
+  );
+});
+
+// List versions
+app.get("/api/resumes/:id/versions", (req, res) => {
+  const resumeId = Number(req.params.id);
+  db.all(
+    `SELECT id, label, created_at FROM versions WHERE resume_id = ? ORDER BY id DESC LIMIT 50`,
+    [resumeId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ items: rows });
+    }
+  );
+});
+
+// Read one version
+app.get("/api/versions/:versionId", (req, res) => {
+  const versionId = Number(req.params.versionId);
+  db.get(`SELECT * FROM versions WHERE id = ?`, [versionId], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: "Not found" });
+    res.json({
+      id: row.id,
+      resume_id: row.resume_id,
+      label: row.label,
+      created_at: row.created_at,
+      data: JSON.parse(row.data_json)
+    });
+  });
+});
+
+// Generate bullets
+app.post("/api/bullets/generate", (req, res) => {
+  const answers = req.body.answers || {};
+  const bullets = generateBulletsFromAnswers(answers);
+  res.json({ bullets });
+});
+
+// Score match
+app.post("/api/match/score", (req, res) => {
+  const data = req.body.data || {};
+  const result = computeMatchScore(data);
+  res.json(result);
+});
+
+// Export PDF
+app.post("/api/export/pdf", (req, res) => {
+  const data = req.body.data || {};
+  const profile = data.profile || {};
+  const experiences = Array.isArray(data.experience) ? data.experience : [];
+  const skills = Array.isArray(data.skills) ? data.skills : [];
+  const summary = safeTrim(data.summary);
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", "attachment; filename=resume.pdf");
+
+  const doc = new PDFDocument({ size: "LETTER", margin: 48 });
+  doc.pipe(res);
+
+  doc.fontSize(18).text(safeTrim(profile.name) || "Your Name", { continued: false });
+  doc.moveDown(0.3);
+
+  const line2 = [
+    safeTrim(profile.location),
+    safeTrim(profile.email),
+    safeTrim(profile.phone),
+    safeTrim(profile.linkedin),
+    safeTrim(profile.website)
+  ].filter(Boolean).join(" | ");
+
+  doc.fontSize(10).text(line2);
+  doc.moveDown(0.8);
+
+  if (summary) {
+    doc.fontSize(11).text("SUMMARY", { underline: true });
+    doc.moveDown(0.3);
+    doc.fontSize(10).text(summary);
+    doc.moveDown(0.8);
+  }
+
+  if (skills.length) {
+    doc.fontSize(11).text("SKILLS", { underline: true });
+    doc.moveDown(0.3);
+    doc.fontSize(10).text(skills.join(", "));
+    doc.moveDown(0.8);
+  }
+
+  if (experiences.length) {
+    doc.fontSize(11).text("EXPERIENCE", { underline: true });
+    doc.moveDown(0.3);
+
+    for (const exp of experiences) {
+      const header = `${safeTrim(exp.title)} | ${safeTrim(exp.company)}`;
+      const dates = [safeTrim(exp.start), safeTrim(exp.end)].filter(Boolean).join(" to ");
+      doc.fontSize(10).text(header, { continued: false });
+      doc.fontSize(9).text(`${dates}${exp.location ? " | " + exp.location : ""}`);
+      doc.moveDown(0.2);
+
+      const bullets = Array.isArray(exp.bullets) ? exp.bullets : [];
+      for (const b of bullets) {
+        const t = typeof b === "string" ? b : b.text;
+        doc.fontSize(9).text(`• ${safeTrim(t)}`, { indent: 10 });
+      }
+      doc.moveDown(0.6);
+    }
+  }
+
+  doc.end();
+});
+
+// Export DOCX
+app.post("/api/export/docx", async (req, res) => {
+  const data = req.body.data || {};
+  const profile = data.profile || {};
+  const experiences = Array.isArray(data.experience) ? data.experience : [];
+  const skills = Array.isArray(data.skills) ? data.skills : [];
+  const summary = safeTrim(data.summary);
+
+  const lines = [];
+  lines.push(new Paragraph({ children: [new TextRun({ text: safeTrim(profile.name) || "Your Name", bold: true, size: 32 })] }));
+
+  const meta = [
+    safeTrim(profile.location),
+    safeTrim(profile.email),
+    safeTrim(profile.phone),
+    safeTrim(profile.linkedin),
+    safeTrim(profile.website)
+  ].filter(Boolean).join(" | ");
+  if (meta) lines.push(new Paragraph(meta));
+
+  lines.push(new Paragraph(""));
+
+  if (summary) {
+    lines.push(new Paragraph({ children: [new TextRun({ text: "SUMMARY", bold: true })] }));
+    lines.push(new Paragraph(summary));
+    lines.push(new Paragraph(""));
+  }
+
+  if (skills.length) {
+    lines.push(new Paragraph({ children: [new TextRun({ text: "SKILLS", bold: true })] }));
+    lines.push(new Paragraph(skills.join(", ")));
+    lines.push(new Paragraph(""));
+  }
+
+  if (experiences.length) {
+    lines.push(new Paragraph({ children: [new TextRun({ text: "EXPERIENCE", bold: true })] }));
+    for (const exp of experiences) {
+      const header = `${safeTrim(exp.title)} | ${safeTrim(exp.company)}`;
+      const dates = [safeTrim(exp.start), safeTrim(exp.end)].filter(Boolean).join(" to ");
+      const sub = `${dates}${exp.location ? " | " + exp.location : ""}`;
+
+      lines.push(new Paragraph({ children: [new TextRun({ text: header, bold: true })] }));
+      if (sub.trim()) lines.push(new Paragraph(sub));
+
+      const bullets = Array.isArray(exp.bullets) ? exp.bullets : [];
+      for (const b of bullets) {
+        const t = typeof b === "string" ? b : b.text;
+        lines.push(new Paragraph(`• ${safeTrim(t)}`));
+      }
+      lines.push(new Paragraph(""));
+    }
+  }
+
+  const doc = new Document({ sections: [{ properties: {}, children: lines }] });
+  const buffer = await Packer.toBuffer(doc);
+
+  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+  res.setHeader("Content-Disposition", "attachment; filename=resume.docx");
+  res.send(buffer);
+});
+
+app.listen(PORT, () => {
+  console.log(`TonyOS Resume Builder running on port ${PORT}`);
+});
+
+public/index.html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TonyOS Resume Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <h1>TonyOS Resume Builder</h1>
+        <p class="sub">ATS safe. Outcome based. Built for real hiring managers.</p>
+      </div>
+      <div class="top-actions">
+        <button id="btnNew" class="btn">New Resume</button>
+        <select id="resumeSelect" class="select"></select>
+        <button id="btnSave" class="btn primary">Save</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>1) Profile</h2>
+        <div class="two">
+          <label>Full Name<input id="name" /></label>
+          <label>Location<input id="location" /></label>
+          <label>Email<input id="email" /></label>
+          <label>Phone<input id="phone" /></label>
+          <label>LinkedIn<input id="linkedin" placeholder="https://linkedin.com/in/..." /></label>
+          <label>Website<input id="website" placeholder="Optional" /></label>
+        </div>
+
+        <h2>2) Summary</h2>
+        <textarea id="summary" rows="5" placeholder="2 to 4 lines. Who you are. What you do. Proof. What you want next."></textarea>
+
+        <h2>3) Skills</h2>
+        <input id="skills" placeholder="Comma separated: Sales, RevOps, HubSpot, Apollo, GMP, etc" />
+      </section>
+
+      <section class="card">
+        <h2>Experience Wizard</h2>
+        <p class="hint">This is the part that makes the resume professional. Answer like you are explaining impact to a VP.</p>
+
+        <div class="two">
+          <label>Company<input id="wCompany" /></label>
+          <label>Title<input id="wTitle" /></label>
+          <label>Start Date<input id="wStart" placeholder="Jan 2024" /></label>
+          <label>End Date<input id="wEnd" placeholder="Present" /></label>
+          <label>Location<input id="wLoc" placeholder="City, State" /></label>
+          <label>Tools Used<input id="wTools" placeholder="HubSpot, Apollo, Sales Nav, Excel" /></label>
+        </div>
+
+        <label>Business goal you were driving<textarea id="wGoal" rows="2" placeholder="Example: build qualified pipeline for pharma accounts"></textarea></label>
+        <label>What did you change or build<textarea id="wChange" rows="2" placeholder="Example: built outbound workflow, targeting, messaging, reporting"></textarea></label>
+        <label>What metric moved<textarea id="wMetric" rows="2" placeholder="Example: generated 35 SQLs in 60 days, reduced cycle time 25%, grew revenue 1.2M"></textarea></label>
+        <label>Scope (accounts, budget, volume, team size)<textarea id="wScope" rows="2" placeholder="Example: 150 target accounts, 2 SDRs, 3 regions"></textarea></label>
+
+        <div class="row">
+          <button id="btnGenerate" class="btn">Generate bullets</button>
+          <button id="btnAddExp" class="btn primary">Add Experience</button>
+        </div>
+
+        <div id="generated" class="generated"></div>
+      </section>
+
+      <section class="card">
+        <h2>Resume Experience</h2>
+        <div id="experienceList" class="list"></div>
+
+        <div class="row">
+          <button id="btnSnapshot" class="btn">Save Version</button>
+          <button id="btnPDF" class="btn">Export PDF</button>
+          <button id="btnDOCX" class="btn">Export DOCX</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Job Match</h2>
+        <textarea id="jobDescription" rows="10" placeholder="Paste the job description here"></textarea>
+        <div class="row">
+          <button id="btnScore" class="btn primary">Score match</button>
+        </div>
+        <div id="matchBox" class="match"></div>
+
+        <h3>Version History</h3>
+        <div id="versions" class="list"></div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span class="tiny">Built inside TonyOS. Clean formatting wins. Fancy templates lose.</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+public/style.css
+:root {
+  --bg: #0b0f14;
+  --card: #121a22;
+  --muted: #9fb0c0;
+  --text: #e7eef6;
+  --line: #223040;
+  --accent: #2b7cff;
+  --accent2: #1d5bd6;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+h1 { margin: 0; font-size: 22px; }
+.sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.card h2 { margin: 0 0 10px; font-size: 16px; }
+.card h3 { margin: 16px 0 8px; font-size: 14px; color: var(--muted); }
+
+label { display: block; margin: 10px 0; font-size: 12px; color: var(--muted); }
+input, textarea, select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0f151d;
+  color: var(--text);
+  outline: none;
+}
+textarea { resize: vertical; }
+
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+
+.btn {
+  border: 1px solid var(--line);
+  background: #0f151d;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+.btn:hover { border-color: #36506a; }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+
+.select { min-width: 240px; }
+
+.hint { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+
+.list .item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  margin: 10px 0;
+  background: #0f151d;
+}
+
+.item .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.item .actions { margin-top: 10px; display: flex; gap: 10px; }
+
+.generated .gitem {
+  border: 1px dashed #36506a;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 10px 0;
+  background: #0f151d;
+}
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  margin-left: 8px;
+  color: var(--muted);
+}
+.match {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  background: #0f151d;
+}
+.tiny { color: var(--muted); font-size: 12px; }
+
+.foot { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+public/app.js
+let currentResumeId = null;
+let currentData = {
+  profile: { name: "", location: "", email: "", phone: "", linkedin: "", website: "" },
+  summary: "",
+  skills: [],
+  jobDescription: "",
+  experience: []
+};
+let lastGenerated = [];
+
+const el = (id) => document.getElementById(id);
+
+function toast(msg) {
+  alert(msg);
+}
+
+function readFormToData() {
+  currentData.profile.name = el("name").value.trim();
+  currentData.profile.location = el("location").value.trim();
+  currentData.profile.email = el("email").value.trim();
+  currentData.profile.phone = el("phone").value.trim();
+  currentData.profile.linkedin = el("linkedin").value.trim();
+  currentData.profile.website = el("website").value.trim();
+  currentData.summary = el("summary").value.trim();
+
+  const skillsRaw = el("skills").value.trim();
+  currentData.skills = skillsRaw ? skillsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+
+  currentData.jobDescription = el("jobDescription").value.trim();
+}
+
+function writeDataToForm() {
+  el("name").value = currentData.profile.name || "";
+  el("location").value = currentData.profile.location || "";
+  el("email").value = currentData.profile.email || "";
+  el("phone").value = currentData.profile.phone || "";
+  el("linkedin").value = currentData.profile.linkedin || "";
+  el("website").value = currentData.profile.website || "";
+  el("summary").value = currentData.summary || "";
+  el("skills").value = (currentData.skills || []).join(", ");
+  el("jobDescription").value = currentData.jobDescription || "";
+  renderExperience();
+}
+
+function wizardAnswers() {
+  return {
+    company: el("wCompany").value.trim(),
+    title: el("wTitle").value.trim(),
+    start: el("wStart").value.trim(),
+    end: el("wEnd").value.trim(),
+    location: el("wLoc").value.trim(),
+    tools: el("wTools").value.trim(),
+    businessGoal: el("wGoal").value.trim(),
+    whatChanged: el("wChange").value.trim(),
+    metricMoved: el("wMetric").value.trim(),
+    scope: el("wScope").value.trim()
+  };
+}
+
+function clearWizard() {
+  ["wCompany","wTitle","wStart","wEnd","wLoc","wTools","wGoal","wChange","wMetric","wScope"].forEach(id => el(id).value = "");
+  lastGenerated = [];
+  el("generated").innerHTML = "";
+}
+
+function renderGenerated(bullets) {
+  const box = el("generated");
+  box.innerHTML = "";
+  bullets.forEach((b, idx) => {
+    const div = document.createElement("div");
+    div.className = "gitem";
+    div.innerHTML = `
+      <div><strong>Bullet ${idx + 1}</strong> <span class="badge">Score ${b.score}</span></div>
+      <div style="margin-top:8px">${escapeHtml(b.text)}</div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+function renderExperience() {
+  const list = el("experienceList");
+  list.innerHTML = "";
+
+  (currentData.experience || []).forEach((exp, idx) => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const meta = `${exp.start || ""}${exp.end ? " to " + exp.end : ""}${exp.location ? " | " + exp.location : ""}`;
+    const bullets = (exp.bullets || []).map(b => typeof b === "string" ? b : b.text);
+
+    div.innerHTML = `
+      <div><strong>${escapeHtml(exp.title || "")}</strong> | ${escapeHtml(exp.company || "")}</div>
+      <div class="meta">${escapeHtml(meta)}</div>
+      <div class="meta">${bullets.map(t => `• ${escapeHtml(t)}`).join("<br>")}</div>
+      <div class="actions">
+        <button class="btn" data-act="up" data-idx="${idx}">Move up</button>
+        <button class="btn" data-act="down" data-idx="${idx}">Move down</button>
+        <button class="btn" data-act="remove" data-idx="${idx}">Remove</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+
+  list.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const act = btn.dataset.act;
+      const idx = Number(btn.dataset.idx);
+      if (act === "remove") {
+        currentData.experience.splice(idx, 1);
+        renderExperience();
+      } else if (act === "up" && idx > 0) {
+        const tmp = currentData.experience[idx - 1];
+        currentData.experience[idx - 1] = currentData.experience[idx];
+        currentData.experience[idx] = tmp;
+        renderExperience();
+      } else if (act === "down" && idx < currentData.experience.length - 1) {
+        const tmp = currentData.experience[idx + 1];
+        currentData.experience[idx + 1] = currentData.experience[idx];
+        currentData.experience[idx] = tmp;
+        renderExperience();
+      }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  return (str || "").replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    "\"":"&quot;",
+    "'":"&#039;"
+  }[m]));
+}
+
+// ---------- API calls ----------
+async function api(url, method = "GET", body) {
+  const res = await fetch(url, {
+    method,
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res;
+}
+
+async function loadResumes() {
+  const res = await api("/api/resumes");
+  const json = await res.json();
+  const sel = el("resumeSelect");
+  sel.innerHTML = "";
+
+  const opt0 = document.createElement("option");
+  opt0.value = "";
+  opt0.textContent = "Select resume";
+  sel.appendChild(opt0);
+
+  json.items.forEach(item => {
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = `${item.title} (#${item.id})`;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadResume(id) {
+  const res = await api(`/api/resumes/${id}`);
+  const json = await res.json();
+  currentResumeId = json.id;
+  currentData = json.data || currentData;
+  writeDataToForm();
+  await loadVersions();
+}
+
+async function saveResume() {
+  readFormToData();
+  const title = currentData.profile.name ? `${currentData.profile.name} Resume` : "Resume";
+
+  if (!currentResumeId) {
+    const res = await api("/api/resumes", "POST", { title, data: currentData });
+    const json = await res.json();
+    currentResumeId = json.id;
+    toast(`Saved new resume #${currentResumeId}`);
+  } else {
+    await api(`/api/resumes/${currentResumeId}`, "PUT", { title, data: currentData });
+    toast("Saved");
+  }
+
+  await loadResumes();
+  el("resumeSelect").value = currentResumeId;
+}
+
+async function generateBullets() {
+  const answers = wizardAnswers();
+  const res = await api("/api/bullets/generate", "POST", { answers });
+  const json = await res.json();
+  lastGenerated = json.bullets || [];
+  renderGenerated(lastGenerated);
+}
+
+function addExperienceFromWizard() {
+  const a = wizardAnswers();
+
+  if (!a.company || !a.title) {
+    toast("Company and Title are required");
+    return;
+  }
+
+  const bullets = lastGenerated.length ? lastGenerated : [];
+  const exp = {
+    company: a.company,
+    title: a.title,
+    start: a.start,
+    end: a.end,
+    location: a.location,
+    tools: a.tools,
+    bullets: bullets
+  };
+
+  currentData.experience = currentData.experience || [];
+  currentData.experience.unshift(exp);
+  renderExperience();
+  toast("Added experience");
+}
+
+async function scoreMatch() {
+  readFormToData();
+  const res = await api("/api/match/score", "POST", { data: currentData });
+  const json = await res.json();
+
+  const box = el("matchBox");
+  box.innerHTML = `
+    <div><strong>Match score:</strong> ${json.score || 0}/100</div>
+    ${json.note ? `<div class="meta">${escapeHtml(json.note)}</div>` : ""}
+    <div class="meta" style="margin-top:10px"><strong>Top missing keywords:</strong><br>${(json.missing || []).map(k => `• ${escapeHtml(k)}`).join("<br>")}</div>
+  `;
+}
+
+async function exportFile(type) {
+  readFormToData();
+  const res = await api(`/api/export/${type}`, "POST", { data: currentData });
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = type === "pdf" ? "resume.pdf" : "resume.docx";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function snapshot() {
+  if (!currentResumeId) {
+    toast("Save the resume first");
+    return;
+  }
+  readFormToData();
+  const label = prompt("Version label", "Tailored version");
+  if (!label) return;
+
+  await api(`/api/resumes/${currentResumeId}/versions`, "POST", { label, data: currentData });
+  toast("Version saved");
+  await loadVersions();
+}
+
+async function loadVersions() {
+  const box = el("versions");
+  box.innerHTML = "";
+  if (!currentResumeId) return;
+
+  const res = await api(`/api/resumes/${currentResumeId}/versions`);
+  const json = await res.json();
+
+  json.items.forEach(v => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div><strong>${escapeHtml(v.label)}</strong></div>
+      <div class="meta">${escapeHtml(v.created_at)}</div>
+      <div class="actions">
+        <button class="btn" data-id="${v.id}">Load version</button>
+      </div>
+    `;
+    div.querySelector("button").addEventListener("click", async () => {
+      const r = await api(`/api/versions/${v.id}`);
+      const vv = await r.json();
+      currentData = vv.data;
+      writeDataToForm();
+      toast("Version loaded");
+    });
+    box.appendChild(div);
+  });
+}
+
+// ---------- Wire up UI ----------
+el("btnNew").addEventListener("click", () => {
+  currentResumeId = null;
+  currentData = {
+    profile: { name: "", location: "", email: "", phone: "", linkedin: "", website: "" },
+    summary: "",
+    skills: [],
+    jobDescription: "",
+    experience: []
+  };
+  writeDataToForm();
+  clearWizard();
+  el("resumeSelect").value = "";
+});
+
+el("resumeSelect").addEventListener("change", async () => {
+  const id = el("resumeSelect").value;
+  if (!id) return;
+  await loadResume(id);
+});
+
+el("btnSave").addEventListener("click", saveResume);
+el("btnGenerate").addEventListener("click", generateBullets);
+el("btnAddExp").addEventListener("click", addExperienceFromWizard);
+el("btnScore").addEventListener("click", scoreMatch);
+el("btnPDF").addEventListener("click", () => exportFile("pdf"));
+el("btnDOCX").addEventListener("click", () => exportFile("docx"));
+el("btnSnapshot").addEventListener("click", snapshot);
+
+// init
+(async function init() {
+  await loadResumes();
+  writeDataToForm();
+})();
+
+What you get when you run it
+
+A working resume builder in the browser
+
+Bullets that are clean and ATS-safe
+
+Scoring that shows missing keywords
+
+PDF and DOCX download that recruiters will not hate
+
+Versions so you can tailor per job and not lose anything
+
+Next upgrade that makes it “best”
+
+Right now it is rule-driven and solid
+
+To make it elite, add an AI layer for:
+
+rewriting bullets into “good, better, best”
+
+generating a summary aligned to a target role
+
+suggesting missing metrics questions
+
+If you want that, tell me this one thing so I wire it in correctly without guessing:
+
+Do you want to use OpenAI for the writing inside TonyOS, or keep it fully offline?

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Detail - Tony CRM</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    a { color: #00ff88; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { margin-bottom: 1.5rem; display: inline-block; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .industry { color: #888; font-size: 1rem; }
+    .tier {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    .tier-A { background: #00ff88; color: #0a0a0f; }
+    .tier-B { background: #ffd700; color: #0a0a0f; }
+    .tier-C { background: #666; color: #fff; }
+    .tier-Disqualified { background: #ff4444; color: #fff; }
+    .division-badge {
+      display: inline-flex;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .division-scientific { background: rgba(168,85,247,.15); color: #c084fc; border: 1px solid rgba(168,85,247,.5); }
+    .division-engineering { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.5); }
+    .division-both { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.5); }
+    .division-unqualified { background: rgba(255,68,68,.15); color: #ff6b6b; border: 1px solid rgba(255,68,68,.5); }
+    .division-explain {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0,0,0,.3);
+      border-radius: 4px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .card h3 {
+      color: #00ff88;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.5rem;
+    }
+    .field {
+      margin-bottom: 0.8rem;
+    }
+    .field-label {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 0.2rem;
+    }
+    .field-value {
+      font-size: 0.95rem;
+    }
+    .pain-points li {
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .pain-points li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: #ff6600;
+    }
+    .contacts-list, .notes-list {
+      list-style: none;
+    }
+    .contact-item, .note-item {
+      background: #0a0a0f;
+      padding: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+    .contact-name { font-weight: 600; }
+    .contact-title { color: #888; font-size: 0.85rem; }
+    .contact-link { margin-top: 0.3rem; font-size: 0.85rem; }
+    .note-text { margin-bottom: 0.3rem; }
+    .note-date { color: #666; font-size: 0.8rem; }
+    .add-note {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .add-note textarea {
+      flex: 1;
+      background: #0a0a0f;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 0.6rem;
+      color: #e0e0e0;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+    }
+    .add-note button {
+      background: #00ff88;
+      color: #0a0a0f;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+    .linkedin-btn {
+      display: inline-block;
+      background: #0077b5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .why-natoli {
+      background: #0a0a0f;
+      border-left: 3px solid #00ff88;
+      padding: 1rem;
+      font-style: italic;
+      color: #ccc;
+    }
+    .news-list {
+      list-style: none;
+    }
+    .news-item {
+      background: #0a0a0f;
+      padding: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      border-left: 3px solid #3b82f6;
+    }
+    .news-title {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .news-title a {
+      color: #60a5fa;
+    }
+    .news-meta {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+    }
+    .news-summary {
+      font-size: 0.85rem;
+      color: #aaa;
+      line-height: 1.4;
+    }
+    .refresh-btn {
+      background: #333;
+      color: #e0e0e0;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    .refresh-btn:hover {
+      background: #444;
+    }
+    .outreach-section {
+      margin-top: 2rem;
+    }
+    .outreach-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .outreach-tab {
+      padding: 0.5rem 1rem;
+      background: #333;
+      border: none;
+      border-radius: 6px;
+      color: #e0e0e0;
+      cursor: pointer;
+    }
+    .outreach-tab.active {
+      background: #00ff88;
+      color: #0a0a0f;
+    }
+    .outreach-draft {
+      background: #0a0a0f;
+      padding: 1rem;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      font-family: inherit;
+      line-height: 1.6;
+    }
+    .copy-btn {
+      margin-top: 1rem;
+      background: #00ff88;
+      color: #0a0a0f;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sites-list {
+      list-style: none;
+    }
+    .site-item {
+      background: #0a0a0f;
+      padding: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      border-left: 3px solid #a855f7;
+    }
+    .site-name {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .site-type {
+      display: inline-block;
+      background: rgba(168,85,247,.2);
+      color: #c084fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    .site-location {
+      color: #888;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+    .site-details {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 0.3rem;
+    }
+    .site-primary {
+      background: rgba(0,255,136,.15);
+      color: #00ff88;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    .add-site-form {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .add-site-form input, .add-site-form select {
+      background: #0a0a0f;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 0.5rem;
+      color: #e0e0e0;
+      font-family: inherit;
+    }
+    .add-site-form .full-width {
+      grid-column: 1 / -1;
+    }
+    .add-site-btn {
+      background: #a855f7;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .delete-site-btn {
+      background: transparent;
+      color: #ff6b6b;
+      border: none;
+      font-size: 0.75rem;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
+</head>
+<body>
+  <a href="javascript:void(0)" onclick="goBack()" class="back">&larr; Back to CRM Connections</a>
+  <div id="content">
+    <div class="loading">Loading account...</div>
+  </div>
+
+  <script>
+    const isProxy = window.location.pathname.startsWith('/apollo-crm');
+    const API_BASE = isProxy ? '/apollo-crm' : '';
+    const id = new URLSearchParams(window.location.search).get('id');
+    
+    function getDivisionBadge(division) {
+      if (!division) return '<span class="division-badge division-unqualified">Unknown</span>';
+      if (division === 'Both' || division.includes('Both')) {
+        return '<span class="division-badge division-both">Natoli Scientific + Engineering</span>';
+      } else if (division.includes('Scientific')) {
+        return '<span class="division-badge division-scientific">Natoli Scientific</span>';
+      } else if (division.includes('Engineering')) {
+        return '<span class="division-badge division-engineering">Natoli Engineering</span>';
+      } else if (division === 'Unqualified') {
+        return '<span class="division-badge division-unqualified">Not Qualified</span>';
+      }
+      return `<span class="division-badge">${division}</span>`;
+    }
+    
+    function getDivisionExplain(division) {
+      if (!division) return 'No division routing determined.';
+      if (division === 'Both' || division.includes('Both')) {
+        return 'Routes to both divisions: Scientific for formulation/R&D support, Engineering for tooling/manufacturing needs.';
+      } else if (division.includes('Scientific')) {
+        return 'Routes to Natoli Scientific: Formulation development, tablet design, compaction studies, scale-up support.';
+      } else if (division.includes('Engineering')) {
+        return 'Routes to Natoli Engineering: Tablet tooling, punch & die manufacturing, tool maintenance, press optimization.';
+      } else if (division === 'Unqualified') {
+        return 'Does not fit primary markets. Manual review recommended.';
+      }
+      return '';
+    }
+
+    async function loadAccount() {
+      if (!id) {
+        document.getElementById('content').innerHTML = '<p>No account ID provided.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}`);
+        if (!res.ok) throw new Error('Account not found');
+        
+        const data = await res.json();
+        const a = data.account;
+        const contacts = data.contacts || [];
+        const notes = data.notes || [];
+        // pain_points may be array or JSON string
+        let pains = [];
+        if (a.pain_points) {
+          if (Array.isArray(a.pain_points)) {
+            pains = a.pain_points;
+          } else if (typeof a.pain_points === 'string') {
+            try { pains = JSON.parse(a.pain_points); } catch(e) { pains = []; }
+          }
+        }
+
+        document.title = `${a.company_name} - Tony CRM`;
+
+        document.getElementById('content').innerHTML = `
+          <div class="header">
+            <div>
+              <h1>${a.company_name}</h1>
+              <p class="industry">${a.industry || 'Unknown industry'} | ${a.employees || '?'} employees | ${a.revenue || 'Revenue unknown'}</p>
+              ${a.linkedin_url ? `<a href="${a.linkedin_url}" target="_blank" class="linkedin-btn">View on LinkedIn</a>` : ''}
+            </div>
+            <span class="tier tier-${a.tier}">${a.tier || 'N/A'}</span>
+          </div>
+
+          <div class="grid">
+            <div class="card">
+              <h3>Natoli Fit</h3>
+              <div class="field">
+                <div class="field-label">Division Routing</div>
+                <div class="field-value">${getDivisionBadge(a.division_fit)}</div>
+                <div class="division-explain">${getDivisionExplain(a.division_fit)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Persona Score</div>
+                <div class="field-value">${a.persona_score || 0}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Tier Reason</div>
+                <div class="field-value">${a.tier_reason || '-'}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Primary Market</div>
+                <div class="field-value">${a.is_primary_market ? 'Yes - Validated Target' : 'No'}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Detected Industry</div>
+                <div class="field-value">${a.detected_industry || a.industry || '-'}</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Company Details</h3>
+              <div class="field">
+                <div class="field-label">Website</div>
+                <div class="field-value"><a href="${a.website}" target="_blank">${a.website || a.domain}</a></div>
+              </div>
+              <div class="field">
+                <div class="field-label">NAICS</div>
+                <div class="field-value">${a.naics || '-'}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">SIC</div>
+                <div class="field-value">${a.sic || '-'}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Status</div>
+                <div class="field-value">${a.status || 'New'}</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Pain Points</h3>
+              ${pains.length > 0 ? `
+                <ul class="pain-points">
+                  ${pains.map(p => `<li>${p}</li>`).join('')}
+                </ul>
+              ` : '<p>No pain points identified.</p>'}
+            </div>
+
+            <div class="card">
+              <h3>Why Natoli</h3>
+              <div class="why-natoli">${a.why_natoli || 'No value proposition defined.'}</div>
+            </div>
+
+            <div class="card">
+              <h3>Company News (Last 30 Days) <button class="refresh-btn" onclick="refreshNews()">Refresh</button></h3>
+              <div id="news-container">
+                <p style="color:#888;font-size:.85rem;">Loading news...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="card">
+              <h3>Target Personas <span id="contacts-count">(${contacts.length})</span> <button class="refresh-btn" onclick="searchPeople()">Find People via Apollo</button></h3>
+              <p style="font-size:.8rem;color:#888;margin-bottom:.8rem;">Key decision-makers and influencers matching Natoli's persona framework</p>
+              <div id="contacts-container">
+              ${contacts.length > 0 ? `
+                <ul class="contacts-list">
+                  ${contacts.map(c => `
+                    <li class="contact-item">
+                      <div class="contact-name">${c.name || 'Unknown'}</div>
+                      <div class="contact-title">${c.title || '-'}</div>
+                      ${c.persona_type ? `<div style="font-size:.75rem;color:#00ff88;margin-top:.3rem;">Persona: ${c.persona_type}</div>` : ''}
+                      ${c.linkedin_url ? `<div class="contact-link"><a href="${c.linkedin_url}" target="_blank">LinkedIn</a></div>` : ''}
+                    </li>
+                  `).join('')}
+                </ul>
+              ` : '<p style="color:#888;">No matching personas found. Click "Find People" to search via Apollo.io.</p>'}
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Notes (${notes.length})</h3>
+              <ul class="notes-list" id="notes-list">
+                ${notes.length > 0 ? notes.map(n => `
+                  <li class="note-item">
+                    <div class="note-text">${n.note}</div>
+                    <div class="note-date">${new Date(n.created_at).toLocaleDateString()}</div>
+                  </li>
+                `).join('') : '<li>No notes yet.</li>'}
+              </ul>
+              <div class="add-note">
+                <textarea id="new-note" placeholder="Add a note..."></textarea>
+                <button onclick="addNote()">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:1.5rem;">
+            <h3>Sites & Locations <span id="sites-count" style="font-weight:normal;color:#888;"></span></h3>
+            <p style="font-size:.8rem;color:#888;margin-bottom:.8rem;">Track manufacturing plants, R&D labs, and other facilities</p>
+            <div id="sites-container">
+              <p style="color:#888;font-size:.85rem;">Loading sites...</p>
+            </div>
+            <details style="margin-top:1rem;">
+              <summary style="cursor:pointer;color:#a855f7;font-weight:600;font-size:.85rem;">+ Add New Site</summary>
+              <div class="add-site-form">
+                <input type="text" id="site-name" placeholder="Site Name (e.g. Main Manufacturing Plant)">
+                <select id="site-type">
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="R&D">R&D</option>
+                  <option value="Distribution">Distribution</option>
+                  <option value="Headquarters">Headquarters</option>
+                  <option value="Sales Office">Sales Office</option>
+                  <option value="Lab">Lab</option>
+                  <option value="Other">Other</option>
+                </select>
+                <input type="text" id="site-city" placeholder="City">
+                <input type="text" id="site-state" placeholder="State/Province">
+                <input type="text" id="site-country" placeholder="Country" value="USA">
+                <input type="number" id="site-employees" placeholder="Employees at site">
+                <input type="text" id="site-equipment" placeholder="Equipment (comma-separated)" class="full-width">
+                <input type="text" id="site-certifications" placeholder="Certifications (e.g. FDA, cGMP)" class="full-width">
+                <label style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:#888;">
+                  <input type="checkbox" id="site-primary"> Primary location
+                </label>
+                <button class="add-site-btn" onclick="addSite()">Add Site</button>
+              </div>
+            </details>
+          </div>
+
+          <div class="card outreach-section">
+            <h3>Outreach Templates</h3>
+            <div class="outreach-tabs">
+              <button class="outreach-tab active" data-tab="initial">Initial</button>
+              <button class="outreach-tab" data-tab="followup2">Follow-up 2</button>
+              <button class="outreach-tab" data-tab="followup3">Follow-up 3</button>
+            </div>
+            <div class="outreach-draft" id="outreach-content">Loading outreach templates...</div>
+            <button class="copy-btn" onclick="copyOutreach()">Copy to Clipboard</button>
+          </div>
+        `;
+        loadOutreach();
+        loadNews();
+        loadSites();
+      } catch (e) {
+        document.getElementById('content').innerHTML = `<p>Error: ${e.message}</p>`;
+      }
+    }
+
+    async function loadSites() {
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}/sites`);
+        const data = await res.json();
+        const sites = data.sites || [];
+        
+        document.getElementById('sites-count').textContent = `(${sites.length})`;
+        
+        if (sites.length === 0) {
+          document.getElementById('sites-container').innerHTML = `
+            <p style="color:#888;font-size:.85rem;">No sites added yet. Add locations to track manufacturing plants, labs, and facilities.</p>
+          `;
+          return;
+        }
+        
+        document.getElementById('sites-container').innerHTML = `
+          <ul class="sites-list">
+            ${sites.map(s => `
+              <li class="site-item">
+                <button class="delete-site-btn" onclick="deleteSite(${s.id})">Delete</button>
+                <div class="site-name">
+                  ${s.site_name}
+                  <span class="site-type">${s.site_type || 'Manufacturing'}</span>
+                  ${s.is_primary ? '<span class="site-primary">Primary</span>' : ''}
+                </div>
+                <div class="site-location">${[s.city, s.state, s.country].filter(Boolean).join(', ') || 'Location not specified'}</div>
+                ${s.employees ? `<div class="site-details">Employees: ${s.employees}</div>` : ''}
+                ${s.equipment ? `<div class="site-details">Equipment: ${s.equipment}</div>` : ''}
+                ${s.certifications ? `<div class="site-details">Certifications: ${s.certifications}</div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      } catch (e) {
+        document.getElementById('sites-container').innerHTML = `
+          <p style="color:#ff6b6b;font-size:.85rem;">Failed to load sites: ${e.message}</p>
+        `;
+      }
+    }
+
+    async function addSite() {
+      const siteName = document.getElementById('site-name').value.trim();
+      if (!siteName) {
+        alert('Please enter a site name');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}/sites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            site_name: siteName,
+            site_type: document.getElementById('site-type').value,
+            city: document.getElementById('site-city').value.trim(),
+            state: document.getElementById('site-state').value.trim(),
+            country: document.getElementById('site-country').value.trim() || 'USA',
+            employees: parseInt(document.getElementById('site-employees').value) || null,
+            equipment: document.getElementById('site-equipment').value.trim(),
+            certifications: document.getElementById('site-certifications').value.trim(),
+            is_primary: document.getElementById('site-primary').checked ? 1 : 0
+          })
+        });
+        
+        if (res.ok) {
+          // Clear form
+          document.getElementById('site-name').value = '';
+          document.getElementById('site-city').value = '';
+          document.getElementById('site-state').value = '';
+          document.getElementById('site-country').value = 'USA';
+          document.getElementById('site-employees').value = '';
+          document.getElementById('site-equipment').value = '';
+          document.getElementById('site-certifications').value = '';
+          document.getElementById('site-primary').checked = false;
+          
+          await loadSites();
+        } else {
+          const err = await res.json();
+          alert('Failed to add site: ' + (err.error || 'Unknown error'));
+        }
+      } catch (e) {
+        alert('Failed to add site: ' + e.message);
+      }
+    }
+
+    async function deleteSite(siteId) {
+      if (!confirm('Delete this site?')) return;
+      
+      try {
+        await fetch(`${API_BASE}/api/sites/${siteId}`, { method: 'DELETE' });
+        await loadSites();
+      } catch (e) {
+        alert('Failed to delete site: ' + e.message);
+      }
+    }
+
+    async function loadNews() {
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}/news`);
+        const data = await res.json();
+        
+        if (!data.hasNewsApiKey) {
+          document.getElementById('news-container').innerHTML = `
+            <p style="color:#666;font-size:.85rem;">NewsAPI key not configured. Add NEWS_API_KEY to enable company news.</p>
+          `;
+          return;
+        }
+
+        if (!data.articles || data.articles.length === 0) {
+          document.getElementById('news-container').innerHTML = `
+            <p style="color:#888;font-size:.85rem;">No news articles found from trusted sources in the last 30 days.</p>
+          `;
+          return;
+        }
+
+        document.getElementById('news-container').innerHTML = `
+          <ul class="news-list">
+            ${data.articles.map(article => `
+              <li class="news-item">
+                <div class="news-title"><a href="${article.url}" target="_blank">${article.title}</a></div>
+                <div class="news-meta">${article.source} - ${formatNewsDate(article.published_at)}</div>
+                ${article.summary ? `<div class="news-summary">${article.summary}</div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      } catch (e) {
+        document.getElementById('news-container').innerHTML = `
+          <p style="color:#ff6b6b;font-size:.85rem;">Failed to load news: ${e.message}</p>
+        `;
+      }
+    }
+
+    async function refreshNews() {
+      document.getElementById('news-container').innerHTML = `
+        <p style="color:#888;font-size:.85rem;">Refreshing news...</p>
+      `;
+      
+      try {
+        await fetch(`${API_BASE}/api/accounts/${id}/news/refresh`, { method: 'POST' });
+        await loadNews();
+      } catch (e) {
+        document.getElementById('news-container').innerHTML = `
+          <p style="color:#ff6b6b;font-size:.85rem;">Failed to refresh: ${e.message}</p>
+        `;
+      }
+    }
+
+    function formatNewsDate(dateStr) {
+      if (!dateStr) return 'Unknown date';
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      return date.toLocaleDateString();
+    }
+
+    let outreachData = {};
+
+    async function loadOutreach() {
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}/outreach`);
+        outreachData = await res.json();
+        document.getElementById('outreach-content').textContent = outreachData.draft || 'No template available';
+
+        document.querySelectorAll('.outreach-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.outreach-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const tabType = tab.dataset.tab;
+            if (tabType === 'initial') {
+              document.getElementById('outreach-content').textContent = outreachData.draft;
+            } else if (tabType === 'followup2') {
+              document.getElementById('outreach-content').textContent = outreachData.followUp2;
+            } else if (tabType === 'followup3') {
+              document.getElementById('outreach-content').textContent = outreachData.followUp3;
+            }
+          });
+        });
+      } catch (e) {
+        document.getElementById('outreach-content').textContent = 'Failed to load outreach templates';
+      }
+    }
+
+    function copyOutreach() {
+      const text = document.getElementById('outreach-content').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy to Clipboard', 2000);
+      });
+    }
+
+    async function searchPeople() {
+      const container = document.getElementById('contacts-container');
+      const countSpan = document.getElementById('contacts-count');
+      container.innerHTML = '<p style="color:#a855f7;">Searching for key personas via Apollo.io...</p>';
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${id}/people-search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            titles: [
+              "Director of R&D", "VP of Manufacturing", "Director of Formulation",
+              "Process Engineering Manager", "Director of MS&T", "VP Operations",
+              "Formulation Director", "Tech Transfer", "Plant Manager"
+            ]
+          })
+        });
+        const data = await res.json();
+        
+        if (data.error) {
+          container.innerHTML = `<p style="color:#ff4444;">Error: ${data.error}</p>`;
+          return;
+        }
+        
+        const people = data.people || [];
+        countSpan.textContent = `(${people.length})`;
+        
+        if (people.length === 0) {
+          container.innerHTML = '<p style="color:#888;">No matching personas found in Apollo.io for this company.</p>';
+          return;
+        }
+        
+        container.innerHTML = `
+          <ul class="contacts-list">
+            ${people.map(c => `
+              <li class="contact-item">
+                <div class="contact-name">${c.name || 'Unknown'}</div>
+                <div class="contact-title">${c.title || '-'}</div>
+                ${c.persona_type ? `<div style="font-size:.75rem;color:#00ff88;margin-top:.3rem;">Persona: ${c.persona_type}</div>` : ''}
+                ${c.email ? `<div style="font-size:.75rem;color:#888;margin-top:.2rem;">${c.email}</div>` : ''}
+                ${c.linkedin_url ? `<div class="contact-link"><a href="${c.linkedin_url}" target="_blank">LinkedIn</a></div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      } catch (e) {
+        container.innerHTML = `<p style="color:#ff4444;">Failed to search: ${e.message}</p>`;
+      }
+    }
+
+    async function addNote() {
+      const note = document.getElementById('new-note').value.trim();
+      if (!note) return;
+
+      try {
+        await fetch(`${API_BASE}/api/accounts/${id}/notes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note })
+        });
+        loadAccount();
+      } catch (e) {
+        alert('Failed to add note');
+      }
+    }
+
+    function goBack() {
+      if (isProxy) {
+        window.location.href = '/crm?tab=connections';
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    loadAccount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+/* ============================
+   TOP BAR BUTTON (between items)
+   ============================ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.topbar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.92);
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.topbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-sync {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(120,255,160,0.9);
+  border: 1px solid rgba(120,255,160,0.35);
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.18);
+  white-space: nowrap;
+}
+
+.topbar-open {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(255,90,125,0.9);
+  border: 1px solid rgba(255,90,125,0.35);
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.18);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* NEW button */
+.topbar-revops {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.94);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 120ms ease, opacity 120ms ease, border-color 120ms ease;
+}
+.topbar-revops:hover {
+  transform: translateY(-1px);
+  opacity: 0.96;
+  border-color: rgba(255,255,255,0.22);
+}
+.topbar-revops:active {
+  transform: translateY(0px);
+}
+
+/* ============================
+   REVOPS MODAL (Fortune-50)
+   ============================ */
+.revops-modal[aria-hidden="true"] {
+  display: none;
+}
+
+.revops-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+
+.revops-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.62);
+  backdrop-filter: blur(6px);
+}
+
+.revops-panel {
+  position: relative;
+  width: min(1100px, 92vw);
+  height: min(760px, 88vh);
+  margin: 6vh auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(18, 18, 20, 0.92);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 20px 90px rgba(0,0,0,0.55);
+}
+
+.revops-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.20);
+}
+
+.revops-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.86);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  width: fit-content;
+}
+
+.revops-title {
+  margin: 10px 0 6px;
+  font-size: 22px;
+  font-weight: 780;
+  color: rgba(255,255,255,0.96);
+  letter-spacing: 0.04em;
+}
+
+.revops-subtitle {
+  margin: 0;
+  color: rgba(255,255,255,0.70);
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 720px;
+}
+
+.revops-header-right {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.revops-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  white-space: nowrap;
+}
+
+.revops-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.revops-body {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 14px;
+  padding: 14px 18px;
+  height: calc(100% - 140px);
+  overflow: hidden;
+}
+
+.revops-card {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  padding: 14px;
+  overflow: auto;
+}
+
+.revops-card-title {
+  margin: 0 0 6px;
+  color: rgba(255,255,255,0.94);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  font-weight: 750;
+}
+
+.revops-muted {
+  color: rgba(255,255,255,0.68);
+  font-size: 12px;
+  margin: 0 0 12px;
+}
+
+.revops-steps {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255,255,255,0.90);
+  font-size: 13px;
+}
+
+.revops-steps li {
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.revops-step-title {
+  font-weight: 700;
+}
+
+.revops-step-note {
+  color: rgba(255,255,255,0.64);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.revops-callout {
+  margin-top: 14px;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
+}
+
+.revops-callout-title {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.74);
+  margin-bottom: 6px;
+}
+
+.revops-callout-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 700;
+}
+
+.revops-accordion details {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.18);
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.revops-accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 750;
+}
+
+.revops-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.revops-k {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.90);
+  font-size: 12px;
+}
+
+.revops-detail {
+  padding: 0 12px 12px;
+}
+
+.revops-detail ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255,255,255,0.78);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.revops-footer-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.72);
+  font-size: 12px;
+}
+
+.revops-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.22);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.revops-version {
+  color: rgba(255,255,255,0.82);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.revops-sep {
+  color: rgba(255,255,255,0.35);
+  padding: 0 8px;
+}
+
+.revops-btn-secondary {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .revops-body {
+    grid-template-columns: 1fr;
+    height: calc(100% - 160px);
+  }
+  .revops-panel {
+    height: min(820px, 92vh);
+  }
+}

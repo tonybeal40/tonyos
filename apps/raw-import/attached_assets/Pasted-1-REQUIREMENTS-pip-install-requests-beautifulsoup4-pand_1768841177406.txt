@@ -1,0 +1,214 @@
+1️⃣ REQUIREMENTS
+pip install requests beautifulsoup4 pandas nltk openai
+
+2️⃣ FULL PYTHON SOURCE CODE
+import requests
+import pandas as pd
+import time
+import logging
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, urljoin
+from collections import Counter
+from nltk.util import ngrams
+from urllib.robotparser import RobotFileParser
+from openai import OpenAI
+
+# ===============================
+# CONFIG
+# ===============================
+
+BING_API_KEY = "YOUR_BING_API_KEY"
+OPENAI_API_KEY = "YOUR_OPENAI_KEY"
+
+USER_AGENT = "NatoliMarketIntelligence/1.0 (+public-research)"
+REQUEST_DELAY = 2.0
+MAX_PAGES_PER_SITE = 3
+
+OUTPUT_FILE = "natoli_message_intelligence.csv"
+LOG_FILE = "natoli_message_compliance.log"
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+
+# ===============================
+# INDUSTRY QUERIES (OSD FOCUSED)
+# ===============================
+
+INDUSTRY_QUERIES = [
+    "pharmaceutical tablet manufacturing USA",
+    "generic drug manufacturing tablets USA",
+    "503b outsourcing facility non sterile USA",
+    "cdmo tablet manufacturing USA"
+]
+
+# ===============================
+# ROBOTS.TXT CHECK
+# ===============================
+
+def robots_allowed(url):
+    try:
+        parsed = urlparse(url)
+        robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
+        rp = RobotFileParser()
+        rp.set_url(robots_url)
+        rp.read()
+        return rp.can_fetch(USER_AGENT, url)
+    except:
+        return False
+
+# ===============================
+# FETCH PUBLIC SITE LANGUAGE
+# ===============================
+
+def fetch_site_text(base_url):
+    pages = [
+        base_url,
+        urljoin(base_url, "/about"),
+        urljoin(base_url, "/capabilities"),
+        urljoin(base_url, "/manufacturing")
+    ]
+
+    collected = ""
+
+    for page in pages[:MAX_PAGES_PER_SITE]:
+        if not robots_allowed(page):
+            continue
+        try:
+            r = requests.get(page, headers={"User-Agent": USER_AGENT}, timeout=6)
+            if r.status_code != 200:
+                continue
+            soup = BeautifulSoup(r.text, "html.parser")
+            collected += " " + soup.get_text(" ", strip=True)
+            time.sleep(REQUEST_DELAY)
+        except:
+            continue
+
+    return collected.lower()
+
+# ===============================
+# PHRASE EXTRACTION (SIGNALS)
+# ===============================
+
+def extract_phrases(text):
+    words = [w for w in text.split() if len(w) > 4]
+    bigrams = Counter(ngrams(words, 2)).most_common(10)
+    trigrams = Counter(ngrams(words, 3)).most_common(5)
+    return (
+        "; ".join([" ".join(b[0]) for b in bigrams]),
+        "; ".join([" ".join(t[0]) for t in trigrams])
+    )
+
+# ===============================
+# BING SEARCH
+# ===============================
+
+def bing_search(query):
+    url = "https://api.bing.microsoft.com/v7.0/search"
+    headers = {
+        "Ocp-Apim-Subscription-Key": BING_API_KEY,
+        "User-Agent": USER_AGENT
+    }
+    params = {"q": query, "count": 6}
+    r = requests.get(url, headers=headers, params=params)
+    r.raise_for_status()
+    return r.json().get("webPages", {}).get("value", [])
+
+# ===============================
+# OPENAI MESSAGE GENERATOR
+# ===============================
+
+BASE_MESSAGE_PROMPT = """
+You are writing outreach on behalf of Natoli Engineering.
+
+Natoli tone rules:
+- Calm, credible, manufacturing-first
+- No marketing hype
+- No selling language
+- No pressure
+- Soft CTA only
+- Written for experienced manufacturing professionals
+
+Context:
+Company: {company}
+Industry: {industry}
+Relationship Type: {relationship}
+Public Credibility Signals Observed:
+Bigrams: {bigrams}
+Trigrams: {trigrams}
+
+Write:
+1) A subject line (boring, professional)
+2) A short email body (90–130 words)
+
+The email must clearly answer:
+- Who Natoli is to the industry
+- Why reliability, consistency, and compaction matter
+- Why this outreach is reasonable
+
+Do not pitch products.
+"""
+
+def generate_message(row, relationship_type):
+    prompt = BASE_MESSAGE_PROMPT.format(
+        company=row["Company"],
+        industry=row["Industry"],
+        relationship=relationship_type,
+        bigrams=row["Top Bigrams"],
+        trigrams=row["Top Trigrams"]
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an experienced manufacturing operator writing professional outreach."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3
+    )
+
+    return response.choices[0].message.content.strip()
+
+# ===============================
+# PIPELINE
+# ===============================
+
+rows = []
+
+for industry in INDUSTRY_QUERIES:
+    results = bing_search(industry)
+
+    for r in results:
+        company = r.get("name")
+        website = r.get("url")
+
+        site_text = fetch_site_text(website)
+        if not site_text:
+            continue
+
+        bigrams, trigrams = extract_phrases(site_text)
+
+        base_row = {
+            "Company": company,
+            "Website": website,
+            "Industry": industry,
+            "Top Bigrams": bigrams,
+            "Top Trigrams": trigrams
+        }
+
+        # Generate all three relationship messages
+        base_row["New Customer Email"] = generate_message(base_row, "New Customer")
+        base_row["Existing Customer Email"] = generate_message(base_row, "Existing Customer")
+        base_row["Lapsed Customer Email"] = generate_message(base_row, "Lapsed Customer (12+ months)")
+
+        rows.append(base_row)
+        time.sleep(REQUEST_DELAY)
+
+df = pd.DataFrame(rows)
+df.to_csv(OUTPUT_FILE, index=False)
+
+print("Message intelligence file created:", OUTPUT_FILE)

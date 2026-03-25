@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Simple Chat - TonyOS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #f472b6;
+    }
+    h1 {
+      color: #f472b6;
+      font-size: 1.75rem;
+    }
+    .chat-container {
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 24px;
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 16px;
+      resize: vertical;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #e11d48;
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    button {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #e11d48, #be185d);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .clear-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #94a3b8;
+    }
+    .clear-btn:hover {
+      background: rgba(255,255,255,0.05);
+      box-shadow: none;
+    }
+    .response-section {
+      margin-top: 24px;
+    }
+    .response-label {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .response-box {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      min-height: 150px;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .response-box.loading {
+      color: #64748b;
+      font-style: italic;
+    }
+    .hint {
+      margin-top: 16px;
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="/" class="back-btn">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back
+    </a>
+    <h1>Simple Chat</h1>
+  </div>
+
+  <div class="chat-container">
+    <textarea id="msg" placeholder="Type your message here..."></textarea>
+    
+    <div class="actions">
+      <button id="send">Send Message</button>
+      <button id="clear" class="clear-btn">Clear</button>
+    </div>
+
+    <div class="response-section">
+      <div class="response-label">Response</div>
+      <div id="out" class="response-box">Your response will appear here...</div>
+    </div>
+    
+    <p class="hint">Tip: Press Ctrl+Enter to send quickly</p>
+  </div>
+
+  <script>
+    const msg = document.getElementById("msg");
+    const out = document.getElementById("out");
+    const send = document.getElementById("send");
+    const clear = document.getElementById("clear");
+
+    async function sendMessage() {
+      const message = msg.value.trim();
+      if (!message) {
+        out.textContent = "Please enter a message.";
+        return;
+      }
+
+      out.textContent = "Thinking...";
+      out.classList.add("loading");
+      send.disabled = true;
+
+      try {
+        const r = await fetch("/api/simple-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await r.json();
+        out.classList.remove("loading");
+        
+        if (!r.ok) {
+          out.textContent = "Error: " + (data.error || "Unknown error");
+          return;
+        }
+
+        out.textContent = data.text;
+      } catch (e) {
+        out.classList.remove("loading");
+        out.textContent = "Error: " + e.message;
+      } finally {
+        send.disabled = false;
+      }
+    }
+
+    send.addEventListener("click", sendMessage);
+    
+    clear.addEventListener("click", () => {
+      msg.value = "";
+      out.textContent = "Your response will appear here...";
+      out.classList.remove("loading");
+      msg.focus();
+    });
+
+    msg.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.ctrlKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

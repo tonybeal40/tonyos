@@ -1,0 +1,96 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+const MASTER_PROMPT = `
+You are acting as a senior HQ resource at Natoli Engineering.
+
+TASK:
+For each person provided, do the following:
+
+1. Classify Tier:
+- Tier 1: Director+ roles in MS&T, Engineering, Manufacturing, Ops with tablet press or scale exposure
+- Tier 2: Manager-level technical roles influencing scale or tooling
+- Tier 3: R&D roles without clear scale exposure
+- Procurement or unclear roles: Not Ready to Contact
+
+2. Identify Persona:
+- Decision Maker
+- Influencer
+- Blocker
+
+3. Determine Natoli Fit:
+- Engineering
+- Scientific
+- Both
+- Not Ready
+
+4. Choose ONE sales angle:
+- Speed / lead time
+- Reliability / uptime
+- Scale-up readiness
+- Compliance / validation
+- Not ready to contact
+
+5. Generate outputs:
+- LinkedIn connection message (1–2 sentences, no CTA, HQ resource tone)
+- Email (short, clean spacing, no sales CTA, calm professional)
+- C2 Notes (Tier, Persona, Why Fit, Angle, Routing)
+
+Rules:
+- Slightly vary wording per person
+- Never sound salesy
+- Never include emojis
+- Never mention pricing
+- Output MUST be structured JSON
+
+INPUT PERSON:
+`;
+
+app.post("/generate", async (req, res) => {
+  try {
+    const { lines } = req.body;
+
+    const results = [];
+
+    for (const line of lines) {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: MASTER_PROMPT },
+          { role: "user", content: line }
+        ],
+        temperature: 0.4
+      });
+
+      const text = completion.choices[0].message.content;
+
+      results.push({
+        input: line,
+        output: text
+      });
+    }
+
+    res.json({ results });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Generation failed" });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Natoli Reachout running on port ${PORT}`);
+});

@@ -1,0 +1,3576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Intelligence Discovery | Natoli RevOps</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    :root {
+      --bg-primary: #0f1117;
+      --bg-secondary: #161a23;
+      --bg-card: #1c2029;
+      --text-primary: #f0f2f5;
+      --text-secondary: #c5c9d2;
+      --text-muted: #8b92a5;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --border-color: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.5; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
+    .header h1 { font-size: 1.25rem; }
+    .header .status { background: rgba(16,185,129,0.15); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+    .tab { padding: 12px 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; border-bottom: 2px solid transparent; }
+    .tab.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
+    .tab:hover { color: var(--text-primary); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .card h3 { margin-bottom: 16px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .btn { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .btn-green { background: var(--accent-green); color: #fff; }
+    .btn-blue { background: var(--accent-blue); color: #fff; }
+    .btn-purple { background: var(--accent-purple); color: #fff; }
+    .btn-cyan { background: var(--accent-cyan); color: #fff; }
+    .btn-orange { background: var(--accent-orange); color: #000; }
+    .btn-red { background: var(--accent-red); color: #fff; }
+    .btn-pink { background: var(--accent-pink); color: #fff; }
+    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-sm { padding: 6px 12px; font-size: 0.75rem; }
+    input[type="text"], input[type="number"], select, textarea { padding: 10px 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 0.9rem; width: 100%; font-family: inherit; }
+    textarea { resize: vertical; min-height: 100px; }
+    input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent-cyan); }
+    label { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem; }
+    .industry-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .industry-tag { padding: 6px 12px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-muted); transition: all 0.2s; }
+    .industry-tag.selected { background: var(--accent-cyan); color: #fff; border-color: var(--accent-cyan); }
+    .industry-tag.engineering.selected { background: var(--accent-blue); border-color: var(--accent-blue); }
+    .industry-tag.scientific.selected { background: var(--accent-purple); border-color: var(--accent-purple); }
+    .industry-tag.retail.selected { background: var(--accent-orange); border-color: var(--accent-orange); color: #000; }
+    .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+    .filter-row select { width: auto; min-width: 150px; }
+    .filter-row input[type="text"] { flex: 1; min-width: 200px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: auto; }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    th { background: var(--bg-secondary); font-weight: 600; color: var(--text-secondary); position: sticky; top: 0; white-space: nowrap; }
+    td.phone { white-space: nowrap; font-family: monospace; font-size: 0.75rem; }
+    .table-scroll { max-height: 500px; overflow-y: auto; overflow-x: auto; }
+    .fit-both { background: rgba(6,182,212,0.15); color: var(--accent-cyan); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .fit-engineering { background: rgba(59,130,246,0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .fit-scientific { background: rgba(139,92,246,0.15); color: var(--accent-purple); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .fit-nofit { background: rgba(239,68,68,0.15); color: var(--accent-red); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .decision-engage { background: rgba(34,197,94,0.2); color: #22c55e; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+    .decision-educate { background: rgba(59,130,246,0.2); color: #3b82f6; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+    .decision-monitor { background: rgba(251,191,36,0.2); color: #fbbf24; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+    .decision-deprioritize { background: rgba(107,114,128,0.2); color: #6b7280; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .compression-high { background: rgba(34,197,94,0.15); color: #22c55e; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; text-transform: uppercase; }
+    .compression-medium { background: rgba(251,191,36,0.15); color: #fbbf24; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; text-transform: uppercase; }
+    .compression-low { background: rgba(107,114,128,0.15); color: #6b7280; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; text-transform: uppercase; }
+    .signal-pressure { background: rgba(239,68,68,0.15); color: #ef4444; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .signal-regulatory { background: rgba(251,191,36,0.15); color: #fbbf24; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .signal-equipment { background: rgba(59,130,246,0.15); color: #3b82f6; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .signal-compression { background: rgba(34,197,94,0.15); color: #22c55e; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .signal-scientific { background: rgba(139,92,246,0.15); color: #8b5cf6; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .signal-competitor { background: rgba(249,115,22,0.15); color: #f97316; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; }
+    .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .stat-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px; }
+    .stat-box .num { font-size: 1.5rem; font-weight: 700; }
+    .stat-box .label { font-size: 0.7rem; color: var(--text-muted); }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); border: 1px solid var(--accent-green); color: var(--text-primary); padding: 12px 20px; border-radius: 8px; z-index: 9999; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+    .progress-bar { height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden; margin-bottom: 10px; }
+    .progress-fill { height: 100%; background: var(--accent-cyan); transition: width 0.3s; }
+    .quick-buttons { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--border-color); margin-top: 16px; }
+    .section-label { margin: 16px 0 10px 0; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+    .section-label.blue { color: var(--accent-blue); }
+    .section-label.purple { color: var(--accent-purple); }
+    .section-label.orange { color: var(--accent-orange); }
+    .section-label.green { color: var(--accent-green); }
+    .section-label.pink { color: var(--accent-pink); }
+    .exclusion-box { background: rgba(239,68,68,0.1); border: 1px solid var(--accent-red); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .exclusion-stats { display: flex; gap: 16px; margin-top: 10px; font-size: 0.8rem; }
+    .exclusion-stats span { color: var(--text-muted); }
+    .exclusion-stats strong { color: var(--accent-red); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg-secondary); border-radius: 10px; padding: 16px; text-align: center; border: 1px solid var(--border-color); }
+    .stat-card .num { font-size: 1.8rem; font-weight: 700; color: var(--accent-cyan); }
+    .stat-card .label { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+    .region-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; margin-right: 4px; }
+    .region-usa { background: rgba(59,130,246,0.2); color: var(--accent-blue); }
+    .region-canada { background: rgba(239,68,68,0.2); color: var(--accent-red); }
+    .region-puerto-rico { background: rgba(16,185,129,0.2); color: var(--accent-green); }
+    .region-mexico { background: rgba(245,158,11,0.2); color: var(--accent-orange); }
+    .tier-1 { background: var(--accent-green); color: #fff; }
+    .tier-2 { background: var(--accent-orange); color: #000; }
+    .tier-3 { background: var(--accent-blue); color: #fff; }
+    .tier-tag { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+    .pressure-high { color: var(--accent-red); }
+    .pressure-med { color: var(--accent-orange); }
+    .pressure-low { color: var(--accent-green); }
+    .competitor-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-right: 4px; margin-bottom: 4px; background: rgba(239,68,68,0.15); color: var(--accent-red); }
+    .opportunity-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .opportunity-card .score { font-size: 2rem; font-weight: 700; color: var(--accent-cyan); }
+    .planogram-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .planogram-card { background: var(--bg-secondary); border-radius: 10px; padding: 16px; border: 1px solid var(--border-color); }
+    .planogram-card h4 { font-size: 0.9rem; margin-bottom: 8px; }
+    .planogram-card .aisle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; }
+    .planogram-card .brands { display: flex; flex-wrap: wrap; gap: 4px; }
+    .planogram-card .brand { background: var(--bg-card); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .industry-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .industry-chip { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-muted); transition: all 0.2s; }
+    .industry-chip:hover { border-color: var(--accent-cyan); }
+    .industry-chip.selected { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
+    .section-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin: 20px 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border-color); }
+    .opp-progress { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+    .opp-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); transition: width 0.3s; }
+    .form-group { margin-bottom: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    .btn-primary { background: var(--accent-cyan); color: #000; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+    .deep-search-box { position: relative; margin-bottom: 20px; }
+    .deep-search-box input { padding: 16px 20px 16px 48px; font-size: 1.05rem; border-radius: 12px; background: var(--bg-secondary); border: 2px solid var(--border-color); transition: border-color 0.2s; }
+    .deep-search-box input:focus { border-color: var(--accent-cyan); outline: none; }
+    .deep-search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+    .deep-search-box .search-count { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--text-muted); }
+    .ds-results { max-height: 600px; overflow-y: auto; }
+    .ds-section { margin-bottom: 20px; }
+    .ds-section-title { font-size: 0.85rem; font-weight: 700; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .ds-section-title.stores { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .ds-section-title.planograms { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+    .ds-section-title.industries { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .ds-section-title.brands { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .ds-store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .ds-store-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; }
+    .ds-store-card:hover { border-color: var(--accent-orange); transform: translateY(-2px); }
+    .ds-store-card .store-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .ds-store-card .store-meta { font-size: 0.75rem; color: var(--text-muted); }
+    .ds-store-card .store-regions { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .ds-match { background: rgba(6,182,212,0.3); padding: 0 2px; border-radius: 2px; }
+    .ds-all-stores { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 12px; }
+    .ds-all-store { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; }
+    .ds-all-store:hover { border-color: var(--accent-cyan); background: rgba(6,182,212,0.08); }
+    .ds-all-store .store-count { margin-left: auto; background: var(--bg-card); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; color: var(--accent-cyan); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>🔍 Market Intelligence & Opportunity Engine</h1>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Natoli RevOps - 120+ Industries + AI Pressure Detection + Competitor Intelligence</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <select id="opp_regionFilter" style="width: 180px; padding: 6px 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 0.8rem;" onchange="opp_filterByRegion()">
+        <option value="all">All Regions</option>
+        <option value="usa">USA (50 States)</option>
+        <option value="puerto-rico">Puerto Rico</option>
+        <option value="canada">Canada</option>
+        <option value="mexico">Mexico (Separate)</option>
+      </select>
+      <div id="autosaveIndicator" style="font-size: 0.75rem;"></div>
+      <button class="btn btn-sm btn-secondary" onclick="clearAutoSave()" style="font-size: 0.7rem;">Clear Auto-save</button>
+      <div class="status">✓ API Connected</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('search')">🔍 Search</button>
+      <button class="tab" onclick="switchTab('deep')">🌐 Deep Discovery</button>
+      <button class="tab" onclick="switchTab('exclusion')">🚫 Exclusions</button>
+      <button class="tab" onclick="switchTab('results')">📊 Results</button>
+      <button class="tab" onclick="switchTab('saved')">💾 Saved</button>
+      <button class="tab" onclick="switchTab('dashboard')">📈 Dashboard</button>
+      <button class="tab" onclick="switchTab('signals')">⚡ Signals</button>
+      <button class="tab" onclick="switchTab('scanner')">🎯 Company Scanner</button>
+      <button class="tab" onclick="switchTab('batch')">📦 Batch Scan</button>
+      <button class="tab" onclick="switchTab('planograms')">🛒 Planograms</button>
+      <button class="tab" onclick="switchTab('competitors')">⚔️ Competitor Intel</button>
+      <button class="tab" onclick="switchTab('opportunities')">💎 Opportunities</button>
+    </div>
+
+    <!-- SEARCH TAB -->
+    <div id="searchTab" class="tab-content active">
+
+      <div class="card" style="border: 1px solid var(--accent-cyan); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6,182,212,0.05) 100%);">
+        <h3>🔍 Deep Scan Command Center</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Search, browse, and scan across <strong style="color: var(--accent-purple);">120+ industries</strong>, <strong style="color: var(--accent-cyan);">101 planogram entries</strong>, <strong style="color: var(--accent-orange);">30+ major retailers</strong>, and <strong style="color: var(--accent-green);">hundreds of brands</strong> — USA, Puerto Rico, Canada &amp; Mexico. Everything in one place.
+        </p>
+
+        <!-- SEARCH BAR -->
+        <div class="deep-search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="deepSearchInput" placeholder="Search everything... (Walmart, vitamins, pet, pharma, battery, Mexico, Kirkland, tooling, scientific...)" oninput="runDeepSearch()">
+          <span class="search-count" id="deepSearchCount"></span>
+        </div>
+
+        <!-- QUICK FILTERS -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-orange" onclick="deepSearchQuick('walmart')">Walmart</button>
+          <button class="btn btn-sm btn-red" onclick="deepSearchQuick('target')">Target</button>
+          <button class="btn btn-sm btn-blue" onclick="deepSearchQuick('costco')">Costco</button>
+          <button class="btn btn-sm btn-green" onclick="deepSearchQuick('amazon')">Amazon</button>
+          <button class="btn btn-sm btn-purple" onclick="deepSearchQuick('cvs')">CVS</button>
+          <button class="btn btn-sm btn-cyan" onclick="deepSearchQuick('walgreens')">Walgreens</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('home depot')">Home Depot</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('gnc')">GNC</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('petco')">Petco</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('vitamins')">Vitamins</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('pet')">Pet</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('pool')">Pool</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('cleaning')">Cleaning</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('sports')">Sports</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('pharma')">Pharma</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('battery')">Battery</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('canada')">Canada</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('mexico')">Mexico</button>
+          <button class="btn btn-sm btn-secondary" onclick="deepSearchQuick('puerto rico')">Puerto Rico</button>
+        </div>
+
+        <!-- SEARCH RESULTS -->
+        <div id="deepSearchResults">
+          <div id="dsDefaultView">
+            <div class="ds-section-title stores" style="margin-bottom: 12px;">🏪 All 30+ Retailers — Click any store to see its planograms</div>
+            <div class="ds-all-stores" id="dsAllStores"></div>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div style="border-top: 1px solid var(--border-color); margin: 24px 0 20px 0;"></div>
+
+        <!-- INDUSTRY SELECTION -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+          <h3 style="margin: 0;">🏭 Industries &amp; Categories</h3>
+          <span id="selectedCount" style="color: var(--accent-cyan); font-size: 0.9rem; font-weight: 600;">0 industries selected</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Click tags to select/deselect for scanning. Search above filters these too.</p>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-secondary" onclick="selectAll()">Select All</button>
+          <button class="btn btn-sm btn-blue" onclick="selectEngineering()">Engineering</button>
+          <button class="btn btn-sm btn-purple" onclick="selectScientific()">Scientific</button>
+          <button class="btn btn-sm btn-orange" onclick="selectRetail()">Retail</button>
+          <button class="btn btn-sm btn-cyan" onclick="selectCore()">Core (Eng+Sci)</button>
+          <button class="btn btn-sm btn-orange" onclick="selectWalmart()">Walmart Aisles</button>
+          <button class="btn btn-sm btn-orange" onclick="selectHomeDepot()">Home Depot</button>
+          <button class="btn btn-sm btn-orange" onclick="selectAmazon()">Amazon</button>
+          <button class="btn btn-sm btn-green" onclick="selectAllRetailers()">All Retail</button>
+          <button class="btn btn-sm btn-secondary" onclick="clearSelection()">Clear All</button>
+        </div>
+
+        <div id="industryFilterNotice" style="display: none; margin-bottom: 12px; padding: 10px 14px; background: rgba(6,182,212,0.1); border-radius: 8px; border: 1px solid var(--accent-cyan); font-size: 0.85rem;">
+          <span id="industryFilterText"></span>
+          <button class="btn btn-sm btn-secondary" onclick="clearIndustryFilter()" style="margin-left: 10px;">Show All</button>
+        </div>
+
+        <div class="section-label blue">🔧 ENGINEERING</div>
+        <div class="industry-tags" id="engineeringTags"></div>
+
+        <div class="section-label purple">🔬 SCIENTIFIC</div>
+        <div class="industry-tags" id="scientificTags"></div>
+
+        <div class="section-label orange">🛒 RETAIL SUPPLIERS — Walmart, Target, Costco, Walgreens, CVS, Home Depot, Amazon, GNC, Petco &amp; more</div>
+        <div class="industry-tags" id="retailTags"></div>
+
+        <!-- DIVIDER -->
+        <div style="border-top: 1px solid var(--border-color); margin: 24px 0 20px 0;"></div>
+
+        <!-- DISCOVERY OPTIONS -->
+        <h3 style="margin-bottom: 14px;">⚙️ Scan Options</h3>
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-cyan); font-size: 0.8rem;">DATA ENRICHMENT</div>
+            <label><input type="checkbox" id="optConfidence" checked> Calculate Confidence Scoring</label>
+            <label><input type="checkbox" id="optLocation" checked> Include City in Results</label>
+            <label><input type="checkbox" id="optNaics" checked> Flag Industry Match</label>
+            <label><input type="checkbox" id="optDedupe" checked> Deduplicate by Domain</label>
+          </div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-cyan); font-size: 0.8rem;">INCLUDE IN RESULTS</div>
+            <label><input type="checkbox" id="optPhone" checked> Phone Number</label>
+            <label><input type="checkbox" id="optWebsite" checked> Website URL</label>
+            <label><input type="checkbox" id="optLinkedIn" checked> LinkedIn URL</label>
+            <label><input type="checkbox" id="optSalesRep" checked> Assign Sales Rep</label>
+          </div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-cyan); font-size: 0.8rem;">VALIDATION</div>
+            <label><input type="checkbox" id="opt503B"> 503B Outsourcing Scanner</label>
+            <label><input type="checkbox" id="opt503A"> 503A Compounding Scanner</label>
+            <label><input type="checkbox" id="optGMP"> GMP Compliance Check</label>
+            <label><input type="checkbox" id="optFDA"> FDA Registration Check</label>
+          </div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-purple); font-size: 0.8rem;">AI INTELLIGENCE</div>
+            <label><input type="checkbox" id="optAIBrain" checked> TonyOS AI Brain Analysis</label>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 5px 0 0 0;">Pressure detection, decision scoring, competitor gravity</p>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div style="border-top: 1px solid var(--border-color); margin: 10px 0 20px 0;"></div>
+
+        <!-- RUN CONTROLS -->
+        <h3 style="margin-bottom: 14px;">🚀 Run Deep Scan</h3>
+        <div class="grid-2" style="margin-bottom: 16px;">
+          <div>
+            <label style="margin-bottom: 8px;">
+              <span style="margin-right: 8px;">Results per Industry:</span>
+              <select id="resultsPerIndustry" style="width: 100px;">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label style="margin-bottom: 8px;">
+              <span style="margin-right: 8px;">Filter by Territory:</span>
+              <select id="territoryFilter" style="width: 200px;">
+                <option value="">All Territories (USA + Intl)</option>
+                <option value="West Coast">West Coast (Fernando)</option>
+                <option value="Rocky Mountain">Rocky Mountain (Eric)</option>
+                <option value="Central">Central (David Nelson)</option>
+                <option value="Northeast">Northeast (Raffaele)</option>
+                <option value="Southeast">Southeast (Danny)</option>
+                <option value="Puerto Rico">Puerto Rico (Emmanuel)</option>
+                <option value="Canada">Canada (Fazal)</option>
+                <option value="International">International Only</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        
+        <div id="runningScansContainer" style="display: none; margin-bottom: 16px; padding: 12px; background: rgba(6,182,212,0.1); border-radius: 8px; border: 1px solid var(--accent-cyan);">
+          <div style="font-weight: 600; margin-bottom: 8px; color: var(--accent-cyan);">⏳ Background Scans Running</div>
+          <div id="runningScansContent"></div>
+        </div>
+        
+        <div id="progressContainer" style="display: none;">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%;"></div></div>
+          <div id="progressText" style="font-size: 0.8rem; color: var(--text-muted);">Starting...</div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-green" id="runBtn" onclick="runDiscovery()">🚀 Run Now</button>
+          <button class="btn btn-purple" id="bgRunBtn" onclick="runBackgroundDiscovery()">🌙 Run in Background</button>
+          <button class="btn btn-blue" onclick="runTerritoryDiscovery()">🗺️ Run by Territory</button>
+          <button class="btn btn-cyan" onclick="scanAllIndustries()">🌐 Scan ALL Industries</button>
+          <span id="excludedCount" style="color: var(--accent-red); font-size: 0.85rem;"></span>
+        </div>
+        <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
+          💡 <strong>Run Now</strong> = Stay on page until complete | <strong>Background</strong> = Close browser, results saved automatically
+        </div>
+      </div>
+    </div>
+
+    <!-- DEEP DISCOVERY TAB -->
+    <div id="deepTab" class="tab-content">
+      <div class="card" style="border: 2px solid var(--accent-green); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(16,185,129,0.1) 100%);">
+        <h3>🌐 Deep Discovery - Web Crawl + AI Classification</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Enter a keyword to search the web for real company websites. The system will check robots.txt permissions, 
+          scrape allowed pages, and use AI to classify each company's Natoli fit.
+        </p>
+        
+        <div style="background: rgba(16,185,129,0.1); border: 1px solid var(--accent-green); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+          <div style="font-weight: 600; color: var(--accent-green); margin-bottom: 8px;">✓ Enterprise-Grade Legal Compliance</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.8rem; color: var(--text-muted);">
+            <div>• robots.txt permission check</div>
+            <div>• Respects website crawl rules</div>
+            <div>• No blocked sites accessed</div>
+            <div>• Clean user-agent identification</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap: 20px;">
+          <div>
+            <label style="font-weight: 600; margin-bottom: 8px; display: block;">Search Keyword:</label>
+            <input type="text" id="deepKeyword" placeholder="e.g., fertilizer tablet manufacturer, pool chlorine tablet production" style="margin-bottom: 12px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+              Examples: nutraceutical tablet manufacturer, battery cathode pellet production, pharmaceutical CDMO tablets
+            </div>
+          </div>
+          <div>
+            <label style="font-weight: 600; margin-bottom: 8px; display: block;">Max Results:</label>
+            <select id="deepCount" style="width: 120px;">
+              <option value="5">5 companies</option>
+              <option value="10" selected>10 companies</option>
+              <option value="15">15 companies</option>
+              <option value="20">20 companies</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <button class="btn btn-green" id="deepRunBtn" onclick="runDeepDiscovery()">🌐 Run Deep Discovery</button>
+          <span id="deepStatus" style="margin-left: 12px; color: var(--text-muted); font-size: 0.85rem;"></span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px;">
+        <h3>🔗 Analyze Single URL</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Paste a company website URL to analyze for Natoli fit.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: flex-end;">
+          <div style="flex: 1;">
+            <input type="text" id="singleUrl" placeholder="https://company-website.com">
+          </div>
+          <button class="btn btn-cyan" onclick="analyzeUrl()">Analyze</button>
+        </div>
+        <div id="urlAnalysisResult" style="margin-top: 16px; display: none;"></div>
+      </div>
+
+      <div class="card" id="deepResultsCard" style="margin-top: 16px; display: none;">
+        <h3>🎯 Deep Discovery Results</h3>
+        <div id="deepProgressContainer" style="display: none; margin-bottom: 16px;">
+          <div class="progress-bar"><div class="progress-fill" id="deepProgressFill" style="width: 0%;"></div></div>
+          <div id="deepProgressText" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+        </div>
+        
+        <div class="stats-row" id="deepStats" style="margin-bottom: 16px;"></div>
+        
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Industry</th>
+                <th>Location</th>
+                <th>Natoli Fit</th>
+                <th>Products</th>
+                <th>Confidence</th>
+                <th>Website</th>
+              </tr>
+            </thead>
+            <tbody id="deepResultsBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="deepEmptyResults" style="display: none;">No results yet. Run a deep discovery search above.</div>
+        
+        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn btn-green" onclick="exportDeepCSV()">📥 Export to CSV</button>
+          <button class="btn btn-purple" onclick="mergeDeepToMain()">📊 Merge to Main Results</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXCLUSION TAB -->
+    <div id="exclusionTab" class="tab-content">
+      <div class="card">
+        <h3>🚫 Natoli Full List - Exclude Already Scraped Companies</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Load your existing company list to exclude them from discovery results. Only new companies will be returned.
+        </p>
+        
+        <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+          <button class="btn btn-green" onclick="loadNatoliFullList()">📋 Load Natoli Full List (6,323 companies)</button>
+          <button class="btn btn-secondary" onclick="clearExclusions()">🗑️ Clear Exclusions</button>
+        </div>
+
+        <div id="exclusionStatus" style="background: rgba(16,185,129,0.1); border: 1px solid var(--accent-green); border-radius: 8px; padding: 16px; margin-bottom: 20px; display: none;">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--accent-green);">✓ Exclusion List Loaded</div>
+          <div style="color: var(--text-muted); margin-top: 4px;"><strong id="exclusionCount">0</strong> companies will be excluded from discovery</div>
+        </div>
+        
+        <div class="exclusion-box">
+          <label style="font-weight: 600; margin-bottom: 8px;">Or Paste Custom List:</label>
+          <textarea id="exclusionList" placeholder="Paste company names here (one per line)...
+Example:
+Pfizer Inc
+Johnson & Johnson
+Merck & Co"></textarea>
+          <div class="exclusion-stats">
+            <button class="btn btn-sm btn-secondary" onclick="parseExclusions()">Parse Custom List</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <h4 style="margin-bottom: 10px;">Or Upload CSV File:</h4>
+          <input type="file" id="csvUpload" accept=".csv,.txt" onchange="loadCSVExclusions(event)" style="padding: 8px;">
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Supports CSV files with "Company Name" column or plain text with one company per line.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div id="resultsTab" class="tab-content">
+      <!-- MARKET ANALYSIS SECTION -->
+      <div class="card" id="marketAnalysisCard" style="display: none; background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6,182,212,0.1) 100%);">
+        <h3>📈 Market Analysis Summary</h3>
+        <div class="grid-3" id="marketAnalysis">
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-cyan);">MARKET OVERVIEW</div>
+            <div id="analysisOverview"></div>
+          </div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-green);">TOP OPPORTUNITIES</div>
+            <div id="analysisOpportunities"></div>
+          </div>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-purple);">TERRITORY BREAKDOWN</div>
+            <div id="analysisTerritories"></div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-orange);">TOP INDUSTRIES BY VOLUME</div>
+          <div id="analysisIndustries" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        </div>
+        <div id="validationSummary" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); display: none;">
+          <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent-pink);">VALIDATION FLAGS</div>
+          <div id="validationContent"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📊 Discovery Results</h3>
+        
+        <div class="stats-row">
+          <div class="stat-box"><div class="num" id="totalCount">0</div><div class="label">Total</div></div>
+          <div class="stat-box" style="border-color: var(--accent-cyan);"><div class="num" id="bothCount" style="color: var(--accent-cyan);">0</div><div class="label">Both</div></div>
+          <div class="stat-box" style="border-color: var(--accent-blue);"><div class="num" id="engCount" style="color: var(--accent-blue);">0</div><div class="label">Engineering</div></div>
+          <div class="stat-box" style="border-color: var(--accent-purple);"><div class="num" id="sciCount" style="color: var(--accent-purple);">0</div><div class="label">Scientific</div></div>
+          <div class="stat-box" style="border-color: var(--accent-red);"><div class="num" id="nofitCount" style="color: var(--accent-red);">0</div><div class="label">No Fit</div></div>
+          <div class="stat-box" style="border-color: var(--accent-orange);"><div class="num" id="excludedResultCount" style="color: var(--accent-orange);">0</div><div class="label">Excluded</div></div>
+        </div>
+
+        <div class="filter-row">
+          <input type="text" id="searchBox" placeholder="🔍 Search companies..." oninput="filterResults()">
+          <select id="filterFit" onchange="filterResults()">
+            <option value="">All Natoli Fit</option>
+            <option value="Both">Both</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Scientific">Scientific</option>
+            <option value="No Fit">No Fit</option>
+          </select>
+          <select id="filterTerritory" onchange="filterResults()">
+            <option value="">All Territories</option>
+            <option value="West Coast">West Coast (Fernando)</option>
+            <option value="Rocky Mountain">Rocky Mountain (Eric)</option>
+            <option value="Central">Central (David Nelson)</option>
+            <option value="Northeast">Northeast (Raffaele)</option>
+            <option value="Southeast">Southeast (Danny)</option>
+            <option value="Puerto Rico">Puerto Rico (Emmanuel)</option>
+            <option value="Canada">Canada (Fazal)</option>
+            <option value="International">International</option>
+          </select>
+          <select id="filterIndustry" onchange="filterResults()">
+            <option value="">All Industries</option>
+          </select>
+        </div>
+        <div class="filter-row">
+          <button class="btn btn-sm btn-green" onclick="exportCSV()">📥 Export All CSV</button>
+          <button class="btn btn-sm btn-purple" onclick="exportPursue()">📥 Pursue Only</button>
+          <button class="btn btn-sm btn-blue" onclick="exportByTerritory()">📥 Export by Territory</button>
+        </div>
+        <div class="filter-row" style="margin-top: 8px;">
+          <span style="color: var(--text-muted); font-size: 0.8rem; margin-right: 8px;">Export by Division:</span>
+          <button class="btn btn-sm btn-purple" onclick="exportByFit('Scientific')">🔬 Scientific Only</button>
+          <button class="btn btn-sm btn-blue" onclick="exportByFit('Engineering')">🔧 Engineering Only</button>
+          <button class="btn btn-sm btn-cyan" onclick="exportByFit('Both')">🎯 Both Only</button>
+          <button class="btn btn-sm btn-secondary" onclick="exportJSON()">📥 Export JSON</button>
+          <button class="btn btn-sm btn-green" onclick="saveToMemory()">🧠 Save to Memory</button>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th>Natoli Fit</th>
+                <th>Territory</th>
+                <th>Sales Rep</th>
+                <th>Industry</th>
+                <th>AI Decision</th>
+                <th>Compression</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+        <div id="emptyResults" class="empty-state">No results yet. Run discovery to find companies.</div>
+      </div>
+    </div>
+
+    <!-- SAVED TAB -->
+    <div id="savedTab" class="tab-content">
+      <div class="card">
+        <h3>💾 Saved Scans</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <button class="btn btn-sm btn-blue" onclick="loadSavedScans()">🔄 Refresh</button>
+          <button class="btn btn-sm btn-red" onclick="clearAllSaved()">🗑️ Clear All</button>
+        </div>
+        <div id="savedList" class="empty-state">No saved scans yet.</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="dashboardTab" class="tab-content">
+      <div class="card">
+        <h3>📈 Decision Dashboard</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <select id="dashboardDays" onchange="loadDashboard()">
+            <option value="7">Last 7 Days</option>
+            <option value="30" selected>Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+          </select>
+          <button class="btn btn-sm btn-blue" onclick="loadDashboard()">🔄 Refresh</button>
+        </div>
+        
+        <div class="stats-row" id="dashboardStats">
+          <div class="stat-box"><div class="num" id="dashTotal">0</div><div class="label">Total Scanned</div></div>
+          <div class="stat-box" style="border-color: #22c55e;"><div class="num" style="color: #22c55e;" id="dashEngage">0</div><div class="label">ENGAGE</div></div>
+          <div class="stat-box" style="border-color: #3b82f6;"><div class="num" style="color: #3b82f6;" id="dashEducate">0</div><div class="label">EDUCATE</div></div>
+          <div class="stat-box" style="border-color: #fbbf24;"><div class="num" style="color: #fbbf24;" id="dashMonitor">0</div><div class="label">MONITOR</div></div>
+          <div class="stat-box" style="border-color: #6b7280;"><div class="num" style="color: #6b7280;" id="dashDeprioritize">0</div><div class="label">DEPRIORITIZE</div></div>
+        </div>
+        
+        <h4 style="margin-top: 24px;">By Territory</h4>
+        <div id="dashboardByTerritory" class="table-scroll" style="max-height: 300px;">
+          <table>
+            <thead><tr><th>Territory</th><th>ENGAGE</th><th>EDUCATE</th><th>MONITOR</th><th>DEPRIORITIZE</th></tr></thead>
+            <tbody id="territoryStatsBody"></tbody>
+          </table>
+        </div>
+        
+        <h4 style="margin-top: 24px;">By Division</h4>
+        <div class="stats-row" id="dashboardByDivision">
+          <div class="stat-box" style="border-color: #8b5cf6;"><div class="num" style="color: #8b5cf6;" id="dashScientific">0</div><div class="label">Scientific</div></div>
+          <div class="stat-box" style="border-color: #3b82f6;"><div class="num" style="color: #3b82f6;" id="dashEngineering">0</div><div class="label">Engineering</div></div>
+          <div class="stat-box" style="border-color: #06b6d4;"><div class="num" style="color: #06b6d4;" id="dashBoth">0</div><div class="label">Both</div></div>
+        </div>
+        
+        <h4 style="margin-top: 24px;">Recent Override History</h4>
+        <div id="overrideHistory" class="table-scroll" style="max-height: 200px;">
+          <table>
+            <thead><tr><th>Company</th><th>Original</th><th>New</th><th>Reason</th><th>When</th></tr></thead>
+            <tbody id="overrideHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNALS TAB -->
+    <div id="signalsTab" class="tab-content">
+      <div class="card">
+        <h3>⚡ Pressure Signal Library</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">Keywords and patterns the scanner uses to detect opportunities. Add new signals as you learn from scans.</p>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-blue" onclick="loadPressureSignals()">🔄 Refresh</button>
+          <button class="btn btn-sm btn-green" onclick="seedDefaultSignals()">🌱 Seed Defaults</button>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
+          <input type="text" id="newSignalKeyword" placeholder="Keyword (e.g., throughput)" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+          <select id="newSignalCategory" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+            <option value="pressure">Pressure</option>
+            <option value="regulatory">Regulatory</option>
+            <option value="equipment">Equipment</option>
+            <option value="compression">Compression</option>
+            <option value="scientific">Scientific</option>
+            <option value="competitor">Competitor</option>
+          </select>
+          <button class="btn btn-sm btn-green" onclick="addPressureSignal()">+ Add Signal</button>
+        </div>
+        
+        <div id="signalsList" class="table-scroll" style="max-height: 400px;">
+          <table>
+            <thead><tr><th>Keyword</th><th>Category</th><th>Weight</th><th>Description</th><th>Actions</th></tr></thead>
+            <tbody id="signalsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANY SCANNER TAB -->
+    <div id="scannerTab" class="tab-content">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="num" id="opp_statScanned">0</div><div class="label">Companies Scanned</div></div>
+        <div class="stat-card"><div class="num" id="opp_statOpportunities">0</div><div class="label">Opportunities Found</div></div>
+        <div class="stat-card"><div class="num" id="opp_statHighPressure">0</div><div class="label">High Pressure</div></div>
+        <div class="stat-card"><div class="num" id="opp_statCompetitors">0</div><div class="label">Competitor Signals</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>🏢 Single Company Scan</h3>
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="opp_companyName" placeholder="Enter company name" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%;">
+          </div>
+          <div class="form-group">
+            <label>Company Description / Website Content</label>
+            <textarea id="opp_companyDesc" placeholder="Paste company description, website about page, or any relevant text..." style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%; min-height: 120px; resize: vertical; font-family: inherit;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Region</label>
+            <select id="opp_companyRegion" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%;">
+              <option value="usa">USA</option>
+              <option value="puerto-rico">Puerto Rico</option>
+              <option value="canada">Canada</option>
+              <option value="mexico">Mexico</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="opp_scanSingleCompany()">🔍 Scan Company</button>
+        </div>
+
+        <div class="card">
+          <h3>📊 Scan Results</h3>
+          <div id="opp_singleScanResult">
+            <div class="empty-state">
+              <h4>No scan yet</h4>
+              <p>Enter company details and click Scan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📋 Recent Scans</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Region</th>
+                <th>Pressure</th>
+                <th>Tier</th>
+                <th>Competitors</th>
+                <th>Decision</th>
+                <th>Scanned</th>
+              </tr>
+            </thead>
+            <tbody id="opp_recentScansTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATCH PROCESSING TAB -->
+    <div id="batchTab" class="tab-content">
+      <div class="card">
+        <h3>📦 Batch Company Scanner</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Paste JSON array of companies or upload CSV. Each company needs name, description, and optional region.
+        </p>
+        <div class="form-group">
+          <label>Company Data (JSON or paste from spreadsheet)</label>
+          <textarea id="opp_batchInput" style="min-height: 200px; font-family: monospace; padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%; resize: vertical;" placeholder='[
+  {"name": "CDMO Corp", "description": "Scaling tablet throughput with validation...", "region": "usa"},
+  {"name": "Pharma Labs", "description": "Contract manufacturer for solid dose...", "region": "canada"}
+]'></textarea>
+        </div>
+        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+          <button class="btn btn-primary" onclick="opp_runBatchScan()">🚀 Run Batch Scan</button>
+          <button class="btn btn-outline" onclick="opp_loadSampleBatch()">Load Sample Data</button>
+          <button class="btn btn-outline" onclick="opp_clearBatch()">Clear</button>
+        </div>
+        <div id="opp_batchProgress" style="display: none;">
+          <div class="opp-progress"><div class="opp-progress-bar" id="opp_batchProgressBar"></div></div>
+          <div id="opp_batchProgressText" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+        </div>
+      </div>
+
+      <div class="card" id="opp_batchResultsCard" style="display: none;">
+        <h3>📊 Batch Results</h3>
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <button class="btn btn-sm btn-green" onclick="opp_exportBatchCSV()">📥 Export CSV</button>
+          <button class="btn btn-sm btn-blue" onclick="opp_exportBatchJSON()">📥 Export JSON</button>
+          <button class="btn btn-sm btn-purple" onclick="opp_addToOpportunities()">💎 Add to Opportunities</button>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Region</th>
+                <th>Compression</th>
+                <th>Pressure Signals</th>
+                <th>Risk</th>
+                <th>Competitors</th>
+                <th>Decision</th>
+              </tr>
+            </thead>
+            <tbody id="opp_batchResultsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANOGRAMS TAB -->
+    <div id="planogramsTab" class="tab-content">
+      <div class="card">
+        <h3>🛒 Big Box Retail Planogram Discovery</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Discover tablet/powder product suppliers across 30+ major retailers in USA, Puerto Rico, Canada, and Mexico. Covers mass retail, grocery, pharmacy, specialty health, pet, home improvement, dollar stores, and online channels.
+        </p>
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <div>
+            <label>Retailer</label>
+            <select id="opp_retailerSelect" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%;">
+              <option value="all">All Retailers</option>
+              <optgroup label="Mass Retail">
+                <option value="walmart">Walmart</option>
+                <option value="target">Target</option>
+                <option value="costco">Costco</option>
+                <option value="samsclub">Sam's Club</option>
+                <option value="bjs">BJ's Wholesale</option>
+              </optgroup>
+              <optgroup label="Grocery">
+                <option value="kroger">Kroger</option>
+                <option value="publix">Publix</option>
+                <option value="heb">H-E-B</option>
+                <option value="meijer">Meijer</option>
+                <option value="aldi">Aldi</option>
+                <option value="traderjoes">Trader Joe's</option>
+                <option value="wholefoods">Whole Foods</option>
+                <option value="safeway">Safeway / Albertsons</option>
+              </optgroup>
+              <optgroup label="Pharmacy">
+                <option value="cvs">CVS</option>
+                <option value="walgreens">Walgreens</option>
+                <option value="riteaid">Rite Aid</option>
+              </optgroup>
+              <optgroup label="Home Improvement">
+                <option value="homedepot">Home Depot</option>
+                <option value="lowes">Lowe's</option>
+                <option value="tractorsupply">Tractor Supply</option>
+              </optgroup>
+              <optgroup label="Specialty Health">
+                <option value="gnc">GNC</option>
+                <option value="vitaminshoppe">The Vitamin Shoppe</option>
+              </optgroup>
+              <optgroup label="Pet Retail">
+                <option value="petco">Petco</option>
+                <option value="petsmart">PetSmart</option>
+                <option value="chewy">Chewy</option>
+              </optgroup>
+              <optgroup label="Dollar / Value">
+                <option value="dollargeneral">Dollar General</option>
+                <option value="dollartree">Dollar Tree</option>
+              </optgroup>
+              <optgroup label="Online">
+                <option value="amazon">Amazon</option>
+              </optgroup>
+              <optgroup label="Canada">
+                <option value="canadiantire">Canadian Tire</option>
+                <option value="shoppers">Shoppers Drug Mart</option>
+                <option value="londondrugs">London Drugs</option>
+                <option value="rexall">Rexall</option>
+                <option value="jeancoutu">Jean Coutu</option>
+              </optgroup>
+              <optgroup label="Mexico">
+                <option value="farmaciasahorro">Farmacias del Ahorro</option>
+                <option value="farmaciassimilares">Farmacias Similares</option>
+                <option value="soriana">Soriana</option>
+                <option value="chedraui">Chedraui</option>
+              </optgroup>
+              <optgroup label="Puerto Rico">
+                <option value="econo">Econo</option>
+                <option value="walgreenspr">Walgreens PR</option>
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label>Product Category</label>
+            <select id="opp_categorySelect" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%;">
+              <option value="all">All Categories</option>
+              <option value="vitamins">Vitamins & Supplements</option>
+              <option value="otc">OTC Medications</option>
+              <option value="sports">Sports Nutrition</option>
+              <option value="pool">Pool & Water Care</option>
+              <option value="cleaning">Cleaning Tablets</option>
+              <option value="dishwasher">Dishwasher Tablets</option>
+              <option value="laundry">Laundry Pods</option>
+              <option value="pet">Pet Supplements</option>
+              <option value="garden">Garden/Fertilizer</option>
+              <option value="livestock">Livestock/Farm</option>
+              <option value="wellness">Wellness/Specialty</option>
+            </select>
+          </div>
+          <div>
+            <label>Region</label>
+            <select id="opp_planogramRegion" style="padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); width: 100%;">
+              <option value="usa">USA</option>
+              <option value="puerto-rico">Puerto Rico</option>
+              <option value="canada">Canada</option>
+              <option value="mexico">Mexico</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="opp_discoverPlanograms()">🔍 Discover Suppliers</button>
+      </div>
+
+      <div class="section-title">Discovered Planograms & Suppliers <span id="opp_planogramCount" style="color: var(--accent-cyan);"></span></div>
+      <div class="planogram-grid" id="opp_planogramResults">
+        <div class="empty-state"><h4>Select region and click Discover</h4><p>Filter by retailer, category, and region</p></div>
+      </div>
+    </div>
+
+    <!-- COMPETITOR INTEL TAB -->
+    <div id="competitorsTab" class="tab-content">
+      <div class="card">
+        <h3>⚔️ Competitor Intelligence Database</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+          Track competitor mentions, equipment installed base, and market gravity.
+        </p>
+        <div class="industry-chips" id="opp_competitorFilters">
+          <span class="industry-chip selected" data-competitor="all">All Competitors</span>
+          <span class="industry-chip" data-competitor="fette">Fette Compacting</span>
+          <span class="industry-chip" data-competitor="korsch">Korsch</span>
+          <span class="industry-chip" data-competitor="ima">IMA/Kilian</span>
+          <span class="industry-chip" data-competitor="syntegon">Syntegon</span>
+          <span class="industry-chip" data-competitor="romaco">Romaco</span>
+          <span class="industry-chip" data-competitor="sejong">Sejong</span>
+          <span class="industry-chip" data-competitor="cadmach">Cadmach</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>📊 Competitor Gravity by Region</h3>
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span>🇺🇸 USA</span>
+              <span style="font-weight: 600;">Fette 35% | IMA 28% | Natoli 22%</span>
+            </div>
+            <div class="opp-progress"><div class="opp-progress-bar" style="width: 35%; background: var(--accent-red);"></div></div>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span>🇨🇦 Canada</span>
+              <span style="font-weight: 600;">Korsch 32% | Fette 25% | Natoli 18%</span>
+            </div>
+            <div class="opp-progress"><div class="opp-progress-bar" style="width: 32%; background: var(--accent-orange);"></div></div>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span>🇵🇷 Puerto Rico</span>
+              <span style="font-weight: 600;">IMA 40% | Syntegon 25% | Fette 20%</span>
+            </div>
+            <div class="opp-progress"><div class="opp-progress-bar" style="width: 40%; background: var(--accent-purple);"></div></div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span>🇲🇽 Mexico</span>
+              <span style="font-weight: 600;">Sejong 30% | Cadmach 28% | Korsch 22%</span>
+            </div>
+            <div class="opp-progress"><div class="opp-progress-bar" style="width: 30%; background: var(--accent-green);"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🎯 Competitive Signals</h3>
+          <div id="opp_competitorSignals">
+            <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600;">Fette P2090 Install</span>
+                <span class="region-tag region-usa">USA</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Major CDMO added 2 new high-speed presses</div>
+            </div>
+            <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600;">IMA Prexima Expansion</span>
+                <span class="region-tag region-puerto-rico">PUERTO-RICO</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Big pharma expanding solid dose capacity</div>
+            </div>
+            <div style="padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600;">Korsch Service Contract</span>
+                <span class="region-tag region-canada">CANADA</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Generic manufacturer signed 5-year service deal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITIES TAB -->
+    <div id="opportunitiesTab" class="tab-content">
+      <div class="card">
+        <h3>💎 Opportunity Pipeline</h3>
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <button class="btn btn-sm btn-green" onclick="opp_exportOpportunities()">📥 Export All</button>
+          <button class="btn btn-sm btn-outline" onclick="opp_clearOpportunities()">Clear All</button>
+        </div>
+        <div id="opp_opportunitiesList"></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+// ============== ALL 120+ INDUSTRIES ==============
+
+const ENGINEERING = [
+  'pharmaceutical tablet manufacturing', 'generic drug tablet manufacturing', 'nutraceutical tablet manufacturing',
+  'otc tablet manufacturing', 'cdmo tablet manufacturing', 'veterinary tablet manufacturing',
+  'cannabis tablet manufacturing', 'battery cathode manufacturing', 'battery electrode manufacturing', 
+  'lithium ion battery materials', 'sodium ion battery manufacturing', 'solid state battery manufacturing', 
+  'nuclear fuel pellet manufacturing', 'catalyst pellet manufacturing', 'hydrogen storage materials', 
+  'carbon capture sorbent manufacturing', 'advanced ceramics manufacturing', 'powder metallurgy manufacturing', 
+  'rare earth magnet manufacturing', 'semiconductor materials', '3d printing feedstock manufacturing',
+  'space materials manufacturing', 'explosives propellant manufacturing', 'ammunition manufacturing', 
+  'abrasives manufacturing', 'medical implants manufacturing', 'cosmetics pressed powder', 
+  'agricultural fertilizer tablets', 'animal feed supplements',
+  'brake pad powder compaction', 'sintered metal components', 'carbon brush manufacturing',
+  'thermoelectric materials', 'piezoelectric ceramics', 'bioceramics manufacturing',
+  'tungsten carbide tooling', 'diamond tool manufacturing', 'magnetic core manufacturing',
+  'ferrite manufacturing', 'structural ceramics aerospace', 'thermal barrier coatings',
+  'fuel cell electrode manufacturing', 'superconductor materials', 'refractory metals pressing'
+];
+
+const SCIENTIFIC = [
+  'pharmaceutical formulation development', 'compaction characterization laboratory', 'drug formulation r&d',
+  'excipient development laboratory', 'powder flow testing laboratory', 'tablet scale up laboratory',
+  'manufacturing science and technology pharma', 'pharmaceutical analytical development',
+  '503a compounding pharmacy', '503b outsourcing facility', 'clinical trial manufacturing',
+  'bioavailability testing lab', 'dissolution testing laboratory', 'stability testing laboratory',
+  'forensic standards laboratory', 'art conservation pigments lab', 'recycled materials testing lab',
+  'pharmaceutical continuous manufacturing', 'hot melt extrusion laboratory', 'spray drying laboratory',
+  'roller compaction laboratory', 'twin screw granulation lab', 'process analytical technology lab',
+  'quality by design laboratory', 'pediatric formulation development'
+];
+
+const RETAIL = [
+  // WALMART AISLES
+  'vitamin tablet manufacturing', 'dietary supplement tablets', 'otc pain relief tablets',
+  'antacid tablet manufacturing', 'allergy tablet manufacturing', 'cold flu tablet manufacturing',
+  'sleep aid tablet manufacturing', 'weight loss supplement tablets', 'multivitamin tablet manufacturing',
+  'probiotic tablet manufacturing', 'calcium supplement tablets', 'iron supplement tablets',
+  'fish oil tablet manufacturing', 'melatonin tablet manufacturing',
+  // HOME DEPOT / LOWES AISLES
+  'pool chlorine tablet manufacturing', 'water treatment tablets', 'dishwasher tablet manufacturing',
+  'toilet bowl cleaner tablets', 'drain cleaner tablets', 'fertilizer tablet manufacturing',
+  'plant food tablets', 'pest control tablets', 'septic system tablets',
+  'concrete cleaner tablets', 'rust remover tablets',
+  // AMAZON AISLES
+  'cbd tablet manufacturing', 'herbal supplement tablets', 'nootropic tablet manufacturing',
+  'collagen tablet manufacturing', 'keto supplement tablets', 'immune booster tablets',
+  'energy supplement tablets', 'detox supplement tablets', 'beauty supplement tablets',
+  'joint health tablets', 'brain health tablets', 'heart health tablets',
+  'digestive enzyme tablets', 'apple cider vinegar tablets', 'turmeric tablet manufacturing',
+  // PET RETAIL (Petco, PetSmart, Chewy)
+  'pet vitamin supplements', 'pet joint health tablets', 'pet calming tablets',
+  'pet dental chew tablets', 'pet flea tick tablets', 'pet probiotic supplements',
+  // GNC / VITAMIN SHOPPE AISLES
+  'sports nutrition tablets', 'protein supplement tablets', 'creatine tablets',
+  'bcaa supplement tablets', 'pre workout tablets', 'testosterone booster tablets',
+  'ashwagandha tablets', 'magnesium supplement tablets', 'zinc supplement tablets',
+  // GROCERY / MASS RETAIL (Kroger, Publix, HEB, Meijer, Aldi)
+  'store brand otc tablets', 'private label supplements', 'electrolyte tablets',
+  'effervescent vitamin tablets', 'chewable vitamin tablets', 'gummy vitamin alternatives'
+];
+
+const WALMART = [
+  'vitamin tablet manufacturing', 'dietary supplement tablets', 'otc pain relief tablets',
+  'antacid tablet manufacturing', 'allergy tablet manufacturing', 'cold flu tablet manufacturing',
+  'sleep aid tablet manufacturing', 'weight loss supplement tablets', 'multivitamin tablet manufacturing',
+  'probiotic tablet manufacturing', 'calcium supplement tablets', 'iron supplement tablets',
+  'fish oil tablet manufacturing', 'melatonin tablet manufacturing'
+];
+
+const HOMEDEPOT = [
+  'pool chlorine tablet manufacturing', 'water treatment tablets', 'dishwasher tablet manufacturing',
+  'toilet bowl cleaner tablets', 'drain cleaner tablets', 'fertilizer tablet manufacturing',
+  'plant food tablets', 'pest control tablets', 'septic system tablets',
+  'concrete cleaner tablets', 'rust remover tablets'
+];
+
+const AMAZON = [
+  'cbd tablet manufacturing', 'herbal supplement tablets', 'nootropic tablet manufacturing',
+  'collagen tablet manufacturing', 'keto supplement tablets', 'immune booster tablets',
+  'energy supplement tablets', 'detox supplement tablets', 'beauty supplement tablets',
+  'joint health tablets', 'brain health tablets', 'heart health tablets',
+  'digestive enzyme tablets', 'apple cider vinegar tablets', 'turmeric tablet manufacturing'
+];
+
+// State normalization
+const STATE_ABBREV = {
+  'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
+  'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA',
+  'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
+  'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
+  'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
+  'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
+  'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH',
+  'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
+  'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT',
+  'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY',
+  'District of Columbia': 'DC', 'Puerto Rico': 'PR',
+  'Ontario': 'ON', 'Quebec': 'QC', 'British Columbia': 'BC', 'Alberta': 'AB', 'Saskatchewan': 'SK', 'Manitoba': 'MB'
+};
+
+function normalizeState(state) {
+  if (!state) return '';
+  const trimmed = state.trim();
+  if (trimmed.length === 2) return trimmed.toUpperCase();
+  return STATE_ABBREV[trimmed] || trimmed;
+}
+
+// Sales Territories (Updated 01/22/2026)
+const SALES_REPS = {
+  'WA': 'Fernando Delgado', 'OR': 'Fernando Delgado', 'CA': 'Fernando Delgado', 'HI': 'Fernando Delgado', 'AK': 'Fernando Delgado',
+  'NV': 'Eric Maughan', 'AZ': 'Eric Maughan', 'MT': 'Eric Maughan', 'ID': 'Eric Maughan', 'WY': 'Eric Maughan', 'UT': 'Eric Maughan', 'CO': 'Eric Maughan', 'NM': 'Eric Maughan',
+  'LA': 'David Nelson', 'AR': 'David Nelson', 'TX': 'David Nelson', 'OK': 'David Nelson', 'ND': 'David Nelson', 'SD': 'David Nelson', 'NE': 'David Nelson', 'KS': 'David Nelson', 'MN': 'David Nelson', 'IA': 'David Nelson', 'MO': 'David Nelson', 'WI': 'David Nelson', 'IL': 'David Nelson', 'IN': 'David Nelson', 'MI': 'David Nelson', 'OH': 'David Nelson',
+  'ME': 'Raffaele Romano', 'NH': 'Raffaele Romano', 'VT': 'Raffaele Romano', 'MA': 'Raffaele Romano', 'RI': 'Raffaele Romano', 'CT': 'Raffaele Romano', 'NY': 'Raffaele Romano', 'NJ': 'Raffaele Romano', 'PA': 'Raffaele Romano', 'DE': 'Raffaele Romano', 'MD': 'Raffaele Romano', 'DC': 'Raffaele Romano', 'VA': 'Raffaele Romano', 'WV': 'Raffaele Romano',
+  'NC': 'Danny Ambrose', 'SC': 'Danny Ambrose', 'GA': 'Danny Ambrose', 'FL': 'Danny Ambrose', 'AL': 'Danny Ambrose', 'TN': 'Danny Ambrose', 'KY': 'Danny Ambrose', 'MS': 'Danny Ambrose',
+  'PR': 'Emmanuel',
+  'ON': 'Fazal', 'QC': 'Fazal', 'BC': 'Fazal', 'AB': 'Fazal', 'SK': 'Fazal', 'MB': 'Fazal'
+};
+
+const TERRITORIES = {
+  'WA': 'West Coast', 'OR': 'West Coast', 'CA': 'West Coast', 'HI': 'West Coast', 'AK': 'West Coast',
+  'NV': 'Rocky Mountain', 'AZ': 'Rocky Mountain', 'MT': 'Rocky Mountain', 'ID': 'Rocky Mountain', 'WY': 'Rocky Mountain', 'UT': 'Rocky Mountain', 'CO': 'Rocky Mountain', 'NM': 'Rocky Mountain',
+  'LA': 'Central', 'AR': 'Central', 'TX': 'Central', 'OK': 'Central', 'ND': 'Central', 'SD': 'Central', 'NE': 'Central', 'KS': 'Central', 'MN': 'Central', 'IA': 'Central', 'MO': 'Central', 'WI': 'Central', 'IL': 'Central', 'IN': 'Central', 'MI': 'Central', 'OH': 'Central',
+  'ME': 'Northeast', 'NH': 'Northeast', 'VT': 'Northeast', 'MA': 'Northeast', 'RI': 'Northeast', 'CT': 'Northeast', 'NY': 'Northeast', 'NJ': 'Northeast', 'PA': 'Northeast', 'DE': 'Northeast', 'MD': 'Northeast', 'DC': 'Northeast', 'VA': 'Northeast', 'WV': 'Northeast',
+  'NC': 'Southeast', 'SC': 'Southeast', 'GA': 'Southeast', 'FL': 'Southeast', 'AL': 'Southeast', 'TN': 'Southeast', 'KY': 'Southeast', 'MS': 'Southeast',
+  'PR': 'Puerto Rico',
+  'ON': 'Canada', 'QC': 'Canada', 'BC': 'Canada', 'AB': 'Canada', 'SK': 'Canada', 'MB': 'Canada'
+};
+
+let selectedIndustries = new Set();
+let discoveredCompanies = [];
+let filteredCompanies = [];
+let exclusionSet = new Set();
+
+// AUTO-SAVE to localStorage - data persists even if window is closed
+function autoSave() {
+  if (discoveredCompanies.length === 0) return;
+  const saveData = {
+    companies: discoveredCompanies,
+    timestamp: new Date().toISOString(),
+    industries: [...selectedIndustries]
+  };
+  localStorage.setItem('market_discovery_autosave', JSON.stringify(saveData));
+  updateAutoSaveIndicator();
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem('market_discovery_autosave');
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data.companies && data.companies.length > 0) {
+        const savedTime = new Date(data.timestamp).toLocaleString();
+        if (confirm(`Found ${data.companies.length} auto-saved companies from ${savedTime}. Load them?`)) {
+          discoveredCompanies = data.companies;
+          filteredCompanies = [...discoveredCompanies];
+          populateIndustryFilter();
+          filterResults();
+          updateStats();
+          generateMarketAnalysis();
+          switchTab('results');
+          toast(`Restored ${discoveredCompanies.length} companies from auto-save`);
+        }
+      }
+    }
+  } catch (e) { console.error('Auto-load error:', e); }
+  updateAutoSaveIndicator();
+}
+
+function clearAutoSave() {
+  localStorage.removeItem('market_discovery_autosave');
+  updateAutoSaveIndicator();
+  toast('Auto-save cleared');
+}
+
+function updateAutoSaveIndicator() {
+  const indicator = document.getElementById('autosaveIndicator');
+  if (!indicator) return;
+  const saved = localStorage.getItem('market_discovery_autosave');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      const time = new Date(data.timestamp).toLocaleTimeString();
+      indicator.innerHTML = `<span style="color: var(--accent-green);">Auto-saved: ${data.companies.length} companies @ ${time}</span>`;
+    } catch (e) { indicator.innerHTML = ''; }
+  } else {
+    indicator.innerHTML = '<span style="color: var(--text-muted);">No auto-save</span>';
+  }
+}
+
+// ============== DEEP SEARCH ENGINE ==============
+const RETAILER_NAMES = {
+  walmart: 'Walmart', target: 'Target', costco: 'Costco', samsclub: "Sam's Club", bjs: "BJ's Wholesale",
+  kroger: 'Kroger', publix: 'Publix', heb: 'H-E-B', meijer: 'Meijer', aldi: 'Aldi',
+  traderjoes: "Trader Joe's", wholefoods: 'Whole Foods', safeway: 'Safeway / Albertsons',
+  cvs: 'CVS', walgreens: 'Walgreens', riteaid: 'Rite Aid',
+  homedepot: 'Home Depot', lowes: "Lowe's", tractorsupply: 'Tractor Supply',
+  gnc: 'GNC', vitaminshoppe: 'The Vitamin Shoppe',
+  petco: 'Petco', petsmart: 'PetSmart', chewy: 'Chewy',
+  dollargeneral: 'Dollar General', dollartree: 'Dollar Tree',
+  amazon: 'Amazon',
+  canadiantire: 'Canadian Tire', shoppers: 'Shoppers Drug Mart', londondrugs: 'London Drugs', rexall: 'Rexall', jeancoutu: 'Jean Coutu',
+  farmaciasahorro: 'Farmacias del Ahorro', farmaciassimilares: 'Farmacias Similares', soriana: 'Soriana', chedraui: 'Chedraui',
+  econo: 'Econo', walgreenspr: 'Walgreens PR'
+};
+
+const RETAILER_ICONS = {
+  walmart: '🟦', target: '🔴', costco: '🏪', samsclub: '🏬', bjs: '🏬',
+  kroger: '🛒', publix: '🛒', heb: '🛒', meijer: '🛒', aldi: '🛒',
+  traderjoes: '🌿', wholefoods: '🥗', safeway: '🛒',
+  cvs: '💊', walgreens: '💊', riteaid: '💊',
+  homedepot: '🏠', lowes: '🔧', tractorsupply: '🚜',
+  gnc: '💪', vitaminshoppe: '💊',
+  petco: '🐾', petsmart: '🐾', chewy: '🐾',
+  dollargeneral: '💵', dollartree: '💵',
+  amazon: '📦',
+  canadiantire: '🇨🇦', shoppers: '🇨🇦', londondrugs: '🇨🇦', rexall: '🇨🇦', jeancoutu: '🇨🇦',
+  farmaciasahorro: '🇲🇽', farmaciassimilares: '🇲🇽', soriana: '🇲🇽', chedraui: '🇲🇽',
+  econo: '🇵🇷', walgreenspr: '🇵🇷'
+};
+
+const CATEGORY_NAMES = {
+  vitamins: 'Vitamins & Supplements', otc: 'OTC Medications', sports: 'Sports Nutrition',
+  pool: 'Pool & Water Care', cleaning: 'Cleaning Tablets', laundry: 'Laundry Pods',
+  pet: 'Pet Supplements', garden: 'Garden/Fertilizer', livestock: 'Livestock/Farm',
+  wellness: 'Wellness/Specialty', dishwasher: 'Dishwasher'
+};
+
+function buildStoreIndex() {
+  const storeMap = {};
+  planogramData.forEach(function(p) {
+    if (!storeMap[p.retailer]) {
+      storeMap[p.retailer] = { name: RETAILER_NAMES[p.retailer] || p.retailer, icon: RETAILER_ICONS[p.retailer] || '🏪', planograms: [], categories: new Set(), brands: new Set(), regions: new Set() };
+    }
+    var s = storeMap[p.retailer];
+    s.planograms.push(p);
+    s.categories.add(p.category);
+    p.brands.forEach(function(b) { s.brands.add(b); });
+    p.regions.forEach(function(r) { s.regions.add(r); });
+  });
+  return storeMap;
+}
+
+function renderAllStoresDefault() {
+  var storeMap = buildStoreIndex();
+  var storesEl = document.getElementById('dsAllStores');
+  var indEl = document.getElementById('dsAllIndustries');
+  if (!storesEl) return;
+
+  var retailers = Object.keys(storeMap).sort(function(a, b) {
+    return storeMap[b].planograms.length - storeMap[a].planograms.length;
+  });
+
+  storesEl.innerHTML = retailers.map(function(key) {
+    var s = storeMap[key];
+    var regions = Array.from(s.regions).map(function(r) { return '<span class="region-tag region-' + r + '">' + r.toUpperCase() + '</span>'; }).join('');
+    return '<div class="ds-all-store" onclick="deepSearchQuick(\'' + escapeHtml(s.name.replace(/'/g, "\\'")) + '\')">' +
+      '<span>' + s.icon + '</span>' +
+      '<span>' + escapeHtml(s.name) + '</span>' +
+      '<span class="store-count">' + s.planograms.length + '</span>' +
+    '</div>';
+  }).join('');
+
+  if (indEl) {
+    var allInd = [].concat(ENGINEERING, SCIENTIFIC, RETAIL);
+    indEl.innerHTML = allInd.map(function(ind) {
+      return '<span class="industry-tag" style="font-size: 0.7rem; padding: 4px 10px; cursor: pointer;" onclick="deepSearchQuick(\'' + escapeHtml(ind.replace(/'/g, "\\'")) + '\')">' + escapeHtml(ind) + '</span>';
+    }).join('');
+  }
+}
+
+function deepSearchQuick(term) {
+  var input = document.getElementById('deepSearchInput');
+  if (input) {
+    input.value = term;
+    runDeepSearch();
+    input.focus();
+  }
+}
+
+function runDeepSearch() {
+  var q = (document.getElementById('deepSearchInput').value || '').toLowerCase().trim();
+  var resultsEl = document.getElementById('deepSearchResults');
+  var countEl = document.getElementById('deepSearchCount');
+  var defaultView = document.getElementById('dsDefaultView');
+
+  if (!q) {
+    if (defaultView) defaultView.style.display = 'block';
+    resultsEl.innerHTML = '';
+    resultsEl.appendChild(defaultView);
+    defaultView.style.display = 'block';
+    if (countEl) countEl.textContent = '';
+    filterIndustryTags('');
+    return;
+  }
+
+  if (defaultView) defaultView.style.display = 'none';
+  filterIndustryTags(q);
+
+  var storeMap = buildStoreIndex();
+  var matchedStores = [];
+  var matchedPlanograms = [];
+  var matchedIndustries = [];
+  var matchedBrands = [];
+  var brandSet = new Set();
+
+  Object.keys(storeMap).forEach(function(key) {
+    var s = storeMap[key];
+    var nameMatch = s.name.toLowerCase().includes(q);
+    var regionMatch = false;
+    s.regions.forEach(function(r) {
+      if (r.replace('-', ' ').includes(q) || r.includes(q)) regionMatch = true;
+    });
+    if (nameMatch || key.toLowerCase().includes(q) || regionMatch) {
+      matchedStores.push({ key: key, store: s, reason: nameMatch ? 'name' : 'region' });
+    }
+  });
+
+  planogramData.forEach(function(p) {
+    var searchStr = (p.name + ' ' + p.aisle + ' ' + p.category + ' ' + p.brands.join(' ') + ' ' + p.regions.join(' ')).toLowerCase();
+    if (searchStr.includes(q)) {
+      matchedPlanograms.push(p);
+    }
+    p.brands.forEach(function(b) {
+      if (b.toLowerCase().includes(q) && !brandSet.has(b)) {
+        brandSet.add(b);
+        matchedBrands.push({ brand: b, retailer: RETAILER_NAMES[p.retailer] || p.retailer, category: p.category, planogram: p.name });
+      }
+    });
+  });
+
+  var allInd = [].concat(ENGINEERING, SCIENTIFIC, RETAIL);
+  allInd.forEach(function(ind) {
+    if (ind.toLowerCase().includes(q)) {
+      var type = ENGINEERING.includes(ind) ? 'Engineering' : (SCIENTIFIC.includes(ind) ? 'Scientific' : 'Retail');
+      matchedIndustries.push({ name: ind, type: type });
+    }
+  });
+
+  var total = matchedStores.length + matchedPlanograms.length + matchedIndustries.length + matchedBrands.length;
+  if (countEl) countEl.textContent = total + ' results';
+
+  var html = '';
+
+  if (matchedStores.length > 0) {
+    html += '<div class="ds-section"><div class="ds-section-title stores">🏪 Stores (' + matchedStores.length + ')</div>';
+    html += '<div class="ds-store-grid">';
+    matchedStores.forEach(function(m) {
+      var s = m.store;
+      var cats = Array.from(s.categories).map(function(c) { return CATEGORY_NAMES[c] || c; }).join(', ');
+      var regions = Array.from(s.regions).map(function(r) { return '<span class="region-tag region-' + r + '">' + r.toUpperCase() + '</span>'; }).join('');
+      html += '<div class="ds-store-card" onclick="deepSearchQuick(\'' + escapeHtml(s.name.replace(/'/g, "\\'")) + '\')">' +
+        '<div class="store-name">' + s.icon + ' ' + escapeHtml(s.name) + '</div>' +
+        '<div class="store-meta">' + s.planograms.length + ' planograms &bull; ' + s.categories.size + ' categories &bull; ' + s.brands.size + ' brands</div>' +
+        '<div class="store-meta" style="margin-top: 4px;">' + escapeHtml(cats) + '</div>' +
+        '<div class="store-regions">' + regions + '</div>' +
+      '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  if (matchedPlanograms.length > 0) {
+    html += '<div class="ds-section"><div class="ds-section-title planograms">🛒 Planograms (' + matchedPlanograms.length + ')</div>';
+    html += '<div class="planogram-grid">';
+    matchedPlanograms.forEach(function(p) {
+      var regionTags = p.regions.map(function(r) { return '<span class="region-tag region-' + r + '">' + r.toUpperCase() + '</span>'; }).join('');
+      var storeIcon = RETAILER_ICONS[p.retailer] || '🏪';
+      html += '<div class="planogram-card">' +
+        '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+          '<h4>' + storeIcon + ' ' + escapeHtml(p.name) + '</h4>' +
+          '<span style="background: rgba(6,182,212,0.2); color: var(--accent-cyan); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; white-space: nowrap;">' + (CATEGORY_NAMES[p.category] || p.category) + '</span>' +
+        '</div>' +
+        '<div class="aisle">Aisle: ' + escapeHtml(p.aisle) + '</div>' +
+        '<div class="brands">' + p.brands.map(function(b) {
+          var cls = b.toLowerCase().includes(q) ? 'brand ds-match' : 'brand';
+          return '<span class="' + cls + '">' + escapeHtml(b) + '</span>';
+        }).join('') + '</div>' +
+        '<div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">' +
+          '<div>' + regionTags + '</div>' +
+          '<span style="font-size: 0.7rem; color: var(--text-muted);">' + escapeHtml(RETAILER_NAMES[p.retailer] || p.retailer) + '</span>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  if (matchedBrands.length > 0) {
+    html += '<div class="ds-section"><div class="ds-section-title brands">🏷️ Brands (' + matchedBrands.length + ')</div>';
+    html += '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
+    matchedBrands.forEach(function(b) {
+      html += '<div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; font-size: 0.8rem;">' +
+        '<strong>' + escapeHtml(b.brand) + '</strong>' +
+        '<span style="color: var(--text-muted); margin-left: 8px;">' + escapeHtml(b.retailer) + ' &bull; ' + (CATEGORY_NAMES[b.category] || b.category) + '</span>' +
+      '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  if (matchedIndustries.length > 0) {
+    html += '<div class="ds-section"><div class="ds-section-title industries">🏭 Industries (' + matchedIndustries.length + ')</div>';
+    html += '<div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">';
+    html += '<button class="btn btn-sm btn-green" onclick="dsSelectIndustries(\'' + escapeHtml(q.replace(/'/g, "\\'")) + '\')">✅ Select these ' + matchedIndustries.length + ' for scan</button>';
+    html += '<button class="btn btn-sm btn-cyan" onclick="dsSelectAndScan(\'' + escapeHtml(q.replace(/'/g, "\\'")) + '\')">🚀 Select & Scan Now</button>';
+    html += '</div>';
+    html += '<div style="display: flex; flex-wrap: wrap; gap: 6px;">';
+    matchedIndustries.forEach(function(ind) {
+      var color = ind.type === 'Engineering' ? 'var(--accent-blue)' : (ind.type === 'Scientific' ? 'var(--accent-purple)' : 'var(--accent-orange)');
+      var isSelected = selectedIndustries.has(ind.name);
+      var selStyle = isSelected ? 'background: ' + color + '; color: #000; font-weight: 600;' : 'border-color: ' + color + '; color: ' + color + ';';
+      html += '<span class="industry-tag" style="' + selStyle + ' font-size: 0.75rem; padding: 5px 12px; cursor: pointer;" onclick="dsToggleIndustry(\'' + escapeHtml(ind.name.replace(/'/g, "\\'")) + '\', this)" title="Click to toggle selection for scanning">' +
+        escapeHtml(ind.name) + ' <span style="font-size: 0.65rem; opacity: 0.7;">(' + ind.type + ')</span>' +
+        (isSelected ? ' ✓' : '') +
+      '</span>';
+    });
+    html += '</div></div>';
+  }
+
+  if (total === 0) {
+    html = '<div class="empty-state" style="padding: 40px;"><h4>No results for "' + escapeHtml(q) + '"</h4><p style="color: var(--text-muted);">Try searching by store name, brand, category, industry, or region</p></div>';
+  }
+
+  resultsEl.innerHTML = html;
+}
+
+function filterIndustryTags(q) {
+  var notice = document.getElementById('industryFilterNotice');
+  var noticeText = document.getElementById('industryFilterText');
+  var allTags = document.querySelectorAll('.industry-tag');
+  
+  if (!q) {
+    allTags.forEach(function(el) {
+      el.style.display = '';
+      el.classList.remove('ds-match');
+    });
+    if (notice) notice.style.display = 'none';
+    return;
+  }
+  
+  var matchCount = 0;
+  var totalCount = allTags.length;
+  allTags.forEach(function(el) {
+    var ind = el.dataset.industry || el.textContent.toLowerCase();
+    if (ind.toLowerCase().includes(q)) {
+      el.style.display = '';
+      el.classList.add('ds-match');
+      matchCount++;
+    } else {
+      el.style.display = 'none';
+      el.classList.remove('ds-match');
+    }
+  });
+  
+  if (notice && noticeText) {
+    notice.style.display = 'block';
+    noticeText.innerHTML = '🔍 Showing <strong>' + matchCount + '</strong> of ' + totalCount + ' industries matching "<strong>' + escapeHtml(q) + '</strong>"';
+  }
+}
+
+function clearIndustryFilter() {
+  var input = document.getElementById('deepSearchInput');
+  if (input) input.value = '';
+  filterIndustryTags('');
+  var resultsEl = document.getElementById('deepSearchResults');
+  var defaultView = document.getElementById('dsDefaultView');
+  if (resultsEl && defaultView) {
+    resultsEl.innerHTML = '';
+    resultsEl.appendChild(defaultView);
+    defaultView.style.display = 'block';
+  }
+  var countEl = document.getElementById('deepSearchCount');
+  if (countEl) countEl.textContent = '';
+}
+
+function dsToggleIndustry(name, el) {
+  if (selectedIndustries.has(name)) {
+    selectedIndustries.delete(name);
+  } else {
+    selectedIndustries.add(name);
+  }
+  syncTagVisuals();
+  updateSelectedCount();
+  runDeepSearch();
+}
+
+function dsSelectIndustries(q) {
+  q = q.toLowerCase();
+  var allInd = [].concat(ENGINEERING, SCIENTIFIC, RETAIL);
+  var count = 0;
+  allInd.forEach(function(ind) {
+    if (ind.toLowerCase().includes(q)) {
+      selectedIndustries.add(ind);
+      count++;
+    }
+  });
+  syncTagVisuals();
+  updateSelectedCount();
+  runDeepSearch();
+  toast('Added ' + count + ' matching industries to selection (' + selectedIndustries.size + ' total)');
+}
+
+function dsSelectAndScan(q) {
+  dsSelectIndustries(q);
+  setTimeout(function() {
+    if (selectedIndustries.size > 0) {
+      runDiscovery();
+    }
+  }, 300);
+}
+
+// Initialize
+function init() {
+  renderTags('engineeringTags', ENGINEERING, 'engineering');
+  renderTags('scientificTags', SCIENTIFIC, 'scientific');
+  renderTags('retailTags', RETAIL, 'retail');
+  [...ENGINEERING, ...SCIENTIFIC].forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  loadSavedScans();
+  checkRunningScans();
+  loadFromLocalStorage();
+  loadExclusionsFromStorage();
+  renderAllStoresDefault();
+  
+  document.getElementById('exclusionList').addEventListener('input', parseExclusions);
+}
+
+function renderTags(containerId, industries, type) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = industries.map(ind => 
+    `<span class="industry-tag ${type}" data-industry="${ind}" onclick="toggleTag(this)">${ind}</span>`
+  ).join('');
+}
+
+function toggleTag(el) {
+  const ind = el.dataset.industry;
+  if (selectedIndustries.has(ind)) {
+    selectedIndustries.delete(ind);
+    el.classList.remove('selected');
+  } else {
+    selectedIndustries.add(ind);
+    el.classList.add('selected');
+  }
+  updateSelectedCount();
+}
+
+function syncTagVisuals() {
+  document.querySelectorAll('.industry-tag').forEach(el => {
+    if (selectedIndustries.has(el.dataset.industry)) {
+      el.classList.add('selected');
+    } else {
+      el.classList.remove('selected');
+    }
+  });
+}
+
+function selectAll() {
+  [...ENGINEERING, ...SCIENTIFIC, ...RETAIL].forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected all 78 industries');
+}
+
+function selectEngineering() {
+  clearSelection();
+  ENGINEERING.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Engineering industries');
+}
+
+function selectScientific() {
+  clearSelection();
+  SCIENTIFIC.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Scientific industries');
+}
+
+function selectRetail() {
+  clearSelection();
+  RETAIL.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Retail industries');
+}
+
+function selectCore() {
+  clearSelection();
+  [...ENGINEERING, ...SCIENTIFIC].forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Core (Engineering + Scientific)');
+}
+
+function selectWalmart() {
+  clearSelection();
+  WALMART.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Walmart aisle industries');
+}
+
+function selectHomeDepot() {
+  clearSelection();
+  HOMEDEPOT.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Home Depot aisle industries');
+}
+
+function selectAmazon() {
+  clearSelection();
+  AMAZON.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected Amazon aisle industries');
+}
+
+function selectAllRetailers() {
+  clearSelection();
+  RETAIL.forEach(i => selectedIndustries.add(i));
+  syncTagVisuals();
+  updateSelectedCount();
+  toast('Selected all retail supplier industries');
+}
+
+function clearSelection() {
+  selectedIndustries.clear();
+  document.querySelectorAll('.industry-tag').forEach(el => el.classList.remove('selected'));
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  document.getElementById('selectedCount').textContent = `${selectedIndustries.size} industries selected`;
+  if (exclusionSet.size > 0) {
+    document.getElementById('excludedCount').textContent = `(${exclusionSet.size} companies excluded)`;
+  } else {
+    document.getElementById('excludedCount').textContent = '';
+  }
+}
+
+// Tab switching
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  const tabBtn = document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`);
+  if (tabBtn) tabBtn.classList.add('active');
+  const tabContent = document.getElementById(tabName + 'Tab');
+  if (tabContent) tabContent.classList.add('active');
+  
+  if (tabName === 'dashboard') loadDashboard();
+  if (tabName === 'signals') loadPressureSignals();
+  if (tabName === 'scanner') { opp_updateStats(); opp_renderRecentScans(); }
+  if (tabName === 'opportunities') opp_renderOpportunities();
+  if (tabName === 'planograms') opp_renderAllPlanograms();
+}
+
+// Exclusion handling - with persistence via localStorage
+function saveExclusionsToStorage() {
+  try {
+    const arr = [...exclusionSet];
+    localStorage.setItem('marketDiscoveryExclusions', JSON.stringify(arr));
+  } catch (e) {
+    console.warn('Could not save exclusions:', e);
+  }
+}
+
+function loadExclusionsFromStorage() {
+  try {
+    const saved = localStorage.getItem('marketDiscoveryExclusions');
+    if (saved) {
+      const arr = JSON.parse(saved);
+      arr.forEach(c => exclusionSet.add(c));
+      updateExclusionUI();
+    }
+  } catch (e) {
+    console.warn('Could not load saved exclusions:', e);
+  }
+}
+
+function updateExclusionUI() {
+  document.getElementById('exclusionCount').textContent = exclusionSet.size.toLocaleString();
+  if (exclusionSet.size > 0) {
+    document.getElementById('exclusionStatus').style.display = 'block';
+  } else {
+    document.getElementById('exclusionStatus').style.display = 'none';
+  }
+  updateSelectedCount();
+}
+
+function parseExclusions() {
+  const text = document.getElementById('exclusionList').value;
+  const prevSize = exclusionSet.size;
+  
+  if (!text.trim()) {
+    updateExclusionUI();
+    return;
+  }
+  
+  const lines = text.split('\n');
+  let added = 0;
+  lines.forEach(line => {
+    const parts = line.split(',');
+    const company = (parts[0] || '').trim().toLowerCase();
+    if (company && company.length > 2 && !exclusionSet.has(company)) {
+      exclusionSet.add(company);
+      added++;
+    }
+  });
+  
+  saveExclusionsToStorage();
+  updateExclusionUI();
+  if (added > 0) {
+    toast(`Added ${added} new companies (${exclusionSet.size.toLocaleString()} total excluded)`);
+  }
+}
+
+function clearExclusions() {
+  document.getElementById('exclusionList').value = '';
+  exclusionSet.clear();
+  localStorage.removeItem('marketDiscoveryExclusions');
+  document.getElementById('exclusionCount').textContent = '0';
+  document.getElementById('exclusionStatus').style.display = 'none';
+  updateSelectedCount();
+  toast('Exclusion list cleared');
+}
+
+async function loadNatoliFullList() {
+  try {
+    toast('Loading Natoli Full List...');
+    const res = await fetch('/static/exports/natoli_exclusion_list.txt');
+    if (!res.ok) throw new Error('File not found');
+    const text = await res.text();
+    
+    const prevSize = exclusionSet.size;
+    const lines = text.split('\n');
+    let added = 0;
+    lines.forEach(line => {
+      const company = line.trim().toLowerCase();
+      if (company && company.length > 2 && !exclusionSet.has(company)) {
+        exclusionSet.add(company);
+        added++;
+      }
+    });
+    
+    saveExclusionsToStorage();
+    updateExclusionUI();
+    toast(`Added ${added.toLocaleString()} new companies (${exclusionSet.size.toLocaleString()} total excluded)`);
+  } catch (e) {
+    console.error('Error loading list:', e);
+    toast('Error loading exclusion list');
+  }
+}
+
+function loadCSVExclusions(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const prevSize = exclusionSet.size;
+    let added = 0;
+    
+    const lines = text.split('\n');
+    const firstLine = lines[0] || '';
+    const isCSV = firstLine.includes(',') && firstLine.toLowerCase().includes('company');
+    
+    if (isCSV) {
+      const headers = firstLine.split(',').map(h => h.trim().toLowerCase());
+      const companyIdx = headers.findIndex(h => h.includes('company'));
+      
+      lines.slice(1).forEach(line => {
+        const parts = line.split(',');
+        const company = (parts[companyIdx] || '').replace(/"/g, '').trim().toLowerCase();
+        if (company && company.length > 2 && !exclusionSet.has(company)) {
+          exclusionSet.add(company);
+          added++;
+        }
+      });
+    } else {
+      lines.forEach(line => {
+        const company = line.trim().toLowerCase();
+        if (company && company.length > 2 && !exclusionSet.has(company)) {
+          exclusionSet.add(company);
+          added++;
+        }
+      });
+    }
+    
+    saveExclusionsToStorage();
+    updateExclusionUI();
+    toast(`Added ${added.toLocaleString()} new companies (${exclusionSet.size.toLocaleString()} total excluded)`);
+    
+    // Clear file input so same file can be loaded again if needed
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function isExcluded(companyName) {
+  if (exclusionSet.size === 0) return false;
+  const name = (companyName || '').toLowerCase().trim();
+  return exclusionSet.has(name) || [...exclusionSet].some(exc => name.includes(exc) || exc.includes(name));
+}
+
+// Run Discovery
+async function runDiscovery() {
+  if (selectedIndustries.size === 0) {
+    toast('Please select at least one industry');
+    return;
+  }
+
+  const btn = document.getElementById('runBtn');
+  const progress = document.getElementById('progressContainer');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Running...';
+  progress.style.display = 'block';
+
+  // Get discovery options
+  const options = {
+    confidence: document.getElementById('optConfidence').checked,
+    location: document.getElementById('optLocation').checked,
+    naics: document.getElementById('optNaics').checked,
+    dedupe: document.getElementById('optDedupe').checked,
+    phone: document.getElementById('optPhone').checked,
+    website: document.getElementById('optWebsite').checked,
+    linkedin: document.getElementById('optLinkedIn').checked,
+    salesRep: document.getElementById('optSalesRep').checked,
+    scanner503B: document.getElementById('opt503B').checked,
+    scanner503A: document.getElementById('opt503A').checked,
+    gmp: document.getElementById('optGMP').checked,
+    fda: document.getElementById('optFDA').checked,
+    aiBrain: document.getElementById('optAIBrain').checked
+  };
+
+  const industries = [...selectedIndustries];
+  const count = parseInt(document.getElementById('resultsPerIndustry').value);
+  discoveredCompanies = [];
+  let excludedCount = 0;
+  const seenDomains = new Set();
+
+  for (let i = 0; i < industries.length; i++) {
+    const pct = Math.round(((i + 1) / industries.length) * 100);
+    progressFill.style.width = pct + '%';
+    progressText.textContent = `Scanning: ${industries[i]} (${i + 1}/${industries.length})`;
+
+    try {
+      const res = await fetch('/api/market-discovery/openai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ industry: industries[i], count: count })
+      });
+      const data = await res.json();
+      if (data.companies) {
+        data.companies.forEach(c => {
+          // Exclusion check
+          if (isExcluded(c.company)) {
+            excludedCount++;
+            return;
+          }
+          
+          // Deduplicate by domain
+          if (options.dedupe && c.website) {
+            const domain = c.website.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase();
+            if (seenDomains.has(domain)) return;
+            seenDomains.add(domain);
+          }
+          
+          c.industry = industries[i];
+          
+          // Extract State/City (always derive for filtering, but display only if checked)
+          const stateCode = normalizeState(c.state);
+          c.stateCode = stateCode;
+          c.territory = TERRITORIES[stateCode] || (stateCode ? 'International' : '');
+          
+          // Clear city if Extract State/City is unchecked
+          if (!options.location) {
+            c.city = '';
+          }
+          
+          // Assign Sales Rep (only if checked)
+          if (options.salesRep) {
+            c.salesRep = SALES_REPS[stateCode] || '';
+          } else {
+            c.salesRep = '';
+          }
+          
+          // Calculate Confidence Scoring
+          if (options.confidence) {
+            let score = 50; // Base score
+            if (c.fit === 'Both') score += 30;
+            else if (c.fit === 'Engineering' || c.fit === 'Scientific') score += 20;
+            if (c.phone) score += 10;
+            if (c.website) score += 5;
+            if (c.linkedin) score += 5;
+            c.confidence = Math.min(score, 100);
+          } else {
+            c.confidence = null; // Clear confidence when unchecked
+          }
+          
+          // NAICS Industry Mapping (validates industry fits expected NAICS patterns)
+          if (options.naics) {
+            const naicsIndustryMap = {
+              pharma: true, pharmaceutical: true, drug: true,
+              nutraceutical: true, supplement: true, vitamin: true,
+              battery: true, energy: true, lithium: true,
+              ceramic: true, porcelain: true,
+              nuclear: true, fuel: true,
+              cannabis: true, cbd: true,
+              cosmetic: true, beauty: true,
+              veterinary: true, animal: true,
+              catalyst: true, chemical: true
+            };
+            const indLower = industries[i].toLowerCase();
+            c.naicsValid = Object.keys(naicsIndustryMap).some(key => indLower.includes(key));
+          } else {
+            c.naicsValid = null;
+          }
+          
+          // Apply field filters
+          if (!options.phone) c.phone = '';
+          if (!options.website) c.website = '';
+          if (!options.linkedin) c.linkedin = '';
+          
+          // Validation flags with better detection
+          const indLower = industries[i].toLowerCase();
+          const reasonLower = (c.reason || '').toLowerCase();
+          const descLower = (c.description || '').toLowerCase();
+          
+          if (options.scanner503B) {
+            c.is503B = indLower.includes('503b') || reasonLower.includes('503b') || 
+                       reasonLower.includes('outsourcing') || descLower.includes('503b');
+          } else {
+            c.is503B = false;
+          }
+          if (options.scanner503A) {
+            c.is503A = indLower.includes('503a') || reasonLower.includes('compounding') || 
+                       descLower.includes('compounding') || indLower.includes('compounding');
+          } else {
+            c.is503A = false;
+          }
+          if (options.gmp) {
+            c.gmpLikely = c.fit === 'Both' || c.fit === 'Engineering' || 
+                          indLower.includes('pharma') || indLower.includes('gmp');
+          } else {
+            c.gmpLikely = false;
+          }
+          if (options.fda) {
+            c.fdaLikely = indLower.includes('pharma') || indLower.includes('drug') || 
+                          indLower.includes('fda') || indLower.includes('medical');
+          } else {
+            c.fdaLikely = false;
+          }
+          
+          discoveredCompanies.push(c);
+        });
+        // Auto-save after each industry completes
+        autoSave();
+      }
+    } catch (e) {
+      console.error('Error:', e);
+    }
+  }
+
+  // Apply territory filter if selected
+  const territoryFilter = document.getElementById('territoryFilter').value;
+  if (territoryFilter) {
+    discoveredCompanies = discoveredCompanies.filter(c => c.territory === territoryFilter);
+  }
+
+  // Run AI Brain analysis if enabled
+  if (options.aiBrain && discoveredCompanies.length > 0) {
+    progressText.textContent = 'Running TonyOS AI Brain Analysis...';
+    progressFill.style.width = '0%';
+    
+    const batchSize = 10;
+    for (let i = 0; i < discoveredCompanies.length; i += batchSize) {
+      const batch = discoveredCompanies.slice(i, i + batchSize);
+      const pct = Math.round(((i + batchSize) / discoveredCompanies.length) * 100);
+      progressFill.style.width = Math.min(pct, 100) + '%';
+      progressText.textContent = `AI Analysis: ${Math.min(i + batchSize, discoveredCompanies.length)}/${discoveredCompanies.length} companies`;
+      
+      try {
+        const res = await fetch('/api/market-discovery/ai-batch-scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ companies: batch })
+        });
+        const data = await res.json();
+        
+        if (data.results) {
+          data.results.forEach((aiResult, idx) => {
+            const companyIdx = i + idx;
+            if (companyIdx < discoveredCompanies.length) {
+              discoveredCompanies[companyIdx].aiDecision = aiResult.decision || '';
+              discoveredCompanies[companyIdx].aiCompression = aiResult.compression || '';
+              discoveredCompanies[companyIdx].aiDivision = aiResult.division || '';
+              discoveredCompanies[companyIdx].aiConfidence = aiResult.confidence || 0;
+              discoveredCompanies[companyIdx].aiSummary = aiResult.summary || '';
+              discoveredCompanies[companyIdx].aiPressure = aiResult.pressure || [];
+              discoveredCompanies[companyIdx].aiCompetitors = aiResult.competitors || [];
+            }
+          });
+        }
+      } catch (e) {
+        console.error('AI analysis error:', e);
+      }
+    }
+    autoSave();
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 Run Discovery';
+  progress.style.display = 'none';
+
+  populateIndustryFilter();
+  filterResults();
+  updateStats();
+  document.getElementById('excludedResultCount').textContent = excludedCount;
+  
+  // Generate Market Analysis
+  generateMarketAnalysis();
+  
+  switchTab('results');
+  saveToDatabase();
+  const territoryMsg = territoryFilter ? ` in ${territoryFilter}` : '';
+  const aiMsg = options.aiBrain ? ' with AI analysis' : '';
+  toast(`Found ${discoveredCompanies.length} companies${territoryMsg}${aiMsg} (${excludedCount} excluded)`);
+}
+
+async function runTerritoryDiscovery() {
+  const territory = document.getElementById('territoryFilter').value;
+  if (!territory) {
+    toast('Please select a territory first');
+    return;
+  }
+  await runDiscovery();
+}
+
+async function runBackgroundDiscovery() {
+  if (selectedIndustries.size === 0) {
+    toast('Please select at least one industry');
+    return;
+  }
+
+  const btn = document.getElementById('bgRunBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Starting...';
+
+  const industries = [...selectedIndustries];
+  const count = parseInt(document.getElementById('resultsPerIndustry').value);
+  const options = {
+    count: count,
+    confidence: document.getElementById('optConfidence').checked,
+    location: document.getElementById('optLocation').checked,
+    naics: document.getElementById('optNaics').checked,
+    dedupe: document.getElementById('optDedupe').checked,
+    phone: document.getElementById('optPhone').checked,
+    website: document.getElementById('optWebsite').checked,
+    linkedin: document.getElementById('optLinkedIn').checked,
+    salesRep: document.getElementById('optSalesRep').checked,
+    scanner503B: document.getElementById('opt503B').checked,
+    scanner503A: document.getElementById('opt503A').checked,
+    gmp: document.getElementById('optGMP').checked,
+    fda: document.getElementById('optFDA').checked
+  };
+
+  try {
+    // Create scan job
+    const createRes = await fetch('/api/market-scans', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        name: `Discovery - ${industries.length} industries`,
+        industries: industries,
+        options: options
+      })
+    });
+    const createData = await createRes.json();
+    
+    if (createData.error) {
+      toast('Error: ' + createData.error);
+      btn.disabled = false;
+      btn.textContent = '🌙 Run in Background';
+      return;
+    }
+
+    // Start background scan
+    const startRes = await fetch(`/api/market-scans/${createData.id}/start`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+    const startData = await startRes.json();
+
+    if (startData.error) {
+      toast('Error: ' + startData.error);
+    } else {
+      toast(`Background scan started! You can close this window. Check Saved Scans for results.`);
+      checkRunningScans();
+    }
+  } catch (e) {
+    console.error('Error starting background scan:', e);
+    toast('Failed to start background scan');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🌙 Run in Background';
+}
+
+async function checkRunningScans() {
+  try {
+    const res = await fetch('/api/market-scans/running', { credentials: 'include' });
+    const data = await res.json();
+    
+    const container = document.getElementById('runningScansContainer');
+    const content = document.getElementById('runningScansContent');
+    
+    if (data.scans && data.scans.length > 0) {
+      container.style.display = 'block';
+      content.innerHTML = data.scans.map(s => {
+        const pct = s.total_industries > 0 ? Math.round((s.current_industry / s.total_industries) * 100) : 0;
+        return `<div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <span>${s.name}</span>
+          <span style="color: var(--accent-cyan);">${s.current_industry}/${s.total_industries} industries (${pct}%) - ${s.total_companies} companies</span>
+          <button onclick="stopScan(${s.id})" style="padding: 4px 10px; background: #ef4444; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 12px;">Stop</button>
+        </div>`;
+      }).join('');
+    } else {
+      container.style.display = 'none';
+    }
+  } catch (e) {
+    console.error('Error checking running scans:', e);
+  }
+}
+
+// Check for running scans every 5 seconds
+setInterval(checkRunningScans, 5000);
+
+async function stopScan(scanId) {
+  if (!confirm('Stop this scan? Results collected so far will be saved.')) return;
+  
+  try {
+    const res = await fetch(`/api/market-scans/${scanId}/stop`, { method: 'POST', credentials: 'include' });
+    const data = await res.json();
+    
+    if (data.success) {
+      toast('Scan stopped. Check Saved Scans for results.');
+      checkRunningScans();
+    } else {
+      toast('Error: ' + (data.error || 'Could not stop scan'));
+    }
+  } catch (e) {
+    console.error('Error stopping scan:', e);
+    toast('Failed to stop scan');
+  }
+}
+
+function populateIndustryFilter() {
+  const industries = [...new Set(discoveredCompanies.map(c => c.industry))].sort();
+  const select = document.getElementById('filterIndustry');
+  select.innerHTML = '<option value="">All Industries</option>' + 
+    industries.map(ind => `<option value="${ind}">${ind}</option>`).join('');
+}
+
+function updateStats() {
+  document.getElementById('totalCount').textContent = discoveredCompanies.length;
+  document.getElementById('bothCount').textContent = discoveredCompanies.filter(c => c.fit === 'Both').length;
+  document.getElementById('engCount').textContent = discoveredCompanies.filter(c => c.fit === 'Engineering').length;
+  document.getElementById('sciCount').textContent = discoveredCompanies.filter(c => c.fit === 'Scientific').length;
+  document.getElementById('nofitCount').textContent = discoveredCompanies.filter(c => c.fit === 'No Fit').length;
+}
+
+function generateMarketAnalysis() {
+  if (discoveredCompanies.length === 0) {
+    document.getElementById('marketAnalysisCard').style.display = 'none';
+    return;
+  }
+  
+  document.getElementById('marketAnalysisCard').style.display = 'block';
+  
+  // Market Overview
+  const total = discoveredCompanies.length;
+  const both = discoveredCompanies.filter(c => c.fit === 'Both').length;
+  const eng = discoveredCompanies.filter(c => c.fit === 'Engineering').length;
+  const sci = discoveredCompanies.filter(c => c.fit === 'Scientific').length;
+  const pursue = both + eng + sci;
+  const pursueRate = total > 0 ? Math.round((pursue / total) * 100) : 0;
+  
+  document.getElementById('analysisOverview').innerHTML = `
+    <div style="margin-bottom: 8px;"><strong>${total}</strong> companies discovered</div>
+    <div style="margin-bottom: 8px;"><strong>${pursue}</strong> worth pursuing (${pursueRate}%)</div>
+    <div style="margin-bottom: 8px;"><strong>${both}</strong> fit Both divisions</div>
+    <div>Engineering: <strong>${eng}</strong> | Scientific: <strong>${sci}</strong></div>
+  `;
+  
+  // Top Opportunities (companies with "Both" fit)
+  const topOpps = discoveredCompanies.filter(c => c.fit === 'Both').slice(0, 5);
+  document.getElementById('analysisOpportunities').innerHTML = topOpps.length > 0 
+    ? topOpps.map(c => `<div style="margin-bottom: 6px;">• ${c.company} <span style="color: var(--text-muted); font-size: 12px;">(${c.industry})</span></div>`).join('')
+    : '<div style="color: var(--text-muted);">No "Both" fit companies found</div>';
+  
+  // Territory Breakdown
+  const territories = {};
+  discoveredCompanies.forEach(c => {
+    const t = c.territory || 'Unassigned';
+    territories[t] = (territories[t] || 0) + 1;
+  });
+  const sortedTerritories = Object.entries(territories).sort((a, b) => b[1] - a[1]);
+  document.getElementById('analysisTerritories').innerHTML = sortedTerritories.slice(0, 6).map(([t, count]) => 
+    `<div style="margin-bottom: 6px; display: flex; justify-content: space-between;">
+      <span>${t}</span><span style="font-weight: 600;">${count}</span>
+    </div>`
+  ).join('');
+  
+  // Top Industries by Volume
+  const industries = {};
+  discoveredCompanies.forEach(c => {
+    industries[c.industry] = (industries[c.industry] || 0) + 1;
+  });
+  const sortedIndustries = Object.entries(industries).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  document.getElementById('analysisIndustries').innerHTML = sortedIndustries.map(([ind, count]) => 
+    `<span style="background: var(--bg-page); padding: 4px 10px; border-radius: 4px; font-size: 13px;">${ind} <strong>(${count})</strong></span>`
+  ).join('');
+  
+  // Validation Summary
+  const has503B = discoveredCompanies.filter(c => c.is503B).length;
+  const has503A = discoveredCompanies.filter(c => c.is503A).length;
+  const hasGMP = discoveredCompanies.filter(c => c.gmpLikely).length;
+  const hasFDA = discoveredCompanies.filter(c => c.fdaLikely).length;
+  
+  if (has503B > 0 || has503A > 0 || hasGMP > 0 || hasFDA > 0) {
+    document.getElementById('validationSummary').style.display = 'block';
+    document.getElementById('validationContent').innerHTML = `
+      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        ${has503B > 0 ? `<span>🏥 503B Outsourcing: <strong>${has503B}</strong></span>` : ''}
+        ${has503A > 0 ? `<span>💊 503A Compounding: <strong>${has503A}</strong></span>` : ''}
+        ${hasGMP > 0 ? `<span>✅ GMP Likely: <strong>${hasGMP}</strong></span>` : ''}
+        ${hasFDA > 0 ? `<span>🏛️ FDA Registered: <strong>${hasFDA}</strong></span>` : ''}
+      </div>
+    `;
+  } else {
+    document.getElementById('validationSummary').style.display = 'none';
+  }
+}
+
+function filterResults() {
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const fit = document.getElementById('filterFit').value;
+  const territory = document.getElementById('filterTerritory').value;
+  const industry = document.getElementById('filterIndustry').value;
+
+  filteredCompanies = discoveredCompanies.filter(c => {
+    const matchSearch = !search || c.company.toLowerCase().includes(search) || (c.industry || '').toLowerCase().includes(search);
+    const matchFit = !fit || c.fit === fit;
+    const matchTerritory = !territory || c.territory === territory;
+    const matchIndustry = !industry || c.industry === industry;
+    return matchSearch && matchFit && matchTerritory && matchIndustry;
+  });
+
+  renderResults();
+}
+
+function renderResults() {
+  const tbody = document.getElementById('resultsBody');
+  const empty = document.getElementById('emptyResults');
+
+  if (filteredCompanies.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  tbody.innerHTML = filteredCompanies.map((c, idx) => {
+    const fitClass = c.fit === 'Both' ? 'fit-both' : c.fit === 'Engineering' ? 'fit-engineering' : c.fit === 'Scientific' ? 'fit-scientific' : 'fit-nofit';
+    const phone = c.phone || '-';
+    const aiDecisionClass = c.aiDecision === 'ENGAGE' ? 'decision-engage' : c.aiDecision === 'EDUCATE' ? 'decision-educate' : c.aiDecision === 'MONITOR' ? 'decision-monitor' : 'decision-deprioritize';
+    const compressionClass = c.aiCompression === 'high' ? 'compression-high' : c.aiCompression === 'medium' ? 'compression-medium' : 'compression-low';
+    const overrideIcon = c.overridden ? ' ✏️' : '';
+    return `<tr>
+      <td><strong>${escapeHtml(c.company)}</strong></td>
+      <td style="white-space: nowrap;">${escapeHtml(c.city || '')}, ${escapeHtml(c.stateCode || c.state || '')}</td>
+      <td style="white-space: nowrap; font-family: monospace;">${escapeHtml(phone)}</td>
+      <td>${c.website ? `<a href="${c.website}" target="_blank" style="color: var(--accent-cyan);">Link</a>` : '-'}</td>
+      <td><span class="${fitClass}">${c.fit || '-'}</span></td>
+      <td style="color: var(--accent-orange); white-space: nowrap;">${escapeHtml(c.territory || '-')}</td>
+      <td style="color: var(--accent-cyan); white-space: nowrap;">${escapeHtml(c.salesRep || '-')}</td>
+      <td style="font-size: 0.7rem; color: var(--text-muted);">${escapeHtml(c.industry || '')}</td>
+      <td><span class="${aiDecisionClass}" style="cursor:pointer" onclick="openOverrideModal(${idx})" title="Click to override">${c.aiDecision || '-'}${overrideIcon}</span></td>
+      <td><span class="${compressionClass}">${c.aiCompression || '-'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Export functions with all discovery options
+function buildCSVRow(c) {
+  const pressureList = (c.aiPressure || []).join('; ');
+  const competitorList = (c.aiCompetitors || []).join('; ');
+  return `"${c.company || ''}","${c.city || ''}","${c.stateCode || c.state || ''}","${c.phone || ''}","${c.website || ''}","${c.linkedin || ''}","${c.fit || ''}","${c.territory || ''}","${c.salesRep || ''}","${c.industry || ''}","${c.confidence || ''}","${c.reason || ''}","${c.is503A ? 'Yes' : ''}","${c.is503B ? 'Yes' : ''}","${c.gmpLikely ? 'Yes' : ''}","${c.fdaLikely ? 'Yes' : ''}","${c.naicsValid ? 'Yes' : ''}","${c.aiDecision || ''}","${c.aiCompression || ''}","${c.aiDivision || ''}","${c.aiConfidence || ''}","${pressureList}","${competitorList}","${(c.aiSummary || '').replace(/"/g, '""')}"`;
+}
+
+function getCSVHeader() {
+  return 'Company,City,State,Phone,Website,LinkedIn,Natoli Fit,Territory,Sales Rep,Industry,Confidence,Reason,503A,503B,GMP Likely,FDA Likely,Industry Match,AI Decision,AI Compression,AI Division,AI Confidence,Pressure Signals,Competitors,AI Summary';
+}
+
+function exportCSV() {
+  if (filteredCompanies.length === 0) { toast('No data to export'); return; }
+  let csv = getCSVHeader() + '\n';
+  filteredCompanies.forEach(c => { csv += buildCSVRow(c) + '\n'; });
+  downloadCSV(csv, 'natoli_discovery_' + new Date().toISOString().split('T')[0] + '.csv');
+  toast('Exported ' + filteredCompanies.length + ' companies');
+}
+
+function exportPursue() {
+  const pursue = filteredCompanies.filter(c => c.fit === 'Both' || c.fit === 'Engineering' || c.fit === 'Scientific');
+  if (pursue.length === 0) { toast('No pursue-worthy companies'); return; }
+  let csv = getCSVHeader() + '\n';
+  pursue.forEach(c => { csv += buildCSVRow(c) + '\n'; });
+  downloadCSV(csv, 'natoli_pursue_' + new Date().toISOString().split('T')[0] + '.csv');
+  toast('Exported ' + pursue.length + ' pursue companies');
+}
+
+function exportByTerritory() {
+  const territory = document.getElementById('filterTerritory').value;
+  if (!territory) {
+    toast('Select a territory first');
+    return;
+  }
+  const territoryCompanies = discoveredCompanies.filter(c => c.territory === territory);
+  if (territoryCompanies.length === 0) { toast('No companies in this territory'); return; }
+  
+  let csv = getCSVHeader() + '\n';
+  territoryCompanies.forEach(c => { csv += buildCSVRow(c) + '\n'; });
+  downloadCSV(csv, `natoli_${territory.toLowerCase().replace(' ', '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+  toast(`Exported ${territoryCompanies.length} companies for ${territory}`);
+}
+
+function downloadCSV(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+function exportByFit(fitType) {
+  const fitCompanies = discoveredCompanies.filter(c => c.fit === fitType);
+  if (fitCompanies.length === 0) { 
+    toast(`No ${fitType} companies found`); 
+    return; 
+  }
+  let csv = getCSVHeader() + '\n';
+  fitCompanies.forEach(c => { csv += buildCSVRow(c) + '\n'; });
+  downloadCSV(csv, `natoli_${fitType.toLowerCase()}_${new Date().toISOString().split('T')[0]}.csv`);
+  toast(`Exported ${fitCompanies.length} ${fitType} companies`);
+}
+
+function exportJSON() {
+  if (discoveredCompanies.length === 0) { toast('No data to export'); return; }
+  const json = JSON.stringify(discoveredCompanies, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `natoli_discovery_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  toast(`Exported ${discoveredCompanies.length} companies as JSON`);
+}
+
+async function saveToMemory() {
+  if (discoveredCompanies.length === 0) { toast('No companies to save'); return; }
+  try {
+    const res = await fetch('/api/scan-memory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ companies: discoveredCompanies })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (data.records) {
+        data.records.forEach(rec => {
+          const idx = discoveredCompanies.findIndex(c => c.company === rec.company);
+          if (idx >= 0) discoveredCompanies[idx].memoryId = rec.memory_id;
+        });
+        applyFilters();
+      }
+      toast(`Saved ${data.saved} companies to memory`);
+    } else {
+      toast('Failed to save: ' + (data.error || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Save to memory error:', e);
+    toast('Error saving to memory');
+  }
+}
+
+async function loadDashboard() {
+  const days = document.getElementById('dashboardDays').value;
+  try {
+    const [dashRes, overrideRes] = await Promise.all([
+      fetch(`/api/decision-dashboard?days=${days}`, { credentials: 'include' }),
+      fetch('/api/override-logs?limit=20', { credentials: 'include' })
+    ]);
+    const dash = await dashRes.json();
+    const overrides = await overrideRes.json();
+    
+    const decisions = dash.by_decision || {};
+    const normalizedDecisions = {
+      ENGAGE: (decisions.ENGAGE || 0) + (decisions.engage || 0),
+      EDUCATE: (decisions.EDUCATE || 0) + (decisions.educate || 0),
+      MONITOR: (decisions.MONITOR || 0) + (decisions.monitor || 0) + (decisions.UNKNOWN || 0) + (decisions.unknown || 0) + (decisions[''] || 0),
+      DEPRIORITIZE: (decisions.DEPRIORITIZE || 0) + (decisions.deprioritize || 0)
+    };
+    
+    document.getElementById('dashTotal').textContent = dash.total || 0;
+    document.getElementById('dashEngage').textContent = normalizedDecisions.ENGAGE;
+    document.getElementById('dashEducate').textContent = normalizedDecisions.EDUCATE;
+    document.getElementById('dashMonitor').textContent = normalizedDecisions.MONITOR;
+    document.getElementById('dashDeprioritize').textContent = normalizedDecisions.DEPRIORITIZE;
+    
+    document.getElementById('dashScientific').textContent = dash.by_division?.Scientific || 0;
+    document.getElementById('dashEngineering').textContent = dash.by_division?.Engineering || 0;
+    document.getElementById('dashBoth').textContent = dash.by_division?.Both || 0;
+    
+    const tbody = document.getElementById('territoryStatsBody');
+    const territoryData = dash.by_territory || {};
+    const aggregated = {};
+    Object.entries(territoryData).forEach(([terr, counts]) => {
+      const key = (terr && terr.trim()) ? terr.trim() : 'Unassigned';
+      if (!aggregated[key]) aggregated[key] = { ENGAGE: 0, EDUCATE: 0, MONITOR: 0, DEPRIORITIZE: 0 };
+      ['ENGAGE', 'EDUCATE', 'MONITOR', 'DEPRIORITIZE', 'UNKNOWN', ''].forEach(d => {
+        const target = (d === 'UNKNOWN' || d === '') ? 'MONITOR' : d;
+        aggregated[key][target] = (aggregated[key][target] || 0) + (counts[d] || 0);
+      });
+    });
+    tbody.innerHTML = Object.entries(aggregated).map(([territory, counts]) => 
+      `<tr><td>${territory}</td><td style="color:#22c55e">${counts.ENGAGE}</td><td style="color:#3b82f6">${counts.EDUCATE}</td><td style="color:#fbbf24">${counts.MONITOR}</td><td style="color:#6b7280">${counts.DEPRIORITIZE}</td></tr>`
+    ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No data yet</td></tr>';
+    
+    const overrideBody = document.getElementById('overrideHistoryBody');
+    overrideBody.innerHTML = overrides.map(o => 
+      `<tr><td>${escapeHtml(o.company_name)}</td><td><span class="decision-${o.original_decision?.toLowerCase()}">${o.original_decision}</span></td><td><span class="decision-${o.new_decision?.toLowerCase()}">${o.new_decision}</span></td><td style="font-size:0.75rem">${escapeHtml(o.reason || '-')}</td><td style="font-size:0.7rem">${o.created_at ? new Date(o.created_at).toLocaleDateString() : '-'}</td></tr>`
+    ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No overrides yet</td></tr>';
+  } catch (e) {
+    console.error('Dashboard load error:', e);
+  }
+}
+
+async function loadPressureSignals() {
+  try {
+    const res = await fetch('/api/pressure-signals', { credentials: 'include' });
+    const signals = await res.json();
+    const tbody = document.getElementById('signalsBody');
+    tbody.innerHTML = signals.map(s => 
+      `<tr><td><strong>${escapeHtml(s.keyword)}</strong></td><td><span class="signal-${s.category}">${s.category}</span></td><td>${s.weight}</td><td style="font-size:0.75rem;color:var(--text-muted)">${escapeHtml(s.description || '-')}</td><td><button class="btn btn-sm btn-red" onclick="deleteSignal(${s.id})">🗑️</button></td></tr>`
+    ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No signals. Click "Seed Defaults" to add initial signals.</td></tr>';
+  } catch (e) {
+    console.error('Load signals error:', e);
+  }
+}
+
+async function addPressureSignal() {
+  const keyword = document.getElementById('newSignalKeyword').value.trim();
+  const category = document.getElementById('newSignalCategory').value;
+  if (!keyword) { toast('Enter a keyword'); return; }
+  try {
+    const res = await fetch('/api/pressure-signals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ keyword, category, weight: 2 })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('newSignalKeyword').value = '';
+      loadPressureSignals();
+      toast('Signal added');
+    }
+  } catch (e) {
+    console.error('Add signal error:', e);
+  }
+}
+
+async function deleteSignal(id) {
+  if (!confirm('Remove this signal?')) return;
+  try {
+    await fetch(`/api/pressure-signals/${id}`, { method: 'DELETE', credentials: 'include' });
+    loadPressureSignals();
+    toast('Signal removed');
+  } catch (e) {
+    console.error('Delete signal error:', e);
+  }
+}
+
+async function seedDefaultSignals() {
+  try {
+    const res = await fetch('/api/pressure-signals/seed', { method: 'POST', credentials: 'include' });
+    const data = await res.json();
+    toast(`Seeded ${data.added} default signals`);
+    loadPressureSignals();
+  } catch (e) {
+    console.error('Seed signals error:', e);
+  }
+}
+
+async function scanAllIndustries() {
+  if (!confirm('This will scan all 78 industries. This may take several minutes and use significant API credits. Continue?')) {
+    return;
+  }
+  
+  // Select all industries
+  const allIndustries = [...ENGINEERING, ...SCIENTIFIC, ...RETAIL];
+  selectedIndustries = new Set(allIndustries);
+  renderTags();
+  updateSelectionCount();
+  
+  // Start the scan
+  await runDiscovery();
+}
+
+// Save/Load
+async function saveToDatabase() {
+  if (discoveredCompanies.length === 0) return;
+  
+  try {
+    const res = await fetch('/api/market-scans', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        name: `Discovery - ${new Date().toLocaleString()}`,
+        industries: [...selectedIndustries],
+        options: {
+          count: parseInt(document.getElementById('resultsPerIndustry').value)
+        }
+      })
+    });
+    const data = await res.json();
+    
+    if (data.id) {
+      // Update the scan with companies
+      await fetch(`/api/market-scans/${data.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          status: 'completed',
+          companies: discoveredCompanies,
+          current_industry: selectedIndustries.size,
+          name: `Discovery - ${discoveredCompanies.length} companies`
+        })
+      });
+      loadSavedScans();
+    }
+  } catch (e) { console.error('Save error:', e); }
+}
+
+async function loadSavedScans() {
+  try {
+    const res = await fetch('/api/market-scans', { credentials: 'include' });
+    const data = await res.json();
+    const scans = data.scans || [];
+    const container = document.getElementById('savedList');
+    
+    if (scans.length === 0) {
+      container.innerHTML = '<div class="empty-state">No saved scans yet.</div>';
+      return;
+    }
+
+    container.innerHTML = scans.map((scan, i) => `
+      <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 600;">${new Date(scan.created_at).toLocaleString()}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">${scan.total_companies || 0} companies</div>
+        </div>
+        <button class="btn btn-sm btn-cyan" onclick="loadScan(${scan.id})">Load</button>
+      </div>
+    `).join('');
+  } catch (e) { console.error('Load error:', e); }
+}
+
+async function loadScan(id) {
+  try {
+    const res = await fetch(`/api/market-scans/${id}`, { credentials: 'include' });
+    const data = await res.json();
+    if (data.companies) {
+      discoveredCompanies = data.companies;
+      filteredCompanies = [...discoveredCompanies];
+      populateIndustryFilter();
+      filterResults();
+      updateStats();
+      generateMarketAnalysis();
+      switchTab('results');
+      toast('Loaded scan with ' + discoveredCompanies.length + ' companies');
+    }
+  } catch (e) { console.error('Load scan error:', e); }
+}
+
+async function clearAllSaved() {
+  if (!confirm('Clear all saved scans?')) return;
+  try {
+    await fetch('/api/market-scans', { method: 'DELETE', credentials: 'include' });
+    loadSavedScans();
+    toast('Cleared all saved scans');
+  } catch (e) { console.error('Clear error:', e); }
+}
+
+// DEEP DISCOVERY FUNCTIONS
+let deepResults = [];
+
+async function runDeepDiscovery() {
+  const keyword = document.getElementById('deepKeyword').value.trim();
+  const count = parseInt(document.getElementById('deepCount').value);
+  
+  if (!keyword) {
+    toast('Please enter a search keyword');
+    return;
+  }
+  
+  const btn = document.getElementById('deepRunBtn');
+  const status = document.getElementById('deepStatus');
+  
+  btn.disabled = true;
+  btn.textContent = '⏳ Searching...';
+  status.textContent = 'Searching web and analyzing websites...';
+  
+  document.getElementById('deepResultsCard').style.display = 'block';
+  document.getElementById('deepProgressContainer').style.display = 'block';
+  document.getElementById('deepProgressFill').style.width = '30%';
+  document.getElementById('deepProgressText').textContent = 'Searching for companies...';
+  
+  try {
+    const res = await fetch('/api/market-discovery/deep', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ keyword, count })
+    });
+    
+    const data = await res.json();
+    
+    document.getElementById('deepProgressFill').style.width = '100%';
+    document.getElementById('deepProgressText').textContent = 'Complete!';
+    
+    if (data.error) {
+      toast('Error: ' + data.error);
+      status.textContent = 'Error: ' + data.error;
+    } else {
+      deepResults = data.companies || [];
+      renderDeepResults();
+      updateDeepStats();
+      status.textContent = `Found ${deepResults.length} companies`;
+      toast(`Deep Discovery found ${deepResults.length} companies`);
+      // Auto-save deep results to main list
+      if (deepResults.length > 0) {
+        discoveredCompanies = [...discoveredCompanies, ...deepResults.map(c => ({...c, source: 'deep'}))];
+        autoSave();
+      }
+    }
+  } catch (e) {
+    console.error('Deep discovery error:', e);
+    toast('Error running deep discovery');
+    status.textContent = 'Error occurred';
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '🌐 Run Deep Discovery';
+  setTimeout(() => {
+    document.getElementById('deepProgressContainer').style.display = 'none';
+  }, 2000);
+}
+
+async function analyzeUrl() {
+  const url = document.getElementById('singleUrl').value.trim();
+  if (!url) {
+    toast('Please enter a URL');
+    return;
+  }
+  
+  const resultDiv = document.getElementById('urlAnalysisResult');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<div style="color: var(--text-muted);">⏳ Analyzing website...</div>';
+  
+  try {
+    const res = await fetch('/api/market-discovery/analyze-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ url })
+    });
+    
+    const data = await res.json();
+    
+    if (data.error) {
+      resultDiv.innerHTML = `<div style="color: var(--accent-red); padding: 12px; background: rgba(239,68,68,0.1); border-radius: 8px;">
+        ❌ ${data.blocked ? 'Website blocks automated access (robots.txt)' : data.error}
+      </div>`;
+    } else {
+      const fitClass = data.fit === 'Both' ? 'fit-both' : data.fit === 'Engineering' ? 'fit-engineering' : data.fit === 'Scientific' ? 'fit-scientific' : 'fit-nofit';
+      resultDiv.innerHTML = `
+        <div style="background: var(--bg-secondary); border-radius: 8px; padding: 16px; border: 1px solid var(--border-color);">
+          <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 12px;">${escapeHtml(data.company || 'Unknown')}</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; font-size: 0.85rem;">
+            <div><span style="color: var(--text-muted);">Industry:</span> ${escapeHtml(data.industry || '-')}</div>
+            <div><span style="color: var(--text-muted);">Location:</span> ${escapeHtml(data.city || '')}${data.state ? ', ' + data.state : ''}</div>
+            <div><span style="color: var(--text-muted);">Natoli Fit:</span> <span class="${fitClass}">${data.fit || '-'}</span></div>
+            <div><span style="color: var(--text-muted);">Confidence:</span> ${data.confidence || 0}%</div>
+          </div>
+          ${data.products ? `<div style="margin-top: 12px;"><span style="color: var(--text-muted);">Products:</span> ${escapeHtml(data.products)}</div>` : ''}
+          ${data.reason ? `<div style="margin-top: 8px;"><span style="color: var(--text-muted);">Reason:</span> ${escapeHtml(data.reason)}</div>` : ''}
+          <div style="margin-top: 12px;">
+            <button class="btn btn-sm btn-purple" onclick="addSingleToResults(${JSON.stringify(data).replace(/"/g, '&quot;')})">Add to Results</button>
+          </div>
+        </div>
+      `;
+    }
+  } catch (e) {
+    resultDiv.innerHTML = `<div style="color: var(--accent-red);">Error analyzing URL</div>`;
+  }
+}
+
+function addSingleToResults(data) {
+  deepResults.push(data);
+  renderDeepResults();
+  updateDeepStats();
+  toast('Added to deep discovery results');
+}
+
+function renderDeepResults() {
+  const tbody = document.getElementById('deepResultsBody');
+  const empty = document.getElementById('deepEmptyResults');
+  
+  if (deepResults.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  tbody.innerHTML = deepResults.map(c => {
+    const fitClass = c.fit === 'Both' ? 'fit-both' : c.fit === 'Engineering' ? 'fit-engineering' : c.fit === 'Scientific' ? 'fit-scientific' : 'fit-nofit';
+    return `<tr>
+      <td><strong>${escapeHtml(c.company || '')}</strong></td>
+      <td>${escapeHtml(c.industry || '-')}</td>
+      <td style="white-space: nowrap;">${escapeHtml(c.city || '')}${c.state ? ', ' + c.state : ''}</td>
+      <td><span class="${fitClass}">${c.fit || '-'}</span></td>
+      <td style="font-size: 0.75rem;">${escapeHtml(c.products || '-')}</td>
+      <td>${c.confidence || 0}%</td>
+      <td>${c.website ? `<a href="${c.website}" target="_blank" style="color: var(--accent-cyan);">Link</a>` : '-'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateDeepStats() {
+  const statsDiv = document.getElementById('deepStats');
+  const total = deepResults.length;
+  const engineering = deepResults.filter(c => c.fit === 'Engineering' || c.fit === 'Both').length;
+  const scientific = deepResults.filter(c => c.fit === 'Scientific' || c.fit === 'Both').length;
+  const avgConfidence = total > 0 ? Math.round(deepResults.reduce((sum, c) => sum + (c.confidence || 0), 0) / total) : 0;
+  
+  statsDiv.innerHTML = `
+    <div class="stat-box"><div class="num" style="color: var(--accent-cyan);">${total}</div><div class="label">Total</div></div>
+    <div class="stat-box"><div class="num" style="color: var(--accent-blue);">${engineering}</div><div class="label">Engineering</div></div>
+    <div class="stat-box"><div class="num" style="color: var(--accent-purple);">${scientific}</div><div class="label">Scientific</div></div>
+    <div class="stat-box"><div class="num" style="color: var(--accent-green);">${avgConfidence}%</div><div class="label">Avg Confidence</div></div>
+  `;
+}
+
+function exportDeepCSV() {
+  if (deepResults.length === 0) {
+    toast('No results to export');
+    return;
+  }
+  
+  const headers = 'Company,Industry,City,State,Natoli Fit,Products,Reason,Confidence,Website\n';
+  const rows = deepResults.map(c => 
+    `"${c.company || ''}","${c.industry || ''}","${c.city || ''}","${c.state || ''}","${c.fit || ''}","${(c.products || '').replace(/"/g, '""')}","${(c.reason || '').replace(/"/g, '""')}","${c.confidence || ''}","${c.website || ''}"`
+  ).join('\n');
+  
+  const blob = new Blob([headers + rows], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'deep_discovery_results.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported ' + deepResults.length + ' companies');
+}
+
+function mergeDeepToMain() {
+  if (deepResults.length === 0) {
+    toast('No deep results to merge');
+    return;
+  }
+  
+  const merged = deepResults.map(c => ({
+    company: c.company,
+    city: c.city,
+    state: c.state,
+    stateCode: c.state,
+    website: c.website,
+    phone: c.phone || '',
+    linkedin: '',
+    fit: c.fit,
+    territory: assignTerritory(c.state),
+    salesRep: assignSalesRep(c.state),
+    industry: c.industry,
+    confidence: c.confidence,
+    reason: c.reason,
+    source: 'deep_discovery'
+  }));
+  
+  discoveredCompanies = [...discoveredCompanies, ...merged];
+  filteredCompanies = [...discoveredCompanies];
+  populateIndustryFilter();
+  filterResults();
+  updateStats();
+  generateMarketAnalysis();
+  switchTab('results');
+  toast(`Merged ${merged.length} companies to main results`);
+}
+
+// Toast
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// Init on load
+document.addEventListener('DOMContentLoaded', function() {
+  init();
+  opp_updateStats();
+  opp_renderRecentScans();
+  opp_renderOpportunities();
+  opp_setupChipListeners();
+  opp_renderAllPlanograms();
+});
+
+// Override modal functions
+let currentOverrideIndex = null;
+
+function openOverrideModal(index) {
+  currentOverrideIndex = index;
+  const c = filteredCompanies[index];
+  document.getElementById('overrideCompanyName').textContent = c.company;
+  document.getElementById('overrideOriginal').textContent = c.aiDecision || 'UNKNOWN';
+  document.getElementById('overrideNewDecision').value = c.aiDecision || 'MONITOR';
+  document.getElementById('overrideNotes').value = '';
+  document.getElementById('overrideModal').style.display = 'flex';
+}
+
+function closeOverrideModal() {
+  document.getElementById('overrideModal').style.display = 'none';
+  currentOverrideIndex = null;
+}
+
+async function submitOverride() {
+  if (currentOverrideIndex === null) return;
+  const c = filteredCompanies[currentOverrideIndex];
+  const newDecision = document.getElementById('overrideNewDecision').value;
+  const notes = document.getElementById('overrideNotes').value.trim();
+  const originalDecision = c.aiDecision || 'UNKNOWN';
+  
+  if (newDecision === originalDecision) {
+    toast('Decision unchanged');
+    closeOverrideModal();
+    return;
+  }
+  
+  try {
+    let res;
+    if (c.memoryId) {
+      res = await fetch(`/api/scan-memory/${c.memoryId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          final_decision: newDecision,
+          override_reason: notes || 'Manual override'
+        })
+      });
+    } else {
+      res = await fetch('/api/override-log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          company_name: c.company,
+          original_decision: originalDecision,
+          new_decision: newDecision,
+          reason: notes || 'Manual override'
+        })
+      });
+    }
+    const data = await res.json();
+    if (data.success) {
+      c.aiDecision = newDecision;
+      c.overridden = true;
+      const masterIdx = discoveredCompanies.findIndex(x => x.company === c.company);
+      if (masterIdx >= 0) discoveredCompanies[masterIdx].aiDecision = newDecision;
+      renderResults();
+      toast(`Override saved: ${originalDecision} → ${newDecision}`);
+    } else {
+      toast('Failed to save override');
+    }
+  } catch (e) {
+    console.error('Override error:', e);
+    toast('Error saving override');
+  }
+  closeOverrideModal();
+}
+
+// ============== OPPORTUNITY ENGINE ==============
+
+let opp_scans = JSON.parse(localStorage.getItem('opp_scans') || '[]');
+let opp_opportunities = JSON.parse(localStorage.getItem('opp_opportunities') || '[]');
+let opp_batchResults = [];
+let opp_settings = JSON.parse(localStorage.getItem('opp_settings') || '{}');
+
+const opp_pressureKeywords = ['throughput', 'scale-up', 'yield', 'tablet', 'compaction', 'validation', 'variability', 'press', 'tooling', 'capacity', 'expansion', 'upgrade', 'compliance', 'FDA', 'regulatory', 'efficiency', 'batch', 'OEE'];
+
+const opp_competitors = ['Fette', 'Korsch', 'IMA', 'Kilian', 'Syntegon', 'Romaco', 'Sejong', 'Cadmach', 'ACG', 'Hanlin'];
+
+const opp_taxonomy = [
+  'pharmaceutical solid dose', 'nutraceutical tablets', 'veterinary compaction', 'cannabis tablets',
+  'industrial powder compaction', 'ceramic pressing', 'catalyst compacts', 'battery powder compression',
+  'pressed consumer goods', 'pool water treatment', 'cleaning tablets', 'agricultural pellets',
+  'pet health supplements', 'sports nutrition', 'cosmetics compaction', 'nuclear fuel pellets',
+  'advanced ceramics', 'sintered metals', 'ammunition pressing', 'medical implants',
+  'detergent tablets', 'supplement manufacturing', 'excipient development', 'compounding pharmacy'
+];
+
+const planogramData = [
+  // === WALMART (USA, Puerto Rico, Mexico) ===
+  { retailer: 'walmart', category: 'vitamins', name: 'Walmart - Vitamins & Supplements', aisle: 'Health & Wellness (A12-A16)', brands: ['Nature Made', 'Centrum', 'One A Day', "Nature's Bounty", 'Equate', 'Spring Valley'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'walmart', category: 'otc', name: 'Walmart - OTC Medications', aisle: 'Pharmacy (P1-P8)', brands: ['Tylenol', 'Advil', 'Aleve', 'Equate', 'Pepto-Bismol', 'Tums'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'walmart', category: 'cleaning', name: 'Walmart - Cleaning Tablets', aisle: 'Cleaning (C5-C10)', brands: ['Finish', 'Cascade', 'Affresh', 'OxiClean'], regions: ['usa'] },
+  { retailer: 'walmart', category: 'pet', name: 'Walmart - Pet Health', aisle: 'Pet Care (L15-L20)', brands: ['PetArmor', 'Vibeful', 'Milk-Bone', 'Greenies'], regions: ['usa'] },
+  { retailer: 'walmart', category: 'laundry', name: 'Walmart - Laundry Pods', aisle: 'Laundry (L1-L8)', brands: ['Tide Pods', 'All', 'Gain Flings', 'Arm & Hammer'], regions: ['usa'] },
+  { retailer: 'walmart', category: 'vitamins', name: 'Walmart Mexico - Vitamins', aisle: 'Farmacia y Salud', brands: ['Pharmaton', 'Centrum', 'Ensure', 'GNC'], regions: ['mexico'] },
+  { retailer: 'walmart', category: 'otc', name: 'Walmart Mexico - OTC', aisle: 'Farmacia', brands: ['Advil', 'Tylenol', 'Tempra', 'Aspirina'], regions: ['mexico'] },
+
+  // === TARGET ===
+  { retailer: 'target', category: 'otc', name: 'Target - OTC Medications', aisle: 'Pharmacy (P1-P8)', brands: ['Tylenol', 'Advil', 'Aleve', 'Up&Up', 'Pepto-Bismol'], regions: ['usa'] },
+  { retailer: 'target', category: 'vitamins', name: 'Target - Vitamins & Wellness', aisle: 'Wellness (W1-W5)', brands: ['Olly', 'Nature Made', 'Vital Proteins', 'Up&Up', 'Smarty Pants'], regions: ['usa'] },
+  { retailer: 'target', category: 'cleaning', name: 'Target - Cleaning Tablets', aisle: 'Household (H4-H8)', brands: ['Finish', 'Cascade', 'Method', 'Blueland'], regions: ['usa'] },
+  { retailer: 'target', category: 'pet', name: 'Target - Pet Supplements', aisle: 'Pets (PT1-PT5)', brands: ['Greenies', 'Blue Buffalo', 'Good Lovin'], regions: ['usa'] },
+
+  // === COSTCO (USA, Canada, Mexico) ===
+  { retailer: 'costco', category: 'vitamins', name: 'Costco - Bulk Supplements', aisle: 'Health & Personal Care', brands: ['Kirkland Signature', 'Nature Made', 'Schiff', 'Qunol', 'Align'], regions: ['usa', 'canada'] },
+  { retailer: 'costco', category: 'otc', name: 'Costco - OTC Bulk', aisle: 'Pharmacy Section', brands: ['Kirkland', 'Tylenol', 'Advil', 'Aleve', 'Zyrtec'], regions: ['usa', 'canada'] },
+  { retailer: 'costco', category: 'cleaning', name: 'Costco - Cleaning Bulk', aisle: 'Household Supplies', brands: ['Finish', 'Cascade', 'Kirkland'], regions: ['usa', 'canada'] },
+  { retailer: 'costco', category: 'vitamins', name: 'Costco Mexico - Supplements', aisle: 'Salud y Bienestar', brands: ['Kirkland', 'Nature Made', 'GNC'], regions: ['mexico'] },
+
+  // === SAM'S CLUB ===
+  { retailer: 'samsclub', category: 'vitamins', name: "Sam's Club - Vitamins Bulk", aisle: 'Health & Wellness', brands: ["Member's Mark", 'Nature Made', 'Centrum', "Nature's Bounty", 'Schiff'], regions: ['usa'] },
+  { retailer: 'samsclub', category: 'otc', name: "Sam's Club - OTC Bulk", aisle: 'Pharmacy Area', brands: ["Member's Mark", 'Tylenol', 'Advil', 'Aleve', 'Claritin'], regions: ['usa'] },
+  { retailer: 'samsclub', category: 'cleaning', name: "Sam's Club - Cleaning Bulk", aisle: 'Household', brands: ['Finish', 'Cascade', 'OxiClean'], regions: ['usa'] },
+
+  // === BJ'S WHOLESALE ===
+  { retailer: 'bjs', category: 'vitamins', name: "BJ's - Vitamins & Supplements", aisle: 'Wellness Center', brands: ['Wellsley Farms', 'Nature Made', 'Centrum', 'Schiff'], regions: ['usa'] },
+  { retailer: 'bjs', category: 'otc', name: "BJ's - OTC Medications", aisle: 'Pharmacy Front', brands: ['Berkley Jensen', 'Tylenol', 'Advil'], regions: ['usa'] },
+
+  // === KROGER ===
+  { retailer: 'kroger', category: 'vitamins', name: 'Kroger - Vitamins & Supplements', aisle: 'Health & Wellness (Aisle 7-9)', brands: ['Kroger', 'Nature Made', 'Centrum', "Nature's Bounty", 'Vitafusion'], regions: ['usa'] },
+  { retailer: 'kroger', category: 'otc', name: 'Kroger - OTC Pain & Allergy', aisle: 'Pharmacy (Aisle 10-12)', brands: ['Kroger', 'Tylenol', 'Advil', 'Zyrtec', 'Claritin'], regions: ['usa'] },
+  { retailer: 'kroger', category: 'cleaning', name: 'Kroger - Dishwasher & Cleaning', aisle: 'Household (Aisle 14-16)', brands: ['Finish', 'Cascade', 'Kroger'], regions: ['usa'] },
+
+  // === PUBLIX ===
+  { retailer: 'publix', category: 'vitamins', name: 'Publix - Vitamins', aisle: 'Pharmacy/Wellness', brands: ['Publix', 'Nature Made', 'Centrum', 'Rainbow Light'], regions: ['usa'] },
+  { retailer: 'publix', category: 'otc', name: 'Publix - OTC Medications', aisle: 'Pharmacy Section', brands: ['Publix', 'Tylenol', 'Advil', 'Bayer'], regions: ['usa'] },
+
+  // === H-E-B ===
+  { retailer: 'heb', category: 'vitamins', name: 'H-E-B - Vitamins & Supplements', aisle: 'Health Market', brands: ['H-E-B', 'Nature Made', 'Centrum', 'Garden of Life'], regions: ['usa'] },
+  { retailer: 'heb', category: 'otc', name: 'H-E-B - OTC Medications', aisle: 'Pharmacy', brands: ['H-E-B', 'Tylenol', 'Advil', 'Aleve'], regions: ['usa'] },
+  { retailer: 'heb', category: 'pet', name: 'H-E-B - Pet Supplements', aisle: 'Pet Care', brands: ['Heritage Ranch', 'Greenies', 'VetIQ'], regions: ['usa'] },
+
+  // === MEIJER ===
+  { retailer: 'meijer', category: 'vitamins', name: 'Meijer - Vitamins', aisle: 'Health & Wellness', brands: ['Meijer', 'Nature Made', 'Centrum', 'Alive!'], regions: ['usa'] },
+  { retailer: 'meijer', category: 'otc', name: 'Meijer - OTC Medications', aisle: 'Pharmacy', brands: ['Meijer', 'Tylenol', 'Advil', 'Mucinex'], regions: ['usa'] },
+  { retailer: 'meijer', category: 'pool', name: 'Meijer - Pool & Water Care', aisle: 'Seasonal/Outdoor', brands: ['HTH', 'Clorox Pool', 'Pool Essentials'], regions: ['usa'] },
+
+  // === ALDI ===
+  { retailer: 'aldi', category: 'vitamins', name: 'Aldi - Vitamins & Supplements', aisle: 'Health/Beauty', brands: ['Welby', 'Lacura'], regions: ['usa'] },
+  { retailer: 'aldi', category: 'otc', name: 'Aldi - OTC Pain Relief', aisle: 'Health/Beauty', brands: ['Welby'], regions: ['usa'] },
+  { retailer: 'aldi', category: 'cleaning', name: 'Aldi - Cleaning Tabs', aisle: 'Household', brands: ['Tandil', 'Power Force'], regions: ['usa'] },
+
+  // === TRADER JOE'S ===
+  { retailer: 'traderjoes', category: 'vitamins', name: "Trader Joe's - Supplements", aisle: 'Wellness Endcap', brands: ["Trader Joe's"], regions: ['usa'] },
+  { retailer: 'traderjoes', category: 'wellness', name: "Trader Joe's - Specialty Wellness", aisle: 'Wellness Section', brands: ["Trader Joe's Turmeric", "TJ's Elderberry", "TJ's Ashwagandha"], regions: ['usa'] },
+
+  // === WHOLE FOODS ===
+  { retailer: 'wholefoods', category: 'vitamins', name: 'Whole Foods - Premium Supplements', aisle: 'Whole Body (WB1-WB8)', brands: ['365 by WFM', 'Garden of Life', 'New Chapter', 'MegaFood', 'Rainbow Light'], regions: ['usa'] },
+  { retailer: 'wholefoods', category: 'wellness', name: 'Whole Foods - Specialty Wellness', aisle: 'Whole Body', brands: ['Gaia Herbs', 'Nordic Naturals', 'Enzymedica', 'Host Defense'], regions: ['usa'] },
+
+  // === SAFEWAY / ALBERTSONS ===
+  { retailer: 'safeway', category: 'vitamins', name: 'Safeway - Vitamins', aisle: 'Health & Wellness', brands: ['Signature Care', 'Nature Made', 'Centrum'], regions: ['usa'] },
+  { retailer: 'safeway', category: 'otc', name: 'Safeway - OTC Medications', aisle: 'Pharmacy', brands: ['Signature Care', 'Tylenol', 'Advil'], regions: ['usa'] },
+
+  // === CVS (USA, Puerto Rico) ===
+  { retailer: 'cvs', category: 'otc', name: 'CVS - Pain Relief', aisle: 'Pain & Fever (Main)', brands: ['CVS Health', 'Tylenol', 'Motrin', 'Excedrin', 'Bayer'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'cvs', category: 'vitamins', name: 'CVS - Vitamins & Supplements', aisle: 'Vitamins & Supplements', brands: ['CVS Health', 'Nature Made', 'Centrum', "Nature's Bounty", 'Olly'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'cvs', category: 'wellness', name: 'CVS - Specialty Wellness', aisle: 'Natural Health', brands: ['CVS Health', 'Garden of Life', 'Nordic Naturals'], regions: ['usa'] },
+
+  // === WALGREENS (USA, Puerto Rico) ===
+  { retailer: 'walgreens', category: 'otc', name: 'Walgreens - Pain Relief', aisle: 'Pain Relief Aisle', brands: ['Walgreens', 'Tylenol', 'Advil', 'Aleve'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'walgreens', category: 'vitamins', name: 'Walgreens - Vitamins', aisle: 'Vitamins Aisle', brands: ['Walgreens', 'Nature Made', 'Centrum', 'Vitafusion'], regions: ['usa', 'puerto-rico'] },
+
+  // === RITE AID ===
+  { retailer: 'riteaid', category: 'otc', name: 'Rite Aid - OTC Medications', aisle: 'Pharmacy Front', brands: ['Rite Aid', 'Tylenol', 'Advil', 'Aleve'], regions: ['usa'] },
+  { retailer: 'riteaid', category: 'vitamins', name: 'Rite Aid - Vitamins', aisle: 'Wellness Aisle', brands: ['Rite Aid', 'Nature Made', 'Centrum'], regions: ['usa'] },
+
+  // === HOME DEPOT (USA, Canada, Mexico) ===
+  { retailer: 'homedepot', category: 'pool', name: 'Home Depot - Pool & Water Care', aisle: 'Outdoor Living (OL15-OL22)', brands: ['HTH', 'Clorox Pool', "Leslie's", 'BioGuard', 'Pool Essentials'], regions: ['usa', 'canada'] },
+  { retailer: 'homedepot', category: 'cleaning', name: 'Home Depot - Cleaning Tablets', aisle: 'Cleaning Supplies', brands: ['Affresh', 'Finish', 'Cascade'], regions: ['usa', 'canada'] },
+  { retailer: 'homedepot', category: 'garden', name: 'Home Depot - Garden & Fertilizer', aisle: 'Garden Center', brands: ['Miracle-Gro', 'Vigoro', 'Osmocote', 'Jobe'], regions: ['usa', 'canada'] },
+  { retailer: 'homedepot', category: 'pool', name: 'Home Depot Mexico - Pool', aisle: 'Albercas y Jardín', brands: ['HTH', 'Clorox', 'Pool Boss'], regions: ['mexico'] },
+
+  // === LOWE'S ===
+  { retailer: 'lowes', category: 'pool', name: "Lowe's - Pool Care", aisle: 'Outdoor Living', brands: ['HTH', 'Clorox', 'Pool Time', 'BioGuard'], regions: ['usa'] },
+  { retailer: 'lowes', category: 'garden', name: "Lowe's - Garden Fertilizer", aisle: 'Garden Center', brands: ['Miracle-Gro', 'Vigoro', 'Pennington'], regions: ['usa'] },
+  { retailer: 'lowes', category: 'cleaning', name: "Lowe's - Cleaning Tablets", aisle: 'Cleaning Supplies', brands: ['Affresh', 'CLR', 'Glisten'], regions: ['usa'] },
+
+  // === TRACTOR SUPPLY ===
+  { retailer: 'tractorsupply', category: 'livestock', name: 'Tractor Supply - Livestock Supplements', aisle: 'Livestock Feed & Health', brands: ['Durvet', 'Manna Pro', 'Purina', 'Nutrena'], regions: ['usa'] },
+  { retailer: 'tractorsupply', category: 'pet', name: 'Tractor Supply - Pet Health', aisle: 'Pet Care', brands: ['4health', 'PetArmor', 'VetIQ', 'Nutramax'], regions: ['usa'] },
+  { retailer: 'tractorsupply', category: 'pool', name: 'Tractor Supply - Water Treatment', aisle: 'Farm & Ranch', brands: ['HTH', 'Clorox', 'API'], regions: ['usa'] },
+
+  // === GNC ===
+  { retailer: 'gnc', category: 'vitamins', name: 'GNC - Vitamins & Supplements', aisle: 'Core Vitamins Wall', brands: ['GNC Mega Men', 'GNC Womens', 'GNC Herbal Plus', 'GNC Triple Strength'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'gnc', category: 'sports', name: 'GNC - Sports Nutrition', aisle: 'Performance Zone', brands: ['GNC AMP', 'GNC Pro Performance', 'Optimum Nutrition', 'Cellucor', 'MuscleTech'], regions: ['usa', 'puerto-rico'] },
+  { retailer: 'gnc', category: 'wellness', name: 'GNC - Specialty Wellness', aisle: 'Total Lean / Wellness', brands: ['GNC Total Lean', 'GNC Earth Genius', 'GNC Preventive Nutrition'], regions: ['usa'] },
+
+  // === THE VITAMIN SHOPPE ===
+  { retailer: 'vitaminshoppe', category: 'vitamins', name: 'Vitamin Shoppe - Core Vitamins', aisle: 'Vitamins Wall (V1-V12)', brands: ['Vthrive', 'Solgar', "Nature's Way", 'NOW Foods', 'Garden of Life'], regions: ['usa'] },
+  { retailer: 'vitaminshoppe', category: 'sports', name: 'Vitamin Shoppe - Sports Nutrition', aisle: 'Sports Zone', brands: ['BodyTech', 'Optimum Nutrition', 'Dymatize', 'Ghost', 'Cellucor'], regions: ['usa'] },
+  { retailer: 'vitaminshoppe', category: 'wellness', name: 'Vitamin Shoppe - Specialty Health', aisle: 'Herbal / Specialty', brands: ['Vthrive', 'Gaia Herbs', 'Nordic Naturals', 'Enzymedica', 'Ancient Nutrition'], regions: ['usa'] },
+
+  // === PETCO ===
+  { retailer: 'petco', category: 'pet', name: 'Petco - Dog Supplements', aisle: 'Dog Health & Wellness', brands: ['Zesty Paws', 'PetHonesty', 'NaturVet', 'Nutramax Cosequin', 'VetIQ'], regions: ['usa'] },
+  { retailer: 'petco', category: 'pet', name: 'Petco - Cat & Small Animal Supplements', aisle: 'Cat Health / Small Animal', brands: ['Vetriscience', 'Nutramax', 'Tomlyn', 'Oxbow'], regions: ['usa'] },
+
+  // === PETSMART ===
+  { retailer: 'petsmart', category: 'pet', name: 'PetSmart - Dog Health', aisle: 'Dog Pharmacy & Health', brands: ['GNC Pets', 'PetHonesty', 'NaturVet', 'Nutramax', 'ProSense'], regions: ['usa'] },
+  { retailer: 'petsmart', category: 'pet', name: 'PetSmart - All Pets Supplements', aisle: 'Pet Health Aisle', brands: ['Authority', 'Simply Nourish', 'Vetriscience'], regions: ['usa'] },
+
+  // === CHEWY ===
+  { retailer: 'chewy', category: 'pet', name: 'Chewy - Pet Supplements Online', aisle: 'Online', brands: ['Zesty Paws', 'PetHonesty', 'Nutramax', 'NaturVet', 'VetriScience', 'ElleVet'], regions: ['usa', 'canada'] },
+
+  // === DOLLAR GENERAL ===
+  { retailer: 'dollargeneral', category: 'otc', name: 'Dollar General - OTC Basics', aisle: 'Health (H1-H3)', brands: ['DG Health', 'Tylenol', 'Advil'], regions: ['usa'] },
+  { retailer: 'dollargeneral', category: 'vitamins', name: 'Dollar General - Basic Vitamins', aisle: 'Health (H1-H3)', brands: ['DG Health', 'Spring Valley'], regions: ['usa'] },
+  { retailer: 'dollargeneral', category: 'cleaning', name: 'Dollar General - Cleaning Tablets', aisle: 'Household', brands: ['Finish', 'LA Totally Awesome'], regions: ['usa'] },
+
+  // === DOLLAR TREE ===
+  { retailer: 'dollartree', category: 'otc', name: 'Dollar Tree - OTC Value', aisle: 'Health & Beauty', brands: ['Health Smart', 'Assured'], regions: ['usa'] },
+  { retailer: 'dollartree', category: 'vitamins', name: 'Dollar Tree - Value Vitamins', aisle: 'Health & Beauty', brands: ['Assured', 'Health Smart'], regions: ['usa'] },
+
+  // === AMAZON (USA, Canada, Puerto Rico, Mexico) ===
+  { retailer: 'amazon', category: 'vitamins', name: 'Amazon - Supplements', aisle: 'Online', brands: ['Amazon Basics', 'Nature Made', 'NOW Foods', 'Garden of Life', 'Sports Research'], regions: ['usa', 'canada', 'puerto-rico'] },
+  { retailer: 'amazon', category: 'pet', name: 'Amazon - Pet Supplements', aisle: 'Online', brands: ['Zesty Paws', 'PetHonesty', 'NaturVet', 'Nutramax'], regions: ['usa', 'canada'] },
+  { retailer: 'amazon', category: 'sports', name: 'Amazon - Sports Nutrition', aisle: 'Online', brands: ['Optimum Nutrition', 'MuscleTech', 'Cellucor', 'Ghost', 'Transparent Labs'], regions: ['usa', 'canada'] },
+  { retailer: 'amazon', category: 'cleaning', name: 'Amazon - Cleaning Tablets', aisle: 'Online', brands: ['Finish', 'Cascade', 'Blueland', 'Dropps', 'Cleancult'], regions: ['usa', 'canada'] },
+  { retailer: 'amazon', category: 'wellness', name: 'Amazon - Specialty Wellness', aisle: 'Online', brands: ['Athletic Greens', 'Seed', 'Ritual', 'Care/of', 'Huel'], regions: ['usa'] },
+  { retailer: 'amazon', category: 'vitamins', name: 'Amazon Mexico - Supplements', aisle: 'Online', brands: ['Centrum', 'GNC', 'NOW Foods', 'Nature Made'], regions: ['mexico'] },
+
+  // === CANADIAN RETAILERS ===
+  { retailer: 'canadiantire', category: 'pool', name: 'Canadian Tire - Pool', aisle: 'Seasonal/Outdoor', brands: ['HTH', 'Pool Boss', 'Aqua-Pure', 'SunGuard'], regions: ['canada'] },
+  { retailer: 'canadiantire', category: 'cleaning', name: 'Canadian Tire - Cleaning', aisle: 'Cleaning Supplies', brands: ['Finish', 'Cascade', "Frank's", 'Nuvera'], regions: ['canada'] },
+  { retailer: 'shoppers', category: 'vitamins', name: 'Shoppers Drug Mart - Vitamins', aisle: 'Wellness Section', brands: ['Life Brand', 'Jamieson', "Nature's Bounty", 'Webber Naturals'], regions: ['canada'] },
+  { retailer: 'shoppers', category: 'otc', name: 'Shoppers Drug Mart - OTC', aisle: 'Pharmacy Front', brands: ['Life Brand', 'Tylenol', 'Advil', 'Robax'], regions: ['canada'] },
+  { retailer: 'londondrugs', category: 'vitamins', name: 'London Drugs - Supplements', aisle: 'Health & Wellness', brands: ['Jamieson', 'Webber Naturals', 'Natural Factors', 'Sisu'], regions: ['canada'] },
+  { retailer: 'londondrugs', category: 'otc', name: 'London Drugs - OTC', aisle: 'Pharmacy', brands: ['London Drugs', 'Tylenol', 'Advil'], regions: ['canada'] },
+  { retailer: 'rexall', category: 'vitamins', name: 'Rexall - Vitamins', aisle: 'Wellness Wall', brands: ['Rexall', 'Jamieson', 'Webber Naturals', 'Swiss Natural'], regions: ['canada'] },
+  { retailer: 'rexall', category: 'otc', name: 'Rexall - OTC Medications', aisle: 'Pharmacy Front', brands: ['Rexall', 'Tylenol', 'Advil'], regions: ['canada'] },
+  { retailer: 'jeancoutu', category: 'vitamins', name: 'Jean Coutu - Vitamins', aisle: 'Santé Naturelle', brands: ['Personnelle', 'Jamieson', "Nature's Bounty"], regions: ['canada'] },
+  { retailer: 'jeancoutu', category: 'otc', name: 'Jean Coutu - OTC', aisle: 'Pharmacie', brands: ['Personnelle', 'Tylenol', 'Advil'], regions: ['canada'] },
+
+  // === MEXICO RETAILERS ===
+  { retailer: 'farmaciasahorro', category: 'vitamins', name: 'Farmacias del Ahorro - Vitaminas', aisle: 'Suplementos', brands: ['Pharmaton', 'Centrum', 'Ensure', 'Bedoyecta'], regions: ['mexico'] },
+  { retailer: 'farmaciasahorro', category: 'otc', name: 'Farmacias del Ahorro - OTC', aisle: 'Farmacia', brands: ['Tempra', 'Aspirina', 'Advil', 'Tabcin'], regions: ['mexico'] },
+  { retailer: 'farmaciassimilares', category: 'vitamins', name: 'Farmacias Similares - Vitaminas', aisle: 'Genéricos y Suplementos', brands: ['SiMi', 'Best', 'Centrum'], regions: ['mexico'] },
+  { retailer: 'farmaciassimilares', category: 'otc', name: 'Farmacias Similares - OTC', aisle: 'Farmacia', brands: ['SiMi', 'Genéricos'], regions: ['mexico'] },
+  { retailer: 'soriana', category: 'vitamins', name: 'Soriana - Vitaminas y Suplementos', aisle: 'Salud y Belleza', brands: ['Centrum', 'Pharmaton', 'GNC'], regions: ['mexico'] },
+  { retailer: 'soriana', category: 'otc', name: 'Soriana - OTC', aisle: 'Farmacia', brands: ['Tempra', 'Advil', 'Tylenol'], regions: ['mexico'] },
+  { retailer: 'chedraui', category: 'vitamins', name: 'Chedraui - Vitaminas', aisle: 'Salud', brands: ['Centrum', 'Pharmaton', 'Ensure'], regions: ['mexico'] },
+  { retailer: 'chedraui', category: 'otc', name: 'Chedraui - OTC', aisle: 'Farmacia', brands: ['Tempra', 'Aspirina', 'Tabcin'], regions: ['mexico'] },
+
+  // === PUERTO RICO ===
+  { retailer: 'econo', category: 'vitamins', name: 'Econo - Vitaminas', aisle: 'Salud y Bienestar', brands: ['Nature Made', 'Centrum', "Nature's Bounty"], regions: ['puerto-rico'] },
+  { retailer: 'econo', category: 'otc', name: 'Econo - OTC Medications', aisle: 'Farmacia', brands: ['Tylenol', 'Advil', 'Aleve'], regions: ['puerto-rico'] },
+  { retailer: 'walgreenspr', category: 'vitamins', name: 'Walgreens PR - Vitaminas', aisle: 'Vitaminas y Suplementos', brands: ['Walgreens', 'Nature Made', 'Centrum'], regions: ['puerto-rico'] },
+  { retailer: 'walgreenspr', category: 'otc', name: 'Walgreens PR - OTC', aisle: 'Pharmacy', brands: ['Walgreens', 'Tylenol', 'Advil', 'Aleve'], regions: ['puerto-rico'] }
+];
+
+function opp_escHtml(s) { return escapeHtml(s); }
+
+function opp_save(key, data) { localStorage.setItem('opp_' + key, JSON.stringify(data)); }
+
+function opp_downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type: type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function opp_detectPressure(text) {
+  const lower = text.toLowerCase();
+  return opp_pressureKeywords.filter(k => lower.includes(k.toLowerCase()));
+}
+
+function opp_detectCompetitors(text) {
+  const lower = text.toLowerCase();
+  return opp_competitors.filter(c => lower.includes(c.toLowerCase()));
+}
+
+function opp_classifyTier(pressure, competitors) {
+  if (pressure.length >= 5 || competitors.length >= 2) return { tier: 1, label: 'High Priority' };
+  if (pressure.length >= 3 || competitors.length >= 1) return { tier: 2, label: 'Medium Priority' };
+  return { tier: 3, label: 'Low Priority' };
+}
+
+function opp_classifyIndustry(text) {
+  const lower = text.toLowerCase();
+  for (const ind of opp_taxonomy) {
+    if (lower.includes(ind.split(' ')[0])) return ind;
+  }
+  return 'general manufacturing';
+}
+
+function opp_generateDecision(pressure, competitors, tier) {
+  if (tier === 1) return 'Strong fit - pursue immediately';
+  if (tier === 2) return 'Good potential - qualify further';
+  return 'Low priority - monitor only';
+}
+
+function opp_getFilteredScans() {
+  const regionEl = document.getElementById('opp_regionFilter');
+  const region = regionEl ? regionEl.value : 'all';
+  if (region === 'all') return opp_scans;
+  return opp_scans.filter(s => s.region === region);
+}
+
+function opp_getFilteredOpportunities() {
+  const regionEl = document.getElementById('opp_regionFilter');
+  const region = regionEl ? regionEl.value : 'all';
+  if (region === 'all') return opp_opportunities;
+  return opp_opportunities.filter(o => (o.region || 'usa') === region);
+}
+
+async function opp_scanSingleCompany() {
+  const name = document.getElementById('opp_companyName').value.trim();
+  const desc = document.getElementById('opp_companyDesc').value.trim();
+  const region = document.getElementById('opp_companyRegion').value;
+
+  if (!name || !desc) {
+    toast('Enter company name and description');
+    return;
+  }
+
+  const resultDiv = document.getElementById('opp_singleScanResult');
+  resultDiv.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">Scanning...</div>';
+
+  await new Promise(r => setTimeout(r, 500));
+
+  const pressure = opp_detectPressure(desc);
+  const comps = opp_detectCompetitors(desc);
+  const tierInfo = opp_classifyTier(pressure, comps);
+  const industry = opp_classifyIndustry(desc);
+  const decision = opp_generateDecision(pressure, comps, tierInfo.tier);
+
+  const scan = {
+    id: Date.now(),
+    name: name,
+    description: desc,
+    region: region,
+    pressure: pressure,
+    competitors: comps,
+    tier: tierInfo.tier,
+    tierLabel: tierInfo.label,
+    industry: industry,
+    decision: decision,
+    timestamp: new Date().toISOString()
+  };
+
+  opp_scans.unshift(scan);
+  if (opp_scans.length > 100) opp_scans = opp_scans.slice(0, 100);
+  opp_save('scans', opp_scans);
+
+  const tierClass = tierInfo.tier === 1 ? 'tier-1' : tierInfo.tier === 2 ? 'tier-2' : 'tier-3';
+  const regionClass = 'region-' + region;
+
+  resultDiv.innerHTML = '<div class="opportunity-card">' +
+    '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">' +
+      '<div>' +
+        '<div style="font-size: 1.2rem; font-weight: 700;">' + escapeHtml(name) + '</div>' +
+        '<div style="margin-top: 4px;"><span class="region-tag ' + regionClass + '">' + region.toUpperCase() + '</span></div>' +
+      '</div>' +
+      '<span class="tier-tag ' + tierClass + '">Tier ' + tierInfo.tier + '</span>' +
+    '</div>' +
+    '<div style="margin-bottom: 16px;">' +
+      '<div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">INDUSTRY</div>' +
+      '<div style="font-weight: 500;">' + escapeHtml(industry) + '</div>' +
+    '</div>' +
+    '<div style="margin-bottom: 16px;">' +
+      '<div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">PRESSURE SIGNALS (' + pressure.length + ')</div>' +
+      '<div style="display: flex; flex-wrap: wrap; gap: 4px;">' +
+        (pressure.length > 0 ? pressure.map(function(p) { return '<span style="background: rgba(16,185,129,0.2); color: var(--accent-green); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;">' + p + '</span>'; }).join('') : '<span style="color: var(--text-muted);">No signals detected</span>') +
+      '</div>' +
+    '</div>' +
+    '<div style="margin-bottom: 16px;">' +
+      '<div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">COMPETITOR MENTIONS (' + comps.length + ')</div>' +
+      '<div style="display: flex; flex-wrap: wrap; gap: 4px;">' +
+        (comps.length > 0 ? comps.map(function(c) { return '<span class="competitor-badge">' + c + '</span>'; }).join('') : '<span style="color: var(--text-muted);">No competitors detected</span>') +
+      '</div>' +
+    '</div>' +
+    '<div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px;">' +
+      '<div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">DECISION</div>' +
+      '<div style="font-weight: 600;">' + decision + '</div>' +
+    '</div>' +
+    '<button class="btn btn-purple" style="margin-top: 16px; width: 100%;" onclick="opp_addToOpportunitiesFromScan(' + scan.id + ')">💎 Add to Opportunities</button>' +
+  '</div>';
+
+  opp_updateStats();
+  opp_renderRecentScans();
+  toast('Scan complete!');
+}
+
+function opp_renderRecentScans() {
+  const tbody = document.getElementById('opp_recentScansTable');
+  if (!tbody) return;
+  const filtered = opp_getFilteredScans();
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No scans yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.slice(0, 20).map(function(s) {
+    const tierClass = s.tier === 1 ? 'tier-1' : s.tier === 2 ? 'tier-2' : 'tier-3';
+    const regionClass = 'region-' + s.region;
+    const pressureClass = s.pressure.length >= 5 ? 'pressure-high' : s.pressure.length >= 3 ? 'pressure-med' : 'pressure-low';
+    return '<tr>' +
+      '<td style="font-weight:500;">' + escapeHtml(s.name) + '</td>' +
+      '<td><span class="region-tag ' + regionClass + '">' + s.region.toUpperCase() + '</span></td>' +
+      '<td class="' + pressureClass + '">' + s.pressure.length + ' signals</td>' +
+      '<td><span class="tier-tag ' + tierClass + '">Tier ' + s.tier + '</span></td>' +
+      '<td>' + (s.competitors.join(', ') || '-') + '</td>' +
+      '<td style="font-size:0.75rem;">' + s.decision + '</td>' +
+      '<td style="font-size:0.75rem;color:var(--text-muted);">' + new Date(s.timestamp).toLocaleDateString() + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function opp_updateStats() {
+  const el1 = document.getElementById('opp_statScanned');
+  const el2 = document.getElementById('opp_statOpportunities');
+  const el3 = document.getElementById('opp_statHighPressure');
+  const el4 = document.getElementById('opp_statCompetitors');
+  if (el1) el1.textContent = opp_scans.length;
+  if (el2) el2.textContent = opp_opportunities.length;
+  if (el3) el3.textContent = opp_scans.filter(function(s) { return s.pressure.length >= 5; }).length;
+  if (el4) el4.textContent = opp_scans.reduce(function(sum, s) { return sum + s.competitors.length; }, 0);
+}
+
+async function opp_runBatchScan() {
+  const input = document.getElementById('opp_batchInput').value.trim();
+  if (!input) { toast('Paste company data first'); return; }
+
+  var companies;
+  try {
+    companies = JSON.parse(input);
+    if (!Array.isArray(companies)) throw new Error();
+  } catch(e) {
+    toast('Invalid JSON format');
+    return;
+  }
+
+  const progressDiv = document.getElementById('opp_batchProgress');
+  const progressBar = document.getElementById('opp_batchProgressBar');
+  const progressText = document.getElementById('opp_batchProgressText');
+  progressDiv.style.display = 'block';
+
+  opp_batchResults = [];
+
+  for (let i = 0; i < companies.length; i++) {
+    const c = companies[i];
+    const progress = ((i + 1) / companies.length) * 100;
+    progressBar.style.width = progress + '%';
+    progressText.textContent = 'Processing ' + (i + 1) + ' of ' + companies.length + ': ' + (c.name || 'Unknown');
+
+    await new Promise(function(r) { setTimeout(r, 200); });
+
+    const desc = c.description || '';
+    const pressure = opp_detectPressure(desc);
+    const comps = opp_detectCompetitors(desc);
+    const tierInfo = opp_classifyTier(pressure, comps);
+    const industry = opp_classifyIndustry(desc);
+    const decision = opp_generateDecision(pressure, comps, tierInfo.tier);
+
+    opp_batchResults.push({
+      name: c.name || 'Unknown',
+      region: c.region || 'usa',
+      compression: industry,
+      pressure: pressure,
+      risk: pressure.length >= 5 ? 'High' : pressure.length >= 3 ? 'Medium' : 'Low',
+      competitors: comps,
+      decision: decision,
+      tier: tierInfo.tier
+    });
+  }
+
+  progressDiv.style.display = 'none';
+  opp_renderBatchResults();
+  toast('Scanned ' + companies.length + ' companies!');
+}
+
+function opp_renderBatchResults() {
+  const card = document.getElementById('opp_batchResultsCard');
+  const tbody = document.getElementById('opp_batchResultsTable');
+  card.style.display = 'block';
+
+  tbody.innerHTML = opp_batchResults.map(function(r) {
+    const tierClass = r.tier === 1 ? 'tier-1' : r.tier === 2 ? 'tier-2' : 'tier-3';
+    const regionClass = 'region-' + r.region;
+    return '<tr>' +
+      '<td style="font-weight:500;">' + escapeHtml(r.name) + '</td>' +
+      '<td><span class="region-tag ' + regionClass + '">' + r.region.toUpperCase() + '</span></td>' +
+      '<td>' + escapeHtml(r.compression) + '</td>' +
+      '<td>' + (r.pressure.join(', ') || '-') + '</td>' +
+      '<td class="' + (r.risk === 'High' ? 'pressure-high' : r.risk === 'Medium' ? 'pressure-med' : '') + '">' + r.risk + '</td>' +
+      '<td>' + (r.competitors.join(', ') || '-') + '</td>' +
+      '<td>' + r.decision + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function opp_loadSampleBatch() {
+  document.getElementById('opp_batchInput').value = JSON.stringify([
+    { name: "Private Label CDMO", description: "Scaling tablet throughput with validation upgrades. Currently using Fette presses.", region: "usa" },
+    { name: "NutraVita Labs", description: "Nutraceutical manufacturer expanding capacity for dietary supplement tablets. OEE improvement project underway.", region: "canada" },
+    { name: "Pharma Solutions PR", description: "Contract manufacturer for solid dose pharmaceuticals. FDA compliance focus, new tablet press installation planned.", region: "puerto-rico" },
+    { name: "MexPharma Inc", description: "Generic pharmaceutical producer with compaction challenges. Korsch equipment installed.", region: "mexico" }
+  ], null, 2);
+}
+
+function opp_clearBatch() {
+  document.getElementById('opp_batchInput').value = '';
+  document.getElementById('opp_batchResultsCard').style.display = 'none';
+  opp_batchResults = [];
+}
+
+function opp_exportBatchCSV() {
+  if (opp_batchResults.length === 0) return;
+  const headers = ['Company', 'Region', 'Industry', 'Pressure Signals', 'Risk', 'Competitors', 'Decision'];
+  const rows = opp_batchResults.map(function(r) {
+    return [r.name, r.region, r.compression, r.pressure.join('; '), r.risk, r.competitors.join('; '), r.decision];
+  });
+  const csv = [headers.join(',')].concat(rows.map(function(r) { return r.map(function(c) { return '"' + c + '"'; }).join(','); })).join('\n');
+  opp_downloadFile(csv, 'batch-scan-results.csv', 'text/csv');
+}
+
+function opp_exportBatchJSON() {
+  if (opp_batchResults.length === 0) return;
+  opp_downloadFile(JSON.stringify(opp_batchResults, null, 2), 'batch-scan-results.json', 'application/json');
+}
+
+function opp_addToOpportunitiesFromScan(scanId) {
+  const scan = opp_scans.find(function(s) { return s.id === scanId; });
+  if (!scan) return;
+
+  if (opp_opportunities.find(function(o) { return o.name === scan.name; })) {
+    toast('Already in opportunities');
+    return;
+  }
+
+  opp_opportunities.push(Object.assign({ addedAt: new Date().toISOString() }, scan));
+  opp_save('opportunities', opp_opportunities);
+  opp_updateStats();
+  toast('Added to opportunities!');
+}
+
+function opp_addToOpportunities() {
+  var added = 0;
+  opp_batchResults.filter(function(r) { return r.tier <= 2; }).forEach(function(r) {
+    if (!opp_opportunities.find(function(o) { return o.name === r.name; })) {
+      opp_opportunities.push(Object.assign({ id: Date.now() + added, addedAt: new Date().toISOString() }, r));
+      added++;
+    }
+  });
+  opp_save('opportunities', opp_opportunities);
+  opp_updateStats();
+  opp_renderOpportunities();
+  toast('Added ' + added + ' opportunities!');
+}
+
+function opp_renderOpportunities() {
+  const list = document.getElementById('opp_opportunitiesList');
+  if (!list) return;
+  const filtered = opp_getFilteredOpportunities();
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><h4>No opportunities yet</h4><p>Scan companies to find opportunities</p></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(o) {
+    const tierClass = o.tier === 1 ? 'tier-1' : o.tier === 2 ? 'tier-2' : 'tier-3';
+    const regionClass = 'region-' + (o.region || 'usa');
+    return '<div class="opportunity-card">' +
+      '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+        '<div>' +
+          '<div style="font-size: 1.1rem; font-weight: 700;">' + escapeHtml(o.name) + '</div>' +
+          '<div style="margin-top: 4px;"><span class="region-tag ' + regionClass + '">' + (o.region || 'usa').toUpperCase() + '</span></div>' +
+        '</div>' +
+        '<span class="tier-tag ' + tierClass + '">Tier ' + o.tier + '</span>' +
+      '</div>' +
+      '<div style="margin-top: 12px; font-size: 0.85rem;">' + (o.decision || '') + '</div>' +
+      '<div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px;">' +
+        (o.pressure || []).slice(0, 5).map(function(p) { return '<span style="background: rgba(16,185,129,0.2); color: var(--accent-green); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">' + p + '</span>'; }).join('') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function opp_exportOpportunities() {
+  if (opp_opportunities.length === 0) return;
+  opp_downloadFile(JSON.stringify(opp_opportunities, null, 2), 'opportunities.json', 'application/json');
+}
+
+function opp_clearOpportunities() {
+  if (confirm('Clear all opportunities?')) {
+    opp_opportunities = [];
+    opp_save('opportunities', opp_opportunities);
+    opp_updateStats();
+    opp_renderOpportunities();
+    toast('Opportunities cleared');
+  }
+}
+
+function opp_renderAllPlanograms() {
+  const resultsDiv = document.getElementById('opp_planogramResults');
+  const countEl = document.getElementById('opp_planogramCount');
+  if (!resultsDiv) return;
+  if (countEl) countEl.textContent = '(' + planogramData.length + ' entries)';
+  resultsDiv.innerHTML = planogramData.map(function(p) {
+    const regionTags = p.regions.map(function(r) { return '<span class="region-tag region-' + r + '">' + r.toUpperCase() + '</span>'; }).join('');
+    return '<div class="planogram-card">' +
+      '<h4>' + escapeHtml(p.name) + '</h4>' +
+      '<div class="aisle">Aisle: ' + escapeHtml(p.aisle) + '</div>' +
+      '<div class="brands">' + p.brands.map(function(b) { return '<span class="brand">' + escapeHtml(b) + '</span>'; }).join('') + '</div>' +
+      '<div style="margin-top: 12px;">' + regionTags + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function opp_discoverPlanograms() {
+  const retailer = document.getElementById('opp_retailerSelect').value;
+  const category = document.getElementById('opp_categorySelect').value;
+  const region = document.getElementById('opp_planogramRegion').value;
+
+  var filtered = planogramData.filter(function(p) {
+    const matchRetailer = retailer === 'all' || p.retailer === retailer;
+    const matchCategory = category === 'all' || p.category === category;
+    const matchRegion = p.regions.includes(region);
+    return matchRetailer && matchCategory && matchRegion;
+  });
+
+  const resultsDiv = document.getElementById('opp_planogramResults');
+  const countEl = document.getElementById('opp_planogramCount');
+
+  if (filtered.length === 0) {
+    resultsDiv.innerHTML = '<div class="empty-state"><h4>No planograms found</h4><p>Try different filters</p></div>';
+    if (countEl) countEl.textContent = '(0 entries)';
+    return;
+  }
+
+  if (countEl) countEl.textContent = '(' + filtered.length + ' entries)';
+  resultsDiv.innerHTML = filtered.map(function(p) {
+    const regionTags = p.regions.map(function(r) { return '<span class="region-tag region-' + r + '">' + r.toUpperCase() + '</span>'; }).join('');
+    return '<div class="planogram-card">' +
+      '<h4>' + escapeHtml(p.name) + '</h4>' +
+      '<div class="aisle">Aisle: ' + escapeHtml(p.aisle) + '</div>' +
+      '<div class="brands">' + p.brands.map(function(b) { return '<span class="brand">' + escapeHtml(b) + '</span>'; }).join('') + '</div>' +
+      '<div style="margin-top: 12px;">' + regionTags + '</div>' +
+    '</div>';
+  }).join('');
+
+  toast('Found ' + filtered.length + ' planograms');
+}
+
+function opp_setupChipListeners() {
+  document.querySelectorAll('#opp_competitorFilters .industry-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('#opp_competitorFilters .industry-chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+    });
+  });
+}
+
+function opp_filterByRegion() {
+  opp_renderRecentScans();
+  opp_renderOpportunities();
+  const regionEl = document.getElementById('opp_regionFilter');
+  const region = regionEl ? regionEl.value : 'all';
+  toast('Filtering by ' + (region === 'all' ? 'all regions' : region.toUpperCase()));
+}
+</script>
+
+<div id="overrideModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:12px; padding:24px; max-width:400px; width:90%;">
+    <h3 style="margin:0 0 16px 0;">Override AI Decision</h3>
+    <p style="margin:0 0 8px 0; color:var(--text-muted); font-size:0.85rem;">Company: <strong id="overrideCompanyName"></strong></p>
+    <p style="margin:0 0 16px 0; color:var(--text-muted); font-size:0.85rem;">Original: <span id="overrideOriginal"></span></p>
+    <div style="margin-bottom:12px;">
+      <label style="display:block; font-size:0.8rem; margin-bottom:4px;">New Decision:</label>
+      <select id="overrideNewDecision" style="width:100%; padding:8px; background:var(--bg-secondary); border:1px solid var(--border-color); color:var(--text-primary); border-radius:6px;">
+        <option value="ENGAGE">ENGAGE</option>
+        <option value="EDUCATE">EDUCATE</option>
+        <option value="MONITOR">MONITOR</option>
+        <option value="DEPRIORITIZE">DEPRIORITIZE</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block; font-size:0.8rem; margin-bottom:4px;">Notes (optional):</label>
+      <textarea id="overrideNotes" rows="3" style="width:100%; padding:8px; background:var(--bg-secondary); border:1px solid var(--border-color); color:var(--text-primary); border-radius:6px; resize:vertical;" placeholder="Why are you overriding?"></textarea>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeOverrideModal()">Cancel</button>
+      <button class="btn btn-green" onclick="submitOverride()">Save Override</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

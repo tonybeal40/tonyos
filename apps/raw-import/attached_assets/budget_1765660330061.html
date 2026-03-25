@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Money and Budget – TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2948 0, #050814 55%, #02030a 100%);
+      color: #f6f7fb;
+    }
+    .shell {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+    h1 { margin: 0; font-size: 1.5rem; }
+    p { margin: 0.25rem 0 0; font-size: 0.85rem; opacity: 0.8; }
+    .btn-back {
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(7,11,26,0.95);
+      color: inherit;
+      font-size: 0.8rem;
+    }
+    .card {
+      background: rgba(7,11,26,0.96);
+      border-radius: 1rem;
+      padding: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 1rem;
+    }
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
+    .card p {
+      margin: 0 0 0.4rem;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+      margin-top: 0.4rem;
+    }
+    .pill {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.6rem 0.7rem;
+      font-size: 0.8rem;
+    }
+    .pill strong {
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(3,6,18,0.95);
+      color: #f6f7fb;
+      padding: 0.6rem;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>Money and Budget</h1>
+        <p>Simple two week snapshot so you know if the move is doable.</p>
+      </div>
+      <a href="{{ url_for('index') }}" class="btn-back">← Back to TonyOS</a>
+    </header>
+
+    <section class="card">
+      <h2>Two Week Overview</h2>
+      <p>Use this with your Excel sheet. We can hook the sheet in later with Python once the layout is locked.</p>
+      <div class="grid">
+        <div class="pill">
+          <strong>Income (2 weeks)</strong><br>
+          $<span id="inc-2w">0</span>
+        </div>
+        <div class="pill">
+          <strong>Fixed bills</strong><br>
+          $<span id="fixed-2w">0</span>
+        </div>
+        <div class="pill">
+          <strong>Gas and food</strong><br>
+          $<span id="flex-2w">0</span>
+        </div>
+        <div class="pill">
+          <strong>Sports and kids</strong><br>
+          $<span id="kids-2w">0</span>
+        </div>
+        <div class="pill">
+          <strong>Leftover</strong><br>
+          $<span id="left-2w">0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Manual Inputs</h2>
+      <p>Fill these out roughly based on your sheet so you see the gap.</p>
+      <div class="grid">
+        <div class="pill">
+          <label>
+            Income 2 weeks<br>
+            <input id="inp-inc" type="number" style="width:100%;margin-top:0.3rem;">
+          </label>
+        </div>
+        <div class="pill">
+          <label>
+            Fixed bills<br>
+            <input id="inp-fixed" type="number" style="width:100%;margin-top:0.3rem;">
+          </label>
+        </div>
+        <div class="pill">
+          <label>
+            Gas and food<br>
+            <input id="inp-flex" type="number" style="width:100%;margin-top:0.3rem;">
+          </label>
+        </div>
+        <div class="pill">
+          <label>
+            Sports and kids<br>
+            <input id="inp-kids" type="number" style="width:100%;margin-top:0.3rem;">
+          </label>
+        </div>
+      </div>
+      <p style="margin-top:0.6rem;font-size:0.78rem;opacity:0.8;">
+        Once this feels right, we can connect it directly to your TB Budget Excel file with Python so it reads from the sheet.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Notes</h2>
+      <p>Write the truth. What has to change so the numbers work.</p>
+      <textarea placeholder="Where money is leaking, what must change, and what the plan is for the next 30 days."></textarea>
+    </section>
+  </div>
+
+  <script>
+    function updateBudget() {
+      const inc = Number(document.getElementById("inp-inc").value || 0);
+      const fixed = Number(document.getElementById("inp-fixed").value || 0);
+      const flex = Number(document.getElementById("inp-flex").value || 0);
+      const kids = Number(document.getElementById("inp-kids").value || 0);
+      const left = inc - fixed - flex - kids;
+
+      document.getElementById("inc-2w").textContent = inc.toFixed(0);
+      document.getElementById("fixed-2w").textContent = fixed.toFixed(0);
+      document.getElementById("flex-2w").textContent = flex.toFixed(0);
+      document.getElementById("kids-2w").textContent = kids.toFixed(0);
+      document.getElementById("left-2w").textContent = left.toFixed(0);
+    }
+
+    ["inp-inc","inp-fixed","inp-flex","inp-kids"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", updateBudget);
+    });
+
+    updateBudget();
+  </script>
+</body>
+</html>

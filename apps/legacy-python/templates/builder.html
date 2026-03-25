@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Website Builder - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .builder-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.6rem 1rem 3rem;
+    }
+    .builder-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.4rem;
+      flex-wrap: wrap;
+    }
+    .builder-header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #4fd1ff, #7f5dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .builder-header p {
+      margin: 0.4rem 0 0;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      max-width: 560px;
+    }
+    .btn-back {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.3);
+      font-size: 0.85rem;
+      background: rgba(6,6,22,0.96);
+      color: var(--accent);
+      transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+      background: rgba(56,189,248,0.1);
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+    .builder-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 960px) {
+      .builder-layout { grid-template-columns: 1fr; }
+    }
+    .builder-panel {
+      background: linear-gradient(145deg, rgba(15,23,42,0.95), rgba(2,6,23,0.98));
+      border-radius: 18px;
+      border: 1px solid rgba(56,189,248,0.15);
+      padding: 1.1rem 1.1rem 1.4rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .builder-panel h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .builder-panel p.caption {
+      margin: 0 0 0.9rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+    .field-group {
+      margin-bottom: 0.8rem;
+    }
+    .field-group label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-main);
+    }
+    .field-group small {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+    .builder-input {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(55,65,81,0.7);
+      background: rgba(3,6,24,0.98);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .builder-textarea {
+      width: 100%;
+      min-height: 58px;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(55,65,81,0.7);
+      background: rgba(3,6,24,0.98);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+    }
+    .builder-input:focus,
+    .builder-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      align-items: center;
+    }
+    .btn-main {
+      border-radius: 999px;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: linear-gradient(120deg, #4fd1ff, #7f5dff);
+      color: #050818;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(79,209,255,0.35);
+    }
+    .tag {
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.6);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+    .preview-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 0.8rem;
+    }
+    .code-box {
+      background: rgba(5,7,26,0.98);
+      border-radius: 14px;
+      border: 1px solid rgba(55,65,81,0.5);
+      padding: 0.75rem 0.8rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      color: #e2ecff;
+      max-height: 220px;
+      overflow: auto;
+      white-space: pre;
+    }
+    .live-frame {
+      background: #050814;
+      border-radius: 14px;
+      border: 1px solid rgba(55,65,81,0.5);
+      padding: 1.1rem 1.1rem 1.2rem;
+      overflow: auto;
+    }
+    .live-frame-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      border-radius: 14px;
+      padding: 1.6rem 1.2rem 2rem;
+      background: radial-gradient(circle at top, #1a274f 0, #050814 60%);
+      color: #f6f7ff;
+    }
+    .live-frame-inner h1 {
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+      font-size: 1.7rem;
+    }
+    .live-frame-inner p.hero-sub {
+      margin-top: 0;
+      margin-bottom: 0.9rem;
+      font-size: 0.96rem;
+      color: rgba(230,237,255,0.85);
+    }
+    .live-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.3rem;
+    }
+    .live-cta-primary {
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(120deg, #4fd1ff, #7bffce);
+      color: #050714;
+      font-size: 0.82rem;
+    }
+    .live-cta-secondary {
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(245,249,255,0.3);
+      background: transparent;
+      color: #f8fbff;
+      font-size: 0.8rem;
+    }
+    .live-columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      font-size: 0.83rem;
+    }
+    @media (max-width: 720px) {
+      .live-columns { grid-template-columns: 1fr; }
+    }
+    .live-col {
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(4,7,26,0.9);
+      padding: 0.75rem 0.8rem 0.9rem;
+    }
+    .live-col h3 {
+      margin: 0 0 0.3rem;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+    .live-col p {
+      margin: 0;
+      color: rgba(223,233,255,0.9);
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="builder-shell">
+    <header class="builder-header">
+      <div>
+        <h1>TonyOS Website Builder</h1>
+        <p>
+          Fast landing page drafts. Describe the offer, audience, and three proof blocks. TonyOS builds clean HTML and a live preview you can ship or hand to a dev.
+        </p>
+      </div>
+      <a href="/" class="btn-back">Back to TonyOS</a>
+    </header>
+
+    <div class="builder-layout">
+      <section class="builder-panel">
+        <h2>Page Blueprint</h2>
+        <p class="caption">Keep it specific. Think about one hero, one offer, one main outcome.</p>
+
+        <div class="field-group">
+          <label>Page title <small>Used in the browser tab and h1.</small></label>
+          <input id="wb_title" class="builder-input" type="text" placeholder="Example: Fractional RevOps for American manufacturers">
+        </div>
+
+        <div class="field-group">
+          <label>Hero headline <small>The big promise, 1 line.</small></label>
+          <input id="wb_headline" class="builder-input" type="text" placeholder="Turn quiet pipelines into booked calendars in 90 days">
+        </div>
+
+        <div class="field-group">
+          <label>Hero subheadline <small>Clarify who you help and how.</small></label>
+          <textarea id="wb_subheadline" class="builder-textarea" placeholder="For B2B manufacturers that want more qualified conversations without burning out their sales team."></textarea>
+        </div>
+
+        <div class="two-col">
+          <div class="field-group">
+            <label>Primary CTA label <small>Button text.</small></label>
+            <input id="wb_cta_primary" class="builder-input" type="text" placeholder="Book a working session">
+          </div>
+          <div class="field-group">
+            <label>Secondary CTA label <small>Optional.</small></label>
+            <input id="wb_cta_secondary" class="builder-input" type="text" placeholder="Download the playbook">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Block 1 title <small>Proof, process, or feature.</small></label>
+          <input id="wb_block1_title" class="builder-input" type="text" placeholder="Pipeline mapped and cleaned">
+        </div>
+        <div class="field-group">
+          <textarea id="wb_block1_body" class="builder-textarea" placeholder="We audit your pipeline, tools, and data so every lead has a clear path from outreach to closed revenue."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>Block 2 title</label>
+          <input id="wb_block2_title" class="builder-input" type="text" placeholder="Outreach that actually lands meetings">
+        </div>
+        <div class="field-group">
+          <textarea id="wb_block2_body" class="builder-textarea" placeholder="We design outbound that sounds like a real person, not a bot. Your team gets scripts and sequences they can trust."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>Block 3 title</label>
+          <input id="wb_block3_title" class="builder-input" type="text" placeholder="Reporting you can read in 5 minutes">
+        </div>
+        <div class="field-group">
+          <textarea id="wb_block3_body" class="builder-textarea" placeholder="Simple dashboards that show calls, meetings, and deals so you can make decisions without drowning in numbers."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-main" onclick="buildPage()">Generate page HTML</button>
+          <span class="tag">Copy the HTML into Bolt, Netlify, or any site builder.</span>
+        </div>
+      </section>
+
+      <section class="preview-shell">
+        <div class="builder-panel">
+          <h2>Generated HTML</h2>
+          <p class="caption">This is clean, self-contained markup. Paste into any static site or component.</p>
+          <div id="wb_code" class="code-box">&lt;!-- Fill out the fields and click Generate --&gt;</div>
+        </div>
+
+        <div class="live-frame">
+          <div id="wb_live" class="live-frame-inner">
+            <h1 id="live_headline">Your hero headline will appear here</h1>
+            <p class="hero-sub" id="live_sub">Fill out the fields on the left and click "Generate page HTML" to see a live preview.</p>
+            <div class="live-cta-row">
+              <button class="live-cta-primary" id="live_cta1">Primary action</button>
+              <button class="live-cta-secondary" id="live_cta2">Secondary action</button>
+            </div>
+            <div class="live-columns">
+              <div class="live-col">
+                <h3 id="live_b1t">Block 1 title</h3>
+                <p id="live_b1b">Short proof or feature statement lives here.</p>
+              </div>
+              <div class="live-col">
+                <h3 id="live_b2t">Block 2 title</h3>
+                <p id="live_b2b">Explain another key benefit in simple language.</p>
+              </div>
+              <div class="live-col">
+                <h3 id="live_b3t">Block 3 title</h3>
+                <p id="live_b3b">Close the loop on what success looks like for the reader.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    (function loadStoryBrandData() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("from") !== "storybrand") return;
+      
+      try {
+        const raw = localStorage.getItem("storybrand_website_data");
+        if (!raw) return;
+        
+        const data = JSON.parse(raw);
+        if (!data || data.source !== "storybrand") return;
+        
+        document.getElementById("wb_title").value = data.projectName || "";
+        document.getElementById("wb_headline").value = data.headline || "";
+        document.getElementById("wb_subheadline").value = data.subheadline || "";
+        document.getElementById("wb_cta_primary").value = data.ctaPrimary || "Get Started";
+        document.getElementById("wb_cta_secondary").value = data.ctaSecondary || "Learn More";
+        
+        const planSteps = data.planSteps || [];
+        const painPoints = data.painPoints || [];
+        
+        if (planSteps[0]) {
+          document.getElementById("wb_block1_title").value = "Step 1: " + planSteps[0];
+          document.getElementById("wb_block1_body").value = painPoints[0] ? `Solve: ${painPoints[0]}` : "Start your journey with a clear first step.";
+        }
+        if (planSteps[1]) {
+          document.getElementById("wb_block2_title").value = "Step 2: " + planSteps[1];
+          document.getElementById("wb_block2_body").value = painPoints[1] ? `Address: ${painPoints[1]}` : "Continue building momentum with proven methods.";
+        }
+        if (planSteps[2]) {
+          document.getElementById("wb_block3_title").value = "Step 3: " + planSteps[2];
+          document.getElementById("wb_block3_body").value = data.successOutcome ? `Result: ${data.successOutcome}` : "Achieve the outcome you deserve.";
+        }
+        
+        if (!planSteps[0] && painPoints.length > 0) {
+          document.getElementById("wb_block1_title").value = "The Problem";
+          document.getElementById("wb_block1_body").value = painPoints.join(". ");
+        }
+        if (!planSteps[1] && data.solution) {
+          document.getElementById("wb_block2_title").value = "The Solution";
+          document.getElementById("wb_block2_body").value = data.solution + (data.empathy ? ` ${data.empathy}` : "");
+        }
+        if (!planSteps[2] && data.successOutcome) {
+          document.getElementById("wb_block3_title").value = "The Result";
+          document.getElementById("wb_block3_body").value = data.successOutcome;
+        }
+        
+        setTimeout(() => {
+          buildPage();
+          showStoryBrandBanner(data);
+        }, 100);
+        
+      } catch (e) {
+        console.error("Error loading StoryBrand data:", e);
+      }
+    })();
+    
+    function showStoryBrandBanner(data) {
+      const banner = document.createElement("div");
+      banner.style.cssText = "position:fixed; top:70px; right:20px; background:linear-gradient(135deg, rgba(225,29,72,.95), rgba(255,59,106,.85)); color:#fff; padding:12px 18px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.4); z-index:1000; max-width:300px; font-size:14px;";
+      banner.innerHTML = `
+        <div style="font-weight:700; margin-bottom:6px;">Loaded from Message Clarity</div>
+        <div style="font-size:12px; opacity:.9;">Project: ${escapeHtml(data.projectName)}</div>
+        <div style="font-size:12px; opacity:.9;">Target: ${escapeHtml(data.targetPersona || "Not set")}</div>
+        <button onclick="this.parentElement.remove()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#fff; cursor:pointer; font-size:16px;">&times;</button>
+      `;
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 8000);
+    }
+
+    function buildPage() {
+      const title = document.getElementById("wb_title").value.trim();
+      const headline = document.getElementById("wb_headline").value.trim();
+      const sub = document.getElementById("wb_subheadline").value.trim();
+      const ctaPrimary = document.getElementById("wb_cta_primary").value.trim() || "Get started";
+      const ctaSecondary = document.getElementById("wb_cta_secondary").value.trim();
+      const b1t = document.getElementById("wb_block1_title").value.trim();
+      const b1b = document.getElementById("wb_block1_body").value.trim();
+      const b2t = document.getElementById("wb_block2_title").value.trim();
+      const b2b = document.getElementById("wb_block2_body").value.trim();
+      const b3t = document.getElementById("wb_block3_title").value.trim();
+      const b3b = document.getElementById("wb_block3_body").value.trim();
+
+      document.getElementById("live_headline").textContent = headline || "Your headline here";
+      document.getElementById("live_sub").textContent = sub || "Your subheadline here";
+      document.getElementById("live_cta1").textContent = ctaPrimary;
+      document.getElementById("live_cta2").textContent = ctaSecondary || "Learn more";
+      document.getElementById("live_b1t").textContent = b1t || "Block 1";
+      document.getElementById("live_b1b").textContent = b1b || "Description";
+      document.getElementById("live_b2t").textContent = b2t || "Block 2";
+      document.getElementById("live_b2b").textContent = b2b || "Description";
+      document.getElementById("live_b3t").textContent = b3t || "Block 3";
+      document.getElementById("live_b3b").textContent = b3b || "Description";
+
+      const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${escapeHtml(title || headline || "Landing Page")}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0a0f1a; color: #f0f4ff; }
+    .hero { max-width: 800px; margin: 0 auto; padding: 4rem 1.5rem; text-align: center; }
+    h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .sub { font-size: 1.1rem; color: #a0aec0; margin-bottom: 2rem; }
+    .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn-primary { padding: 0.75rem 1.5rem; border-radius: 999px; background: linear-gradient(135deg, #38bdf8, #22d3ee); color: #0a0f1a; font-weight: 600; text-decoration: none; }
+    .btn-secondary { padding: 0.75rem 1.5rem; border-radius: 999px; border: 1px solid #475569; color: #f0f4ff; text-decoration: none; }
+    .blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .block { background: #1e293b; border-radius: 1rem; padding: 1.5rem; }
+    .block h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #38bdf8; }
+    .block p { font-size: 0.95rem; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1>${escapeHtml(headline)}</h1>
+    <p class="sub">${escapeHtml(sub)}</p>
+    <div class="cta-row">
+      <a href="#" class="btn-primary">${escapeHtml(ctaPrimary)}</a>
+      ${ctaSecondary ? `<a href="#" class="btn-secondary">${escapeHtml(ctaSecondary)}</a>` : ''}
+    </div>
+  </section>
+  <section class="blocks">
+    <div class="block"><h3>${escapeHtml(b1t)}</h3><p>${escapeHtml(b1b)}</p></div>
+    <div class="block"><h3>${escapeHtml(b2t)}</h3><p>${escapeHtml(b2b)}</p></div>
+    <div class="block"><h3>${escapeHtml(b3t)}</h3><p>${escapeHtml(b3b)}</p></div>
+  </section>
+</body>
+</html>`;
+
+      document.getElementById("wb_code").textContent = html;
+    }
+  </script>
+</body>
+</html>

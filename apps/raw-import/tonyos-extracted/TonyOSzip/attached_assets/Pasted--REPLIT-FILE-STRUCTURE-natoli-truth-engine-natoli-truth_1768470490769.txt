@@ -1,0 +1,177 @@
+📁 REPLIT FILE STRUCTURE
+/natoli-truth-engine
+│
+├── natoli_truths.json
+├── truth_engine.js
+├── input_companies.json
+└── README.md
+
+1️⃣ natoli_truths.json
+
+This file is the non-negotiable truth set
+
+👉 Paste exactly
+
+{
+  "truths": [
+    {
+      "id": "uses_powder_compaction",
+      "description": "Company compacts powders using mechanical force",
+      "required_keywords": ["tablet compression", "powder compaction", "pressed tablet", "pellet pressing"]
+    },
+    {
+      "id": "produces_pressed_solid",
+      "description": "Primary product is a tablet, pellet, or pressed solid",
+      "required_keywords": ["tablet", "pellet", "compressed"]
+    },
+    {
+      "id": "tooling_impacts_outcome",
+      "description": "Tooling affects quality, yield, or consistency",
+      "required_keywords": ["tablet tooling", "punch", "die", "tool wear", "tool life"]
+    },
+    {
+      "id": "formulation_impacts_compaction",
+      "description": "Formulation affects compaction behavior",
+      "required_keywords": ["formulation", "granulation", "excipients", "binder", "lubricant"]
+    },
+    {
+      "id": "scale_up_matters",
+      "description": "Scale-up changes compaction or tooling behavior",
+      "required_keywords": ["scale-up", "tech transfer", "pilot scale"]
+    },
+    {
+      "id": "process_is_press_based",
+      "description": "Process is press-based, not molded or liquid",
+      "blocked_keywords": ["gummy", "liquid", "spray", "molded"]
+    },
+    {
+      "id": "manufacturing_or_rnd_internal",
+      "description": "Manufacturing or R&D is internal",
+      "required_keywords": ["manufacturing", "r&d", "process development"]
+    },
+    {
+      "id": "performance_specs_exist",
+      "description": "Performance or regulatory specs matter",
+      "required_keywords": ["usp", "dissolution", "friability", "hardness"]
+    }
+  ],
+  "global_blocked_keywords": [
+    "powder metallurgy",
+    "metal injection molding",
+    "structural ceramics",
+    "job shop",
+    "cnc machining",
+    "automotive structural",
+    "aerospace structural"
+  ]
+}
+
+2️⃣ truth_engine.js
+
+This is the actual enforcement engine
+
+👉 Paste exactly
+
+const fs = require("fs");
+
+const truths = JSON.parse(fs.readFileSync("natoli_truths.json", "utf8"));
+const companies = JSON.parse(fs.readFileSync("input_companies.json", "utf8"));
+
+function normalize(text) {
+  return text.toLowerCase();
+}
+
+function hasAny(text, list = []) {
+  return list.some(k => text.includes(k));
+}
+
+function evaluateCompany(company) {
+  const text = normalize(
+    `${company.name} ${company.industry} ${company.description}`
+  );
+
+  const result = {
+    name: company.name,
+    qualified: true,
+    failed_truths: [],
+    notes: []
+  };
+
+  // GLOBAL BLOCK
+  if (hasAny(text, truths.global_blocked_keywords)) {
+    result.qualified = false;
+    result.notes.push("Hard excluded by global blocked keyword");
+    return result;
+  }
+
+  // TRUTH EVALUATION
+  for (const truth of truths.truths) {
+    if (truth.required_keywords && !hasAny(text, truth.required_keywords)) {
+      result.qualified = false;
+      result.failed_truths.push(truth.id);
+    }
+
+    if (truth.blocked_keywords && hasAny(text, truth.blocked_keywords)) {
+      result.qualified = false;
+      result.failed_truths.push(truth.id);
+    }
+  }
+
+  return result;
+}
+
+// RUN ENGINE
+const output = companies.map(evaluateCompany);
+
+// PRINT RESULTS
+console.log(JSON.stringify(output, null, 2));
+
+3️⃣ input_companies.json
+
+This simulates Apollo, CRM, or website text
+
+👉 Paste exactly
+
+[
+  {
+    "name": "TrueDose Pharma",
+    "industry": "Generic Pharmaceutical Manufacturing",
+    "description": "Internal drug product manufacturing with solid oral dosage tablets, formulation development, granulation, tablet compression, tooling optimization, USP dissolution testing, and scale-up support"
+  },
+  {
+    "name": "GummyWorld",
+    "industry": "Nutraceutical Manufacturing",
+    "description": "Direct to consumer gummy vitamins and liquid supplements"
+  },
+  {
+    "name": "MetalPress Inc",
+    "industry": "Powder Metallurgy",
+    "description": "Pressed metal components for automotive structural applications"
+  }
+]
+
+4️⃣ README.md
+
+Optional but clean
+
+Natoli Truth Engine
+
+Purpose:
+Binary screening of companies based on Natoli compaction process truths.
+
+Logic:
+Every truth must evaluate to TRUE.
+If any truth fails, the company is rejected.
+
+Why:
+Natoli sells to process reality, not industry labels.
+
+▶️ HOW TO RUN IN REPLIT
+
+Create Node.js Replit
+
+Add files above
+
+Click Run or use:
+
+node truth_engine.js

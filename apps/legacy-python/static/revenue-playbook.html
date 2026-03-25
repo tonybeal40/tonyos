@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Natoli Sales and Marketing Operating Playbook">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Revenue Team Playbook | Natoli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg-dark: #0a0f1a;
+  --bg-card: #ffffff;
+  --bg-muted: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --success: #059669;
+  --warning: #d97706;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lg: 0 20px 50px rgba(0,0,0,0.2);
+  --transition: 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: linear-gradient(180deg, var(--bg-dark) 0%, #111827 100%);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 24px;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border-radius: 100px;
+  padding: 12px 24px;
+  box-shadow: var(--shadow-lg);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+}
+.brand-text { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+.brand-sub { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.nav { display: flex; gap: 4px; }
+.nav a {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 100px;
+  transition: var(--transition);
+}
+.nav a:hover { background: var(--bg-muted); color: var(--text-primary); }
+
+/* Hero */
+.hero {
+  padding: 48px 0 32px;
+}
+.hero-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  box-shadow: var(--shadow-lg);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.hero-title {
+  margin: 24px 0 16px;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+}
+.hero-desc {
+  max-width: 640px;
+  font-size: 17px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+.btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.btn:hover { border-color: var(--text-muted); transform: translateY(-1px); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn svg { width: 18px; height: 18px; }
+
+/* Status Row */
+.status-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+.status-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.status-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.status-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.status-card p { font-size: 13px; color: var(--text-muted); }
+
+/* Sections */
+.section { padding: 16px 0; }
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.card-icon {
+  width: 36px;
+  height: 36px;
+  background: #fef2f2;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.card h2 { font-size: 22px; font-weight: 800; }
+.card-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+.card p { color: var(--text-secondary); margin-bottom: 16px; }
+
+/* Grid layouts */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-main { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 16px; align-items: start; }
+
+/* Mini cards */
+.mini {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: var(--transition);
+}
+.mini:hover { border-color: var(--accent); }
+.mini strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.mini span { font-size: 14px; color: var(--text-secondary); }
+.mini ul { margin-top: 12px; padding-left: 18px; font-size: 14px; color: var(--text-secondary); }
+.mini li { margin: 6px 0; }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 12px; }
+.step {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: var(--transition);
+}
+.step:hover { border-color: var(--accent); }
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.step-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.step-content p { font-size: 14px; color: var(--text-secondary); margin: 0; }
+
+/* Callouts */
+.callout {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+.callout-success { background: #ecfdf5; border-left: 4px solid var(--success); color: #065f46; }
+.callout-warning { background: #fffbeb; border-left: 4px solid var(--warning); color: #92400e; }
+.callout-info { background: #eff6ff; border-left: 4px solid #2563eb; color: #1e40af; }
+.callout strong { display: block; margin-bottom: 4px; }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: var(--bg-muted); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+td:nth-child(2), td:nth-child(3) { text-align: center; }
+tr:hover td { background: var(--bg-muted); }
+.check { color: var(--success); font-size: 18px; }
+
+/* Timeline */
+.timeline { padding-left: 28px; position: relative; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--success));
+  border-radius: 2px;
+}
+.timeline-item { position: relative; padding-bottom: 24px; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 3px solid var(--bg-card);
+}
+.timeline-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.timeline-item p { font-size: 14px; color: var(--text-secondary); margin: 0; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.metric {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+.metric-value { font-size: 32px; font-weight: 800; color: var(--accent); }
+.metric-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Footer */
+.footer {
+  margin-top: 32px;
+  padding: 24px;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Slideshow */
+.slideshow {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #0a0f1a 0%, #1e293b 50%, #0a0f1a 100%);
+  z-index: 1000;
+  flex-direction: column;
+}
+.slideshow.active { display: flex; }
+.slideshow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 48px;
+}
+.slideshow-title { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.slideshow-close {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.slideshow-close:hover { background: rgba(255,255,255,0.2); }
+.slideshow-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48px;
+}
+.slide {
+  display: none;
+  max-width: 800px;
+  text-align: center;
+  color: #fff;
+  animation: fadeIn 0.4s ease;
+}
+.slide.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.slide h2 { font-size: clamp(36px, 6vw, 56px); font-weight: 800; margin-bottom: 24px; line-height: 1.1; }
+.slide p { font-size: clamp(18px, 3vw, 24px); opacity: 0.8; margin-bottom: 32px; }
+.slide .hl { color: #f87171; }
+.slide .hl-green { color: #34d399; }
+.slide-bullets { text-align: left; max-width: 600px; margin: 0 auto; }
+.slide-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.slide-bullet-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(248,113,113,0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.slideshow-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+}
+.slideshow-nav button {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.slideshow-nav button:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+.slideshow-nav button:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.dots { display: flex; gap: 8px; }
+.dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.dot.active, .dot:hover { background: #f87171; transform: scale(1.2); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .grid-main, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .status-row { grid-template-columns: repeat(2, 1fr); }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .hero-card { padding: 32px 24px; }
+  .card { padding: 24px; }
+}
+@media (max-width: 600px) {
+  .status-row { grid-template-columns: 1fr; }
+  .btn-group { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .header, .btn-group, .slideshow { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">N</div>
+        <div>
+          <div class="brand-text">Natoli Revenue Playbook</div>
+          <div class="brand-sub">Sales + Marketing Operating System</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#current">Current State</a>
+        <a href="#framework">Framework</a>
+        <a href="#process">Process</a>
+        <a href="#ownership">Ownership</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#metrics">Metrics</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-card">
+      <div class="badge"><span class="badge-dot"></span> Internal Operating Document</div>
+      <h1 class="hero-title">Revenue Team Operating Playbook</h1>
+      <p class="hero-desc">This document outlines how Sales and Marketing work together at Natoli. It defines our shared process, clear ownership, and how we measure success. This is our operating system.</p>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="presentBtn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Present to Team
+        </button>
+        <button class="btn" onclick="window.print()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Download PDF
+        </button>
+        <button class="btn" id="copyBtn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          Share Link
+        </button>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <div class="status-card">
+        <div class="status-icon">🎯</div>
+        <h3>Target Markets</h3>
+        <p>25+ validated industries</p>
+      </div>
+      <div class="status-card">
+        <div class="status-icon">👥</div>
+        <h3>Key Personas</h3>
+        <p>Director+ in R&D, MS&T, Mfg</p>
+      </div>
+      <div class="status-card">
+        <div class="status-icon">🔀</div>
+        <h3>Division Routing</h3>
+        <p>Scientific vs Engineering</p>
+      </div>
+      <div class="status-card">
+        <div class="status-icon">📊</div>
+        <h3>CRM System</h3>
+        <p>CRM + Apollo enrichment</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="current">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📍</div><h2>Where We Are Today</h2></div>
+      <p class="card-sub">Current state assessment for new leadership</p>
+      <div class="grid-2">
+        <div class="callout callout-success">
+          <strong>What's Working</strong>
+          Targeted account lists with manual vetting. Apollo.io enrichment for company intelligence. Clear division routing (Scientific vs Engineering). LinkedIn-based intent signals. CRM with activity tracking and pipeline visibility.
+        </div>
+        <div class="callout callout-warning">
+          <strong>What Needs Attention</strong>
+          Handoff documentation between Marketing and Sales. Consistent feedback loop from Sales to Marketing. Shared definition of "qualified" across teams. Regular operating rhythm (weekly syncs). Win/loss analysis driving message iteration.
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:20px;">
+        <div class="mini"><strong>CRM</strong><span>Internal CRM with Apollo enrichment, Natoli classification, and pipeline tracking.</span></div>
+        <div class="mini"><strong>Apollo.io</strong><span>Company enrichment, contact discovery, and intent signals.</span></div>
+        <div class="mini"><strong>LinkedIn Sales Nav</strong><span>Prospecting, connection tracking, and engagement monitoring.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="framework">
+    <div class="grid-main">
+      <div class="card">
+        <div class="card-header"><div class="card-icon">🔄</div><h2>The Framework</h2></div>
+        <p class="card-sub">Our 5-step alignment loop</p>
+        <p>Most Sales and Marketing friction comes from different definitions of "qualified" and different stories being told to the same buyer.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><div class="step-content"><h4>Agree on the buyer question</h4><p>Pick one real customer question to answer this week. No multipurpose messaging.</p></div></div>
+          <div class="step"><div class="step-num">02</div><div class="step-content"><h4>Publish the message once</h4><p>One core message, reused across email, enablement, and conversations.</p></div></div>
+          <div class="step"><div class="step-num">03</div><div class="step-content"><h4>Capture intent signals</h4><p>Sales is activated only when intent is clear, not when activity looks good.</p></div></div>
+          <div class="step"><div class="step-num">04</div><div class="step-content"><h4>Route with context</h4><p>Interest is routed to the right owner with context. No dropped balls.</p></div></div>
+          <div class="step"><div class="step-num">05</div><div class="step-content"><h4>Feedback loop</h4><p>What buyers actually said becomes the next message iteration.</p></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon">⚠️</div><h2>Failure Modes</h2></div>
+        <p class="card-sub">What we're actively avoiding</p>
+        <div class="mini" style="margin-bottom:12px;"><strong>Different definitions</strong><span>Marketing measures opens. Sales measures revenue.</span></div>
+        <div class="mini" style="margin-bottom:12px;"><strong>Message drift</strong><span>Five versions of the story reach the buyer.</span></div>
+        <div class="mini" style="margin-bottom:12px;"><strong>Weak handoffs</strong><span>Leads arrive without context.</span></div>
+        <div class="mini"><strong>No closed loop</strong><span>Objections never improve the message.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="process">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">⚙️</div><h2>Our Lead Generation Process</h2></div>
+      <p class="card-sub">How we build and qualify pipeline</p>
+      <div class="grid-2">
+        <div class="mini"><strong>1. Targeted List Building</strong><span>Lists built from ICP criteria, not purchased databases.</span><ul><li>25+ validated Natoli industries</li><li>Company size, growth stage, geography filters</li><li>Manual review before pipeline entry</li><li>Apollo enrichment for technographics</li></ul></div>
+        <div class="mini"><strong>2. Persona Vetting</strong><span>Only decision-makers who can move deals forward.</span><ul><li>Director of R&D, VP Manufacturing, MS&T leads</li><li>Title-to-responsibility validation</li><li>Division routing: Scientific vs Engineering</li><li>Gatekeepers and researchers excluded</li></ul></div>
+      </div>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="mini"><strong>3. Multi-Channel Outreach</strong><span>LinkedIn + Email sequences designed for replies.</span><ul><li>LinkedIn connection with value-first message</li><li>2-3 follow-up touches based on engagement</li><li>Email sequence for non-responders</li><li>Personalized by company context</li></ul></div>
+        <div class="mini"><strong>4. Intent-Based Tiering</strong><span>Every action scored and prioritized for Sales.</span><ul><li><strong>Tier 1:</strong> Replied or clicked - immediate action</li><li><strong>Tier 2:</strong> Opened/engaged - follow-up queue</li><li><strong>Tier 3:</strong> No signal - nurture or remove</li></ul></div>
+      </div>
+      <div class="callout callout-info" style="margin-top:20px;"><strong>Handoff Standard</strong>Every lead passed to Sales includes: Who (name, company, role), What (trigger message), Why (problem signal), Seen (content reviewed), and Next (recommended angle).</div>
+    </div>
+  </section>
+
+  <section class="section" id="ownership">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">👥</div><h2>Role Ownership</h2></div>
+      <p class="card-sub">Clear accountability for every stage</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Activity</th><th>Marketing</th><th>Sales</th></tr></thead>
+          <tbody>
+            <tr><td>Target account identification</td><td class="check">✓</td><td></td></tr>
+            <tr><td>Company research & enrichment</td><td class="check">✓</td><td></td></tr>
+            <tr><td>Initial outreach & messaging</td><td class="check">✓</td><td></td></tr>
+            <tr><td>Response qualification</td><td class="check">✓</td><td></td></tr>
+            <tr><td>Handoff documentation</td><td class="check">✓</td><td></td></tr>
+            <tr><td>Discovery call & deep qualification</td><td></td><td class="check">✓</td></tr>
+            <tr><td>Proposal & negotiation</td><td></td><td class="check">✓</td></tr>
+            <tr><td>Close & contract</td><td></td><td class="check">✓</td></tr>
+            <tr><td>Win/loss feedback to Marketing</td><td></td><td class="check">✓</td></tr>
+            <tr><td>Message iteration based on feedback</td><td class="check">✓</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-3" style="margin-top:24px;">
+        <div class="mini"><strong>Weekly</strong><span>15-min sync: What's working, what's stalled, one message focus.</span></div>
+        <div class="mini"><strong>Monthly</strong><span>Pipeline review: Deals by stage, conversion rates, forecast accuracy.</span></div>
+        <div class="mini"><strong>Quarterly</strong><span>Win/loss analysis: Top objections, competitive intel, ICP refinement.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="roadmap">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🗓️</div><h2>90-Day Implementation Roadmap</h2></div>
+      <p class="card-sub">Getting to full alignment</p>
+      <div class="timeline">
+        <div class="timeline-item"><h4>Days 1-30: Foundation</h4><p>Align on ICP definition. Establish weekly sync cadence. Document handoff template. Review current pipeline together. Set baseline metrics.</p></div>
+        <div class="timeline-item"><h4>Days 31-60: Execution</h4><p>Run first coordinated campaign with shared messaging. Implement feedback loop (Sales to Marketing). Refine tier definitions based on real data. First monthly pipeline review.</p></div>
+        <div class="timeline-item"><h4>Days 61-90: Optimization</h4><p>Analyze first campaign results. Update messaging based on objections. Expand to second campaign angle. Conduct first win/loss review. Document what's working.</p></div>
+      </div>
+      <div class="callout callout-success" style="margin-top:20px;"><strong>Success at Day 90</strong>Both teams using same ICP definition. Weekly sync happening consistently. Handoffs include context. Sales feedback improving next campaign. Pipeline visibility is shared.</div>
+    </div>
+  </section>
+
+  <section class="section" id="metrics">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">📊</div><h2>How We Measure Success</h2></div>
+      <p class="card-sub">Shared KPIs for Sales and Marketing</p>
+      <div class="metrics">
+        <div class="metric"><div class="metric-value">—</div><div class="metric-label">Lead to Opportunity Rate</div></div>
+        <div class="metric"><div class="metric-value">—</div><div class="metric-label">Avg Sales Cycle (days)</div></div>
+        <div class="metric"><div class="metric-value">—</div><div class="metric-label">Pipeline Created ($/mo)</div></div>
+        <div class="metric"><div class="metric-value">—</div><div class="metric-label">Feedback Loop %</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:20px;">
+        <div class="mini"><strong>Marketing Metrics</strong><ul><li>Accounts researched per week</li><li>Outreach response rate</li><li>Tier 1 leads generated</li><li>Handoff completion rate</li></ul></div>
+        <div class="mini"><strong>Sales Metrics</strong><ul><li>Speed to first contact (hours)</li><li>Discovery calls completed</li><li>Opportunity creation rate</li><li>Feedback submitted to Marketing</li></ul></div>
+      </div>
+      <div class="callout callout-info" style="margin-top:20px;"><strong>The One Metric That Matters</strong>Pipeline created from Marketing-sourced leads. If this number grows while conversion rates stay stable, the system is working.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">🚨</div><h2>When Things Break Down</h2></div>
+      <p class="card-sub">Escalation paths and fixes</p>
+      <div class="grid-2">
+        <div class="mini"><strong>Sales not following up</strong><span>Check: Is context clear? Is timing realistic? Discuss in weekly sync. Adjust handoff format if needed.</span></div>
+        <div class="mini"><strong>Marketing sending unqualified leads</strong><span>Check: Are tier definitions aligned? Review rejected leads together. Tighten qualification criteria.</span></div>
+        <div class="mini"><strong>No feedback coming back</strong><span>Make feedback part of CRM workflow. Add to weekly sync agenda. Keep it simple: Win / Not Now / Bad Fit.</span></div>
+        <div class="mini"><strong>Message not resonating</strong><span>Review objections from Sales. Test new angle in small batch. Iterate weekly, not monthly.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-header"><div class="card-icon">✅</div><h2>Next Steps</h2></div>
+      <p class="card-sub">Immediate actions for new leadership</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Review this document together</h4><p>Sales Director + Marketing Director align on the framework and identify gaps.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Schedule first weekly sync</h4><p>15 minutes. One buyer question. One message focus. One feedback item.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Audit current pipeline</h4><p>Walk through active deals together. Understand what's in motion.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><h4>Define "qualified" together</h4><p>Write down the shared definition. Make it specific. Put it in the CRM.</p></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">Natoli Revenue Team Playbook &bull; Last updated: <span id="date"></span> &bull; Internal Document</div>
+</footer>
+
+<div class="slideshow" id="slideshow">
+  <div class="slideshow-header">
+    <div class="slideshow-title">Natoli Revenue Playbook</div>
+    <button class="slideshow-close" id="closeBtn">Exit Presentation</button>
+  </div>
+  <div class="slideshow-content">
+    <div class="slide active"><h2>Revenue Team <span class="hl">Operating Playbook</span></h2><p>How Sales and Marketing work together at Natoli. One process. Clear ownership. Shared metrics.</p></div>
+    <div class="slide"><h2>The Problem</h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">❌</span> Different definitions of "qualified"</div><div class="slide-bullet"><span class="slide-bullet-icon">❌</span> Message drift across touchpoints</div><div class="slide-bullet"><span class="slide-bullet-icon">❌</span> Leads arrive without context</div><div class="slide-bullet"><span class="slide-bullet-icon">❌</span> No feedback loop</div></div></div>
+    <div class="slide"><h2>The <span class="hl">5-Step Loop</span></h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">1</span> Agree on ONE buyer question</div><div class="slide-bullet"><span class="slide-bullet-icon">2</span> Publish the message ONCE</div><div class="slide-bullet"><span class="slide-bullet-icon">3</span> Capture intent signals</div><div class="slide-bullet"><span class="slide-bullet-icon">4</span> Route with context</div><div class="slide-bullet"><span class="slide-bullet-icon">5</span> Feed objections back</div></div></div>
+    <div class="slide"><h2>Lead Gen Process</h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">🎯</span> Targeted lists (25+ industries)</div><div class="slide-bullet"><span class="slide-bullet-icon">👤</span> Director+ personas, manually vetted</div><div class="slide-bullet"><span class="slide-bullet-icon">💬</span> Multi-channel: LinkedIn + Email</div><div class="slide-bullet"><span class="slide-bullet-icon">📊</span> Intent-based tiering for Sales</div></div></div>
+    <div class="slide"><h2>Clear <span class="hl">Ownership</span></h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">📣</span> Marketing: Lists, outreach, qualification, handoff</div><div class="slide-bullet"><span class="slide-bullet-icon">🤝</span> Sales: Discovery, proposal, close, feedback</div><div class="slide-bullet"><span class="slide-bullet-icon">🔄</span> Shared: Pipeline visibility, win/loss learning</div></div></div>
+    <div class="slide"><h2>90-Day <span class="hl-green">Roadmap</span></h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">📅</span> Days 1-30: Foundation</div><div class="slide-bullet"><span class="slide-bullet-icon">🚀</span> Days 31-60: Execution</div><div class="slide-bullet"><span class="slide-bullet-icon">📈</span> Days 61-90: Optimization</div></div></div>
+    <div class="slide"><h2>The One Metric</h2><p><span class="hl">Pipeline created from Marketing-sourced leads.</span></p><p style="opacity:0.6;font-size:20px;">If this grows while conversion stays stable, the system is working.</p></div>
+    <div class="slide"><h2>Next Steps</h2><div class="slide-bullets"><div class="slide-bullet"><span class="slide-bullet-icon">1</span> Review this playbook together</div><div class="slide-bullet"><span class="slide-bullet-icon">2</span> Schedule first weekly sync</div><div class="slide-bullet"><span class="slide-bullet-icon">3</span> Audit current pipeline</div><div class="slide-bullet"><span class="slide-bullet-icon">4</span> Define "qualified" together</div></div></div>
+  </div>
+  <div class="slideshow-nav">
+    <button id="prevBtn">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn">→</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.getElementById('date').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+  
+  document.getElementById('copyBtn').onclick = async function(){
+    try { await navigator.clipboard.writeText(location.href); this.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M5 13l4 4L19 7"/></svg> Copied!'; setTimeout(() => this.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg> Share Link', 2000); } catch(e){ alert(location.href); }
+  };
+
+  const ss = document.getElementById('slideshow'), slides = document.querySelectorAll('.slide'), dots = document.getElementById('dots');
+  let cur = 0;
+  
+  slides.forEach((_,i) => { const d = document.createElement('div'); d.className = 'dot' + (i===0?' active':''); d.onclick = () => go(i); dots.appendChild(d); });
+  
+  function go(n){ cur = Math.max(0, Math.min(n, slides.length-1)); slides.forEach((s,i) => s.classList.toggle('active', i===cur)); document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===cur)); document.getElementById('prevBtn').disabled = cur===0; document.getElementById('nextBtn').disabled = cur===slides.length-1; }
+  
+  document.getElementById('presentBtn').onclick = () => { cur=0; go(0); ss.classList.add('active'); document.body.style.overflow='hidden'; };
+  document.getElementById('closeBtn').onclick = () => { ss.classList.remove('active'); document.body.style.overflow=''; };
+  document.getElementById('prevBtn').onclick = () => go(cur-1);
+  document.getElementById('nextBtn').onclick = () => go(cur+1);
+  
+  document.onkeydown = e => { if(!ss.classList.contains('active')) return; if(e.key==='ArrowRight'||e.key===' ') go(cur+1); if(e.key==='ArrowLeft') go(cur-1); if(e.key==='Escape'){ ss.classList.remove('active'); document.body.style.overflow=''; }};
+})();
+</script>
+</body>
+</html>

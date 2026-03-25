@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli Message Center | RevOps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+  <style>
+    .msg-container { max-width: 1400px; margin: 0 auto; }
+    
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+    
+    .category-tab {
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: #9ca3af;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .category-tab:hover {
+      background: rgba(34,211,238,0.1);
+      border-color: #22d3ee;
+    }
+    
+    .category-tab.active {
+      background: rgba(34,211,238,0.2);
+      border-color: #22d3ee;
+      color: #22d3ee;
+    }
+    
+    .category-tab.sales { border-left: 3px solid #f97316; }
+    .category-tab.sales.active { background: rgba(249,115,22,0.2); border-color: #f97316; color: #f97316; }
+    
+    .category-tab.cx { border-left: 3px solid #10b981; }
+    .category-tab.cx.active { background: rgba(16,185,129,0.2); border-color: #10b981; color: #10b981; }
+    
+    .category-tab.why { border-left: 3px solid #a855f7; }
+    .category-tab.why.active { background: rgba(168,85,247,0.2); border-color: #a855f7; color: #a855f7; }
+    
+    .template-section {
+      display: none;
+    }
+    
+    .template-section.active {
+      display: block;
+    }
+    
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .template-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .template-card:hover {
+      border-color: #22d3ee;
+      transform: translateY(-2px);
+    }
+    
+    .template-card.selected {
+      border-color: #22d3ee;
+      background: rgba(34,211,238,0.1);
+    }
+    
+    .template-card h4 {
+      color: #22d3ee;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    
+    .template-card p {
+      color: #9ca3af;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    
+    .template-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-top: 10px;
+    }
+    
+    .badge-sales { background: rgba(249,115,22,0.2); color: #f97316; }
+    .badge-cx { background: rgba(16,185,129,0.2); color: #10b981; }
+    .badge-why { background: rgba(168,85,247,0.2); color: #a855f7; }
+    
+    .builder-section {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 900px) {
+      .builder-section { grid-template-columns: 1fr; }
+    }
+    
+    .form-panel, .preview-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #e5e5e5;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: #e5e5e5;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #22d3ee;
+    }
+    
+    .sender-section {
+      padding: 16px;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .sender-section h3 {
+      font-size: 0.9rem;
+      color: #a855f7;
+      margin-bottom: 12px;
+    }
+    
+    .email-preview {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 400px;
+    }
+    
+    .email-subject {
+      font-weight: 600;
+      color: #22d3ee;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 16px;
+    }
+    
+    .email-body {
+      line-height: 1.7;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+    }
+    
+    .email-body .highlight {
+      background: rgba(249,115,22,0.3);
+      padding: 2px 4px;
+      border-radius: 3px;
+      color: #f97316;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-action {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .btn-copy { background: #22d3ee; color: #000; }
+    .btn-copy:hover { background: #06b6d4; }
+    
+    .btn-download { background: #a855f7; color: #fff; }
+    .btn-download:hover { background: #9333ea; }
+    
+    .btn-linkedin { background: #0a66c2; color: #fff; }
+    .btn-linkedin:hover { background: #004182; }
+    
+    .saved-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #10b981;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+      z-index: 100;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .section-header h3 {
+      color: #e5e5e5;
+      font-size: 1.1rem;
+    }
+    
+    .team-filter {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .team-btn {
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    
+    .team-btn.active { background: rgba(34,211,238,0.2); color: #22d3ee; border-color: #22d3ee; }
+    
+    .quick-tips {
+      background: rgba(249,115,22,0.1);
+      border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .quick-tips h4 {
+      color: #f97316;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    
+    .quick-tips ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Natoli Message Center</h1>
+        <p class="revops-subtitle">Sales & Customer Experience Messaging Hub</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona">Personas</a>
+      <a href="/natoli-revops/results">Results</a>
+      <a href="/natoli-revops/downloads">Downloads</a>
+      <a href="/natoli-revops/message-center" class="active">Message Center</a>
+    </nav>
+    
+    <div class="msg-container">
+      <div class="category-tabs">
+        <button class="category-tab sales active" data-category="intro">New Prospect Intro</button>
+        <button class="category-tab sales" data-category="followup">Follow-Up</button>
+        <button class="category-tab cx" data-category="thankyou">Thank You</button>
+        <button class="category-tab cx" data-category="checkin">Customer Check-In</button>
+        <button class="category-tab why" data-category="whynatoli">Why Natoli</button>
+        <button class="category-tab sales" data-category="linkedin">LinkedIn</button>
+      </div>
+      
+      <div class="template-section active" id="section-intro">
+        <div class="section-header">
+          <h3>New Prospect Introduction Templates</h3>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="peer">
+            <h4>Peer Fit (Warm)</h4>
+            <p>Credible approach for similar manufacturers. Establishes peer credibility and shared challenges.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="problem">
+            <h4>Problem-Led (Pain)</h4>
+            <p>Addresses operational pain points directly. Best when you know they're facing challenges.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="strategic">
+            <h4>Strategic (Executive)</h4>
+            <p>Executive-level positioning. For VPs, Directors, and scale buyers who think strategically.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="scientific">
+            <h4>Scientific R&D</h4>
+            <p>For formulation scientists and R&D teams. Focus on compaction science expertise.</p>
+            <span class="template-badge badge-sales">Natoli Scientific</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-section" id="section-followup">
+        <div class="section-header">
+          <h3>Follow-Up Templates</h3>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="followup1">
+            <h4>Standard Follow-Up</h4>
+            <p>2-3 weeks after initial outreach. Keeps the door open without pressure.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="followup2">
+            <h4>Value-Add Follow-Up</h4>
+            <p>Share industry insight or resource. Provides value before asking for meeting.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="followup3">
+            <h4>Final Touch</h4>
+            <p>Graceful close after multiple attempts. Leaves door open for future.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-section" id="section-thankyou">
+        <div class="section-header">
+          <h3>Thank You Templates</h3>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="thankyou_order">
+            <h4>Order Thank You</h4>
+            <p>Thank customer for recent purchase. Reinforce partnership and offer support.</p>
+            <span class="template-badge badge-cx">Customer Experience</span>
+          </div>
+          <div class="template-card" data-template="thankyou_meeting">
+            <h4>Meeting Thank You</h4>
+            <p>Post-meeting follow-up. Recap discussion and confirm next steps.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="thankyou_referral">
+            <h4>Referral Thank You</h4>
+            <p>Thank customer for referring new business. Express genuine appreciation.</p>
+            <span class="template-badge badge-cx">Customer Experience</span>
+          </div>
+          <div class="template-card" data-template="thankyou_loyalty">
+            <h4>Loyalty Appreciation</h4>
+            <p>Thank long-term customers for partnership. Celebrate relationship milestones.</p>
+            <span class="template-badge badge-cx">Customer Experience</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-section" id="section-checkin">
+        <div class="section-header">
+          <h3>Customer Check-In Templates</h3>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="checkin_quarterly">
+            <h4>Quarterly Check-In</h4>
+            <p>Proactive outreach to existing customers. Ensure satisfaction and identify needs.</p>
+            <span class="template-badge badge-cx">Customer Experience</span>
+          </div>
+          <div class="template-card" data-template="checkin_postdelivery">
+            <h4>Post-Delivery Check-In</h4>
+            <p>Follow up after tooling delivery. Confirm satisfaction and offer support.</p>
+            <span class="template-badge badge-cx">Customer Experience</span>
+          </div>
+          <div class="template-card" data-template="checkin_reactivate">
+            <h4>Reactivation Outreach</h4>
+            <p>Re-engage dormant customers. Remind them of value and invite back.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-section" id="section-whynatoli">
+        <div class="section-header">
+          <h3>Why Natoli Messaging</h3>
+        </div>
+        <div class="quick-tips">
+          <h4>Core Value Propositions</h4>
+          <ul>
+            <li><strong>50 Years of Expertise:</strong> Nearly five decades of compaction science and tooling innovation</li>
+            <li><strong>Global Leader:</strong> Trusted by Fortune 500 pharma to emerging nutra brands</li>
+            <li><strong>Precision Tooling:</strong> Quality-driven manufacturing reducing waste and variability</li>
+            <li><strong>Scientific Support:</strong> R&D expertise for formulation and scale-up challenges</li>
+            <li><strong>Engineering Excellence:</strong> Tooling design for consistent, scalable production</li>
+          </ul>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="why_overview">
+            <h4>Why Natoli Overview</h4>
+            <p>Complete introduction to Natoli's value. For new prospects unfamiliar with us.</p>
+            <span class="template-badge badge-why">Why Natoli</span>
+          </div>
+          <div class="template-card" data-template="why_engineering">
+            <h4>Why Natoli Engineering</h4>
+            <p>Focus on tooling precision and manufacturing excellence.</p>
+            <span class="template-badge badge-why">Engineering</span>
+          </div>
+          <div class="template-card" data-template="why_scientific">
+            <h4>Why Natoli Scientific</h4>
+            <p>Focus on compaction science, R&D support, and formulation expertise.</p>
+            <span class="template-badge badge-why">Scientific</span>
+          </div>
+          <div class="template-card" data-template="why_vs_commodity">
+            <h4>Strategic vs Commodity</h4>
+            <p>Why tooling should be treated as strategic investment, not commodity purchase.</p>
+            <span class="template-badge badge-why">Executive</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-section" id="section-linkedin">
+        <div class="section-header">
+          <h3>LinkedIn Message Templates</h3>
+        </div>
+        <div class="template-grid">
+          <div class="template-card selected" data-template="linkedin_connect">
+            <h4>Connection Request</h4>
+            <p>Initial LinkedIn connection request. Brief, professional, relevant.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="linkedin_followup">
+            <h4>Post-Connect Message</h4>
+            <p>After connection accepted. Start conversation without hard sell.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+          <div class="template-card" data-template="linkedin_engage">
+            <h4>Content Engagement</h4>
+            <p>Reach out after they engaged with content. Natural conversation starter.</p>
+            <span class="template-badge badge-sales">Sales</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="builder-section">
+        <div class="form-panel">
+          <div class="panel-title">Message Details</div>
+          
+          <div class="sender-section">
+            <h3>Your Information (Saves Automatically)</h3>
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" id="senderName" placeholder="e.g., Dale Wilson" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Title</label>
+              <input type="text" id="senderTitle" placeholder="e.g., Regional Sales Manager" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Phone</label>
+              <input type="text" id="senderPhone" placeholder="e.g., (555) 123-4567" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Email</label>
+              <input type="email" id="senderEmail" placeholder="e.g., dale@natoli.com" oninput="updatePreview()">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Recipient First Name</label>
+            <input type="text" id="recipientName" placeholder="e.g., John" oninput="updatePreview()">
+          </div>
+          
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="companyName" placeholder="e.g., Pharmavite LLC" oninput="updatePreview()">
+          </div>
+          
+          <div class="form-group" id="industryGroup">
+            <label>Industry / Region</label>
+            <input type="text" id="industryRegion" placeholder="e.g., nutraceutical manufacturing" oninput="updatePreview()">
+          </div>
+          
+          <div class="form-group" id="contextGroup" style="display:none;">
+            <label>Additional Context</label>
+            <textarea id="additionalContext" placeholder="e.g., recent order details, meeting topics, referral source" oninput="updatePreview()"></textarea>
+          </div>
+        </div>
+        
+        <div class="preview-panel">
+          <div class="panel-title">Message Preview</div>
+          
+          <div class="email-preview">
+            <div class="email-subject" id="emailSubject">Subject: Quick introduction – tablet compression support</div>
+            <div class="email-body" id="emailBody"></div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-action btn-copy" onclick="copyEmail()">Copy to Clipboard</button>
+            <button class="btn-action btn-download" onclick="downloadEmail()">Download .txt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="saved-indicator" id="savedIndicator">Copied to clipboard!</div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  
+  <script>
+const templates = {
+    // INTRO TEMPLATES
+    peer: {
+        subject: "Quick introduction – tablet compression support",
+        body: `{{RecipientName}},
+
+My name is {{SenderName}}, {{SenderTitle}} with Natoli Engineering.
+
+I am reaching out because {{CompanyName}} looks similar to many of the manufacturers we support when it comes to reducing time, waste, and variability in tablet production.
+
+Since we began nearly 50 years ago, our engineers and scientists have continuously harnessed past experience and stayed aligned with evolving formulation needs to better understand real production challenges and help teams achieve optimal results.
+
+Given {{CompanyName}}'s commitment to quality and Natoli's role as a global leader in tablet compression, I believe a short conversation could be valuable.
+
+Whether you are evaluating tooling, expanding capacity, or troubleshooting tablet performance, I would welcome the opportunity to learn more about your operation and share how we support manufacturers like you.
+
+Please let me know if you have availability for a brief call in the next couple of weeks.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    problem: {
+        subject: "Supporting tablet quality and production consistency",
+        body: `{{RecipientName}},
+
+I came across {{CompanyName}} while researching manufacturers in {{IndustryRegion}}.
+
+Many tablet manufacturing teams face the same challenges:
+• Tooling wear
+• Inconsistent tablet quality
+• Difficulty scaling efficiently
+
+These issues are often rooted in tooling design and compaction process control.
+
+At Natoli Engineering, we have spent nearly 50 years helping pharmaceutical and nutraceutical manufacturers solve these problems through precision tooling and compaction science expertise.
+
+If your team is currently evaluating tooling, experiencing quality issues, or preparing for production growth, I believe a short introduction would be worthwhile.
+
+I would be happy to share what we are seeing across similar operations.
+
+Please let me know what works for you in the next couple of weeks.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    strategic: {
+        subject: "Tooling as a performance lever",
+        body: `{{RecipientName}},
+
+The most successful tablet manufacturers I work with share one common belief:
+they treat tooling as a strategic decision, not a commodity purchase.
+
+At Natoli Engineering, we have partnered with pharmaceutical and nutraceutical manufacturers for nearly 50 years, from emerging companies to Fortune 500 organizations.
+
+What they value most is our combination of precision tooling and compaction science expertise to support consistent, scalable production.
+
+Given {{CompanyName}}'s focus on quality, efficiency, or capacity growth, I would welcome the opportunity to introduce our approach and connect you with the appropriate regional representative.
+
+Please let me know a convenient time for a brief introductory discussion.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    scientific: {
+        subject: "Supporting formulation and scale-up success",
+        body: `{{RecipientName}},
+
+I'm reaching out from Natoli Scientific, where we support R&D and formulation teams navigating compaction challenges.
+
+Many teams we work with face similar hurdles:
+• Formulation optimization for tablet performance
+• Scale-up from R&D to commercial production
+• Troubleshooting compression and sticking issues
+
+With nearly 50 years of compaction science expertise, we help teams achieve consistent tablet quality from lab scale through full production.
+
+If {{CompanyName}} is working on formulation development, scale-up, or process optimization, I'd welcome the chance to share how we support similar teams.
+
+Would you be open to a brief conversation?
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Scientific
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    
+    // FOLLOW-UP TEMPLATES
+    followup1: {
+        subject: "Re: tablet compression support",
+        body: `{{RecipientName}},
+
+I just wanted to follow up on my note below.
+
+If tablet performance, tooling reliability, or process consistency is a current or future priority for your team, I would be glad to connect you with our technical experts.
+
+Please feel free to let me know if now is not the right time, or if someone else on your team would be a better contact.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    followup2: {
+        subject: "Thought you might find this useful",
+        body: `{{RecipientName}},
+
+I came across some insights on optimizing tablet compression that I thought might be relevant for {{CompanyName}}.
+
+Specifically, we've been helping manufacturers address:
+• Reducing tablet variability across batches
+• Extending tooling life through proper maintenance
+• Improving compression efficiency during scale-up
+
+If any of these resonate with challenges your team faces, I'd be happy to share what we're seeing in the industry.
+
+No pressure – just thought it might be valuable.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    followup3: {
+        subject: "Closing the loop",
+        body: `{{RecipientName}},
+
+I've reached out a couple of times and haven't heard back, which is completely understandable – I know how busy things can get.
+
+I don't want to keep filling your inbox, so I'll leave the door open:
+
+If tablet tooling, compression performance, or scale-up support becomes a priority in the future, please don't hesitate to reach out. We're always here to help.
+
+Wishing you and the {{CompanyName}} team continued success.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    
+    // THANK YOU TEMPLATES
+    thankyou_order: {
+        subject: "Thank you for your order",
+        body: `{{RecipientName}},
+
+Thank you for choosing Natoli Engineering for your recent tooling order.
+
+We truly appreciate your business and the trust you've placed in our team. Your order is being processed with the same precision and care we put into every set of tooling we manufacture.
+
+If you have any questions about your order, need technical support, or want to discuss future projects, please don't hesitate to reach out. We're here to support your success.
+
+Thank you again for your partnership.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    thankyou_meeting: {
+        subject: "Thank you for your time today",
+        body: `{{RecipientName}},
+
+Thank you for taking the time to meet with me today. I really enjoyed learning more about {{CompanyName}} and the challenges your team is working through.
+
+As discussed, I'll follow up with:
+{{AdditionalContext}}
+
+Please don't hesitate to reach out if any questions come up in the meantime. I look forward to continuing our conversation.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    thankyou_referral: {
+        subject: "Thank you for the referral",
+        body: `{{RecipientName}},
+
+I wanted to personally thank you for referring {{AdditionalContext}} to Natoli. Referrals from trusted partners like you mean the world to us.
+
+Your confidence in our team is something we never take for granted. We'll make sure to provide the same level of service and expertise that you've experienced.
+
+Thank you again for thinking of us. Please let me know if there's ever anything I can do to support you or your team.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    thankyou_loyalty: {
+        subject: "Thank you for your continued partnership",
+        body: `{{RecipientName}},
+
+I wanted to take a moment to express our sincere appreciation for {{CompanyName}}'s continued partnership with Natoli Engineering.
+
+Over the years, it's been a privilege to support your team's tablet manufacturing operations. Your trust in our tooling and technical expertise is something we deeply value.
+
+As we look ahead, please know that we remain committed to your success. If there's anything we can do to better serve you, I'm always just a call or email away.
+
+Thank you for being such a valued partner.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    
+    // CHECK-IN TEMPLATES
+    checkin_quarterly: {
+        subject: "Checking in from Natoli",
+        body: `{{RecipientName}},
+
+I wanted to reach out and see how things are going at {{CompanyName}}.
+
+It's been a while since we last connected, and I wanted to make sure you and your team have everything you need from Natoli.
+
+A few things I'd love to know:
+• How is your current tooling performing?
+• Are there any upcoming projects or capacity changes on the horizon?
+• Is there anything our team can help with?
+
+Looking forward to hearing from you.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    checkin_postdelivery: {
+        subject: "Following up on your recent delivery",
+        body: `{{RecipientName}},
+
+I wanted to follow up and make sure your recent tooling delivery arrived in good condition and is meeting your expectations.
+
+At Natoli, we take quality seriously, and your satisfaction is our top priority. If there's anything that needs attention or if you have any questions about setup and use, please don't hesitate to reach out.
+
+Is there anything I can help with?
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    checkin_reactivate: {
+        subject: "It's been a while – checking in",
+        body: `{{RecipientName}},
+
+It's been some time since we last worked together, and I wanted to reach out and see how things are going at {{CompanyName}}.
+
+A lot has evolved at Natoli since we last connected, and I'd love to catch you up on how we're helping manufacturers optimize tablet production.
+
+If you're currently evaluating tooling, troubleshooting tablet issues, or planning for growth, I'd welcome the chance to reconnect.
+
+Would you be open to a brief call?
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    
+    // WHY NATOLI TEMPLATES
+    why_overview: {
+        subject: "Why manufacturers trust Natoli",
+        body: `{{RecipientName}},
+
+I wanted to share a bit about why so many tablet manufacturers – from emerging nutraceutical brands to Fortune 500 pharmaceutical companies – choose Natoli.
+
+For nearly 50 years, we've been the global leader in tablet compression tooling and compaction science. Here's what sets us apart:
+
+• PRECISION TOOLING: Every punch and die manufactured to exact specifications, reducing variability and waste
+• COMPACTION SCIENCE EXPERTISE: Our scientists help solve formulation and scale-up challenges
+• GLOBAL SUPPORT: Technical experts available to support your operations worldwide
+• INNOVATION: Continuous R&D investment to stay ahead of industry needs
+
+Whether you're troubleshooting tablet quality, expanding capacity, or optimizing production efficiency, Natoli is here to help.
+
+I'd welcome the opportunity to discuss how we can support {{CompanyName}}.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    why_engineering: {
+        subject: "Natoli Engineering – precision that matters",
+        body: `{{RecipientName}},
+
+When it comes to tablet compression tooling, precision isn't just a feature – it's the foundation of consistent production.
+
+At Natoli Engineering, every punch and die we manufacture is built to exacting standards because we understand what's at stake:
+• Consistent tablet weight and hardness
+• Reduced waste and rework
+• Extended tooling life
+• Reliable scale-up from lab to production
+
+For nearly 50 years, we've partnered with manufacturers who refuse to treat tooling as a commodity. They see it for what it is: a strategic lever for quality and efficiency.
+
+If {{CompanyName}} is evaluating tooling options, I'd welcome the chance to share how Natoli Engineering approaches precision differently.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    why_scientific: {
+        subject: "Natoli Scientific – compaction science expertise",
+        body: `{{RecipientName}},
+
+Tablet compression challenges rarely stop at tooling. That's why Natoli Scientific exists – to help R&D and formulation teams navigate the complexities of compaction.
+
+Our scientists specialize in:
+• Formulation troubleshooting (sticking, capping, lamination)
+• Scale-up from R&D to commercial production
+• Compaction characterization and process optimization
+• Training for formulation and production teams
+
+We've worked with hundreds of pharmaceutical and nutraceutical teams to turn formulation challenges into production success stories.
+
+If {{CompanyName}}'s team is working through compaction issues or preparing for scale-up, I'd love to introduce you to our scientific support.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Scientific
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    why_vs_commodity: {
+        subject: "Tooling as strategy, not commodity",
+        body: `{{RecipientName}},
+
+The most successful tablet manufacturers I work with share a common philosophy:
+
+They treat tooling as a strategic investment, not a commodity purchase.
+
+Here's why it matters:
+• Cheap tooling costs more in downtime, waste, and rework
+• Precision tooling drives consistent quality batch after batch
+• Expert support prevents problems before they become production issues
+• Long-term partnerships beat transactional relationships
+
+At Natoli, we've spent nearly 50 years building relationships with manufacturers who understand this. From emerging companies to Fortune 500 organizations, they value our combination of precision tooling and compaction science expertise.
+
+If {{CompanyName}} is looking for a tooling partner who thinks strategically, I'd welcome the opportunity to connect.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    
+    // LINKEDIN TEMPLATES
+    linkedin_connect: {
+        subject: "LinkedIn Connection",
+        body: `Hi {{RecipientName}},
+
+I noticed we share a connection to the tablet manufacturing space. I'm with Natoli Engineering, supporting manufacturers with tooling and compaction science expertise.
+
+Would love to connect and stay in touch.
+
+{{SenderName}}`
+    },
+    linkedin_followup: {
+        subject: "LinkedIn Message",
+        body: `Thanks for connecting, {{RecipientName}}!
+
+I'm curious – what are the biggest challenges {{CompanyName}} is facing with tablet production right now?
+
+Always interested to hear what's top of mind for teams in the industry.
+
+{{SenderName}}`
+    },
+    linkedin_engage: {
+        subject: "LinkedIn Message",
+        body: `Hi {{RecipientName}},
+
+I saw your recent post about {{AdditionalContext}} – great insights.
+
+We've been seeing similar trends with the manufacturers we support. Would love to connect and compare notes sometime.
+
+{{SenderName}}`
+    }
+};
+
+let currentTemplate = 'peer';
+let currentCategory = 'intro';
+
+function selectCategory(category) {
+    currentCategory = category;
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.category === category);
+    });
+    document.querySelectorAll('.template-section').forEach(section => {
+        section.classList.toggle('active', section.id === 'section-' + category);
+    });
+    
+    // Select first template in category
+    const firstCard = document.querySelector('#section-' + category + ' .template-card');
+    if (firstCard) {
+        selectTemplate(firstCard.dataset.template);
+    }
+    
+    // Show/hide context field for certain categories
+    const contextGroup = document.getElementById('contextGroup');
+    contextGroup.style.display = ['thankyou', 'linkedin'].includes(category) ? 'block' : 'none';
+}
+
+function selectTemplate(template) {
+    currentTemplate = template;
+    document.querySelectorAll('.template-card').forEach(card => {
+        card.classList.toggle('selected', card.dataset.template === template);
+    });
+    updatePreview();
+}
+
+window.updatePreview = function() {
+    const recipientName = document.getElementById('recipientName').value || '[Recipient Name]';
+    const companyName = document.getElementById('companyName').value || '[Company Name]';
+    const industryRegion = document.getElementById('industryRegion').value || '[Industry/Region]';
+    const senderName = document.getElementById('senderName').value || '[Your Name]';
+    const senderTitle = document.getElementById('senderTitle').value || '[Your Title]';
+    const senderPhone = document.getElementById('senderPhone').value || '[Phone]';
+    const senderEmail = document.getElementById('senderEmail').value || '[Email]';
+    const additionalContext = document.getElementById('additionalContext').value || '[Context]';
+    
+    const template = templates[currentTemplate];
+    if (!template) return;
+    
+    document.getElementById('emailSubject').textContent = 'Subject: ' + template.subject;
+    
+    let body = template.body
+        .replace(/\{\{RecipientName\}\}/g, recipientName)
+        .replace(/\{\{CompanyName\}\}/g, companyName)
+        .replace(/\{\{IndustryRegion\}\}/g, industryRegion)
+        .replace(/\{\{SenderName\}\}/g, senderName)
+        .replace(/\{\{SenderTitle\}\}/g, senderTitle)
+        .replace(/\{\{SenderPhone\}\}/g, senderPhone)
+        .replace(/\{\{SenderEmail\}\}/g, senderEmail)
+        .replace(/\{\{AdditionalContext\}\}/g, additionalContext);
+    
+    body = body.replace(/\[(.*?)\]/g, '<span class="highlight">[$1]</span>');
+    
+    document.getElementById('emailBody').innerHTML = body;
+    
+    // Save sender info
+    localStorage.setItem('natoli_msg_sender', JSON.stringify({
+        name: document.getElementById('senderName').value,
+        title: document.getElementById('senderTitle').value,
+        phone: document.getElementById('senderPhone').value,
+        email: document.getElementById('senderEmail').value
+    }));
+}
+
+function getPlainEmail() {
+    const recipientName = document.getElementById('recipientName').value || '[Recipient Name]';
+    const companyName = document.getElementById('companyName').value || '[Company Name]';
+    const industryRegion = document.getElementById('industryRegion').value || '[Industry/Region]';
+    const senderName = document.getElementById('senderName').value || '[Your Name]';
+    const senderTitle = document.getElementById('senderTitle').value || '[Your Title]';
+    const senderPhone = document.getElementById('senderPhone').value || '[Phone]';
+    const senderEmail = document.getElementById('senderEmail').value || '[Email]';
+    const additionalContext = document.getElementById('additionalContext').value || '[Context]';
+    
+    const template = templates[currentTemplate];
+    const subject = 'Subject: ' + template.subject;
+    
+    let body = template.body
+        .replace(/\{\{RecipientName\}\}/g, recipientName)
+        .replace(/\{\{CompanyName\}\}/g, companyName)
+        .replace(/\{\{IndustryRegion\}\}/g, industryRegion)
+        .replace(/\{\{SenderName\}\}/g, senderName)
+        .replace(/\{\{SenderTitle\}\}/g, senderTitle)
+        .replace(/\{\{SenderPhone\}\}/g, senderPhone)
+        .replace(/\{\{SenderEmail\}\}/g, senderEmail)
+        .replace(/\{\{AdditionalContext\}\}/g, additionalContext);
+    
+    return subject + '\n\n' + body;
+}
+
+window.copyEmail = function() {
+    const text = getPlainEmail();
+    navigator.clipboard.writeText(text).then(() => {
+        const indicator = document.getElementById('savedIndicator');
+        indicator.style.display = 'block';
+        setTimeout(() => indicator.style.display = 'none', 2000);
+    });
+}
+
+window.downloadEmail = function() {
+    const text = getPlainEmail();
+    const companyName = document.getElementById('companyName').value || 'message';
+    const filename = `natoli_${currentTemplate}_${companyName.toLowerCase().replace(/\s+/g, '_')}.txt`;
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Event listeners
+document.querySelectorAll('.category-tab').forEach(tab => {
+    tab.addEventListener('click', () => selectCategory(tab.dataset.category));
+});
+
+document.querySelectorAll('.template-card').forEach(card => {
+    card.addEventListener('click', () => selectTemplate(card.dataset.template));
+});
+
+// Load saved sender info
+const savedSender = localStorage.getItem('natoli_msg_sender');
+if (savedSender) {
+    const sender = JSON.parse(savedSender);
+    document.getElementById('senderName').value = sender.name || '';
+    document.getElementById('senderTitle').value = sender.title || '';
+    document.getElementById('senderPhone').value = sender.phone || '';
+    document.getElementById('senderEmail').value = sender.email || '';
+}
+
+updatePreview();
+  </script>
+</body>
+</html>

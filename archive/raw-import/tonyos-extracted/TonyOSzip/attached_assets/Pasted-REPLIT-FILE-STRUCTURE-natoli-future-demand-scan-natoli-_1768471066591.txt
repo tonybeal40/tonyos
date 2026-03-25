@@ -1,0 +1,224 @@
+REPLIT FILE STRUCTURE
+/natoli-future-demand-scan
+│
+├── natoli_truths.json
+├── future_demand_signals.json
+├── deep_future_scan.js
+├── README.md
+└── future_natoli_targets.json (auto-generated)
+
+1️⃣ future_demand_signals.json
+
+These are leading indicators of future Natoli need
+
+👉 PASTE EXACTLY
+
+{
+  "future_need_signals": {
+    "hiring": [
+      "formulation scientist",
+      "process development scientist",
+      "solid oral dosage",
+      "tablet compression",
+      "manufacturing scientist",
+      "scale-up engineer",
+      "ms&t",
+      "technology transfer"
+    ],
+    "infrastructure": [
+      "pilot scale facility",
+      "new manufacturing facility",
+      "solid dosage capability",
+      "tablet manufacturing",
+      "process scale-up"
+    ],
+    "language_shifts": [
+      "transitioning to manufacturing",
+      "scaling production",
+      "expanding solid dosage",
+      "bringing manufacturing in-house",
+      "commercial readiness"
+    ],
+    "exclusions": [
+      "gummy",
+      "liquid",
+      "softgel",
+      "capsule only",
+      "edible",
+      "vape",
+      "job shop"
+    ]
+  }
+}
+
+2️⃣ natoli_truths.json
+
+Use the exact same truth file from earlier
+This engine layers on top of it
+
+3️⃣ deep_future_scan.js
+
+This is the deep web intelligence engine
+
+👉 PASTE EXACTLY
+
+const axios = require("axios");
+const cheerio = require("cheerio");
+const fs = require("fs");
+
+const truths = JSON.parse(fs.readFileSync("natoli_truths.json", "utf8"));
+const signals = JSON.parse(fs.readFileSync("future_demand_signals.json", "utf8"));
+
+const visited = new Set();
+const results = [];
+
+function normalize(text) {
+  return text.replace(/\s+/g, " ").toLowerCase();
+}
+
+function hasAny(text, list = []) {
+  return list.some(k => text.includes(k));
+}
+
+async function fetchPage(url) {
+  try {
+    const res = await axios.get(url, { timeout: 10000 });
+    const $ = cheerio.load(res.data);
+    return normalize($("body").text());
+  } catch {
+    return "";
+  }
+}
+
+// Focused crawl: homepage → about → careers → news
+async function crawlCompany(baseUrl) {
+  const paths = ["", "/about", "/careers", "/jobs", "/news"];
+  let combinedText = "";
+
+  for (const path of paths) {
+    const url = baseUrl + path;
+    if (visited.has(url)) continue;
+    visited.add(url);
+
+    const text = await fetchPage(url);
+    if (text) combinedText += " " + text;
+  }
+
+  return combinedText;
+}
+
+function evaluateFutureNeed(text) {
+  const hit = {
+    hiring: hasAny(text, signals.future_need_signals.hiring),
+    infrastructure: hasAny(text, signals.future_need_signals.infrastructure),
+    language_shift: hasAny(text, signals.future_need_signals.language_shifts),
+    excluded: hasAny(text, signals.future_need_signals.exclusions)
+  };
+
+  return hit;
+}
+
+function evaluateNatoliTruths(text) {
+  let passCount = 0;
+
+  for (const truth of truths.truths) {
+    if (truth.required_keywords && hasAny(text, truth.required_keywords)) {
+      passCount++;
+    }
+  }
+
+  return passCount;
+}
+
+(async () => {
+  // Seed list can come from earlier discovery outputs
+  const seedCompanies = JSON.parse(
+    fs.readFileSync("emerging_natoli_companies.json", "utf8")
+  );
+
+  for (const company of seedCompanies) {
+    const text = await crawlCompany(company.url);
+    if (!text) continue;
+
+    if (hasAny(text, truths.global_blocked_keywords)) continue;
+
+    const futureSignals = evaluateFutureNeed(text);
+    if (futureSignals.excluded) continue;
+
+    const truthScore = evaluateNatoliTruths(text);
+
+    if (
+      (futureSignals.hiring || futureSignals.infrastructure || futureSignals.language_shift) &&
+      truthScore >= Math.floor(truths.truths.length / 2)
+    ) {
+      results.push({
+        url: company.url,
+        future_need_detected: true,
+        indicators: futureSignals,
+        natoli_truth_score: truthScore,
+        verdict:
+          "Company shows leading indicators of future tooling and formulation needs"
+      });
+    }
+  }
+
+  fs.writeFileSync(
+    "future_natoli_targets.json",
+    JSON.stringify(results, null, 2)
+  );
+
+  console.log(`Future-demand scan complete. ${results.length} targets identified.`);
+})();
+
+4️⃣ README.md
+Natoli Future Demand Intelligence Engine
+
+Purpose:
+Identify companies that will need Natoli tooling and formulation
+expertise before compaction issues become critical.
+
+Approach:
+- Deep crawl of company-owned pages
+- Hiring, scale-up, and language shift detection
+- Natoli truth alignment check
+- Exclusion of non-press-based processes
+
+Output:
+future_natoli_targets.json
+
+HOW TO RUN (SAFE + LEGAL)
+
+Use output from global discovery as input
+
+Install deps (if not already):
+
+npm install axios cheerio
+
+
+Run:
+
+node deep_future_scan.js
+
+WHY THIS IS POWERFUL (AND RARE)
+
+Most companies call after tooling problems exist
+This finds them before:
+
+• Before validation headaches
+• Before yield collapses
+• Before press downtime
+• Before bad tooling habits get locked in
+
+That’s when Natoli creates the most value.
+
+STRAIGHT OPERATOR TAKE
+
+If Dale asked
+“How did we find these companies so early?”
+
+The answer is:
+
+“They’re already showing compaction and formulation signals that always precede tooling pain.”
+
+That’s not sales
+That’s pattern recognition

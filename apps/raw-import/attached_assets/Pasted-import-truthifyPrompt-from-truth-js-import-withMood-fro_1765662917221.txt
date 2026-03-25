@@ -1,0 +1,116 @@
+import { truthifyPrompt } from "./truth.js";
+import { withMood } from "./mood.js";
+import { auditButtons } from "./wiring-audit.js";
+
+const view = document.getElementById("view");
+const nav = document.getElementById("nav");
+
+const ROUTES = {
+  home: () => `
+    <div class="row">
+      <button class="btn primary" data-action="audit">Audit buttons</button>
+      <span class="warn">If buttons are dead, audit will tell you exactly which ones</span>
+    </div>
+    <div>
+      <div style="font-weight:900">What this does</div>
+      <div style="color:#b1b6c8; margin-top:6px; line-height:1.5">
+        Single shell. One router. Every app loads consistently. One truth policy for the AI.
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <pre id="auditOut" style="white-space:pre-wrap; color:#b1b6c8"></pre>
+    </div>
+  `,
+
+  // If you already have pages hosted, use iframes. Later you can merge into single-page components.
+  outbound: () => iframePage("Outbound Activity", "PUT_YOUR_OUTBOUND_URL_HERE"),
+  tracker: () => iframePage("Time Tracker", "PUT_YOUR_TIME_TRACKER_URL_HERE"),
+  storybrand: () => iframePage("StoryBrand OS", "PUT_YOUR_STORYBRAND_URL_HERE"),
+  job: () => iframePage("Job Analyzer", "PUT_YOUR_JOB_ANALYZER_URL_HERE"),
+
+  chat: () => `
+    <div class="row">
+      <select id="moodSel" class="btn">
+        <option value="neutral">Neutral</option>
+        <option value="happy">Happy</option>
+        <option value="sad">Sad</option>
+        <option value="mad">Mad</option>
+      </select>
+      <button class="btn primary" data-action="ask">Ask</button>
+      <span class="ok">Truth policy on</span>
+    </div>
+    <textarea id="q" placeholder="Ask a question. If truth requires sources, it will say it needs sources."></textarea>
+    <div style="margin-top:10px; font-weight:900">Response</div>
+    <pre id="a" style="white-space:pre-wrap; color:#b1b6c8"></pre>
+  `
+};
+
+function iframePage(title, url){
+  if(!url || url.includes("PUT_YOUR_")){
+    return `<div class="warn" style="font-weight:900">${title}</div>
+      <div style="color:#b1b6c8; margin-top:6px">
+        Set the URL in app.js for this route.
+      </div>`;
+  }
+  return `<div class="row"><div style="font-weight:900">${title}</div></div>
+    <iframe src="${url}" loading="lazy"></iframe>`;
+}
+
+function setActiveTab(route){
+  [...nav.querySelectorAll(".tab")].forEach(b => b.classList.toggle("active", b.dataset.route === route));
+}
+
+function render(route){
+  const fn = ROUTES[route] || ROUTES.home;
+  view.innerHTML = fn();
+  setActiveTab(route);
+  wire(route);
+  history.replaceState({}, "", "#" + route);
+}
+
+function wire(route){
+  // Global action handler inside the view
+  view.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-action]");
+    if(!btn) return;
+    const action = btn.dataset.action;
+
+    if(action === "audit"){
+      const out = document.getElementById("auditOut");
+      out.textContent = auditButtons(document);
+    }
+
+    if(action === "ask"){
+      const q = document.getElementById("q").value.trim();
+      const mood = document.getElementById("moodSel").value;
+      const a = document.getElementById("a");
+
+      if(!q){
+        a.textContent = "Ask something first";
+        return;
+      }
+
+      const prompt = truthifyPrompt(q);
+      const moodPrompt = withMood(prompt, mood);
+
+      // This is where you call your backend AI chat endpoint
+      // For now, we just show what would be sent
+      a.textContent =
+`MODE: ${mood}
+PROMPT (truth enforced):
+${moodPrompt}
+
+Next step: connect this to your /api/chat endpoint`;
+    }
+  }, { once: true });
+}
+
+nav.addEventListener("click", (e) => {
+  const tab = e.target.closest(".tab");
+  if(!tab) return;
+  render(tab.dataset.route);
+});
+
+// Boot
+const start = (location.hash || "#home").replace("#","");
+render(start);

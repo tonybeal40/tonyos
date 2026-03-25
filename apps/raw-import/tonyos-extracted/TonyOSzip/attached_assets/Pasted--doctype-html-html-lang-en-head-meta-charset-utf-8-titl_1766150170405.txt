@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tier 1 Outreach | Tony CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="assets/site.js" defer></script>
+  <script src="assets/tier1-outreach.js" defer></script>
+</head>
+
+<body>
+
+  <!-- NAV (injected by assets/site.js if you use it) -->
+  <div id="site-nav"></div>
+
+  <main class="container" style="padding-top:14px;">
+
+    <section class="hero">
+      <div class="kicker">GMP compliant market entry</div>
+      <h1 class="h1">Tier 1 Initial Contact Framework</h1>
+      <p class="subhead">
+        Non selling first touch. Informational only. Establish documented professional contact with Tier 1 technical leaders before any commercial engagement.
+      </p>
+
+      <div class="callout">
+        <strong>Rule</strong><br>
+        If the message sounds like a pitch, it fails the first touch standard.
+      </div>
+    </section>
+
+    <section class="page-bubble">
+
+      <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+        <div>
+          <h2 class="h2">Inputs</h2>
+
+          <label class="label">First name</label>
+          <input class="input" id="firstName" placeholder="Example: Sarah" />
+
+          <label class="label" style="margin-top:10px;">Last name</label>
+          <input class="input" id="lastName" placeholder="Example: Johnson" />
+
+          <label class="label" style="margin-top:10px;">Title</label>
+          <input class="input" id="title" placeholder="Example: Director of MS and T" />
+
+          <label class="label" style="margin-top:10px;">Company</label>
+          <input class="input" id="company" placeholder="Example: Acme Pharma" />
+
+          <label class="label" style="margin-top:10px;">Persona</label>
+          <select class="input" id="persona">
+            <option value="rd">R and D, formulation, and compaction science</option>
+            <option value="eng">Engineering, tooling, and production leadership</option>
+            <option value="msat">Process engineering and MS and T</option>
+          </select>
+
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <button class="btn" id="btnConnection">Connection request</button>
+            <button class="btn" id="btnEmail">Initial email</button>
+            <button class="btn" id="btnInmail">LinkedIn InMail</button>
+            <button class="btn btn-ghost" id="btnClear">Clear</button>
+          </div>
+
+          <div class="callout" style="margin-top:14px;">
+            <strong>CTA standard</strong><br>
+            No commercial CTA. Only permission based optionality.
+          </div>
+        </div>
+
+        <div>
+          <h2 class="h2">Output</h2>
+
+          <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+            <button class="btn" id="btnCopy">Copy output</button>
+            <button class="btn btn-ghost" id="btnCopySubject">Copy subject</button>
+          </div>
+
+          <label class="label">Subject (email only)</label>
+          <input class="input" id="subjectOut" readonly />
+
+          <label class="label" style="margin-top:10px;">Message</label>
+          <textarea class="input" id="messageOut" rows="18" readonly style="resize:vertical;"></textarea>
+
+          <p class="subhead" style="margin-top:10px;">
+            Success is documented contact and database readiness. Reply rate is secondary.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

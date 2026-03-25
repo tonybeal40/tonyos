@@ -1,0 +1,119 @@
+ARCHITECTURE
+User Keyword → Search API → Domain List
+                     ↓
+               robots.txt gate
+                     ↓
+           BeautifulSoup (allowed only)
+                     ↓
+          OpenAI Industry Classifier
+                     ↓
+       Natoli Engineering / Scientific Fit
+                     ↓
+             Market Intelligence DB
+
+CORE PIPELINE (Python)
+1. robots.txt Gate
+from urllib.parse import urlparse
+import urllib.robotparser as robotparser
+
+def can_scrape(url):
+    parsed = urlparse(url)
+    robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
+    rp = robotparser.RobotFileParser()
+    try:
+        rp.set_url(robots_url)
+        rp.read()
+        return rp.can_fetch("*", url)
+    except:
+        return False
+
+2. Safe Page Fetch
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_page_text(url):
+    if not can_scrape(url):
+        return None
+
+    try:
+        r = requests.get(url, timeout=10, headers={"User-Agent": "MarketIntelBot/1.0"})
+        soup = BeautifulSoup(r.text, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
+        return text[:8000]   # cap for OpenAI
+    except:
+        return None
+
+3. OpenAI Classification (Industry + Natoli Fit)
+from openai import OpenAI
+client = OpenAI()
+
+def classify_company(text):
+    prompt = f"""
+You are an industrial classification engine.
+
+From this website text, identify:
+1. Industry category
+2. Whether this company manufactures compressed tablets
+3. If so, is it:
+   - Engineering fit
+   - Scientific fit
+   - Both
+4. What tablet categories apply
+
+Text:
+{text}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+
+    return response.choices[0].message.content
+
+4. Controlled Crawl
+def process_company(url):
+    text = fetch_page_text(url)
+    if not text:
+        return None
+
+    result = classify_company(text)
+    return {
+        "url": url,
+        "analysis": result
+    }
+
+MARKETINTELLIGENCE APP FLOW
+
+User enters:
+
+fertilizer tablet manufacturer
+pool chlorine tablet production
+detergent tablet factory
+
+
+Your app:
+
+Gets domains from search API
+
+Runs robots.txt gate
+
+Extracts only allowed pages
+
+Sends text to OpenAI
+
+Returns:
+
+| Company | Industry | Tablet Type | Engineering Fit | Scientific Fit | Confidence |
+
+WHY THIS IS POWERFUL
+
+This is legal
+This is scalable
+This is safe
+This is enterprise-grade
+This aligns with Natoli’s future
+
+You are not scraping.
+You are mapping industries.

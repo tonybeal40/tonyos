@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkedIn Visual Builder - TonyOS</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <style>
+    :root{
+      --bg:#07070a;
+      --bg2:#0e0f14;
+      --card:#0f1118;
+      --ink:#f5f7ff;
+      --muted:#aab0c2;
+      --line:#1d2230;
+      --accent:#ff2d55;
+      --accent2:#7c3aed;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, #121428, var(--bg));
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .app{max-width:1400px;margin:0 auto;padding:18px}
+    .back-link{
+      display:inline-block;
+      margin-bottom:14px;
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(15,23,42,0.9);
+      color:#e5e7eb;
+      font-size:12px;
+      text-decoration:none;
+    }
+    .back-link:hover{background:rgba(15,23,42,1)}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px;border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(15,17,24,.75);
+      backdrop-filter: blur(10px);
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logoDot{
+      width:14px;height:14px;border-radius:999px;
+      background: linear-gradient(135deg, #ff2d55, #7c3aed);
+      box-shadow: 0 0 30px rgba(255,45,85,.35);
+    }
+    .name{font-weight:700;letter-spacing:.2px}
+    .sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:10px 14px;
+      font-weight:650;
+      cursor:pointer;
+      background: transparent;
+      color: var(--ink);
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .btn.primary{
+      border: none;
+      background: linear-gradient(135deg, #ff2d55, #7c3aed);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
+    }
+    .btn.ghost:hover{background: rgba(255,255,255,.04)}
+    .btn.primary:hover{filter: brightness(1.05)}
+    .btn.ai{
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+    }
+    .main{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .main{grid-template-columns: 1fr}
+    }
+    .panel{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(15,17,24,.75);
+      backdrop-filter: blur(10px);
+      padding:14px;
+    }
+    .panel h2{margin:0 0 12px 0;font-size:16px;font-weight:700}
+    .row{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:12px;margin:10px 0;
+      font-size:13px;color:var(--muted);
+    }
+    .row select,.row input[type="text"]{
+      width:210px;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--ink);
+      font-size:13px;
+    }
+    .row input[type="color"]{width:56px;height:40px;border:none;background:transparent;cursor:pointer}
+    .row input[type="range"]{width:120px}
+    .stack{display:block;margin:12px 0}
+    .stack span{display:block;font-size:13px;color:var(--muted);margin-bottom:8px}
+    textarea{
+      width:100%;
+      resize: vertical;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--ink);
+      line-height:1.4;
+      font-size:14px;
+      font-family:inherit;
+    }
+    .divider{height:1px;background: var(--line);margin:14px 0}
+    .hint{margin:12px 0 0 0;color:var(--muted);font-size:12px}
+    .stage{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(15,17,24,.75);
+      backdrop-filter: blur(10px);
+      padding:14px;
+    }
+    .stage-grid{
+      display:grid;
+      grid-template-columns: 1fr 300px;
+      gap:14px;
+    }
+    @media (max-width: 1100px){
+      .stage-grid{grid-template-columns: 1fr}
+    }
+    .canvasWrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 400px;
+      max-height: 70vh;
+      border-radius: 16px;
+      background: rgba(0,0,0,.2);
+      border:1px dashed rgba(255,255,255,.12);
+      padding:20px;
+      overflow:hidden;
+    }
+    #canvas{
+      max-width: 100%;
+      max-height: 60vh;
+      width: auto;
+      height: auto;
+      border-radius:12px;
+      object-fit: contain;
+    }
+    .previewHeader{font-size:12px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em}
+    .previewCard{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      padding:12px;
+    }
+    .previewMeta{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+    .avatar{width:34px;height:34px;border-radius:999px;background: rgba(255,255,255,.08)}
+    .previewName{font-weight:700;font-size:14px}
+    .previewSub{font-size:12px;color:var(--muted)}
+    .previewImg img{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.10)}
+    .ai-section{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid rgba(139,92,246,.3);
+      border-radius:14px;
+      background: rgba(139,92,246,.08);
+    }
+    .ai-section h3{margin:0 0 10px 0;font-size:14px;color:#a78bfa}
+    .ai-row{display:flex;gap:8px;margin-bottom:10px}
+    .ai-row input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--ink);font-size:13px}
+    .template-grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:8px;
+      margin:10px 0;
+    }
+    .template-btn{
+      padding:10px 6px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.2);
+      color:var(--muted);
+      font-size:11px;
+      cursor:pointer;
+      text-align:center;
+      transition: all .15s;
+    }
+    .template-btn:hover,.template-btn.active{
+      border-color:var(--accent);
+      color:var(--ink);
+      background:rgba(255,45,85,.1);
+    }
+    .loading{opacity:.6;pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <a href="/" class="back-link">Back to TonyOS</a>
+    
+    <header class="topbar">
+      <div class="brand">
+        <div class="logoDot"></div>
+        <div class="brandText">
+          <div class="name">LinkedIn Visual Builder</div>
+          <div class="sub">Influencer-style backgrounds and post cards</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnRandom" class="btn ghost">Random Style</button>
+        <button id="btnCopy" class="btn ghost">Copy to Clipboard</button>
+        <button id="btnExport" class="btn primary">Export PNG</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="panel">
+        <h2>Card Settings</h2>
+
+        <label class="row">
+          <span>Format</span>
+          <select id="format">
+            <option value="square">1080 x 1080 (Square)</option>
+            <option value="portrait">1080 x 1350 (Portrait)</option>
+            <option value="landscape">1200 x 627 (Link Preview)</option>
+          </select>
+        </label>
+
+        <div class="template-grid">
+          <div class="template-btn active" data-template="statement">Big Statement</div>
+          <div class="template-btn" data-template="list">3 Point List</div>
+          <div class="template-btn" data-template="framework">Framework</div>
+          <div class="template-btn" data-template="metric">Metric Proof</div>
+          <div class="template-btn" data-template="beforeAfter">Before/After</div>
+          <div class="template-btn" data-template="steps">Step by Step</div>
+          <div class="template-btn" data-template="quote">Quote Card</div>
+          <div class="template-btn" data-template="doNotDo">Do This Not That</div>
+        </div>
+
+        <label class="row">
+          <span>Theme</span>
+          <select id="theme">
+            <option value="techGiant">Tech Giant (Apple/Google)</option>
+            <option value="executive">Executive</option>
+            <option value="enterprise">Enterprise Blue</option>
+            <option value="premium">Premium Dark</option>
+            <option value="luxe">Luxe Gold</option>
+            <option value="aurora">Aurora</option>
+            <option value="midnight">Midnight</option>
+            <option value="neonSlate">Neon Slate</option>
+            <option value="steel">Steel</option>
+            <option value="cleanLight">Clean Light</option>
+            <option value="warmDark">Warm Dark</option>
+            <option value="ocean">Ocean</option>
+          </select>
+        </label>
+
+        <div class="divider"></div>
+
+        <label class="stack">
+          <span>Headline</span>
+          <textarea id="headline" rows="2" placeholder="Main scroll-stopping line">Most people post on LinkedIn like they're whispering</textarea>
+        </label>
+
+        <label class="stack">
+          <span>Body / Points</span>
+          <textarea id="body" rows="5" placeholder="Supporting lines (one per line for lists)">If you want attention, your visual has to do one job
+
+Say the point fast
+Make it look premium
+Give the reader a reason to stop</textarea>
+        </label>
+
+        <div class="divider"></div>
+
+        <label class="row">
+          <span>Accent Color</span>
+          <input id="accent" type="color" value="#ff2d55" />
+        </label>
+
+        <label class="row">
+          <span>Noise Texture</span>
+          <input id="noise" type="range" min="0" max="30" value="8" />
+        </label>
+
+        <label class="row">
+          <span>Glow Intensity</span>
+          <input id="glow" type="range" min="0" max="50" value="22" />
+        </label>
+
+        <label class="row">
+          <span>Signature</span>
+          <input id="signature" type="text" value="Tony Beal" />
+        </label>
+
+        <div class="ai-section">
+          <h3>AI Assistant</h3>
+          <div class="ai-row">
+            <input id="aiPrompt" type="text" placeholder="Describe your post idea..." />
+            <button id="btnAiGenerate" class="btn ai">Generate</button>
+          </div>
+          <div class="ai-row">
+            <button id="btnAiRewrite" class="btn ghost" style="flex:1">Rewrite Copy</button>
+            <button id="btnAiSuggest" class="btn ghost" style="flex:1">Suggest Layout</button>
+          </div>
+          <p id="aiStatus" class="hint"></p>
+        </div>
+
+        <p class="hint">Tip: Keep the headline to 1 punchy idea. Use the AI to generate scroll-stopping copy.</p>
+      </section>
+
+      <section class="stage">
+        <div class="stage-grid">
+          <div class="canvasWrap">
+            <canvas id="canvas"></canvas>
+          </div>
+
+          <div class="preview-section">
+            <div class="previewHeader">LinkedIn Feed Preview</div>
+            <div class="previewCard">
+              <div class="previewMeta">
+                <div class="avatar"></div>
+                <div>
+                  <div class="previewName" id="previewName">Tony Beal</div>
+                  <div class="previewSub">Post preview</div>
+                </div>
+              </div>
+              <div class="previewImg">
+                <img id="previewPng" alt="preview" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const formatEl = document.getElementById("format");
+const themeEl = document.getElementById("theme");
+const headlineEl = document.getElementById("headline");
+const bodyEl = document.getElementById("body");
+const accentEl = document.getElementById("accent");
+const noiseEl = document.getElementById("noise");
+const glowEl = document.getElementById("glow");
+const sigEl = document.getElementById("signature");
+
+const btnExport = document.getElementById("btnExport");
+const btnCopy = document.getElementById("btnCopy");
+const btnRandom = document.getElementById("btnRandom");
+const templateBtns = document.querySelectorAll(".template-btn");
+
+const previewName = document.getElementById("previewName");
+const previewPng = document.getElementById("previewPng");
+
+const aiPrompt = document.getElementById("aiPrompt");
+const btnAiGenerate = document.getElementById("btnAiGenerate");
+const btnAiRewrite = document.getElementById("btnAiRewrite");
+const btnAiSuggest = document.getElementById("btnAiSuggest");
+const aiStatus = document.getElementById("aiStatus");
+
+let currentTemplate = "statement";
+
+function setCanvasSize(){
+  const f = formatEl.value;
+  if (f === "square"){ canvas.width = 1080; canvas.height = 1080; }
+  if (f === "portrait"){ canvas.width = 1080; canvas.height = 1350; }
+  if (f === "landscape"){ canvas.width = 1200; canvas.height = 627; }
+}
+
+function themes(accent){
+  return {
+    midnight: { bg: ["#07070a", "#111436"], bg2: "#0d1025", panel: "rgba(255,255,255,.04)", ink: "#f5f7ff", muted: "rgba(245,247,255,.65)", accent, glass: true, meshColors: ["#1e1b4b", "#312e81", "#1e3a5f"] },
+    neonSlate: { bg: ["#07070a", "#0b1b2c"], bg2: "#0a1628", panel: "rgba(255,255,255,.05)", ink: "#f5f7ff", muted: "rgba(245,247,255,.65)", accent, glass: true, meshColors: ["#0f172a", "#1e293b", "#0c4a6e"] },
+    cleanLight: { bg: ["#f8fafc", "#ffffff"], bg2: "#f1f5f9", panel: "rgba(0,0,0,.03)", ink: "#0f172a", muted: "rgba(15,23,42,.55)", accent, glass: false, meshColors: ["#e2e8f0", "#cbd5e1", "#f1f5f9"] },
+    steel: { bg: ["#0b0f1a", "#151a2a"], bg2: "#101525", panel: "rgba(255,255,255,.04)", ink: "#f5f7ff", muted: "rgba(245,247,255,.65)", accent, glass: true, meshColors: ["#1e293b", "#334155", "#1e3a5f"] },
+    warmDark: { bg: ["#0f0a07", "#1a1510"], bg2: "#14100c", panel: "rgba(255,255,255,.05)", ink: "#fff5e6", muted: "rgba(255,245,230,.65)", accent, glass: true, meshColors: ["#292524", "#44403c", "#451a03"] },
+    ocean: { bg: ["#0a1520", "#0d2535"], bg2: "#081318", panel: "rgba(255,255,255,.04)", ink: "#e6f4ff", muted: "rgba(230,244,255,.65)", accent, glass: true, meshColors: ["#0c4a6e", "#0369a1", "#164e63"] },
+    executive: { bg: ["#0a0a0c", "#14141a"], bg2: "#0f0f12", panel: "rgba(255,255,255,.03)", ink: "#fafafa", muted: "rgba(250,250,250,.55)", accent, glass: true, meshColors: ["#18181b", "#27272a", "#3f3f46"] },
+    luxe: { bg: ["#0c0a08", "#1a1714"], bg2: "#120f0c", panel: "rgba(212,175,55,.06)", ink: "#fef9e7", muted: "rgba(254,249,231,.60)", accent: "#d4af37", glass: true, meshColors: ["#292524", "#44403c", "#78350f"] },
+    techGiant: { bg: ["#000000", "#0a0a0a"], bg2: "#050505", panel: "rgba(255,255,255,.03)", ink: "#ffffff", muted: "rgba(255,255,255,.50)", accent, glass: true, meshColors: ["#171717", "#262626", "#1c1917"] },
+    aurora: { bg: ["#0f0f1a", "#1a0f2e"], bg2: "#120c1f", panel: "rgba(255,255,255,.04)", ink: "#f5f0ff", muted: "rgba(245,240,255,.60)", accent, glass: true, meshColors: ["#4c1d95", "#7c3aed", "#0891b2"] },
+    enterprise: { bg: ["#0c1117", "#151e29"], bg2: "#0e151c", panel: "rgba(255,255,255,.04)", ink: "#f1f5f9", muted: "rgba(241,245,249,.60)", accent: "#0ea5e9", glass: true, meshColors: ["#0f172a", "#1e3a5f", "#0c4a6e"] },
+    premium: { bg: ["#0a0a0e", "#12121a"], bg2: "#0c0c10", panel: "rgba(255,255,255,.025)", ink: "#ffffff", muted: "rgba(255,255,255,.50)", accent, glass: true, meshColors: ["#18181b", "#1f1f23", "#27272a"] }
+  };
+}
+
+function hexToRgba(hex, alpha){
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+}
+
+function drawGradient(t){
+  const g = ctx.createLinearGradient(0, 0, canvas.width * 0.3, canvas.height);
+  g.addColorStop(0, t.bg[0]);
+  g.addColorStop(1, t.bg[1]);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (t.meshColors && t.meshColors.length >= 3) {
+    const mesh1 = ctx.createRadialGradient(
+      canvas.width * 0.15, canvas.height * 0.2, 0,
+      canvas.width * 0.15, canvas.height * 0.2, canvas.width * 0.55
+    );
+    mesh1.addColorStop(0, hexToRgba(t.meshColors[0], 0.4));
+    mesh1.addColorStop(0.5, hexToRgba(t.meshColors[0], 0.15));
+    mesh1.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = mesh1;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const mesh2 = ctx.createRadialGradient(
+      canvas.width * 0.85, canvas.height * 0.75, 0,
+      canvas.width * 0.85, canvas.height * 0.75, canvas.width * 0.6
+    );
+    mesh2.addColorStop(0, hexToRgba(t.meshColors[1], 0.35));
+    mesh2.addColorStop(0.6, hexToRgba(t.meshColors[1], 0.1));
+    mesh2.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = mesh2;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const mesh3 = ctx.createRadialGradient(
+      canvas.width * 0.5, canvas.height * 0.1, 0,
+      canvas.width * 0.5, canvas.height * 0.1, canvas.width * 0.45
+    );
+    mesh3.addColorStop(0, hexToRgba(t.meshColors[2], 0.2));
+    mesh3.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = mesh3;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  const glowAmount = Number(glowEl.value) / 100;
+  if (glowAmount > 0) {
+    const glow1 = ctx.createRadialGradient(
+      canvas.width * 0.78, canvas.height * 0.15, 0,
+      canvas.width * 0.78, canvas.height * 0.15, canvas.width * 0.5
+    );
+    glow1.addColorStop(0, hexToRgba(t.accent, glowAmount * 0.7));
+    glow1.addColorStop(0.4, hexToRgba(t.accent, glowAmount * 0.25));
+    glow1.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow1;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const glow2 = ctx.createRadialGradient(
+      canvas.width * 0.2, canvas.height * 0.85, 0,
+      canvas.width * 0.2, canvas.height * 0.85, canvas.width * 0.4
+    );
+    glow2.addColorStop(0, hexToRgba(t.accent, glowAmount * 0.3));
+    glow2.addColorStop(0.5, hexToRgba(t.accent, glowAmount * 0.08));
+    glow2.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow2;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  const vignette = ctx.createRadialGradient(
+    canvas.width / 2, canvas.height / 2, canvas.width * 0.25,
+    canvas.width / 2, canvas.height / 2, canvas.width * 0.85
+  );
+  vignette.addColorStop(0, "rgba(0,0,0,0)");
+  vignette.addColorStop(1, "rgba(0,0,0,0.35)");
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawNoise(amount){
+  const a = Number(amount);
+  if (!a) return;
+  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (Math.random() - 0.5) * a;
+    d[i] = clamp(d[i] + n, 0, 255);
+    d[i+1] = clamp(d[i+1] + n, 0, 255);
+    d[i+2] = clamp(d[i+2] + n, 0, 255);
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+function drawRoundedPanel(x, y, w, h, r, fill, t){
+  ctx.save();
+  
+  ctx.shadowColor = "rgba(0,0,0,0.5)";
+  ctx.shadowBlur = 60;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 20;
+  ctx.fillStyle = fill;
+  ctx.beginPath();
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+  ctx.restore();
+  
+  if (t && t.glass) {
+    const glassGrad = ctx.createLinearGradient(x, y, x, y + h);
+    glassGrad.addColorStop(0, "rgba(255,255,255,0.08)");
+    glassGrad.addColorStop(0.5, "rgba(255,255,255,0.02)");
+    glassGrad.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = glassGrad;
+    ctx.beginPath();
+    roundRect(ctx, x, y, w, h, r);
+    ctx.fill();
+    
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    roundRect(ctx, x + 0.5, y + 0.5, w - 1, h - 1, r);
+    ctx.stroke();
+    
+    const innerGlow = ctx.createLinearGradient(x, y, x + w * 0.5, y);
+    innerGlow.addColorStop(0, "rgba(255,255,255,0.05)");
+    innerGlow.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = innerGlow;
+    ctx.beginPath();
+    roundRect(ctx, x, y, w * 0.6, h * 0.3, r);
+    ctx.fill();
+  }
+}
+
+function wrapText(text, maxWidth, fontSize){
+  ctx.font = `700 ${fontSize}px system-ui, -apple-system, sans-serif`;
+  const words = text.split(' ');
+  const lines = [];
+  let currentLine = '';
+  
+  for (const word of words) {
+    const testLine = currentLine ? currentLine + ' ' + word : word;
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+function wrapTextDraw(text, x, y, maxWidth, lineHeight){
+  const words = text.split(" ");
+  let line = "";
+  let yy = y;
+  
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + " ";
+    const w = ctx.measureText(testLine).width;
+    if (w > maxWidth && n > 0) {
+      ctx.fillText(line, x, yy);
+      line = words[n] + " ";
+      yy += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, yy);
+}
+
+function signatureLine(t, sig, pad){
+  if (!sig) return;
+  ctx.fillStyle = t.muted;
+  ctx.font = "650 34px ui-sans-serif, system-ui";
+  ctx.textAlign = "left";
+  ctx.fillText(sig, pad + 56, canvas.height - pad - 56);
+}
+
+function drawStatement(t, pad, headline, body, sig){
+  const x = pad + 56;
+  const y = pad + 86;
+  const maxWidth = canvas.width - (pad * 2) - 112;
+  
+  ctx.fillStyle = t.accent;
+  ctx.fillRect(x, y - 16, 90, 8);
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = "800 76px ui-sans-serif, system-ui";
+  wrapTextDraw(headline || "Write your headline", x, y + 70, maxWidth, 86);
+  
+  if (body) {
+    ctx.fillStyle = t.muted;
+    ctx.font = "500 38px ui-sans-serif, system-ui";
+    wrapTextDraw(body, x, y + 300, maxWidth, 52);
+  }
+  
+  signatureLine(t, sig, pad);
+}
+
+function drawList(t, pad, headline, body, sig){
+  const x = pad + 56;
+  const y = pad + 86;
+  const maxWidth = canvas.width - (pad * 2) - 112;
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = "800 64px ui-sans-serif, system-ui";
+  wrapTextDraw(headline || "3 things that matter", x, y + 60, maxWidth, 76);
+  
+  const items = (body || "One\nTwo\nThree").split("\n").filter(Boolean).slice(0, 5);
+  let yy = y + 220;
+  
+  ctx.font = "600 40px ui-sans-serif, system-ui";
+  items.forEach((it) => {
+    ctx.fillStyle = t.accent;
+    ctx.beginPath();
+    ctx.arc(x + 10, yy - 10, 10, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = t.ink;
+    ctx.fillText(it.trim(), x + 36, yy);
+    yy += 78;
+  });
+  
+  signatureLine(t, sig, pad);
+}
+
+function drawFramework(t, pad, headline, body, sig){
+  const x = pad + 56;
+  const y = pad + 86;
+  const maxWidth = canvas.width - (pad * 2) - 112;
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = "800 58px ui-sans-serif, system-ui";
+  wrapTextDraw(headline || "Framework", x, y + 55, maxWidth, 68);
+  
+  const cells = (body || "Point 1\nPoint 2\nPoint 3\nPoint 4").split("\n").filter(Boolean).slice(0, 4);
+  const gridTop = y + 150;
+  const gap = 24;
+  const w = (canvas.width - (pad * 2) - 112 - gap) / 2;
+  const h = (canvas.height - (pad * 2) - 260 - gap) / 2;
+  
+  let i = 0;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 2; c++) {
+      const bx = x + c * (w + gap);
+      const by = gridTop + r * (h + gap);
+      
+      drawRoundedPanel(bx, by, w, h, 26, "rgba(0,0,0,.18)");
+      
+      ctx.fillStyle = t.accent;
+      ctx.fillRect(bx + 26, by + 28, 70, 6);
+      
+      ctx.fillStyle = t.ink;
+      ctx.font = "700 36px ui-sans-serif, system-ui";
+      wrapTextDraw(cells[i] || "", bx + 26, by + 80, w - 52, 46);
+      i++;
+    }
+  }
+  
+  signatureLine(t, sig, pad);
+}
+
+function drawMetric(t, pad, headline, body, sig){
+  const x = pad + 56;
+  const y = pad + 86;
+  const maxWidth = canvas.width - (pad * 2) - 112;
+  
+  const metric = (headline || "77").trim();
+  const label = (body || "Your proof line here").trim();
+  
+  ctx.fillStyle = t.accent;
+  ctx.font = "900 160px ui-sans-serif, system-ui";
+  ctx.fillText(metric, x, y + 180);
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = "800 54px ui-sans-serif, system-ui";
+  wrapTextDraw("Proof beats opinions", x, y + 260, maxWidth, 64);
+  
+  ctx.fillStyle = t.muted;
+  ctx.font = "600 38px ui-sans-serif, system-ui";
+  wrapTextDraw(label, x, y + 340, maxWidth, 52);
+  
+  signatureLine(t, sig, pad);
+}
+
+function drawBeforeAfter(t, pad, headline, body, sig){
+  const fontSize = Math.round(canvas.width * 0.048);
+  const itemSize = Math.round(canvas.width * 0.032);
+  const halfW = (canvas.width - pad * 2.5) / 2;
+  const maxWidth = canvas.width - pad * 2;
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = `800 ${fontSize}px system-ui`;
+  const headlineLines = wrapText(headline, maxWidth, fontSize);
+  headlineLines.forEach((line, i) => {
+    ctx.fillText(line, pad * 1.1, pad + canvas.height * 0.08 + i * (fontSize * 1.25));
+  });
+  
+  const headlineHeight = headlineLines.length * fontSize * 1.25;
+  const panelTop = pad + canvas.height * 0.08 + headlineHeight + 25;
+  const panelHeight = canvas.height - panelTop - pad * 1.8;
+  
+  const lines = body.split('\n').filter(l => l.trim());
+  const mid = Math.ceil(lines.length / 2);
+  const beforeLines = lines.slice(0, mid);
+  const afterLines = lines.slice(mid);
+  
+  drawRoundedPanel(pad * 0.8, panelTop, halfW, panelHeight, 24, "rgba(255,100,100,.12)");
+  drawRoundedPanel(pad * 1.2 + halfW, panelTop, halfW, panelHeight, 24, "rgba(100,255,100,.12)");
+  
+  ctx.fillStyle = "#ff6b6b";
+  ctx.font = `700 ${itemSize * 1.1}px system-ui`;
+  ctx.fillText("BEFORE", pad * 0.8 + 25, panelTop + 45);
+  
+  ctx.fillStyle = "#4ade80";
+  ctx.fillText("AFTER", pad * 1.2 + halfW + 25, panelTop + 45);
+  
+  ctx.font = `500 ${itemSize}px system-ui`;
+  const colMaxWidth = halfW - 60;
+  beforeLines.forEach((line, i) => {
+    ctx.fillStyle = t.muted;
+    const wrappedLines = wrapText("- " + line.trim(), colMaxWidth, itemSize);
+    wrappedLines.forEach((wl, wi) => {
+      ctx.fillText(wl, pad * 0.8 + 25, panelTop + 90 + i * (itemSize * 2.8) + wi * (itemSize * 1.3));
+    });
+  });
+  
+  afterLines.forEach((line, i) => {
+    ctx.fillStyle = t.ink;
+    const wrappedLines = wrapText("+ " + line.trim(), colMaxWidth, itemSize);
+    wrappedLines.forEach((wl, wi) => {
+      ctx.fillText(wl, pad * 1.2 + halfW + 25, panelTop + 90 + i * (itemSize * 2.8) + wi * (itemSize * 1.3));
+    });
+  });
+  
+  if (sig) {
+    ctx.fillStyle = t.accent;
+    ctx.font = `700 ${Math.round(canvas.width * 0.032)}px system-ui`;
+    ctx.fillText(sig, pad * 1.1, canvas.height - pad * 1.1);
+  }
+}
+
+function drawSteps(t, pad, headline, body, sig){
+  const fontSize = Math.round(canvas.width * 0.058);
+  const stepSize = Math.round(canvas.width * 0.036);
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = `800 ${fontSize}px system-ui`;
+  ctx.fillText(headline, pad * 1.1, pad + canvas.height * 0.1);
+  
+  const steps = body.split('\n').filter(l => l.trim()).slice(0, 6);
+  const stepH = (canvas.height * 0.72) / steps.length;
+  const startY = pad + canvas.height * 0.18;
+  
+  steps.forEach((step, i) => {
+    const y = startY + i * stepH;
+    
+    ctx.fillStyle = t.accent;
+    ctx.beginPath();
+    ctx.arc(pad * 1.4, y + stepH / 2, 22, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = t.bg[0];
+    ctx.font = `700 ${18}px system-ui`;
+    ctx.textAlign = "center";
+    ctx.fillText(i + 1, pad * 1.4, y + stepH / 2 + 6);
+    ctx.textAlign = "left";
+    
+    if (i < steps.length - 1) {
+      ctx.strokeStyle = t.panel;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(pad * 1.4, y + stepH / 2 + 26);
+      ctx.lineTo(pad * 1.4, y + stepH + stepH / 2 - 26);
+      ctx.stroke();
+    }
+    
+    ctx.fillStyle = t.ink;
+    ctx.font = `600 ${stepSize}px system-ui`;
+    ctx.fillText(step.trim(), pad * 2.1, y + stepH / 2 + 8);
+  });
+  
+  if (sig) {
+    ctx.fillStyle = t.accent;
+    ctx.font = `700 ${Math.round(canvas.width * 0.032)}px system-ui`;
+    ctx.fillText(sig, pad * 1.1, canvas.height - pad * 1.1);
+  }
+}
+
+function drawQuote(t, pad, headline, body, sig){
+  const fontSize = Math.round(canvas.width * 0.07);
+  const maxWidth = canvas.width - pad * 2.5;
+  
+  ctx.fillStyle = t.accent;
+  ctx.font = `900 ${canvas.width * 0.18}px Georgia, serif`;
+  ctx.fillText('"', pad * 0.8, pad + canvas.height * 0.22);
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = `600 italic ${fontSize}px Georgia, serif`;
+  
+  const lines = wrapText(headline, maxWidth, fontSize);
+  let y = pad + canvas.height * 0.36;
+  
+  lines.forEach((line, i) => {
+    ctx.fillText(line, pad * 1.1, y + i * (fontSize * 1.35));
+  });
+  
+  if (sig) {
+    ctx.fillStyle = t.muted;
+    ctx.font = `600 ${Math.round(canvas.width * 0.038)}px system-ui`;
+    ctx.fillText("— " + sig, pad * 1.1, canvas.height - pad * 1.5);
+  }
+}
+
+function drawDoNotDo(t, pad, headline, body, sig){
+  const fontSize = Math.round(canvas.width * 0.055);
+  const itemSize = Math.round(canvas.width * 0.036);
+  const halfW = (canvas.width - pad * 2.5) / 2;
+  
+  ctx.fillStyle = t.ink;
+  ctx.font = `800 ${fontSize}px system-ui`;
+  ctx.fillText(headline, pad * 1.1, pad + canvas.height * 0.1);
+  
+  const lines = body.split('\n').filter(l => l.trim());
+  const mid = Math.ceil(lines.length / 2);
+  const dontLines = lines.slice(0, mid);
+  const doLines = lines.slice(mid);
+  
+  ctx.fillStyle = "#ef4444";
+  ctx.font = `700 ${itemSize * 1.25}px system-ui`;
+  ctx.fillText("DON'T", pad * 1.1, pad + canvas.height * 0.2);
+  
+  ctx.fillStyle = "#22c55e";
+  ctx.fillText("DO THIS", pad * 1.3 + halfW, pad + canvas.height * 0.2);
+  
+  ctx.font = `500 ${itemSize}px system-ui`;
+  dontLines.forEach((line, i) => {
+    ctx.fillStyle = t.muted;
+    ctx.fillText("✗ " + line.trim(), pad * 1.1, pad + canvas.height * 0.28 + i * (itemSize * 2.5));
+  });
+  
+  doLines.forEach((line, i) => {
+    ctx.fillStyle = t.ink;
+    ctx.fillText("✓ " + line.trim(), pad * 1.3 + halfW, pad + canvas.height * 0.28 + i * (itemSize * 2.5));
+  });
+  
+  if (sig) {
+    ctx.fillStyle = t.accent;
+    ctx.font = `700 ${Math.round(canvas.width * 0.032)}px system-ui`;
+    ctx.fillText(sig, pad * 1.1, canvas.height - pad * 1.1);
+  }
+}
+
+function render(){
+  setCanvasSize();
+  const accent = accentEl.value;
+  const t = themes(accent)[themeEl.value];
+  
+  drawGradient(t);
+  
+  const pad = Math.round(canvas.width * 0.06);
+  const panelW = canvas.width - pad * 2;
+  const panelH = canvas.height - pad * 2;
+  
+  drawRoundedPanel(pad, pad, panelW, panelH, 42, t.panel, t);
+  
+  const headline = headlineEl.value.trim();
+  const body = bodyEl.value.trim();
+  const sig = sigEl.value.trim();
+  
+  ctx.textAlign = "left";
+  
+  switch(currentTemplate){
+    case "statement": drawStatement(t, pad, headline, body, sig); break;
+    case "list": drawList(t, pad, headline, body, sig); break;
+    case "framework": drawFramework(t, pad, headline, body, sig); break;
+    case "metric": drawMetric(t, pad, headline, body, sig); break;
+    case "beforeAfter": drawBeforeAfter(t, pad, headline, body, sig); break;
+    case "steps": drawSteps(t, pad, headline, body, sig); break;
+    case "quote": drawQuote(t, pad, headline, body, sig); break;
+    case "doNotDo": drawDoNotDo(t, pad, headline, body, sig); break;
+    default: drawStatement(t, pad, headline, body, sig);
+  }
+  
+  drawNoise(noiseEl.value);
+  updatePreview();
+}
+
+function updatePreview(){
+  previewPng.src = canvas.toDataURL("image/png");
+  previewName.textContent = sigEl.value || "Your Name";
+}
+
+function exportPng(){
+  const link = document.createElement("a");
+  link.download = "linkedin-visual.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+async function copyToClipboard(){
+  try {
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+    await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
+    alert("Copied to clipboard!");
+  } catch(e){
+    alert("Copy failed. Try exporting instead.");
+  }
+}
+
+function randomStyle(){
+  const themeNames = ["techGiant", "executive", "enterprise", "premium", "luxe", "aurora", "midnight", "neonSlate", "steel", "warmDark", "ocean"];
+  const colors = ["#ff2d55", "#7c3aed", "#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#0ea5e9", "#d4af37", "#8b5cf6"];
+  themeEl.value = themeNames[Math.floor(Math.random() * themeNames.length)];
+  accentEl.value = colors[Math.floor(Math.random() * colors.length)];
+  noiseEl.value = Math.floor(Math.random() * 12) + 3;
+  glowEl.value = Math.floor(Math.random() * 30) + 15;
+  render();
+}
+
+async function aiGenerate(){
+  const prompt = aiPrompt.value.trim();
+  if (!prompt) { alert("Enter a topic or idea first."); return; }
+  
+  aiStatus.textContent = "Generating...";
+  btnAiGenerate.classList.add("loading");
+  
+  try {
+    const res = await fetch("/api/visual-builder/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, template: currentTemplate })
+    });
+    
+    if (!res.ok) throw new Error("API failed");
+    
+    const data = await res.json();
+    if (data.headline) headlineEl.value = data.headline;
+    if (data.body) bodyEl.value = data.body;
+    if (data.template) {
+      currentTemplate = data.template;
+      templateBtns.forEach(b => b.classList.toggle("active", b.dataset.template === currentTemplate));
+    }
+    
+    render();
+    aiStatus.textContent = "Done!";
+  } catch(e){
+    aiStatus.textContent = "Error generating content. Try again.";
+  }
+  
+  btnAiGenerate.classList.remove("loading");
+}
+
+async function aiRewrite(){
+  const headline = headlineEl.value.trim();
+  const body = bodyEl.value.trim();
+  if (!headline && !body) { alert("Add some text first."); return; }
+  
+  aiStatus.textContent = "Rewriting...";
+  btnAiRewrite.classList.add("loading");
+  
+  try {
+    const res = await fetch("/api/visual-builder/rewrite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ headline, body, template: currentTemplate })
+    });
+    
+    if (!res.ok) throw new Error("API failed");
+    
+    const data = await res.json();
+    if (data.headline) headlineEl.value = data.headline;
+    if (data.body) bodyEl.value = data.body;
+    
+    render();
+    aiStatus.textContent = "Rewritten!";
+  } catch(e){
+    aiStatus.textContent = "Error rewriting. Try again.";
+  }
+  
+  btnAiRewrite.classList.remove("loading");
+}
+
+async function aiSuggestLayout(){
+  const headline = headlineEl.value.trim();
+  const body = bodyEl.value.trim();
+  if (!headline && !body) { alert("Add some text first."); return; }
+  
+  aiStatus.textContent = "Analyzing...";
+  btnAiSuggest.classList.add("loading");
+  
+  try {
+    const res = await fetch("/api/visual-builder/suggest-layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ headline, body })
+    });
+    
+    if (!res.ok) throw new Error("API failed");
+    
+    const data = await res.json();
+    if (data.template) {
+      currentTemplate = data.template;
+      templateBtns.forEach(b => b.classList.toggle("active", b.dataset.template === currentTemplate));
+    }
+    if (data.theme) themeEl.value = data.theme;
+    if (data.accent) accentEl.value = data.accent;
+    
+    render();
+    aiStatus.textContent = `Suggested: ${data.template || currentTemplate} layout`;
+  } catch(e){
+    aiStatus.textContent = "Error analyzing. Try again.";
+  }
+  
+  btnAiSuggest.classList.remove("loading");
+}
+
+templateBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    templateBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentTemplate = btn.dataset.template;
+    render();
+  });
+});
+
+formatEl.addEventListener("change", render);
+themeEl.addEventListener("change", render);
+headlineEl.addEventListener("input", render);
+bodyEl.addEventListener("input", render);
+accentEl.addEventListener("input", render);
+noiseEl.addEventListener("input", render);
+glowEl.addEventListener("input", render);
+sigEl.addEventListener("input", render);
+
+btnExport.addEventListener("click", exportPng);
+btnCopy.addEventListener("click", copyToClipboard);
+btnRandom.addEventListener("click", randomStyle);
+btnAiGenerate.addEventListener("click", aiGenerate);
+btnAiRewrite.addEventListener("click", aiRewrite);
+btnAiSuggest.addEventListener("click", aiSuggestLayout);
+
+render();
+  </script>
+</body>
+</html>

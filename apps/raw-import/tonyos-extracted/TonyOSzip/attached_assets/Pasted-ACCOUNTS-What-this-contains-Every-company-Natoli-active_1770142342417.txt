@@ -1,0 +1,248 @@
+ACCOUNTS
+
+What this contains:
+Every company Natoli actively tracks or could sell to.
+
+Examples:
+
+Pfizer
+
+Catalent Pharma Solutions
+
+Perrigo
+
+NutraScience Labs
+
+Lonza
+
+Contract Pharmacal Corp
+
+Local compounding pharmacies
+
+Veterinary tablet manufacturers
+
+Rules:
+
+One row per company
+
+Always has an owner
+
+Always has a status (New / Active / Lapsed)
+
+Always has a next action if Active
+
+Think:
+
+“Who are we selling to or could sell to”
+
+CONTACTS
+
+What this contains:
+People inside those accounts.
+
+Examples:
+
+Jane Smith – Director of Manufacturing – Pfizer
+
+Mark Lopez – Process Engineer – Catalent
+
+Sarah Chen – Quality Manager – Lonza
+
+Mike Davis – Operations Lead – NutraScience
+
+Rules:
+
+Must be linked to an Account
+
+Can have multiple contacts per account
+
+Can mark one as Primary
+
+Think:
+
+“Who do we actually talk to”
+
+ACTIVITY
+
+What this contains:
+Every meaningful interaction with a human.
+
+Examples:
+
+Call with Ops Director (discussed tooling wear)
+
+Email reply about compression force limits
+
+Teams meeting recap
+
+Follow-up after site visit
+
+LinkedIn message with real response
+
+Not included:
+
+Email opens
+
+Automated sends
+
+Guesswork
+
+Think:
+
+“Proof we’re moving the relationship forward”
+
+PIPELINE
+
+What this contains:
+Potential or active revenue opportunities.
+
+Examples:
+
+“Tooling replacement for NP500 press – Q2”
+
+“New D tooling for nutraceutical line”
+
+“CT scan services for formulation team”
+
+“Engineering training package – March”
+
+Rules:
+
+Tied to an Account
+
+Has a stage
+
+Has a rough value or impact
+
+Think:
+
+“Where money is being discussed”
+
+NEW ACCOUNT INTAKE
+
+What this contains:
+Accounts not yet qualified.
+
+Examples:
+
+CSV upload from Sales Navigator
+
+Conference attendee list
+
+Purchased industry list
+
+Inbound website form submissions
+
+State:
+
+Status = New
+
+Needs research = Yes
+
+No outreach yet
+
+Think:
+
+“Potential accounts that need review before engagement”
+
+LAPSED ACCOUNTS
+
+What this contains:
+Previously active customers with no activity in 12+ months.
+
+Examples:
+
+Former tooling customer inactive since 2022
+
+Past training attendee with no follow-up
+
+Old distributor account
+
+Rules:
+
+Must have historical activity
+
+Requires re-engagement strategy
+
+Think:
+
+“Dormant value we can wake up”
+
+ASSETS & DOCS
+
+What this contains:
+Anything that can be sent externally or referenced internally.
+
+Examples:
+
+Tooling brochures
+
+Tablet defect charts
+
+Validation documents
+
+CT scan service overview
+
+Training decks
+
+Approved sales PDFs
+
+Rules:
+
+Versioned
+
+Approved
+
+No personal files
+
+Think:
+
+“What we’re allowed to send”
+
+UPLOAD CSV
+
+What this contains:
+A controlled entry point for new data.
+
+Examples:
+
+Sales Nav export
+
+Apollo export
+
+Event list
+
+Spreadsheet from a rep
+
+What happens:
+
+User uploads file
+
+Maps columns
+
+System creates New Account records
+
+Writes to Monday
+
+Think:
+
+“How data enters safely”
+
+TL;DR YOU CAN SAY OUT LOUD
+
+If you need a 10-second explanation:
+
+“Accounts are companies. Contacts are people. Activity is proof of work. Pipeline is money. Intake is unqualified leads. Lapsed is old customers. Assets are approved documents. CSV is how new data comes in.”
+
+That’s it.
+No overthinking.
+
+If you want next, I can:
+
+turn this into hover tooltips
+
+add example placeholder rows
+
+or write a one-page onboarding cheat sheet
+
+But structurally, you’ve nailed it.

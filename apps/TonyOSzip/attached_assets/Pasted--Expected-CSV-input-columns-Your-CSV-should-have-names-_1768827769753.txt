@@ -1,0 +1,144 @@
+📁 Expected CSV input columns
+
+Your CSV should have (names can be adjusted):
+
+company_name
+website_text
+product_focus
+regulatory_language
+decision_titles
+notes
+
+
+If you don’t have all of them yet, that’s fine. Empty fields just score lower.
+
+🧠 Scoring Logic (Fully Implemented)
+import pandas as pd
+
+# -----------------------------
+# Configuration
+# -----------------------------
+
+POSITIVE_KEYWORDS = {
+    "solid_dose": ["tablet", "tablets", "capsule", "capsules", "oral solid", "non-sterile"],
+    "production": ["commercial", "shortage", "batch", "throughput", "production"],
+    "ops_pain": ["cleaning", "changeover", "downtime", "repeatability", "consistency"],
+    "regulatory": ["fda", "inspection", "validated", "compliance", "cGMP"],
+    "engineering_titles": [
+        "director of engineering",
+        "engineering manager",
+        "manufacturing manager",
+        "operations manager",
+        "plant manager",
+        "director of manufacturing"
+    ],
+    "tooling": ["tooling", "wear", "press", "maintenance", "equipment life"],
+    "press_brands": ["fette", "korsch", "kilian", "stokes", "manesty"]
+}
+
+NEGATIVE_KEYWORDS = [
+    "injectable only",
+    "sterile only",
+    "infusion",
+    "admixture",
+    "clinic",
+    "wellness",
+    "pellet",
+    "trt",
+    "bioidentical"
+]
+
+# -----------------------------
+# Helper Functions
+# -----------------------------
+
+def contains_any(text, keywords):
+    if not isinstance(text, str):
+        return False
+    text = text.lower()
+    return any(k in text for k in keywords)
+
+
+def score_company(row):
+    score = 0
+    text_blob = " ".join([
+        str(row.get("website_text", "")),
+        str(row.get("product_focus", "")),
+        str(row.get("regulatory_language", "")),
+        str(row.get("decision_titles", "")),
+        str(row.get("notes", ""))
+    ]).lower()
+
+    # ❌ Hard disqualifiers
+    if contains_any(text_blob, NEGATIVE_KEYWORDS):
+        return 0, "DROP"
+
+    # 1️⃣ Solid Oral Dose Reality (0–25)
+    if contains_any(text_blob, POSITIVE_KEYWORDS["solid_dose"]):
+        score += 25
+    else:
+        return 0, "DROP"
+
+    # 2️⃣ Production Intensity (0–20)
+    if contains_any(text_blob, POSITIVE_KEYWORDS["production"]):
+        score += 15
+
+    # 3️⃣ Operational Pain Signals (0–20)
+    ops_hits = sum(
+        contains_any(text_blob, [kw])
+        for kw in POSITIVE_KEYWORDS["ops_pain"]
+    )
+    score += min(ops_hits * 5, 20)
+
+    # 4️⃣ Regulatory Exposure (0–15)
+    if contains_any(text_blob, POSITIVE_KEYWORDS["regulatory"]):
+        score += 15
+
+    # 5️⃣ Engineering Decision Gravity (0–10)
+    if contains_any(text_blob, POSITIVE_KEYWORDS["engineering_titles"]):
+        score += 10
+
+    # 6️⃣ Natoli Product Fit Signals (0–10)
+    if contains_any(text_blob, POSITIVE_KEYWORDS["tooling"]):
+        score += 5
+    if contains_any(text_blob, POSITIVE_KEYWORDS["press_brands"]):
+        score += 5
+
+    # Tier assignment
+    if score >= 75:
+        tier = "TIER 1 – PURSUE"
+    elif score >= 55:
+        tier = "TIER 2 – INVESTIGATE"
+    else:
+        tier = "DROP"
+
+    return score, tier
+
+
+# -----------------------------
+# Main Execution
+# -----------------------------
+
+def score_503b_companies(input_csv, output_csv):
+    df = pd.read_csv(input_csv)
+
+    scores = df.apply(score_company, axis=1)
+    df["natoli_score"] = scores.apply(lambda x: x[0])
+    df["natoli_tier"] = scores.apply(lambda x: x[1])
+
+    df.sort_values("natoli_score", ascending=False, inplace=True)
+    df.to_csv(output_csv, index=False)
+
+    print(f"Scoring complete. Results saved to {output_csv}")
+
+
+# -----------------------------
+# Run Example
+# -----------------------------
+# score_503b_companies("503b_input.csv", "503b_scored_output.csv")
+
+📊 Output you get
+
+Each company ends up with:
+
+company_name | natoli_score | natoli_tier

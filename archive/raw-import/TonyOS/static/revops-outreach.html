@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RevOps Outreach Tool | TonyOS</title>
+  <style>
+    :root {
+      --bg:#0b0f16;
+      --card:#111826;
+      --line:#1e2a3d;
+      --text:#e6eefc;
+      --muted:#97a6c0;
+      --accent:#ff2a2a;
+      --good:#3ddc97;
+      --warn:#f6c453;
+      --blue:#3b82f6;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      display:flex;gap:16px;align-items:center;justify-content:space-between;
+      padding:14px 20px;border-bottom:1px solid var(--line);
+      background:rgba(11,15,22,.95);backdrop-filter:blur(8px);
+      flex-wrap:wrap;
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff6a6a);display:grid;place-items:center;font-weight:800;font-size:18px}
+    .title{font-weight:800;font-size:1.2rem}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{background:transparent;border:1px solid var(--line);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px}
+    .btn:hover{background:rgba(255,255,255,.05)}
+    .btn.primary{border-color:rgba(255,42,42,.6);background:rgba(255,42,42,.12)}
+    .btn.green{border-color:rgba(61,220,151,.6);background:rgba(61,220,151,.12)}
+    .btn.blue{border-color:rgba(59,130,246,.6);background:rgba(59,130,246,.12)}
+    
+    .wrap{padding:20px;max-width:1600px;margin:0 auto}
+    .stats{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+    .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 24px;min-width:140px}
+    .stat-val{font-size:28px;font-weight:900}
+    .stat-label{color:var(--muted);font-size:13px;margin-top:4px}
+    
+    .filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+    .filters input,.filters select{
+      padding:12px 16px;border-radius:10px;border:1px solid var(--line);
+      background:#0b1322;color:var(--text);font-size:14px;min-width:200px
+    }
+    .filters input:focus,.filters select:focus{border-color:var(--accent);outline:none}
+    
+    .tableWrap{overflow:auto;border-radius:12px;border:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;min-width:1200px;background:#0b1322}
+    th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
+    th{background:var(--card);color:var(--muted);font-weight:800;position:sticky;top:0}
+    tr:hover{background:rgba(255,255,255,.02)}
+    .company-name{font-weight:700;color:var(--text)}
+    .link-btn{
+      display:inline-block;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;
+      text-decoration:none;margin-right:4px;margin-bottom:4px;
+    }
+    .link-google{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+    .link-linkedin{background:rgba(10,102,194,.15);color:#0a66c2;border:1px solid rgba(10,102,194,.3)}
+    .link-apollo{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+    .link-btn:hover{opacity:.8}
+    
+    .badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700}
+    .badge-pharma{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+    .badge-nutra{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+    .badge-cdmo{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+    .badge-other{background:rgba(107,114,128,.15);color:#9ca3af;border:1px solid rgba(107,114,128,.3)}
+    
+    .footer{padding:16px;text-align:center;color:var(--muted);border-top:1px solid var(--line)}
+    .footer a{color:var(--accent)}
+    
+    .editable{background:transparent;border:1px solid transparent;color:var(--text);padding:6px 8px;border-radius:6px;width:100%;font-size:12px}
+    .editable:hover{border-color:var(--line)}
+    .editable:focus{border-color:var(--accent);outline:none;background:#0b1322}
+    
+    .toast{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,var(--good),#2ecc71);color:#fff;padding:12px 20px;border-radius:10px;font-weight:700;z-index:9999}
+    
+    @media print{
+      .topbar,.filters,.actions{display:none!important}
+      body{background:#fff;color:#000}
+      table{min-width:auto}
+      th,td{border:1px solid #ccc}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div>
+        <div class="title">RevOps Outreach Tool</div>
+        <div class="subtitle">New Customer Prospects | Fortune 50 Style Research</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn green" onclick="saveData()">Save Changes</button>
+      <button class="btn primary" onclick="window.print()">Print</button>
+      <a href="/" class="btn">Back to TonyOS</a>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="totalCount">0</div><div class="stat-label">Total Prospects</div></div>
+      <div class="stat"><div class="stat-val" id="pharmaCount">0</div><div class="stat-label">Pharma/Labs</div></div>
+      <div class="stat"><div class="stat-val" id="nutraCount">0</div><div class="stat-label">Nutraceutical</div></div>
+      <div class="stat"><div class="stat-val" id="cdmoCount">0</div><div class="stat-label">CDMO/Contract</div></div>
+      <div class="stat"><div class="stat-val" id="researched">0</div><div class="stat-label">Researched</div></div>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search companies..." oninput="filterTable()">
+      <select id="categoryFilter" onchange="filterTable()">
+        <option value="">All Categories</option>
+        <option value="pharma">Pharma/Labs</option>
+        <option value="nutra">Nutraceutical</option>
+        <option value="cdmo">CDMO/Contract</option>
+        <option value="other">Other</option>
+      </select>
+      <select id="statusFilter" onchange="filterTable()">
+        <option value="">All Status</option>
+        <option value="researched">Researched</option>
+        <option value="pending">Pending Research</option>
+      </select>
+    </div>
+
+    <div class="tableWrap">
+      <table id="prospectsTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Company</th>
+            <th>Category</th>
+            <th>Quick Research</th>
+            <th>Website</th>
+            <th>LinkedIn URL</th>
+            <th>Phone</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <a href="/">Back to TonyOS</a> | RevOps Outreach Tool | Data auto-saves to browser
+  </footer>
+
+<script>
+const COMPANIES = [
+  "THANG BOTANICALS, INC.","STRIVE PHARMACY MISSOURI LLC","DR. REDDY'S LABORATORIES","HARBOR HEALTH & APOTHECARY",
+  "AMPHASTAR PHARMACEUTICALS","BELMAR PHARMACY","MILLIMED BFS CO., LTD.","OUTPOST BRANDS","ST. CLAIRE'S ORGANICS, INC.",
+  "HARBOR COMPOUNDING PHARMACY","WORKHORSE GLOBAL","BIONOURISSO S DE RL DE CV","BOSTON UNIVERSITY","IONIAN TECHNOLOGIES",
+  "QS PHARMA","EPIQ SCRIPTS","NUTRASKY","PURE ESSENCE","ECOLAB - MN","AYR WELLNESS","OVERSEAS ORGANIX","DEHYDR8 LLC",
+  "APOLLO SCIENCES","KEL-SIE BIOTECH","PUROVITE, INC.","NATURION PHARMA INC.","BIO COMP PHARMA","RITSA PHARMA PRIVATE LIMITED",
+  "SETIF MEDIC PRODUCTION SARL","SUCAVU","LABORATORIOS SAVAL DE COSTA RICA S.A.","CHEW CPG, INC.","MARIFARM D.O.O.",
+  "INDUMAQ ER SAS","DBL PHARMACEUTICALS INC.","IFF","PARTICLE DYNAMICS","LABORATORIOS SIEGFRIED S.A.C.","VISUAL RIVET",
+  "CSN PHARMA","KIEWIT","SUMITOMO PHARMA AMERICA, INC.","TAYLORS PHARMACY","ASPEN COPACKING","SYNTIS BIO, INC.",
+  "THE PHARMACY HUB","IMA BRASIL","LABORATORIO MALLEN","LUXFER MAGTECH","IMBUCANNA, INC.","NATOLI SCIENTIFIC",
+  "GREEN STAR LABS","9292-3267 QUEBEC INC. DBA CHOCOPHARMA","BRAND PACKAGING/NUTRA GROUP","DRALLIBOR CO DBA MOON DRAGON CO",
+  "SEATTLE GOURMET FOODS, INC","RAPHA HEALTH NETWORK INTERNATIONAL INC.","ABC MANUFACTURING INC.","THIRD HARMONIC BIO",
+  "SIGNATURE BRANDS LLC","SACEI NICOLAS VAN HAAREN (UREUGUAY)","FLURRY POWDWERS","WOOD DALE PHARMACY",
+  "TIRUPATI WELLNESS PRIVATE LIMITED","MISSOURI MANUFACTURING","CTS CORPORATION","CO-DIAGNOSTICS, INC.","THANEL ENTERPRISES",
+  "PHARMAGEND GLOBAL MEDICAL SERVICES","SURETE DU QUEBEC - SECO EST","HDJ IMPORT C.A.","SIGMA CARE CORP","EW PACKAGING",
+  "BULK MRO INDUSTRIAL SUPPLY PVT. LTD.","NEXT WAVE","A-1 MEDICAL INTEGRATION","IMPORT SOLUCIONES SAS","MP BIOMEDICAL",
+  "NOVATECH PROFESSIONAL CORP","SYNERGY HEALTH LABS","HEATH ARMBRUSTER","AVIOR BIO INC.","TARA INNOVATIONS LLC","TESLA MOTORS",
+  "DILLIGAD CONSULTING LLC","USI MANUFACTURING LLC","ENSIGN BICKFORD","GENOVA PHARMA LLC","MOSAIC","UNIVERSAL TOOL AND SUPPLY",
+  "PHCH ARM LLC","ORIC PHARMACEUTICALS","SUPERNATURAL","FAZER MAKEISET OY","VEERA LABS","CREATIVE PRIVATE LABEL, LLC",
+  "TBN LABS LLC","PSS PNEUMATIC SYSTEM SOLUTIONS MON.IKE","FLUENT","SAFER CBD","VIDYA HERBS","AGS TECHNOLOGY, INC.",
+  "AIM INDUSTRIES","CANON VIRGINIA INC","YOUNG DESIGN - MANUFACTURING","GLOBEPACK EQUIPMENT","MASTERSON GROUP",
+  "SYNERGY BIOLOGICS","OPEN BOOK EXTRACTS","MATRIX PHARMA","INDIAN PHARMACEUTICAL ASSOC. - MAHARASHTRA BRANCH",
+  "NEOPHARMA A.S.","ELABORADOS DIETETICOS SA","HIMS & HERS UK LIMITED","LAUBER & ASSOCIATES","LUBRIZOL LIFE SCIENCE, HEALTH",
+  "VALIANT COMPOUNDING PHARMACY","GOODWILL PHARMA NYRT","ARKEASLAB","SUN DISTRIBUTION","PT SETIA KAWAN ABADI",
+  "ST. PETER'S INSTITUTE OF PHARMACEUTICAL SCIENCES","ALTASCIENCES CDMO PHILADELPHAI, LLC","APL HEALTH CARE, UNIT-II JADCHERLA",
+  "UNITHER PHARMACEUTICALS BRAZIL","TECHNOROM LLC","XAVIER CREATIVE HOUSE","SINGAPORE POLYTECHNIC",
+  "GEN ILAC VE SAGLIK URUNLERI SANAYI VE TICARET A.S.","PHARMED HEALTHCARE","STANDARD WELLNESS","ENILIFE LABORATORIES",
+  "BIORESEARCH DE MEXICO SA DE CV","VICI PEAK","FILOFARM","TIPHARCO JOINT STOCK COMPANY","THREERAMETH HERBAL",
+  "POPULAR PHARMACEUTICALS LTD.","ERICK MOYANO","ACAPSIA PHARMA PRODUCTION GMBH","GEN-PLUS GMBH & CO KG","EHF PRODUCTION BV",
+  "SIDEFARMA SA","ANALYTINFORM LLC","PHARMARON (NINGBO) TECHNOLOGY DEVELOPMENT CO., LTD","GRUPO MEDIFARMA","ALPHA","CODILAB",
+  "MULTISERVICIOS SINERGICOS JYE","4-AMINO-LABS","CANA LABORATORIES","IBERFAR INDUSTRIA FARMACEUTICA S.A.","KALARAIL",
+  "LABORATORIOS TEMIS LOSTALO","CARLISLE LABORATORIES LTD","F HOFFMANN - LA ROCHE AG","CHRISTOFFEL APOTHEKE AG",
+  "SPENRO AIRCRAFT TOOL SUPPLY","REDECAN PHARM","PHARMAPACK","CASUAL MINTS","IKOCHMIKI SA","AVG LAB",
+  "FERRING PHARMACEUTICALS A/S","POLPHARMA SANTO","IPCA LABORATORIES","TANTUS SP. Z.O.O.","LABORATORIO TIARAJU",
+  "PRODUCTOS CIENTIFICOS SA DE CV","ESJAY PHARMA PRIVATE LIMITED","CID PHARMACEUTICAL",
+  "FARMAMAG AMBALAJ SANAYI VE TICARET ANONIM SIRKETI","CUNSA INTERNATIONAL","OMNISEAL SOLUTIONS","STEIGEN SA",
+  "SARL MAGIC BIO","SOIS LIFE SCIENCES","MEDICAIR BIOSCIENCE LABORATORIES SA","FARMELLAS INTERNATIONAL MON. I.K.E.(MEDICHROM)",
+  "BIOTECH USA LTD","PD LABS","AZURITY PHARMACEUTICALS","CRESCENT PHARMA","DROGADERMUS","FUNKY UNICORN LLC",
+  "BEIGENE (SUZHOU) CO., LTD.","ATLANTIC GLOBAL SUPPLY LLC","KAYAKUSAFETY SYSTEMS (M) SDN.BHD","NEW ERA COMPOUNDING",
+  "AL-ALAMYAH COMPANY FOR PHARMACEUTICAL IND LTD IRAQ","ART OF BEVERAGE","ECOLAB-NC","ADWIA PHARMACEUTICAL",
+  "PHARMARKET, COLOMBIA","CAMS","SOLID DOSE TECHNOLOGY LLC","VITAMINS FOR LIFE LLC","ZIVAQ PHARMA"
+];
+
+let prospects = [];
+
+function categorize(name) {
+  const n = name.toUpperCase();
+  if (n.includes('PHARMA') || n.includes('LABORATORY') || n.includes('LABORATORIO') || n.includes('LAB ') || 
+      n.includes('LABS') || n.includes('PHARMACEUTICAL') || n.includes('BIOTECH') || n.includes('BIO ') ||
+      n.includes('REDDY') || n.includes('ROCHE') || n.includes('FERRING') || n.includes('IPCA') ||
+      n.includes('BEIGENE') || n.includes('ORIC') || n.includes('AZURITY') || n.includes('AMPHASTAR')) {
+    return 'pharma';
+  }
+  if (n.includes('NUTRA') || n.includes('WELLNESS') || n.includes('VITAMIN') || n.includes('HERB') ||
+      n.includes('BOTANICAL') || n.includes('ORGANIC') || n.includes('SUPPLEMENT') || n.includes('ESSENCE') ||
+      n.includes('HEALTH') && !n.includes('HEALTHCARE')) {
+    return 'nutra';
+  }
+  if (n.includes('CDMO') || n.includes('CONTRACT') || n.includes('MANUFACTURING') || n.includes('COPACKING') ||
+      n.includes('PACKAGING') || n.includes('COMPOUNDING')) {
+    return 'cdmo';
+  }
+  return 'other';
+}
+
+function getCategoryBadge(cat) {
+  const labels = {pharma:'Pharma/Labs', nutra:'Nutraceutical', cdmo:'CDMO/Contract', other:'Other'};
+  const classes = {pharma:'badge-pharma', nutra:'badge-nutra', cdmo:'badge-cdmo', other:'badge-other'};
+  return `<span class="badge ${classes[cat]}">${labels[cat]}</span>`;
+}
+
+function getResearchLinks(company) {
+  const enc = encodeURIComponent(company);
+  return `
+    <a href="https://www.google.com/search?q=${enc}+website" target="_blank" class="link-btn link-google">Google</a>
+    <a href="https://www.linkedin.com/search/results/companies/?keywords=${enc}" target="_blank" class="link-btn link-linkedin">LinkedIn</a>
+    <a href="https://www.google.com/search?q=${enc}+phone+contact" target="_blank" class="link-btn link-apollo">Contact</a>
+  `;
+}
+
+function loadData() {
+  const saved = localStorage.getItem('revopsProspects');
+  if (saved) {
+    prospects = JSON.parse(saved);
+  } else {
+    prospects = COMPANIES.map((name, i) => ({
+      id: i + 1,
+      company: name,
+      category: categorize(name),
+      website: '',
+      linkedin: '',
+      phone: '',
+      notes: ''
+    }));
+  }
+  renderTable();
+  updateStats();
+}
+
+function saveData() {
+  localStorage.setItem('revopsProspects', JSON.stringify(prospects));
+  toast('Data saved!');
+}
+
+function updateProspect(id, field, value) {
+  const p = prospects.find(x => x.id === id);
+  if (p) p[field] = value;
+}
+
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const catFilter = document.getElementById('categoryFilter').value;
+  const statusFilter = document.getElementById('statusFilter').value;
+  
+  let filtered = prospects.filter(p => {
+    if (search && !p.company.toLowerCase().includes(search)) return false;
+    if (catFilter && p.category !== catFilter) return false;
+    if (statusFilter === 'researched' && !p.website && !p.linkedin && !p.phone) return false;
+    if (statusFilter === 'pending' && (p.website || p.linkedin || p.phone)) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = filtered.map((p, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="company-name">${p.company}</td>
+      <td>${getCategoryBadge(p.category)}</td>
+      <td>${getResearchLinks(p.company)}</td>
+      <td><input class="editable" value="${p.website}" placeholder="https://..." onchange="updateProspect(${p.id},'website',this.value)"></td>
+      <td><input class="editable" value="${p.linkedin}" placeholder="linkedin.com/company/..." onchange="updateProspect(${p.id},'linkedin',this.value)"></td>
+      <td><input class="editable" value="${p.phone}" placeholder="+1..." onchange="updateProspect(${p.id},'phone',this.value)"></td>
+      <td><input class="editable" value="${p.notes}" placeholder="Notes..." onchange="updateProspect(${p.id},'notes',this.value)"></td>
+    </tr>
+  `).join('');
+}
+
+function filterTable() {
+  renderTable();
+}
+
+function updateStats() {
+  document.getElementById('totalCount').textContent = prospects.length;
+  document.getElementById('pharmaCount').textContent = prospects.filter(p => p.category === 'pharma').length;
+  document.getElementById('nutraCount').textContent = prospects.filter(p => p.category === 'nutra').length;
+  document.getElementById('cdmoCount').textContent = prospects.filter(p => p.category === 'cdmo').length;
+  document.getElementById('researched').textContent = prospects.filter(p => p.website || p.linkedin || p.phone).length;
+}
+
+function exportCSV() {
+  let csv = 'Company,Category,Website,LinkedIn,Phone,Notes\\n';
+  prospects.forEach(p => {
+    csv += `"${p.company}","${p.category}","${p.website}","${p.linkedin}","${p.phone}","${p.notes}"\\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'revops_prospects_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  toast('CSV exported!');
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+loadData();
+</script>
+</body>
+</html>

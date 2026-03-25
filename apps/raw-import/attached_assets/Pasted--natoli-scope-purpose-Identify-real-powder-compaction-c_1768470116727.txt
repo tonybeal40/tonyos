@@ -1,0 +1,187 @@
+{
+  "natoli_scope": {
+    "purpose": "Identify real powder compaction customers where tooling and formulation expertise materially impact performance, quality, or scale-up",
+    "global_enforcement": {
+      "require_powder_compaction": true,
+      "require_tooling_dependency": true,
+      "require_formulation_dependency": true
+    }
+  },
+
+  "accepted_form_factors": [
+    "tablet",
+    "compressed tablet",
+    "chewable tablet",
+    "pellet",
+    "compact",
+    "pressed solid"
+  ],
+
+  "allowed_industries": {
+    "core": [
+      "Pharmaceutical Solid Oral Dosage Manufacturing",
+      "Drug Product Manufacturing",
+      "Generic Pharmaceutical Manufacturing",
+      "Pharmaceutical R&D",
+      "CDMO",
+      "CMO",
+      "Tablet Manufacturing"
+    ],
+    "conditional": [
+      "Pharmaceutical Confectionery",
+      "OTC Drug Manufacturing",
+      "Consumer Health Manufacturing",
+      "Nutraceutical Manufacturing",
+      "Cannabis Manufacturing",
+      "Specialty Chemicals",
+      "Catalyst Manufacturing",
+      "Battery Materials",
+      "Energy Materials",
+      "Nuclear Materials",
+      "Critical Materials Processing"
+    ]
+  },
+
+  "hard_excluded_industries": [
+    "Powder Metallurgy",
+    "Metal Injection Molding",
+    "Structural Ceramics",
+    "Construction Materials",
+    "Automotive Structural Parts",
+    "Aerospace Structural Components",
+    "Sintered Metal Parts",
+    "General Job Shop Manufacturing"
+  ],
+
+  "required_signal_groups": {
+    "compaction": [
+      "tablet compression",
+      "powder compaction",
+      "pressed tablet",
+      "pellet pressing",
+      "compression force",
+      "press force profile"
+    ],
+    "tooling": [
+      "tablet press",
+      "tablet tooling",
+      "punch",
+      "die",
+      "tool wear",
+      "tool life",
+      "compression tooling",
+      "press performance"
+    ],
+    "formulation": [
+      "formulation development",
+      "powder formulation",
+      "solid oral dosage",
+      "granulation",
+      "blend uniformity",
+      "excipients",
+      "binder",
+      "lubricant",
+      "porosity",
+      "dissolution",
+      "friability",
+      "tablet hardness",
+      "usp",
+      "usp 1062"
+    ]
+  },
+
+  "conditional_gates": {
+    "nutraceutical": {
+      "allow_only_if": ["tablet press", "compressed tablet", "granulation"],
+      "block_if": ["gummy", "softgel", "capsule only", "dtc", "direct to consumer"]
+    },
+    "cannabis": {
+      "allow_only_if": ["compressed tablet", "dose uniformity", "powder formulation"],
+      "block_if": ["edible", "gummy", "vape", "flower", "pre-roll", "topical"]
+    },
+    "pharmaceutical_confectionery": {
+      "allow_only_if": ["compressed lozenge", "chewable tablet", "tablet press"],
+      "block_if": ["molded", "gel", "liquid"]
+    },
+    "otc_consumer_health": {
+      "allow_only_if": ["chewable tablet", "compressed tablet"],
+      "block_if": ["liquid", "spray", "syrup"]
+    }
+  },
+
+  "negative_keywords_global": [
+    "cnc machining",
+    "job shop",
+    "welding",
+    "sheet metal",
+    "casting",
+    "forging",
+    "injection molding",
+    "construction",
+    "plastics",
+    "food processing",
+    "beverage",
+    "bakery",
+    "cosmetics",
+    "personal care",
+    "packaging only",
+    "labeling",
+    "software",
+    "it services",
+    "marketing agency",
+    "advertising",
+    "consulting only"
+  ],
+
+  "scoring_model": {
+    "industry_match": 3,
+    "form_factor_match": 3,
+    "compaction_signal": 2,
+    "tooling_signal": 3,
+    "formulation_signal": 3,
+    "negative_penalty": -6
+  },
+
+  "tier_thresholds": {
+    "tier_1": 8,
+    "tier_2": 5
+  },
+
+  "natoli_routing": {
+    "engineering": {
+      "trigger_if_keywords_present": [
+        "tooling",
+        "tablet press",
+        "punch",
+        "die",
+        "compression force",
+        "tool wear"
+      ]
+    },
+    "scientific": {
+      "trigger_if_keywords_present": [
+        "formulation",
+        "characterization",
+        "analytical",
+        "usp",
+        "dissolution",
+        "r&d"
+      ]
+    }
+  },
+
+  "output_rules": {
+    "exclude_if_missing_any_required_signal_group": true,
+    "exclude_if_any_negative_keyword_present": true,
+    "return_confidence_explanation": true,
+    "explanation_fields": [
+      "form_factor_detected",
+      "industry_detected",
+      "compaction_signals",
+      "tooling_signals",
+      "formulation_signals",
+      "routing_decision",
+      "exclusion_reason_if_any"
+    ]
+  }
+}

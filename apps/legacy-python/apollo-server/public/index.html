@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tony CRM - Accounts</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 { color: #00ff88; font-size: 1.8rem; }
+    .stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+    .stat {
+      background: #1a1a24;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid #333;
+    }
+    .stat-value { color: #00ff88; font-weight: bold; }
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    input, button {
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      border: 1px solid #333;
+      font-size: 0.95rem;
+    }
+    input {
+      background: #1a1a24;
+      color: #e0e0e0;
+      flex: 1;
+      max-width: 300px;
+    }
+    button {
+      background: #00ff88;
+      color: #0a0a0f;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover { background: #00cc6a; }
+    button.secondary {
+      background: #333;
+      color: #e0e0e0;
+    }
+    button.secondary:hover { background: #444; }
+    .accounts {
+      display: grid;
+      gap: 1rem;
+    }
+    .account-card {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      transition: border-color 0.2s;
+    }
+    .account-card:hover { border-color: #00ff88; }
+    .account-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .account-info h3 a {
+      color: #e0e0e0;
+      text-decoration: none;
+    }
+    .account-info h3 a:hover { color: #00ff88; }
+    .account-meta {
+      font-size: 0.85rem;
+      color: #888;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .tier {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .tier-A { background: #00ff88; color: #0a0a0f; }
+    .tier-B { background: #ffd700; color: #0a0a0f; }
+    .tier-C { background: #666; color: #fff; }
+    .tier-Disqualified { background: #ff4444; color: #fff; }
+    .division {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .division-scientific { background: #7c3aed; color: #fff; }
+    .division-engineering { background: #059669; color: #fff; }
+    .division-both { background: #2563eb; color: #fff; }
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+    .loading { color: #888; }
+    .back-btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #1a1a24;
+      color: #00ff88;
+      border: 1px solid #333;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .back-btn:hover { background: #252530; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-btn" id="backBtn">&larr; Back to TonyOS</a>
+  <div class="header">
+    <h1>Tony CRM - Accounts</h1>
+    <div class="stats" id="stats">
+      <div class="stat">Total: <span class="stat-value" id="stat-total">-</span></div>
+      <div class="stat">Tier A: <span class="stat-value" id="stat-tierA">-</span></div>
+      <div class="stat">Tier B: <span class="stat-value" id="stat-tierB">-</span></div>
+      <div class="stat">Qualified: <span class="stat-value" id="stat-qualified">-</span></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <input type="text" id="domain-input" placeholder="Enter domain to enrich (e.g., pfizer.com)">
+    <button id="enrich-btn">Enrich & Save</button>
+    <button class="secondary" id="export-btn">Export CSV</button>
+    <button class="secondary" id="pipeline-btn" onclick="location.href='pipeline.html'">Pipeline</button>
+    <button class="secondary" id="dashboard-btn">Dashboard</button>
+  </div>
+
+  <div class="accounts" id="accounts">
+    <div class="loading">Loading accounts...</div>
+  </div>
+
+  <script>
+    const isProxy = window.location.pathname.startsWith('/apollo-crm');
+    const API_BASE = isProxy ? '/apollo-crm' : '';
+
+    function getDivisionClass(div) {
+      if (!div) return '';
+      const d = div.toLowerCase();
+      if (d === 'natoli scientific' || d === 'scientific') return 'division-scientific';
+      if (d === 'natoli engineering' || d === 'engineering') return 'division-engineering';
+      if (d === 'both') return 'division-both';
+      return '';
+    }
+
+    function formatDivision(div) {
+      if (!div) return '';
+      const d = div.toLowerCase();
+      if (d === 'both') return 'Scientific + Engineering';
+      if (d === 'natoli scientific' || d === 'scientific') return 'Natoli Scientific';
+      if (d === 'natoli engineering' || d === 'engineering') return 'Natoli Engineering';
+      return div;
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch(API_BASE + '/api/stats');
+        const stats = await res.json();
+        document.getElementById('stat-total').textContent = stats.total;
+        document.getElementById('stat-tierA').textContent = stats.tierA;
+        document.getElementById('stat-tierB').textContent = stats.tierB;
+        document.getElementById('stat-qualified').textContent = stats.qualified;
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
+    }
+
+    async function loadAccounts() {
+      try {
+        const res = await fetch(API_BASE + '/api/accounts');
+        const data = await res.json();
+        const container = document.getElementById('accounts');
+
+        if (!data.accounts || data.accounts.length === 0) {
+          container.innerHTML = '<div class="empty">No accounts yet. Enter a domain above to enrich your first company.</div>';
+          return;
+        }
+
+        container.innerHTML = data.accounts.map(a => `
+          <div class="account-card">
+            <div class="account-info">
+              <h3><a href="${API_BASE}/account.html?id=${a.id}">${a.company_name || 'Unknown'}</a></h3>
+              <div class="account-meta">
+                <span>${a.industry || 'Unknown industry'}</span>
+                <span>${a.employees ? a.employees + ' employees' : ''}</span>
+                <span class="division ${getDivisionClass(a.division_fit)}">${formatDivision(a.division_fit)}</span>
+              </div>
+            </div>
+            <div>
+              <span class="tier tier-${a.tier}">${a.tier || 'N/A'}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('accounts').innerHTML = '<div class="empty">Failed to load accounts.</div>';
+      }
+    }
+
+    document.getElementById('enrich-btn').addEventListener('click', async () => {
+      const domain = document.getElementById('domain-input').value.trim();
+      if (!domain) {
+        alert('Please enter a domain');
+        return;
+      }
+
+      const btn = document.getElementById('enrich-btn');
+      btn.textContent = 'Enriching...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(API_BASE + '/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domain })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to enrich');
+        }
+
+        document.getElementById('domain-input').value = '';
+        await loadStats();
+        await loadAccounts();
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        btn.textContent = 'Enrich & Save';
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('export-btn').onclick = () => window.location.href = API_BASE + '/export/accounts.csv';
+    document.getElementById('dashboard-btn').onclick = () => window.location.href = API_BASE + '/dashboard.html';
+
+    loadStats();
+    loadAccounts();
+  </script>
+</body>
+</html>

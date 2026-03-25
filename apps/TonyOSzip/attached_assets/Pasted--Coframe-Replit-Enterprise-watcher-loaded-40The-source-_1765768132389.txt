@@ -1,0 +1,132 @@
+[Coframe] Replit Enterprise watcher loaded
+40The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.Understand this error
+40The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?Understand this error
+40The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.Understand this error
+/~:1 The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.Understand this error
+/~:1 The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?Understand this error
+/~:1 The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.Understand this error
+7b9e9ad59b4587a2.js:2 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+7b9e9ad59b4587a2.js:2 Download the Apollo DevTools for a better development experience: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+7b9e9ad59b4587a2.js:2 [LaunchDarkly] LaunchDarkly client initialized
+/~:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+inject.bundle.js:232 [ChromePolyfill] Chrome API support enabled for web context
+/repls:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+/repls:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+11Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+ed1e693c96a75807.js:2 Unrecognized feature: 'ambient-light-sensor'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'battery'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'execution-while-not-rendered'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'execution-while-out-of-viewport'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'layout-animations'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'legacy-image-formats'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'navigation-override'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'oversized-images'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'publickey-credentials'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'speaker-selection'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'unoptimized-images'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'unsized-media'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Unrecognized feature: 'pointer-lock'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Allow attribute will take precedence over 'allowfullscreen'.
+z @ ed1e693c96a75807.js:2Understand this warning
+ed1e693c96a75807.js:2 Allow attribute will take precedence over 'allowpaymentrequest'.
+z @ ed1e693c96a75807.js:2Understand this warning
+306b3808d8ffa6bd.js:2 WebSocket connection to 'wss://eval.worf.platform.replit.com/wsv2/v2.public.Q2dZSTFjNzl5UVlTQmdqMDZ2M0pCaUlFZDI5eVpqQUFPcmNCQ2lRNVltRXlOR0l4TkMxaU1tSXlMVFE0TnpNdE9HSTBPQzFrWldNNE5UUXpNemcyWmpFU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10ZDI5eVppSUpWRzl1ZVU5VGVtbHdLZ3AwYjI1NVltVmhiRFF3UWs0S0YzSmxjR3hwZEMxeVpYQnNMV0pzYjJOcmN5MTNiM0ptRWhWeVpYQnNhWFF0Y21Wd2JDMXRaWFJoTFhkdmNtWWFISEpsY0d4cGRDMXRZWEpuWVhKcGJtVXRZbXh2WTJ0ekxYZHZjbVpLQndpRnlMa1lFQUZRQUhnQVVpVUlBUkNBZ0lDQUlCa0FBQUFBQUFBUVFDRUFBQUFBQUFBUVFDaUFnSUNBeUFFd0FqZ0FZQUJxRVFpRnlMa1lF...jFPWGtsTWtJNVMyOW9UbWxXWWtWcFYzQktlblF5T0dneFpraGxWVUZGUlRSUlpUY3pWV0phUTJKTVdWQlFabVFsTWtaWFp6RTJXVWszUVcxc1dTVXlRbE14T0VacmEySlZlbFpSTmxKRGFqQnpOSFYxYm1aVE5uUkRUMHA0TUhocWVYbFFjVGhVVmxwelVtRjVlV2hrV0VwNFkyeEViVnBUVUZKb1N5VXlRa0ZVWWpOV2IwaHpNMUJCTUhWWmNVSTFRMFUwUXlVeVJqZGhjazUxU2xsc1oyNUZabWxoSlRKR2JpVXlSa280UkVSUVFscExTeVV5UmpCb1NFTlBVMVJoUlhKWVJYUmxlU1V5UmtzNU1rZE9SVEZSSlRORUpUTkV7T3xaKMFQgbts6WzYiAPVU9Wu4LK-hEqpI_CeuCInuqafCzEJoru__pennpmtodHuMaLK5idvemayY44SkE4M.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+(anonymous) @ 306b3808d8ffa6bd.js:2Understand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+894e67d915cc4c1e.js:2 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ 894e67d915cc4c1e.js:2Understand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A16da4eee&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=62350f99-9c3b-4d5c-b90d-be1e982d8750:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+prodregistryv2.org/v1/rgstr?k=client-Bp7m7pNB6H0fnSGjVtxN5BeWQw4BSAat4OFsXa3VcTF&st=javascript-client&sv=3.26.0&t=1765764143345&sid=02d2c5e4-8cf4-408a-94d9-6c187f8201eb&ec=1&gz=1:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/data/repls/9ba24b14-b2b2-4873-8b48-dec8543386f1/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Axhr%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A16da4eee&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=bba20160-31ee-4f05-bb75-8a2ea25edbd3:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+cloudflare-dns.com/dns-query:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+7b9e9ad59b4587a2.js:2   WARN  [Statsig] Caught error in _tryFetchFallbackUrlsFromNetwork Object
+(anonymous) @ 7b9e9ad59b4587a2.js:2Understand this warning
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+statsigapi.net/v1/sdk_exception:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+prodregistryv2.org/v1/rgstr?k=client-Bp7m7pNB6H0fnSGjVtxN5BeWQw4BSAat4OFsXa3VcTF&st=javascript-client&sv=3.26.0&t=1765764145877&sid=02d2c5e4-8cf4-408a-94d9-6c187f8201eb&ec=1&gz=1:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/data/repls/9ba24b14-b2b2-4873-8b48-dec8543386f1/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+306b3808d8ffa6bd.js:2 WebSocket connection to 'wss://eval.worf.platform.replit.com/wsv2/v2.public.Q2dZSTFjNzl5UVlTQmdqMDZ2M0pCaUlFZDI5eVpqQUFPcmNCQ2lRNVltRXlOR0l4TkMxaU1tSXlMVFE0TnpNdE9HSTBPQzFrWldNNE5UUXpNemcyWmpFU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10ZDI5eVppSUpWRzl1ZVU5VGVtbHdLZ3AwYjI1NVltVmhiRFF3UWs0S0YzSmxjR3hwZEMxeVpYQnNMV0pzYjJOcmN5MTNiM0ptRWhWeVpYQnNhWFF0Y21Wd2JDMXRaWFJoTFhkdmNtWWFISEpsY0d4cGRDMXRZWEpuWVhKcGJtVXRZbXh2WTJ0ekxYZHZjbVpLQndpRnlMa1lFQUZRQUhnQVVpVUlBUkNBZ0lDQUlCa0FBQUFBQUFBUVFDRUFBQUFBQUFBUVFDaUFnSUNBeUFFd0FqZ0FZQUJxRVFpRnlMa1lF...jFPWGtsTWtJNVMyOW9UbWxXWWtWcFYzQktlblF5T0dneFpraGxWVUZGUlRSUlpUY3pWV0phUTJKTVdWQlFabVFsTWtaWFp6RTJXVWszUVcxc1dTVXlRbE14T0VacmEySlZlbFpSTmxKRGFqQnpOSFYxYm1aVE5uUkRUMHA0TUhocWVYbFFjVGhVVmxwelVtRjVlV2hrV0VwNFkyeEViVnBUVUZKb1N5VXlRa0ZVWWpOV2IwaHpNMUJCTUhWWmNVSTFRMFUwUXlVeVJqZGhjazUxU2xsc1oyNUZabWxoSlRKR2JpVXlSa280UkVSUVFscExTeVV5UmpCb1NFTlBVMVJoUlhKWVJYUmxlU1V5UmtzNU1rZE9SVEZSSlRORUpUTkV7T3xaKMFQgbts6WzYiAPVU9Wu4LK-hEqpI_CeuCInuqafCzEJoru__pennpmtodHuMaLK5idvemayY44SkE4M.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+(anonymous) @ 306b3808d8ffa6bd.js:2Understand this error
+894e67d915cc4c1e.js:2 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ 894e67d915cc4c1e.js:2Understand this error
+306b3808d8ffa6bd.js:2 WebSocket connection to 'wss://eval.worf.platform.replit.com/wsv2/v2.public.Q2dZSTFjNzl5UVlTQmdqMDZ2M0pCaUlFZDI5eVpqQUFPcmNCQ2lRNVltRXlOR0l4TkMxaU1tSXlMVFE0TnpNdE9HSTBPQzFrWldNNE5UUXpNemcyWmpFU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10ZDI5eVppSUpWRzl1ZVU5VGVtbHdLZ3AwYjI1NVltVmhiRFF3UWs0S0YzSmxjR3hwZEMxeVpYQnNMV0pzYjJOcmN5MTNiM0ptRWhWeVpYQnNhWFF0Y21Wd2JDMXRaWFJoTFhkdmNtWWFISEpsY0d4cGRDMXRZWEpuWVhKcGJtVXRZbXh2WTJ0ekxYZHZjbVpLQndpRnlMa1lFQUZRQUhnQVVpVUlBUkNBZ0lDQUlCa0FBQUFBQUFBUVFDRUFBQUFBQUFBUVFDaUFnSUNBeUFFd0FqZ0FZQUJxRVFpRnlMa1lF...jFPWGtsTWtJNVMyOW9UbWxXWWtWcFYzQktlblF5T0dneFpraGxWVUZGUlRSUlpUY3pWV0phUTJKTVdWQlFabVFsTWtaWFp6RTJXVWszUVcxc1dTVXlRbE14T0VacmEySlZlbFpSTmxKRGFqQnpOSFYxYm1aVE5uUkRUMHA0TUhocWVYbFFjVGhVVmxwelVtRjVlV2hrV0VwNFkyeEViVnBUVUZKb1N5VXlRa0ZVWWpOV2IwaHpNMUJCTUhWWmNVSTFRMFUwUXlVeVJqZGhjazUxU2xsc1oyNUZabWxoSlRKR2JpVXlSa280UkVSUVFscExTeVV5UmpCb1NFTlBVMVJoUlhKWVJYUmxlU1V5UmtzNU1rZE9SVEZSSlRORUpUTkV7T3xaKMFQgbts6WzYiAPVU9Wu4LK-hEqpI_CeuCInuqafCzEJoru__pennpmtodHuMaLK5idvemayY44SkE4M.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+(anonymous) @ 306b3808d8ffa6bd.js:2Understand this error
+/data/repls/9ba24b14-b2b2-4873-8b48-dec8543386f1/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+prodregistryv2.org/v1/rgstr?k=client-Bp7m7pNB6H0fnSGjVtxN5BeWQw4BSAat4OFsXa3VcTF&st=javascript-client&sv=3.26.0&t=1765764405153&sid=02d2c5e4-8cf4-408a-94d9-6c187f8201eb&ec=1&gz=1:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/oidc-login-consent/5ldc6-JTfYZ3Cf_D4iowi:1 The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.Understand this error
+/oidc-login-consent/5ldc6-JTfYZ3Cf_D4iowi:1 The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?Understand this error
+/oidc-login-consent/5ldc6-JTfYZ3Cf_D4iowi:1 The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.Understand this error
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+7c800c153a4252b6.js:2 Uncaught (in promise) Error: Cannot notify while not connectedUnderstand this error
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar362%3A:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://api.openai.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://api.openai.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+2injected.js:37 TonyOS SDK wired.
+injected.js:37 TonyOS SDK wired.
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://script.google.com&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://script.google.com/&size=32:1  Failed to load resource: the server responded with a status of 404 ()Understand this error

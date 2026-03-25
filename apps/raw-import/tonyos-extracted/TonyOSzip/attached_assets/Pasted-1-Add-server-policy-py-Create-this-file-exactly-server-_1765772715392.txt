@@ -1,0 +1,182 @@
+1) Add server/policy.py
+
+Create this file exactly:
+
+server/policy.py
+
+from dataclasses import dataclass
+from typing import Dict, List
+
+APP_CAPABILITIES: Dict[str, List[str]] = {
+    "AI Chat": ["chat", "plan", "write", "explain", "summarize", "research"],
+    "CRM": ["analyze", "summarize", "suggest_next_steps", "draft_outreach"],
+    "Jobs": ["match", "gap_analysis", "resume_edit", "interview_prep", "summarize"],
+    "Journal": ["reflect", "reframe", "extract_lessons", "summarize"],
+    "Outreach": ["write_copy", "personalize", "tone_check", "sequence"],
+    "Money": ["budget", "summarize", "plan"]
+}
+
+CROSS_APP_ACCESS: Dict[str, List[str]] = {
+    "AI Chat": ["AI Chat", "CRM", "Jobs", "Journal", "Outreach", "Money"],
+    "CRM": ["CRM", "Outreach"],
+    "Jobs": ["Jobs", "CRM"],
+    "Outreach": ["Outreach", "CRM", "Journal"],
+    "Journal": ["Journal"],
+    "Money": ["Money"]
+}
+
+ALLOWED_MODES: Dict[str, List[str]] = {
+    "AI Chat": ["truth", "deep", "fast", "code"],
+    "CRM": ["truth", "deep"],
+    "Jobs": ["truth", "deep"],
+    "Journal": ["deep"],
+    "Outreach": ["truth", "deep"],
+    "Money": ["truth", "deep"]
+}
+
+@dataclass
+class PolicyDecision:
+    ok: bool
+    reason: str
+    app: str
+    mode: str
+    allowed_apps_for_memory: List[str]
+    capabilities: List[str]
+
+def normalize_app(app: str) -> str:
+    a = (app or "").strip()
+    return a if a else "AI Chat"
+
+def enforce_policy(app: str, mode: str, intent: str) -> PolicyDecision:
+    app = normalize_app(app)
+    mode = (mode or "truth").strip()
+    intent = (intent or "").strip()
+
+    capabilities = APP_CAPABILITIES.get(app, [])
+    allowed_modes = ALLOWED_MODES.get(app, ["truth"])
+    allowed_mem_apps = CROSS_APP_ACCESS.get(app, [app])
+
+    if mode not in allowed_modes:
+        return PolicyDecision(
+            ok=False,
+            reason=f"Mode '{mode}' is not allowed for {app}. Allowed: {', '.join(allowed_modes)}",
+            app=app, mode=mode,
+            allowed_apps_for_memory=allowed_mem_apps,
+            capabilities=capabilities
+        )
+
+    if intent and capabilities and intent not in capabilities:
+        return PolicyDecision(
+            ok=False,
+            reason=f"Intent '{intent}' is not allowed for {app}. Allowed: {', '.join(capabilities)}",
+            app=app, mode=mode,
+            allowed_apps_for_memory=allowed_mem_apps,
+            capabilities=capabilities
+        )
+
+    return PolicyDecision(
+        ok=True, reason="ok",
+        app=app, mode=mode,
+        allowed_apps_for_memory=allowed_mem_apps,
+        capabilities=capabilities
+    )
+
+2) Replace your /chat handler
+
+Use the /chat handler I gave you in the last message (the full drop-in). If your app file is app.py, it should look like:
+
+app = FastAPI()
+
+app.include_router(router) (if you used APIRouter)
+
+@app.post("/chat") if you don’t use router
+
+If you don’t use routers, tell me and I’ll convert it to a single-file @app.post("/chat") version.
+
+3) Start TonyOS on port 8787
+
+From the folder where your backend runs:
+
+If your FastAPI object is app inside app.py
+uvicorn app:app --host 127.0.0.1 --port 8787 --reload
+
+If it’s inside TonyOS/app.py
+uvicorn TonyOS.app:app --host 127.0.0.1 --port 8787 --reload
+
+4) Test it immediately (two options)
+Option A: curl test (best, zero UI)
+
+Run this:
+
+curl -X POST http://127.0.0.1:8787/chat ^
+  -H "Content-Type: application/json" ^
+  -d "{\"message\":\"Analyze this lead and suggest next steps\",\"mode\":\"deep\",\"mood\":\"neutral\",\"session_id\":\"tony\",\"source_app\":\"CRM\",\"intent\":\"analyze\",\"context\":{\"lead\":{\"name\":\"John Smith\",\"company\":\"ABC Manufacturing\",\"notes\":\"Met at a trade show\"}}}"
+
+
+Expected result:
+
+JSON response with answer
+
+policy.app = CRM
+
+policy.intent = analyze
+
+confidence present
+
+Option B: Browser console test (if you’re in any app page)
+
+Paste this in DevTools Console:
+
+fetch("http://127.0.0.1:8787/chat", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({
+    message: "Analyze this lead and suggest next steps",
+    mode: "deep",
+    mood: "neutral",
+    session_id: "tony",
+    source_app: "CRM",
+    intent: "analyze",
+    context: {
+      lead: { name:"John Smith", company:"ABC Manufacturing", notes:"Met at a trade show" }
+    }
+  })
+}).then(r => r.json()).then(console.log).catch(console.error)
+
+5) Quick policy enforcement test (prove it works)
+
+Send a disallowed combo on purpose:
+
+CRM + fast mode should be blocked
+
+curl -X POST http://127.0.0.1:8787/chat ^
+  -H "Content-Type: application/json" ^
+  -d "{\"message\":\"test\",\"mode\":\"fast\",\"session_id\":\"tony\",\"source_app\":\"CRM\",\"intent\":\"analyze\",\"context\":{}}"
+
+
+Expected:
+
+answer says mode fast not allowed for CRM
+
+confidence returns 1.0
+
+policy block included
+
+If you hit an error, here are the 3 most common causes and the fix
+
+Import paths wrong (most likely)
+Fix: change imports inside the handler to match your file layout (router, prompts, providers)
+
+Your app is not using APIRouter
+Fix: move function under @app.post("/chat") instead of router.post
+
+You don’t have server/ as a package
+Fix: add empty __init__.py files:
+
+server/__init__.py
+
+server/research/__init__.py
+
+server/truth/__init__.py
+
+server/memory/__init__.py

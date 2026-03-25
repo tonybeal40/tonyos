@@ -1,0 +1,248 @@
+Why it looks like that in your picture
+
+That screenshot is Codebench doing exactly what it’s designed to do:
+
+It runs your HTML in a sandboxed iframe (so it can’t mess up the editor UI)
+
+You’re rendering plain HTML with almost no CSS, so you get:
+
+White page
+
+Default browser font sizing
+
+Default button styling
+
+The editor pane is dark because Codebench’s UI theme is dark, but the preview is the browser’s default (white) unless you style it
+
+If you want the preview to look like TonyOS (dark, sleek), you need to add CSS inside Codebench’s CSS tab (or include a <style> block)
+
+Quick fix CSS you can paste into the CSS tab:
+
+body{
+  margin:0;
+  padding:40px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:#07070a;
+  color:#e9e9f1;
+}
+button{
+  background:#ff2d55;
+  color:white;
+  border:none;
+  border-radius:12px;
+  padding:12px 14px;
+  font-weight:700;
+  cursor:pointer;
+}
+button:hover{ opacity:.9; }
+
+
+That will instantly make the preview match your TonyOS vibe.
+
+Next step: Memory promotion rules (send the code)
+
+This is the memory logic that keeps TonyOS from turning into a junk drawer.
+
+What the promotion logic should do
+
+Everything gets stored short term
+
+Long term memory is only created when:
+
+Tony explicitly says “remember” / “from now on”
+
+Or the message matches a strong “fact / preference / decision / goal” pattern
+
+Assistant responses do not become long term memory automatically
+
+Promotion creates a candidate first
+
+Candidate becomes confirmed only if:
+
+user confirms, or
+
+it repeats 3 times across days
+
+That’s the right balance between smart and safe.
+
+Drop in code: server/memory/promotion.py
+import re
+import time
+import hashlib
+from dataclasses import dataclass
+from typing import Dict, Any, Optional, Tuple, List
+
+PROMOTE_KEYWORDS = [
+    "remember", "save this", "store this", "from now on", "going forward",
+    "my preference", "always", "never"
+]
+
+FACT_PATTERNS = [
+    r"\bi am\b",
+    r"\bi prefer\b",
+    r"\bi want\b",
+    r"\bmy goal\b",
+    r"\bi need\b",
+    r"\bi will\b"
+]
+
+@dataclass
+class PromotionResult:
+    should_candidate: bool
+    memory_type: str              # fact | preference | decision | goal | other
+    confidence: float             # 0.0-1.0
+    cleaned_text: str
+    reason: str
+
+
+def _clean(text: str) -> str:
+    text = (text or "").strip()
+    text = re.sub(r"\s+", " ", text)
+    return text
+
+
+def classify_memory_type(user_text: str) -> Tuple[str, float, str]:
+    t = (user_text or "").lower()
+
+    if any(k in t for k in ["my goal", "goal is", "i want to", "i need to"]):
+        return "goal", 0.70, "goal phrasing"
+
+    if any(k in t for k in ["i prefer", "i like", "i dislike", "i hate", "i love"]):
+        return "preference", 0.75, "preference phrasing"
+
+    if any(k in t for k in ["from now on", "going forward", "always", "never", "i will"]):
+        return "decision", 0.70, "commitment phrasing"
+
+    if any(re.search(p, t) for p in FACT_PATTERNS):
+        return "fact", 0.55, "self-statement pattern"
+
+    return "other", 0.30, "weak signal"
+
+
+def should_create_candidate(user_text: str) -> PromotionResult:
+    raw = _clean(user_text)
+    if not raw:
+        return PromotionResult(False, "other", 0.0, "", "empty")
+
+    low = raw.lower()
+
+    # Strong explicit request
+    if any(k in low for k in PROMOTE_KEYWORDS):
+        mtype, base, why = classify_memory_type(raw)
+        return PromotionResult(True, mtype, min(1.0, base + 0.25), raw, f"explicit: {why}")
+
+    # Implicit but strong pattern
+    mtype, base, why = classify_memory_type(raw)
+    if base >= 0.70:
+        return PromotionResult(True, mtype, base, raw, f"strong implicit: {why}")
+
+    # Otherwise do not promote
+    return PromotionResult(False, mtype, base, raw, f"not promoted: {why}")
+
+
+def candidate_id(session_id: str, text: str) -> str:
+    h = hashlib.sha256((session_id + "|" + text).encode("utf-8")).hexdigest()
+    return h[:24]
+
+Add DB tables for candidates and confirmed memories
+
+Add this when your DB initializes:
+
+conn.execute("""
+CREATE TABLE IF NOT EXISTS memory_candidates(
+  id TEXT PRIMARY KEY,
+  created_at INTEGER,
+  session_id TEXT,
+  source_app TEXT,
+  memory_type TEXT,
+  confidence REAL,
+  text TEXT,
+  reason TEXT,
+  status TEXT
+)
+""")
+
+conn.execute("""
+CREATE TABLE IF NOT EXISTS long_term_memory(
+  id TEXT PRIMARY KEY,
+  created_at INTEGER,
+  session_id TEXT,
+  source_app TEXT,
+  memory_type TEXT,
+  confidence REAL,
+  text TEXT
+)
+""")
+
+Wire it into your /chat handler
+
+Right after you store the user message, add:
+
+from server.memory.promotion import should_create_candidate, candidate_id
+
+promo = should_create_candidate(user_msg)
+
+if promo.should_candidate:
+    cid = candidate_id(payload.session_id, promo.cleaned_text)
+
+    conn = db()  # your db() helper
+    conn.execute("""
+      INSERT OR IGNORE INTO memory_candidates
+      (id, created_at, session_id, source_app, memory_type, confidence, text, reason, status)
+      VALUES (?,?,?,?,?,?,?,?,?)
+    """, (
+      cid, int(time.time()), payload.session_id, decision.app,
+      promo.memory_type, promo.confidence, promo.cleaned_text, promo.reason, "candidate"
+    ))
+    conn.commit()
+    conn.close()
+
+Optional but smart: add a “confirm memory” endpoint
+
+So when you say “remember this” you can pop a confirm button in the UI later.
+
+@router.post("/memory/confirm")
+def confirm_memory(payload: Dict[str, Any]):
+    cid = payload.get("candidate_id")
+    session_id = payload.get("session_id","default")
+
+    conn = db()
+    row = conn.execute("""
+      SELECT id, session_id, source_app, memory_type, confidence, text
+      FROM memory_candidates
+      WHERE id=? AND session_id=? AND status='candidate'
+    """, (cid, session_id)).fetchone()
+
+    if not row:
+        conn.close()
+        return {"ok": False, "error": "Candidate not found"}
+
+    conn.execute("""
+      INSERT OR REPLACE INTO long_term_memory
+      (id, created_at, session_id, source_app, memory_type, confidence, text)
+      VALUES (?,?,?,?,?,?,?)
+    """, (row[0], int(time.time()), row[1], row[2], row[3], row[4], row[5]))
+
+    conn.execute("UPDATE memory_candidates SET status='confirmed' WHERE id=?", (cid,))
+    conn.commit()
+    conn.close()
+    return {"ok": True}
+
+What you’ll get back in the chat response (recommended)
+
+Add this to your chat response so you can display a “Memory candidate created” badge:
+
+"memory": {
+  "candidate_created": promo.should_candidate,
+  "type": promo.memory_type,
+  "confidence": promo.confidence,
+  "reason": promo.reason
+}
+
+What I need from you (minimal)
+
+To splice perfectly, tell me one thing:
+
+What is your backend file called for the chat route: app.py or TonyOS/app.py or something else
+
+If you paste just the top of your /chat function (first 40 lines), I’ll return the exact final patched version with the correct imports and DB helper calls.

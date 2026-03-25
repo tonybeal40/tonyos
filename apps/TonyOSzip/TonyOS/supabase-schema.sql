@@ -1,0 +1,62 @@
+-- Run this in your Supabase SQL Editor
+
+create extension if not exists vector;
+
+create table if not exists conversations (
+  id uuid primary key default gen_random_uuid(),
+  user_id text not null default 'tony',
+  created_at timestamptz not null default now()
+);
+
+create table if not exists messages (
+  id uuid primary key default gen_random_uuid(),
+  conversation_id uuid not null references conversations(id) on delete cascade,
+  role text not null check (role in ('user','assistant','system')),
+  content text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_messages_convo_time
+  on messages(conversation_id, created_at);
+
+create table if not exists memories (
+  id uuid primary key default gen_random_uuid(),
+  user_id text not null,
+  memory text not null,
+  importance int not null default 3,
+  created_at timestamptz not null default now(),
+  embedding vector(1536)
+);
+
+create index if not exists idx_memories_user
+  on memories(user_id);
+
+create index if not exists idx_memories_embedding
+  on memories using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+
+create or replace function match_memories(
+  p_user_id text,
+  p_query_embedding vector(1536),
+  p_match_count int default 8
+)
+returns table (
+  id uuid,
+  memory text,
+  importance int,
+  created_at timestamptz,
+  similarity float
+)
+language sql stable
+as $$
+  select
+    m.id,
+    m.memory,
+    m.importance,
+    m.created_at,
+    1 - (m.embedding <=> p_query_embedding) as similarity
+  from memories m
+  where m.user_id = p_user_id
+    and m.embedding is not null
+  order by m.embedding <=> p_query_embedding
+  limit p_match_count;
+$$;

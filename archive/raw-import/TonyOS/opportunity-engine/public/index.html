@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TonyOS Opportunity Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🎯</span>
+      <span>TonyOS Opportunity Engine</span>
+    </div>
+    <div class="header-actions">
+      <span class="status" id="status">Ready</span>
+      <a href="/" class="back-link">← Back to TonyOS</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab active" data-tab="single">Single Scan</button>
+      <button class="tab" data-tab="batch">Batch Scan</button>
+      <button class="tab" data-tab="results">Results</button>
+      <button class="tab" data-tab="intelligence">Intelligence</button>
+    </div>
+
+    <div class="tab-content active" id="tab-single">
+      <div class="card">
+        <h2>🔍 Single Company Scanner</h2>
+        <p class="muted">Analyze a single company for compression/tablet manufacturing relevance</p>
+        
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="singleName" placeholder="e.g., Pharma Corp Inc">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Website (optional)</label>
+            <input type="text" id="singleWebsite" placeholder="e.g., pharmacorp.com">
+          </div>
+          <div class="form-group">
+            <label>Region</label>
+            <select id="singleRegion">
+              <option value="usa">USA</option>
+              <option value="canada">Canada</option>
+              <option value="puerto-rico">Puerto Rico</option>
+              <option value="mexico">Mexico</option>
+              <option value="emea">EMEA</option>
+              <option value="apac">APAC</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Company Description / Intelligence</label>
+          <textarea id="singleDescription" rows="6" placeholder="Paste company description, news, job postings, or any text for analysis..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="singleUseAI">
+            <span>Use AI-Powered Deep Scan (OpenAI)</span>
+          </label>
+        </div>
+        
+        <button class="btn btn-primary" onclick="runSingleScan()">🚀 Run Scan</button>
+      </div>
+      
+      <div class="card" id="singleResult" style="display: none;">
+        <h3>📊 Scan Results</h3>
+        <div id="singleResultContent"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-batch">
+      <div class="card">
+        <h2>📦 Batch Company Scanner</h2>
+        <p class="muted">Scan multiple companies at once using JSON input</p>
+        
+        <div class="form-group">
+          <label>Companies JSON</label>
+          <textarea id="batchInput" rows="12" placeholder='[
+  {
+    "name": "Company A",
+    "description": "Scaling tablet throughput with validation upgrades...",
+    "website": "companya.com",
+    "region": "usa"
+  },
+  {
+    "name": "Company B", 
+    "description": "Looking for new press tooling solutions...",
+    "region": "canada"
+  }
+]'></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="batchUseAI">
+            <span>Use AI-Powered Deep Scan (slower, uses OpenAI credits)</span>
+          </label>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="runBatchScan()">🚀 Run Batch Scan</button>
+          <button class="btn btn-secondary" onclick="loadSampleBatch()">📋 Load Sample</button>
+        </div>
+        
+        <div class="progress-container" id="batchProgress" style="display: none;">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <span class="progress-text" id="progressText">Processing...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-results">
+      <div class="card">
+        <h2>📈 Scan Results & Opportunities</h2>
+        <div class="stats-row" id="summaryStats">
+          <div class="stat-card">
+            <div class="stat-value" id="totalScanned">0</div>
+            <div class="stat-label">Total Scanned</div>
+          </div>
+          <div class="stat-card tier1">
+            <div class="stat-value" id="tier1Count">0</div>
+            <div class="stat-label">Tier 1 (Hot)</div>
+          </div>
+          <div class="stat-card tier2">
+            <div class="stat-value" id="tier2Count">0</div>
+            <div class="stat-label">Tier 2 (Warm)</div>
+          </div>
+          <div class="stat-card tier3">
+            <div class="stat-value" id="tier3Count">0</div>
+            <div class="stat-label">Tier 3 (Monitor)</div>
+          </div>
+        </div>
+        
+        <div class="filter-row">
+          <select id="tierFilter" onchange="filterResults()">
+            <option value="all">All Tiers</option>
+            <option value="1">Tier 1 Only</option>
+            <option value="2">Tier 2 Only</option>
+            <option value="3">Tier 3 Only</option>
+          </select>
+          <button class="btn btn-secondary" onclick="exportResults('json')">📥 Export JSON</button>
+          <button class="btn btn-secondary" onclick="exportResults('csv')">📥 Export CSV</button>
+          <button class="btn btn-danger" onclick="clearResults()">🗑️ Clear All</button>
+        </div>
+        
+        <div class="results-list" id="resultsList">
+          <div class="empty-state">No scan results yet. Run a scan to see opportunities.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-intelligence">
+      <div class="card">
+        <h2>🧠 Intelligence Database</h2>
+        
+        <div class="intel-section">
+          <h3>📊 Taxonomy Categories</h3>
+          <div class="chip-grid" id="taxonomyGrid"></div>
+        </div>
+        
+        <div class="intel-section">
+          <h3>🔑 Detection Keywords</h3>
+          <div class="chip-grid" id="keywordsGrid"></div>
+        </div>
+        
+        <div class="intel-section">
+          <h3>⚔️ Competitor Database</h3>
+          <div class="competitor-grid" id="competitorGrid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

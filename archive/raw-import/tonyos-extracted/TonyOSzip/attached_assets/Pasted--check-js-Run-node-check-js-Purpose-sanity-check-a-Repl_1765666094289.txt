@@ -1,0 +1,158 @@
+// check.js
+// Run: node check.js
+// Purpose: sanity-check a Replit web project (files + env + obvious secret leaks)
+
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = process.cwd();
+
+const mustHaveAny = [
+  ["index.html", "public/index.html", "src/index.html"],
+  ["package.json"], // optional but recommended
+];
+
+const commonFiles = [
+  "index.html",
+  "style.css",
+  "script.js",
+  "main.js",
+  "app.js",
+  "server.js",
+  "package.json",
+  ".replit",
+  "replit.nix",
+  ".env",
+];
+
+const redFlags = [
+  { label: "Supabase service_role key (DANGEROUS in frontend)", pattern: /service_role/i },
+  { label: "JWT that looks like a Supabase key", pattern: /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/ },
+  { label: "Hardcoded OpenAI key", pattern: /sk-[A-Za-z0-9]{20,}/ },
+  { label: "Hardcoded Supabase anon/service key label", pattern: /(supabaseKey|anon key|service role key)/i },
+];
+
+const supabaseUrlPattern = /https:\/\/[a-z0-9-]+\.supabase\.co/i;
+
+function exists(rel) {
+  return fs.existsSync(path.join(ROOT, rel));
+}
+
+function readFileSafe(rel) {
+  try {
+    return fs.readFileSync(path.join(ROOT, rel), "utf8");
+  } catch {
+    return "";
+  }
+}
+
+function listFilesRecursive(dir, out = []) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const e of entries) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      if (e.name === "node_modules" || e.name === ".git") continue;
+      listFilesRecursive(full, out);
+    } else {
+      out.push(full);
+    }
+  }
+  return out;
+}
+
+function rel(p) {
+  return path.relative(ROOT, p).replace(/\\/g, "/");
+}
+
+function headline(txt) {
+  console.log("\n" + txt);
+  console.log("-".repeat(txt.length));
+}
+
+function ok(msg) { console.log("✅ " + msg); }
+function warn(msg) { console.log("⚠️  " + msg); }
+function bad(msg) { console.log("❌ " + msg); }
+
+(function run() {
+  headline("Project Preflight Check");
+
+  // Show common files status
+  console.log("\nFiles found (common):");
+  for (const f of commonFiles) {
+    if (exists(f)) ok(f);
+  }
+
+  // Must-have logic
+  headline("Required file sanity");
+  for (const group of mustHaveAny) {
+    const found = group.find(exists);
+    if (found) ok(`Found: ${found}`);
+    else bad(`Missing one of: ${group.join(", ")}`);
+  }
+
+  // Determine project type hints
+  headline("Project type hints");
+  const hasPkg = exists("package.json");
+  const hasServer = exists("server.js") || exists("app.js");
+  const hasIndex = exists("index.html") || exists("public/index.html");
+  if (hasIndex && !hasPkg) ok("Looks like a static site (HTML/CSS/JS)");
+  if (hasPkg && !hasServer) ok("Looks like a Node frontend build or simple static hosting via package scripts");
+  if (hasServer) ok("Looks like a Node server app (server.js/app.js present)");
+
+  // Env checks
+  headline("Environment variable checks");
+  const envKeys = Object.keys(process.env || {});
+  if (envKeys.length === 0) warn("No environment variables detected (might be fine for pure static)");
+  const hasSupabaseUrlEnv = !!process.env.SUPABASE_URL;
+  const hasSupabaseAnonEnv = !!process.env.SUPABASE_ANON_KEY;
+
+  if (hasSupabaseUrlEnv) ok("SUPABASE_URL is set");
+  else warn("SUPABASE_URL not set (ok if hardcoded anon-only or not using Supabase)");
+
+  if (hasSupabaseAnonEnv) ok("SUPABASE_ANON_KEY is set");
+  else warn("SUPABASE_ANON_KEY not set (ok if not using Supabase)");
+
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    bad("SUPABASE_SERVICE_ROLE_KEY is set. That is fine ONLY for backend server code, never frontend");
+  } else {
+    ok("No SUPABASE_SERVICE_ROLE_KEY env var detected (good for frontend projects)");
+  }
+
+  // Scan files for leaks and obvious issues
+  headline("Scan files for dangerous patterns");
+  const allFiles = listFilesRecursive(ROOT).filter(f =>
+    /\.(html|js|ts|jsx|tsx|css|json|md|env)$/i.test(f)
+  );
+
+  let leakCount = 0;
+  let supabaseUrlFound = 0;
+
+  for (const f of allFiles) {
+    const txt = readFileSafe(rel(f));
+    if (!txt) continue;
+
+    if (supabaseUrlPattern.test(txt)) supabaseUrlFound++;
+
+    for (const rf of redFlags) {
+      if (rf.pattern.test(txt)) {
+        leakCount++;
+        warn(`${rf.label} detected in ${rel(f)}`);
+      }
+    }
+  }
+
+  if (supabaseUrlFound > 0) ok(`Supabase project URL appears in code (${supabaseUrlFound} file(s))`);
+  else warn("No Supabase project URL found in code (fine if you load it dynamically)");
+
+  if (leakCount === 0) ok("No obvious secret patterns found");
+  else warn(`Found ${leakCount} potential red flag(s). Review warnings above`);
+
+  // Final recommendation
+  headline("Next steps");
+  if (exists("index.html") && !exists("package.json")) {
+    console.log("Run as static: Replit should serve index.html automatically, or add a simple server if needed");
+  } else if (exists("package.json")) {
+    console.log("Use the Replit 'Run' button or add scripts in package.json (start/dev)");
+  }
+  console.log("\nDone\n");
+})();

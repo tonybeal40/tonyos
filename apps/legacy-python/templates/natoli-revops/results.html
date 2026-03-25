@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli RevOps | Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Observed Outcomes</h1>
+        <p class="revops-subtitle">What the system delivers</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona">Personas</a>
+      <a href="/natoli-revops/results" class="active">Results</a>
+      <a href="/natoli-revops/downloads">Downloads</a>
+      <a href="/natoli-revops/message-center">Message Center</a>
+    </nav>
+
+    <div class="card">
+      <h3>Outcomes</h3>
+      <div class="list-item">
+        <div class="list-item-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">1</div>
+        <div class="list-item-content">
+          <h4>Higher-quality executive conversations</h4>
+          <p>Speaking to the right people about the right problems</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">2</div>
+        <div class="list-item-content">
+          <h4>Faster internal routing</h4>
+          <p>Leads reach the right team without friction</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">3</div>
+        <div class="list-item-content">
+          <h4>Reduced low-fit outreach</h4>
+          <p>No more wasted effort on wrong-fit accounts</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">4</div>
+        <div class="list-item-content">
+          <h4>Clearer positioning for Natoli Engineering and Scientific</h4>
+          <p>Unified messaging across all touchpoints</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+</body>
+</html>

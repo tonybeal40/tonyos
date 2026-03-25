@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TonyOS Command Center</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">TonyOS</p>
+          <h1>TonyOS Command Center</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="refreshMetrics" class="ghost-btn">Refresh metrics</button>
+          <button id="logEvent" class="primary-btn">Log activity</button>
+        </div>
+      </header>
+
+      <section class="kpi-grid">
+        <article class="card" data-kpi="campaigns">
+          <p class="label">Active Campaigns</p>
+          <p class="value" id="kpi-campaigns">12</p>
+          <p class="trend positive">+2 vs last week</p>
+        </article>
+        <article class="card" data-kpi="leads">
+          <p class="label">Leads This Week</p>
+          <p class="value" id="kpi-leads">184</p>
+          <p class="trend positive">+18% vs prior</p>
+        </article>
+        <article class="card" data-kpi="conversion">
+          <p class="label">Conversion Rate</p>
+          <p class="value" id="kpi-conversion">6.4%</p>
+          <p class="trend neutral">steady</p>
+        </article>
+        <article class="card" data-kpi="pipeline">
+          <p class="label">Revenue Pipeline</p>
+          <p class="value" id="kpi-pipeline">$1.82M</p>
+          <p class="trend positive">Target ahead</p>
+        </article>
+      </section>
+
+      <section class="grid-two">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Activity Feed</h2>
+            <span id="activity-status" class="pill muted">Live</span>
+          </div>
+          <ul id="activity-feed" class="activity-feed"></ul>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Ops Console</h2>
+          </div>
+          <pre id="ops-console" class="console"></pre>
+        </article>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

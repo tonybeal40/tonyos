@@ -1,0 +1,37 @@
+{
+  "future_need_signals": {
+    "hiring": [
+      "formulation scientist",
+      "process development scientist",
+      "solid oral dosage",
+      "tablet compression",
+      "manufacturing scientist",
+      "scale-up engineer",
+      "ms&t",
+      "technology transfer"
+    ],
+    "infrastructure": [
+      "pilot scale facility",
+      "new manufacturing facility",
+      "solid dosage capability",
+      "tablet manufacturing",
+      "process scale-up"
+    ],
+    "language_shifts": [
+      "transitioning to manufacturing",
+      "scaling production",
+      "expanding solid dosage",
+      "bringing manufacturing in-house",
+      "commercial readiness"
+    ],
+    "exclusions": [
+      "gummy",
+      "liquid",
+      "softgel",
+      "capsule only",
+      "edible",
+      "vape",
+      "job shop"
+    ]
+  }
+}

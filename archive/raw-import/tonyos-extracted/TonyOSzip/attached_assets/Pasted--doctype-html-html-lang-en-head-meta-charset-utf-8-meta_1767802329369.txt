@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WHX Dubai 2026 Trade Show Evaluation | Natoli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg: #0a0f1a;
+  --card: #111827;
+  --card-hover: #1f2937;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #1e293b;
+  --accent: #dc2626;
+  --green: #22c55e;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+}
+.brand-text { font-weight: 700; font-size: 14px; }
+.brand-sub { font-size: 12px; color: var(--text-muted); }
+.back-btn {
+  padding: 10px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.back-btn:hover { background: var(--card-hover); }
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.hero-left h1 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.sub {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pill {
+  padding: 8px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid;
+}
+.signal.green {
+  background: rgba(34,197,94,0.15);
+  border-color: rgba(34,197,94,0.45);
+  color: #86EFAC;
+}
+.signal.yellow {
+  background: rgba(245,158,11,0.15);
+  border-color: rgba(245,158,11,0.45);
+  color: #FCD34D;
+}
+.signal.red {
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.45);
+  color: #FCA5A5;
+}
+.signal.blue {
+  background: rgba(59,130,246,0.15);
+  border-color: rgba(59,130,246,0.45);
+  color: #93C5FD;
+}
+
+.verdict-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.verdict-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.verdict-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+.verdict-note {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.section h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2 span {
+  font-size: 20px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+.stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.list {
+  list-style: none;
+}
+.list li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.list li:last-child { border-bottom: none; }
+.list-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--bg);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.list-content strong { display: block; margin-bottom: 2px; }
+.list-content span { font-size: 14px; color: var(--text-muted); }
+
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.pros h3, .cons h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pros h3 { color: var(--green); }
+.cons h3 { color: var(--red); }
+.pros ul, .cons ul {
+  list-style: none;
+}
+.pros li, .cons li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.pros li::before { content: '✓'; color: var(--green); font-weight: 700; }
+.cons li::before { content: '✗'; color: var(--red); font-weight: 700; }
+
+.recommendation {
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 20px;
+}
+.recommendation h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+.recommendation p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.footer {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .pros-cons { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div>
+        <div class="brand-text">Natoli Trade Show Intelligence</div>
+        <div class="brand-sub">RevOps Evaluation Framework</div>
+      </div>
+    </div>
+    <a href="media-scorecard.html" class="back-btn">Back to Media Scorecard</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-left">
+      <h1>WHX Dubai 2026 Trade Show Evaluation</h1>
+      <p class="sub">Evaluation of WHX Dubai 2026 (formerly Arab Health) for Natoli Engineering and Natoli Scientific.</p>
+      
+      <div class="tags">
+        <span class="pill">Healthcare Expo</span>
+        <span class="pill">Middle East</span>
+        <span class="pill">Low Buyer Density for Solid Dose</span>
+        <span class="pill">Networking Heavy</span>
+      </div>
+
+      <div class="tags" style="margin-top:14px;">
+        <span class="signal yellow">Buyer Density: Low</span>
+        <span class="signal blue">Networking Value: High</span>
+        <span class="signal red">Lead Gen ROI: Weak</span>
+        <span class="signal green">Market Intelligence: Strong</span>
+      </div>
+    </div>
+
+    <div class="verdict-card">
+      <div class="verdict-label">Overall Verdict</div>
+      <div class="verdict-value">Proceed with Caution</div>
+      <div class="verdict-note">Good for market intelligence and networking, but low expected lead volume for solid dose tablet manufacturing.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span>📊</span> Show Statistics</h2>
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-value">55,000+</div>
+        <div class="stat-label">Expected Attendees</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">2,500+</div>
+        <div class="stat-label">Exhibitors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">180+</div>
+        <div class="stat-label">Countries</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span>🎯</span> Target Audience Fit</h2>
+    <ul class="list">
+      <li>
+        <div class="list-icon">🏥</div>
+        <div class="list-content">
+          <strong>Healthcare Equipment Focus</strong>
+          <span>Primary focus on medical devices, hospital equipment, and healthcare IT. Limited pharmaceutical manufacturing presence.</span>
+        </div>
+      </li>
+      <li>
+        <div class="list-icon">💊</div>
+        <div class="list-content">
+          <strong>Pharma Representation</strong>
+          <span>Some pharma companies attend for packaging and distribution, but few decision-makers for tablet tooling and formulation.</span>
+        </div>
+      </li>
+      <li>
+        <div class="list-icon">🌍</div>
+        <div class="list-content">
+          <strong>Regional Reach</strong>
+          <span>Strong presence from GCC, MENA, South Asia, and Africa. Good for expanding regional relationships.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2><span>⚖️</span> Pros vs Cons</h2>
+    <div class="pros-cons">
+      <div class="pros">
+        <h3><span>✓</span> Reasons to Attend</h3>
+        <ul>
+          <li>Strong regional networking opportunity</li>
+          <li>Build brand awareness in Middle East</li>
+          <li>Gather market intelligence on regional trends</li>
+          <li>Connect with distributors and partners</li>
+          <li>Visibility in emerging markets</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h3><span>✗</span> Concerns</h3>
+        <ul>
+          <li>Low density of tablet manufacturing buyers</li>
+          <li>Healthcare equipment dominates show floor</li>
+          <li>High travel and booth costs</li>
+          <li>ROI on lead generation likely low</li>
+          <li>Better pharma-specific shows exist</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span>🏭</span> Division Routing</h2>
+    <div class="grid-2">
+      <div class="stat-card" style="text-align:left;padding:20px;">
+        <strong style="color:var(--blue);font-size:14px;">Natoli Scientific</strong>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Limited opportunity. Few R&D or formulation contacts expected. May find some contract research organizations.</p>
+      </div>
+      <div class="stat-card" style="text-align:left;padding:20px;">
+        <strong style="color:var(--green);font-size:14px;">Natoli Engineering</strong>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Better fit for tooling discussions. Manufacturing contacts more likely, especially from regional pharma producers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span>💰</span> Expected Investment</h2>
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-value">$15-25K</div>
+        <div class="stat-label">Booth Cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$8-12K</div>
+        <div class="stat-label">Travel & Lodging (2 people)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$25-40K</div>
+        <div class="stat-label">Total Investment</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="recommendation">
+    <h3>Recommendation</h3>
+    <p>Consider attending as a <strong>scout mission</strong> rather than a full booth investment. Send 1-2 people to walk the floor, gather intelligence, and assess buyer density firsthand. If the market shows promise, plan a booth presence for the following year. For direct lead generation, prioritize pharma-specific trade shows like CPHI or Interphex where buyer density for solid dose manufacturing is significantly higher.</p>
+  </div>
+
+  <footer class="footer">
+    Natoli Trade Show Intelligence &bull; Generated <span id="date"></span> &bull; Internal Use Only
+  </footer>
+</div>
+
+<script>
+  document.getElementById('date').textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+</script>
+</body>
+</html>

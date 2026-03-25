@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli Persona OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 60px;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 12px;
+      left: 16px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      font-size: 12px;
+      text-decoration: none;
+      z-index: 100;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+    }
+    .back-link:hover {
+      background: #111827;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 800px;
+      line-height: 1.5;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0 18px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .meta-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      background: rgba(9,12,24,0.9);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-pill span {
+      color: var(--text-soft);
+      font-weight: 500;
+      margin-left: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .os-note {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-soft);
+      max-width: 820px;
+    }
+
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--bg-card-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .persona-label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .persona-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .persona-tag {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      background: var(--pill-bg);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .job-line {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .job-line strong {
+      color: var(--text-main);
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    ul {
+      list-style: disc;
+      margin-left: 18px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    ul li {
+      margin-bottom: 4px;
+    }
+
+    .angle-box {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.95);
+      border: 1px dashed var(--accent-soft);
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+    .angle-box strong {
+      color: var(--accent-strong);
+    }
+
+    .ataglance {
+      margin-top: 28px;
+    }
+
+    .ataglance-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .ataglance-sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+      max-width: 760px;
+    }
+
+    .ataglance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+
+    .ataglance-card {
+      background: radial-gradient(circle at top left, #1b2335 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--bg-card-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 16px 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .ataglance-heading {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ataglance-row {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .ataglance-row strong {
+      color: var(--text-main);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 24px 10px 40px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      .back-link {
+        position: static;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← Back to main dashboard</a>
+
+  <div class="shell">
+    <h1>Natoli Persona OS</h1>
+    <p class="subtitle">
+      Tier 1 buyers mapped in one place so every email, LinkedIn touch and campaign lines up with
+      the people who actually control tablet tooling, compaction data and scale-up success.
+    </p>
+
+    <div class="meta-row">
+      <div class="meta-pill">Persona 1 <span>Director of Engineering</span></div>
+      <div class="meta-pill">Persona 2 <span>Director of R&amp;D / Formulation</span></div>
+      <div class="meta-pill">Persona 3 <span>Process / Compaction Engineer</span></div>
+    </div>
+
+    <p class="os-note">
+      HQ role: Tony routes each persona to the right mix of Natoli Engineering and Natoli Scientific
+      so messaging, offers and follow-ups match what they actually worry about day to day.
+    </p>
+
+    <!-- PERSONA GRID -->
+    <section class="persona-grid">
+      <!-- Persona 1 -->
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <div class="persona-label">Persona 1</div>
+            <div class="persona-name">Director of Engineering (Solid Dose)</div>
+          </div>
+          <div class="persona-tag">Reliability &amp; Uptime</div>
+        </div>
+
+        <p class="job-line">
+          <strong>Job to be done:</strong> Guarantee predictable tablet production with maximum uptime and tool life.
+        </p>
+
+        <div class="section-label">Top pains</div>
+        <ul>
+          <li>Unplanned downtime from tool or press issues.</li>
+          <li>Inconsistent tablet quality causing batch losses and rework.</li>
+          <li>Vendors who can’t explain root causes or give clear fixes.</li>
+        </ul>
+
+        <div class="section-label">What they want</div>
+        <ul>
+          <li>Reliable presses and tooling that “just run.”</li>
+          <li>Root-cause clarity when something goes wrong.</li>
+          <li>Confidence that future batches will behave the same.</li>
+        </ul>
+
+        <div class="section-label">Natoli Engineering fit</div>
+        <ul>
+          <li>Tooling design and press troubleshooting.</li>
+          <li>Programs to extend tool life and reduce downtime.</li>
+        </ul>
+
+        <div class="section-label">Natoli Scientific fit</div>
+        <ul>
+          <li>Compaction data and design analysis (USP &lt;1062&gt;).</li>
+          <li>CT-scan and data to support engineering decisions.</li>
+        </ul>
+
+        <div class="angle-box">
+          <strong>Messaging angle:</strong> Use “More uptime, fewer surprises, clear root-cause.”
+        </div>
+      </article>
+
+      <!-- Persona 2 -->
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <div class="persona-label">Persona 2</div>
+            <div class="persona-name">Director of R&amp;D / Formulation</div>
+          </div>
+          <div class="persona-tag">Data &amp; Scale-Up</div>
+        </div>
+
+        <p class="job-line">
+          <strong>Job to be done:</strong> Turn lab formulations into robust commercial products without nasty surprises.
+        </p>
+
+        <div class="section-label">Top pains</div>
+        <ul>
+          <li>Scale-up failures that delay launches.</li>
+          <li>Poor or incomplete compaction data.</li>
+          <li>Powder behavior changing between R&amp;D, pilot and production.</li>
+        </ul>
+
+        <div class="section-label">What they want</div>
+        <ul>
+          <li>Clean, interpretable compaction profiles.</li>
+          <li>Predictable scale-up with fewer iterations.</li>
+          <li>Data that supports regulatory confidence.</li>
+        </ul>
+
+        <div class="section-label">Natoli Engineering fit</div>
+        <ul>
+          <li>Analytical compaction studies and predictive models.</li>
+        </ul>
+
+        <div class="section-label">Natoli Scientific fit</div>
+        <ul>
+          <li>CT-scan work to understand internal tablet structure.</li>
+        </ul>
+
+        <div class="angle-box">
+          <strong>Messaging angle:</strong> Use “Data-backed scale-up from formulation bench to commercial line.”
+        </div>
+      </article>
+
+      <!-- Persona 3 -->
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <div class="persona-label">Persona 3</div>
+            <div class="persona-name">Process / Compaction Engineer</div>
+          </div>
+          <div class="persona-tag">Speed &amp; Diagnostics</div>
+        </div>
+
+        <p class="job-line">
+          <strong>Job to be done:</strong> Fix compaction problems fast and keep them from coming back.
+        </p>
+
+        <div class="section-label">Top pains</div>
+        <ul>
+          <li>Repeated defects (capping, lamination, hardness issues).</li>
+          <li>No clear root cause between tooling, powder and press.</li>
+          <li>Pressure from leadership to “just fix it” under time pressure.</li>
+        </ul>
+
+        <div class="section-label">What they want</div>
+        <ul>
+          <li>Fast, practical troubleshooting support.</li>
+          <li>Data and visuals that explain what’s happening.</li>
+          <li>Adjustments they can run on the next lot.</li>
+        </ul>
+
+        <div class="section-label">Natoli Engineering fit</div>
+        <ul>
+          <li>Press setup and parameter guidance.</li>
+          <li>Tooling inspection and upgrade paths.</li>
+        </ul>
+
+        <div class="section-label">Natoli Scientific fit</div>
+        <ul>
+          <li>Compaction curves and failure analysis.</li>
+          <li>CT-scan insight into defect mechanisms.</li>
+        </ul>
+
+        <div class="angle-box">
+          <strong>Messaging angle:</strong> Use “Quick clarity on why tablets are failing and what to change next.”
+        </div>
+      </article>
+    </section>
+
+    <!-- AT A GLANCE -->
+    <section class="ataglance">
+      <div class="ataglance-title">At-a-glance map</div>
+      <p class="ataglance-sub">
+        Use this as your routing key when you build lists, write emails or plan campaigns. Every contact should land in one of these buckets.
+      </p>
+
+      <div class="ataglance-grid">
+        <div class="ataglance-card">
+          <div class="ataglance-heading">Director of Engineering</div>
+          <div class="ataglance-row"><strong>Theme:</strong> Reliability &amp; uptime</div>
+          <div class="ataglance-row">
+            <strong>Division:</strong> Natoli Engineering first, Natoli Scientific for data support.
+          </div>
+        </div>
+
+        <div class="ataglance-card">
+          <div class="ataglance-heading">Director of R&amp;D / Formulation</div>
+          <div class="ataglance-row"><strong>Theme:</strong> Data &amp; scale-up</div>
+          <div class="ataglance-row">
+            <strong>Division:</strong> Natoli Scientific primary, Natoli Engineering for production fit.
+          </div>
+        </div>
+
+        <div class="ataglance-card">
+          <div class="ataglance-heading">Process / Compaction Engineer</div>
+          <div class="ataglance-row"><strong>Theme:</strong> Speed &amp; diagnostics</div>
+          <div class="ataglance-row">
+            <strong>Division:</strong> Joint: Natoli Engineering + Natoli Scientific for troubleshooting.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

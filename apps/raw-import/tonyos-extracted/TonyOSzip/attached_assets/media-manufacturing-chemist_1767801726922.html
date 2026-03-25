@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manufacturing Chemist Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #facc15;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>Manufacturing Chemist Media Evaluation</h1>
+        <p>
+          Evaluation of Manufacturing Chemist as part of the Natoli media mix. This page explains where the title fits,
+          what the 12 month package actually buys, and how it should be positioned in budget discussions for Natoli Engineering
+          and Natoli Scientific.
+        </p>
+        <div class="chip-row">
+          <div class="chip">PROCESS CHEMISTRY</div>
+          <div class="chip">EUROPE</div>
+          <div class="chip">TIER 2 VISIBILITY</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">C</div>
+        <div class="grade-caption">
+          Strong scientific and process brand.<br />
+          Moderate overlap with true tablet compaction buyers.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.manufacturingchemist.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Manufacturing Chemist
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary</h2>
+    <p class="section-intro">
+      Manufacturing Chemist is a respected European title focused on process chemistry and pharmaceutical manufacturing.
+      The 12 month content marketing solution offers strong visibility and well packaged hospitality, but only a slice of that
+      audience sits inside Natoli's highest value tablet tooling and compaction roles. The channel is useful as a selective
+      awareness and relationship asset rather than a core commercial engine.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for planning</h3>
+      <p>
+        Treat Manufacturing Chemist as a Tier 2 visibility and influence channel that supports Natoli Scientific and select
+        Natoli Engineering plays. It should not compete with APR or Tablets and Capsules for hard commercial budget.
+      </p>
+      <ul>
+        <li>Website claims content visibility to more than 400,000 annual visitors.</li>
+        <li>Unlimited content publication for white papers, press releases, technical articles and video assets.</li>
+        <li>Directory listing plus structured content program to keep Natoli present across the year.</li>
+        <li>Optional 100 lead guaranteed campaign and a high touch 21 Club private banquet for senior guests.</li>
+      </ul>
+      <p class="pill-tagline">
+        Total proposed package value is roughly 33,463 for directory, lead program and banquet combined. For Natoli this
+        has to be justified on strategic influence and relationships, not direct SQL math.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Natoli Scientific stories around CT imaging, analytical compaction and process understanding.</li>
+          <li>Thought leadership on process improvement where tablet compression is one part of a broader workflow.</li>
+          <li>High level brand presence in European pharma and chemical manufacturing circles.</li>
+          <li>Private banquet activity with a short, curated invite list to key accounts and targets.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>Primary tool for tablet press or tooling lead generation.</li>
+          <li>Core SQL or quote pipeline goals for Natoli Engineering.</li>
+          <li>Campaigns that need heavy concentration of press operators, maintenance or reliability engineers.</li>
+          <li>Any program where ROI is measured strictly on cost per qualified compaction buyer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis</h2>
+    <p class="section-intro">
+      The title reaches a mix of R and D, process, production and management roles. When mapped into Natoli's tier model,
+      it has clear value, but the buyer signal is weaker than true solid dose specialist titles.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 buyers:</strong> process development, manufacturing engineering and technical leaders who own
+          equipment strategy or influence tablet compression decisions. Present, but not concentrated.
+        </li>
+        <li>
+          <strong>Tier 2 adjacent roles:</strong> quality, regulatory, plant and operations contacts who touch projects
+          but do not own tooling or press spend.
+        </li>
+        <li>
+          <strong>Tier 3 broader audience:</strong> large base across chemicals and manufacturing where tablet tooling
+          is not a primary responsibility.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: good place to be seen as a serious technical player, but not designed as a tight buyer list for
+        Natoli's core compaction customers.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The offer looks attractive on paper. The question for Natoli is not the headline numbers, but how many true
+      compaction buyers sit behind them.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Directory listing and content marketing solution priced around 4,760 for the year.</li>
+        <li>Lead generation package offers 100 guaranteed leads at about 7,328.</li>
+        <li>21 Club private banquet is a premium hospitality play at around 21,375.</li>
+        <li>Total program value of roughly 33,463 once all three are combined.</li>
+      </ul>
+      <p class="pill-tagline">
+        When filtered for real tooling and press decision makers, the effective cost per buyer rises quickly. The spend
+        is best justified if the banquet and content are tied to specific named key accounts.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      Manufacturing Chemist carries strong process and chemistry coverage. Solid dose shows up, but it is part of a wider
+      manufacturing and technology story.
+    </p>
+
+    <div class="card">
+      <h3>Typical themes</h3>
+      <ul>
+        <li>Process chemistry, formulation and plant technology features.</li>
+        <li>Regulatory and quality pieces that frame manufacturing risk.</li>
+        <li>Broader chemical and life science topics where compression is one step in a larger chain.</li>
+      </ul>
+      <p class="pill-tagline">
+        Result: excellent for credibility and scientific presence. It needs careful topic choice to link clearly back to
+        tablet tooling, press performance and compaction scale up.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades use the same scale as the full Natoli Media Scorecard. Letters reflect both the workbook numbers and the
+      qualitative analysis above.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>C+</span></div>
+        <div class="bubble">Buyer density<span>C</span></div>
+        <div class="bubble">Scientific credibility<span>B</span></div>
+        <div class="bubble">Engineering relevance<span>C+</span></div>
+        <div class="bubble">Natoli fit<span>C</span></div>
+        <div class="bubble">ROI probability<span>Moderate to low</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: valuable scientific and relationship presence with limited direct commercial force unless tied
+        to very specific accounts and assets.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 2 visibility and influence channel.</li>
+        <li><strong>Role:</strong> support Natoli Scientific and selective Natoli Engineering efforts.</li>
+        <li><strong>Sales posture:</strong> do not forecast SQL or quotes from this title without very tight targeting.</li>
+        <li>
+          <strong>Budget posture:</strong> keep spend controlled. Main commercial budget should live with APR, Tablets and
+          Capsules and other Tier 1 buyer dense titles.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        If used, treat the banquet and lead program as strategic account tools, not general marketing spend.
+      </p>
+    </div>
+
+    <!-- 8. OS section -->
+    <h2 class="section-title">8. How to reuse this framework</h2>
+    <p class="section-intro">
+      This evaluation format is the same one used for APR, Tablets and Capsules, Contract Pharma and other placements.
+      Only the grades, numbers and narrative change.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> checks whether the title reaches real tablet and compaction decision makers.</li>
+        <li><strong>Buyer density</strong> captures how much of the list is Tier 1 ICP rather than background noise.</li>
+        <li><strong>Scientific credibility</strong> reflects authority for Natoli Scientific stories.</li>
+        <li><strong>Engineering relevance</strong> looks at depth around tooling, presses and reliability.</li>
+        <li><strong>Natoli fit</strong> combines views from Natoli Engineering and Natoli Scientific.</li>
+        <li><strong>ROI probability</strong> shows how likely it is that spend will produce real commercial outcomes.</li>
+      </ul>
+      <p class="pill-tagline">
+        Rule of thumb: commercial budget stays with Tier 1 buyer dense titles. Tier 2 and Tier 3 channels are tools for
+        awareness, influence and key account strategy.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2025 and 2026 planning. Summary based on the Manufacturing Chemist
+      worksheet and Natoli ICP tier model.
+    </p>
+  </div>
+</body>
+</html>

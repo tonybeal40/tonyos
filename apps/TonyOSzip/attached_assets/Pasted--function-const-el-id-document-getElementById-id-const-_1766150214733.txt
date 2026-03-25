@@ -1,0 +1,191 @@
+(function () {
+  const el = (id) => document.getElementById(id);
+
+  const firstName = el("firstName");
+  const lastName = el("lastName");
+  const title = el("title");
+  const company = el("company");
+  const persona = el("persona");
+
+  const subjectOut = el("subjectOut");
+  const messageOut = el("messageOut");
+
+  const btnConnection = el("btnConnection");
+  const btnEmail = el("btnEmail");
+  const btnInmail = el("btnInmail");
+  const btnCopy = el("btnCopy");
+  const btnCopySubject = el("btnCopySubject");
+  const btnClear = el("btnClear");
+
+  function fullName() {
+    const f = (firstName.value || "").trim();
+    const l = (lastName.value || "").trim();
+    if (!f && !l) return "[Name]";
+    return [f, l].filter(Boolean).join(" ");
+  }
+
+  function safeLine(value, fallback) {
+    const v = (value || "").trim();
+    return v ? v : fallback;
+  }
+
+  function buildConnection() {
+    const name = fullName();
+
+    subjectOut.value = "";
+    messageOut.value =
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters where I help teams connect with our experts on tooling and process optimization.
+
+Would be glad to connect.`;
+  }
+
+  function buildEmail() {
+    const name = fullName();
+    const p = persona.value;
+
+    // Keep subject neutral, informational, non selling
+    const companyName = safeLine(company.value, "your team");
+    const role = safeLine(title.value, "your role");
+
+    const subjectMap = {
+      rd: `Intro and resource for compaction and scale up`,
+      eng: `Intro and resource for tooling and press reliability`,
+      msat: `Intro and resource for process stability and scale up`
+    };
+
+    subjectOut.value = subjectMap[p] || "Intro and resource";
+
+    const templates = {
+      rd:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters where I help teams connect with our experts on compaction and scale up topics.
+
+When questions arise around compaction behavior, formulation response, or how development data translates toward production, I help route teams to the appropriate Natoli scientific and engineering specialists.
+
+If that becomes useful at any point, I am happy to make the right introductions.
+
+Best regards,
+Tony`,
+      eng:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters and act as a resource connecting teams to experts supporting press reliability and tooling performance.
+
+When issues come up related to tooling life, press behavior, or variability impacting throughput, I help route those discussions to the right Natoli engineering specialists.
+
+If consistency or uptime becomes a focus, I am glad to help facilitate those connections.
+
+Best regards,
+Tony`,
+      msat:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters and support engineering and MS and T groups responsible for maintaining stable compaction processes.
+
+When questions arise around tablet defects, process drift, or compaction behavior under production conditions, I help connect teams with the appropriate Natoli experts.
+
+If process stability or scale up support becomes relevant, I am happy to help make introductions.
+
+Best regards,
+Tony`
+    };
+
+    // Optional: add a single neutral personalization line without sounding salesy
+    // Only if they entered Title or Company
+    const hasAnyContext = (title.value || "").trim() || (company.value || "").trim();
+    if (!hasAnyContext) {
+      messageOut.value = templates[p] || templates.eng;
+      return;
+    }
+
+    const contextLine =
+      `I noticed your role as ${role} at ${companyName}.`;
+
+    const base = templates[p] || templates.eng;
+    const parts = base.split("\n\n");
+    // Insert personalization after greeting block (after first blank line)
+    // parts[0] is "Hi Name," so place line right after that
+    messageOut.value =
+`Hi ${name},
+
+I noticed your role as ${role} at ${companyName}.
+
+${parts.slice(1).join("\n\n")}`;
+  }
+
+  function buildInmail() {
+    const name = fullName();
+    const p = persona.value;
+
+    subjectOut.value = "";
+
+    const inmailMap = {
+      rd:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters where I help teams connect with our experts on compaction and scale up topics.
+
+If you ever want an introduction to the right Natoli scientific or engineering specialist for a compaction question, I can help route that.
+
+Best regards,
+Tony`,
+      eng:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters and act as a resource connecting teams to experts supporting press reliability and tooling performance.
+
+If you ever want the right introduction around tooling life, press behavior, or reliability topics, I can help route that.
+
+Best regards,
+Tony`,
+      msat:
+`Hi ${name},
+
+I am with Natoli Engineering at our headquarters and support engineering and MS and T groups responsible for maintaining stable compaction processes.
+
+If process stability or scale up support becomes relevant, I can help connect you with the appropriate Natoli experts.
+
+Best regards,
+Tony`
+    };
+
+    messageOut.value = inmailMap[p] || inmailMap.eng;
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      // Fallback for older browsers
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+    }
+  }
+
+  btnConnection?.addEventListener("click", buildConnection);
+  btnEmail?.addEventListener("click", buildEmail);
+  btnInmail?.addEventListener("click", buildInmail);
+
+  btnCopy?.addEventListener("click", () => copyText(messageOut.value || ""));
+  btnCopySubject?.addEventListener("click", () => copyText(subjectOut.value || ""));
+
+  btnClear?.addEventListener("click", () => {
+    firstName.value = "";
+    lastName.value = "";
+    title.value = "";
+    company.value = "";
+    persona.value = "rd";
+    subjectOut.value = "";
+    messageOut.value = "";
+  });
+
+  // Default view
+  buildConnection();
+})();

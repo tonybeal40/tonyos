@@ -1,0 +1,27 @@
+[
+  {
+    "name": "TrueDose Pharma",
+    "industry": "Generic Pharmaceutical Manufacturing",
+    "description": "Internal drug product manufacturing focused on solid oral dosage tablets, formulation development, granulation, tablet compression, tooling optimization, USP dissolution testing, and pilot scale-up"
+  },
+  {
+    "name": "GummyWorld",
+    "industry": "Nutraceutical Manufacturing",
+    "description": "Direct to consumer gummy vitamins and liquid supplements"
+  },
+  {
+    "name": "MetalPress Inc",
+    "industry": "Powder Metallurgy",
+    "description": "Pressed metal components for automotive structural applications"
+  },
+  {
+    "name": "Pfizer Inc.",
+    "industry": "Pharmaceutical",
+    "description": "Global pharmaceutical company with tablet manufacturing, formulation development, granulation, compression, tooling, USP dissolution, friability testing, and scale-up operations"
+  },
+  {
+    "name": "BWXT Technologies",
+    "industry": "Nuclear Fuel",
+    "description": "TRISO fuel pellet pressing for nuclear reactors with powder compaction and formulation"
+  }
+]

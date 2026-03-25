@@ -1,0 +1,2791 @@
+[
+  {
+    "name": "Merck",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 5,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Merck & Co.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 5,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "MERCK KG AUF AKTEIN & CO.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 5,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Merck Animal Health",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 5,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "AbbVie",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "AbbVie Inc.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Allergan Aesthetics, an AbbVie Company",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "ALTUS FORMULATION INC.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "FUSION FORMULATIONS",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "INNOVATIVE FORMULATIONS",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "SUPREME FORMULATIONS LLC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Everest Formulations",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "KNOLL LLC/ABBVIE",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Pharma Formulations Labs",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Reliance Formulation Pvt Ltd",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Rx Remedies, Inc.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "SRS Formulations Pvt.Ltd.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "GARDEN REMEDIES",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "ORGANIC REMEDIES INC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Ventyx Biosciences (San Diego, US)",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Xencor (San Diego, CA)",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "SUPREME FORMULATIONS, LLC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "vraformulations.con",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "NUTRAMAX LABORATORIES",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "USPHARMA LTD",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "NOVUSPHARM",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "PharmaExcipients.com",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "IDH LABORATORES, LLC.",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "NUTRALAB CANADA LTD.",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "NUTRAVAIL TECHNOLIGIES",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "RIVER WELLNESS HOLDINGS LLC",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "SAWGRASS NUTRA LABS",
+    "industry": "Nutraceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Per Os Bio",
+    "industry": "Confectionery",
+    "satisfied_truths": [
+      "uses_powder_compaction",
+      "produces_pressed_solid",
+      "tooling_impacts_outcome",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Carpenter Additive",
+    "industry": "3D Printing Feedstock",
+    "satisfied_truths": [
+      "uses_powder_compaction",
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_scientific"
+    ],
+    "truth_score": 4,
+    "rank_tier": "Tier 3 – Monitor"
+  },
+  {
+    "name": "Eli Lilly and Company",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Bristol-Myers Squibb",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "formulation_impacts_compaction",
+      "process_is_press_based"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "scale_up_matters",
+      "manufacturing_or_rnd_internal",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Manufacturing or process R&D does not appear to be handled internally.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering",
+      "natoli_scientific"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Pfizer CentreOne",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Pfizer",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Pfizer Inc.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "takeda.co.id",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Catalent",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "LONZA, INC.",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Lonza",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Teva Pharmaceutical",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "BOEHRINGER INGELHEIM VETMEDICA, INC.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Cipla USA",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Sandoz (Novartis)",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Mylan (Viatris)",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "PATHEON INC. C/O THERMO FISHER SCIENTIFIC",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Catalent Pharma Solutions",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "SOCIETAL",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "TEVA TAKEDA PHARMA LTD.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Hikma Pharmaceuticals",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "TEVA CZECH INDUSTRIES S.R.O.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "FAMAR ANONYMOUS INDUSTRIAL CO. OF PHARMACEUTICALS AND COSMETICS",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Viatris Inc.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "MYLAN PHARMACEUTICALS",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "HIKMA PHARMACEUTICALS LTD.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Sun Pharmaceutical",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "sanofi-aventis.com",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Lupin Pharmaceuticals",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "TEVA LLC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Alcami Corporation",
+    "industry": "CDMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Almac Group",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Thermo Fisher Scientific (Patheon)",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Bayer",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Cambrex",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "TEVA KUTNO",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Teva México",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Corden Pharma - A Full-Service CDMO",
+    "industry": "CDMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Johnson & Johnson (Janssen)",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Johnson & Johnson",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "SUN PHARMA",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Dr. Reddy's Laboratories",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "TEVA HUNGARY ZRT.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "DR. REDDY'S LABORATORIES LTD.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Recipharm",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "recipharm.es",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Mylan/DPT",
+    "industry": "Generic Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Recipharm Inc.",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "AUSTRALIAN PHARMACEUTICAL MANUFACTURING",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "DECHRA PHARMACEUTICALS MANUFACTURING",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "EL-KENDI PHARMACEUTICAL MANUFACTURING CO.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "LONZA BEND INC.",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Gilead Sciences",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Siegfried USA LLC",
+    "industry": "CDMO/CMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Piramal Pharma Solutions",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "CIMA LABS C/O TEVA PHARM.  USA",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Corteva",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Fosun Pharma USA Inc.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Tevapharm India Pvt. Ltd.",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Quotient Sciences (CDMO)",
+    "industry": "CDMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "SANOFI PASTEUR",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Seda Pharmaceutical Development  & Clinical Manufacturing Services",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "PATHEON DEVELOPMENT SERVICES, INC",
+    "industry": "CDMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "takeda.ie",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "Corden Pharma",
+    "industry": "CDMO",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "routing_review_required"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "ALSA MANUFACTURING LLC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "biogenidec.com",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  },
+  {
+    "name": "CAPZERPHARMA MANUFACTURING LLC",
+    "industry": "Pharmaceutical",
+    "satisfied_truths": [
+      "produces_pressed_solid",
+      "process_is_press_based",
+      "manufacturing_or_rnd_internal"
+    ],
+    "failed_truths": [
+      "uses_powder_compaction",
+      "tooling_impacts_outcome",
+      "formulation_impacts_compaction",
+      "scale_up_matters",
+      "performance_specs_exist"
+    ],
+    "rejection_reasons": [
+      "Company does not appear to perform powder compaction using a tablet press or equivalent equipment.",
+      "Tooling performance does not appear to materially affect product quality or yield.",
+      "Formulation variables do not appear to influence compaction behavior.",
+      "Scale-up considerations are not evident in compaction or tooling processes.",
+      "Performance or regulatory specifications do not appear to drive process decisions."
+    ],
+    "routing": [
+      "natoli_engineering"
+    ],
+    "truth_score": 3,
+    "rank_tier": "Tier 4 – Not a Fit"
+  }
+]

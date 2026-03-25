@@ -1,0 +1,60 @@
+async function postJSON(url, body){
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await resp.json().catch(()=> ({}));
+  if(!resp.ok) throw new Error(data.error || "Request failed");
+  return data;
+}
+
+function val(id){ return document.getElementById(id)?.value?.trim() || ""; }
+function setVal(id, v){ const el = document.getElementById(id); if(el) el.value = v || ""; }
+
+function wire(){
+  view.querySelectorAll("[data-action]").forEach(btn => {
+    btn.onclick = async () => {
+      const action = btn.dataset.action;
+      const status = document.getElementById("crmStatus");
+
+      try{
+        if(action === "enrich"){
+          status.textContent = "Pulling data...";
+          const website = val("website");
+          const data = await postJSON("/api/enrich", { url: website });
+
+          if(!val("company")) setVal("company", data.name);
+          if(!val("phone")) setVal("phone", data.phone);
+          if(!val("address")) setVal("address", data.address);
+
+          status.textContent = `Done. Source: ${data.source}\nMissing fields are normal. Fill what is blank.`;
+        }
+
+        if(action === "saveLead"){
+          status.textContent = "Saving...";
+          const payload = {
+            website: val("website"),
+            company: val("company"),
+            phone: val("phone"),
+            address: val("address"),
+            firstName: val("firstName"),
+            lastName: val("lastName"),
+            title: val("title"),
+            email: val("email"),
+            industry: val("industry"),
+            notes: val("notes")
+          };
+
+          // Put your Apps Script Web App URL here
+          const GOOGLE_SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+          await postJSON(GOOGLE_SCRIPT_URL, payload);
+
+          status.textContent = "Saved to Google Sheet";
+        }
+      } catch(e){
+        status.textContent = "Error: " + e.message;
+      }
+    };
+  });
+}

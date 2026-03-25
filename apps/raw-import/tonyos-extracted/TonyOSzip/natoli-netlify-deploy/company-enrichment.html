@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Profile Enrichment | Natoli RevOps</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e5e5e5;
+      --text-muted: #9ca3af;
+      --accent-green: #22c55e;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f97316;
+      --accent-purple: #a855f7;
+      --border-color: #2a2a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .header p { color: var(--text-muted); }
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 15px;
+    }
+    .section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .section h3 { margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      min-height: 150px;
+      resize: vertical;
+      font-family: monospace;
+    }
+    .form-group textarea:focus { outline: none; border-color: #10b981; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-green { background: #10b981; color: white; }
+    .btn-cyan { background: var(--accent-cyan); color: white; }
+    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .info-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .info-box h4 { color: #10b981; margin-bottom: 10px; }
+    .info-box p, .info-box li { font-size: 0.85rem; color: var(--text-muted); }
+    .info-box ul { margin-left: 20px; margin-top: 8px; }
+    .info-box li { margin-bottom: 5px; }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #10b981;
+    }
+    .loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-color);
+      border-top-color: #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      background: var(--bg-secondary);
+      color: var(--accent-cyan);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .confidence-high { color: #22c55e; }
+    .confidence-medium { color: #f59e0b; }
+    .confidence-low { color: #ef4444; }
+    .table-wrapper {
+      max-height: 500px;
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      background: var(--bg-secondary);
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .stat-value { font-size: 1.5rem; font-weight: 600; color: #10b981; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    .back-link:hover { color: #10b981; }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #10b981;
+      transition: width 0.3s;
+    }
+    .link { color: var(--accent-cyan); text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/natoli-revops/downloads" class="back-link">← Back to Downloads</a>
+
+    <div class="header">
+      <h1>🔧 Company Profile Enrichment</h1>
+      <p>AI-Powered Company Data Enhancement Using OpenAI</p>
+      <div class="badge">OpenAI GPT-4o-mini • Batch Processing</div>
+    </div>
+
+    <div class="section">
+      <div class="info-box">
+        <h4>How It Works</h4>
+        <p>Paste a list of company names (one per line). OpenAI will enrich each with:</p>
+        <ul>
+          <li>Website URL (best guess based on company name)</li>
+          <li>City & State location</li>
+          <li>Industry classification</li>
+          <li>Natoli Fit (Engineering / Scientific / Both / No Fit)</li>
+          <li>Confidence score (High / Medium / Low)</li>
+        </ul>
+        <p style="margin-top: 10px; color: #f59e0b;">Note: This uses AI knowledge, not live web scraping. Verify critical data before outreach.</p>
+      </div>
+    </div>
+
+    <div class="section" id="inputSection">
+      <h3>📋 Enter Company Names</h3>
+      <div class="form-group">
+        <label>Company Names (one per line)</label>
+        <textarea id="companyList" placeholder="Catalent Pharma Solutions
+Patheon
+Lonza
+Capsugel
+Thermo Fisher Scientific"></textarea>
+      </div>
+      <div class="controls">
+        <button class="btn btn-green" onclick="enrichCompanies()" id="enrichBtn">
+          🚀 Enrich Companies
+        </button>
+        <button class="btn btn-secondary" onclick="loadSample()">
+          Load Sample (5 Companies)
+        </button>
+        <button class="btn btn-secondary" onclick="clearInput()">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div id="loadingSection" class="section" style="display: none;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div id="loadingText">Enriching companies...</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div id="progressText" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">0 / 0</div>
+      </div>
+    </div>
+
+    <div id="resultSection" class="section" style="display: none;">
+      <h3>📊 Enriched Profiles</h3>
+      
+      <div class="stats" id="statsSection"></div>
+      
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Website</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Industry</th>
+              <th>Natoli Fit</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="resultTable"></tbody>
+        </table>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-cyan" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="btn btn-secondary" onclick="copyTable()">📋 Copy to Clipboard</button>
+        <button class="btn btn-green" onclick="showInput()">+ Enrich More</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let enrichedData = [];
+
+    function loadSample() {
+      document.getElementById('companyList').value = `Catalent Pharma Solutions
+Patheon (Thermo Fisher)
+Lonza Group
+Capsugel (Lonza)
+Emergent BioSolutions`;
+    }
+
+    function clearInput() {
+      document.getElementById('companyList').value = '';
+    }
+
+    function showInput() {
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('resultSection').style.display = 'none';
+    }
+
+    async function enrichCompanies() {
+      const text = document.getElementById('companyList').value.trim();
+      if (!text) {
+        showToast('Please enter company names', true);
+        return;
+      }
+
+      const companies = text.split('\n').map(c => c.trim()).filter(c => c.length > 0);
+      if (companies.length === 0) {
+        showToast('No valid company names found', true);
+        return;
+      }
+
+      if (companies.length > 50) {
+        showToast('Max 50 companies at a time', true);
+        return;
+      }
+
+      document.getElementById('inputSection').style.display = 'none';
+      document.getElementById('loadingSection').style.display = 'block';
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('enrichBtn').disabled = true;
+
+      enrichedData = [];
+      const batchSize = 5;
+      const batches = [];
+      
+      for (let i = 0; i < companies.length; i += batchSize) {
+        batches.push(companies.slice(i, i + batchSize));
+      }
+
+      let processed = 0;
+
+      for (const batch of batches) {
+        try {
+          const results = await enrichBatch(batch);
+          enrichedData.push(...results);
+          processed += batch.length;
+          
+          const pct = Math.round((processed / companies.length) * 100);
+          document.getElementById('progressBar').style.width = pct + '%';
+          document.getElementById('progressText').textContent = `${processed} / ${companies.length}`;
+          document.getElementById('loadingText').textContent = `Enriching companies... (${processed}/${companies.length})`;
+        } catch (err) {
+          console.error('Batch error:', err);
+          batch.forEach(c => {
+            enrichedData.push({
+              company: c,
+              website: '',
+              city: '',
+              state: '',
+              industry: '',
+              natoliFit: 'Unknown',
+              confidence: 'Low'
+            });
+          });
+          processed += batch.length;
+        }
+      }
+
+      displayResults();
+      document.getElementById('loadingSection').style.display = 'none';
+      document.getElementById('resultSection').style.display = 'block';
+      document.getElementById('enrichBtn').disabled = false;
+    }
+
+    async function enrichBatch(companies) {
+      const prompt = `You are a B2B company research assistant for Natoli Engineering, a tablet compression tooling company.
+
+For each company below, provide enriched profile data. Use your knowledge to estimate:
+- Website URL
+- City & State (US headquarters or main location)
+- Primary industry
+- Natoli Fit: 
+  - "Engineering" = tablet manufacturing, uses presses/tooling
+  - "Scientific" = formulation R&D, compaction research
+  - "Both" = both manufacturing and R&D
+  - "No Fit" = not relevant to tablet compression
+- Confidence: High (well-known company), Medium (likely accurate), Low (uncertain)
+
+Companies:
+${companies.map((c, i) => `${i+1}. ${c}`).join('\n')}
+
+Respond ONLY with a JSON array:
+[
+  {
+    "company": "Original Company Name",
+    "website": "https://example.com",
+    "city": "City Name",
+    "state": "XX",
+    "industry": "Industry Description",
+    "natoliFit": "Engineering|Scientific|Both|No Fit",
+    "confidence": "High|Medium|Low"
+  }
+]`;
+
+      const response = await fetch('/api/market-discovery/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!response.ok) throw new Error('API error');
+
+      const data = await response.json();
+      return data.results || [];
+    }
+
+    function displayResults() {
+      const tbody = document.getElementById('resultTable');
+      tbody.innerHTML = enrichedData.map(r => `
+        <tr>
+          <td><strong>${esc(r.company)}</strong></td>
+          <td>${r.website ? `<a href="${esc(r.website)}" target="_blank" class="link">${esc(r.website.replace('https://', '').replace('http://', ''))}</a>` : '-'}</td>
+          <td>${esc(r.city) || '-'}</td>
+          <td>${esc(r.state) || '-'}</td>
+          <td>${esc(r.industry) || '-'}</td>
+          <td>${esc(r.natoliFit)}</td>
+          <td class="confidence-${(r.confidence || '').toLowerCase()}">${esc(r.confidence)}</td>
+        </tr>
+      `).join('');
+
+      const high = enrichedData.filter(r => r.confidence === 'High').length;
+      const medium = enrichedData.filter(r => r.confidence === 'Medium').length;
+      const low = enrichedData.filter(r => r.confidence === 'Low').length;
+      const engineering = enrichedData.filter(r => r.natoliFit === 'Engineering' || r.natoliFit === 'Both').length;
+      const scientific = enrichedData.filter(r => r.natoliFit === 'Scientific' || r.natoliFit === 'Both').length;
+
+      document.getElementById('statsSection').innerHTML = `
+        <div class="stat-box"><div class="stat-value">${enrichedData.length}</div><div class="stat-label">Total Companies</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: #22c55e">${high}</div><div class="stat-label">High Confidence</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: #f59e0b">${medium}</div><div class="stat-label">Medium Confidence</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: #3b82f6">${engineering}</div><div class="stat-label">Engineering Fit</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: #a855f7">${scientific}</div><div class="stat-label">Scientific Fit</div></div>
+      `;
+    }
+
+    function exportCSV() {
+      if (enrichedData.length === 0) return showToast('No data to export', true);
+
+      const headers = ['Company', 'Website', 'City', 'State', 'Industry', 'Natoli Fit', 'Confidence'];
+      let csv = headers.join(',') + '\n';
+      
+      enrichedData.forEach(r => {
+        csv += [r.company, r.website, r.city, r.state, r.industry, r.natoliFit, r.confidence]
+          .map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'natoli_enriched_companies_' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+      showToast('CSV exported!');
+    }
+
+    function copyTable() {
+      if (enrichedData.length === 0) return showToast('No data to copy', true);
+
+      const headers = ['Company', 'Website', 'City', 'State', 'Industry', 'Natoli Fit', 'Confidence'];
+      let text = headers.join('\t') + '\n';
+      
+      enrichedData.forEach(r => {
+        text += [r.company, r.website, r.city, r.state, r.industry, r.natoliFit, r.confidence].join('\t') + '\n';
+      });
+
+      navigator.clipboard.writeText(text);
+      showToast('Copied to clipboard!');
+    }
+
+    function esc(t) {
+      if (!t) return '';
+      const d = document.createElement('div');
+      d.textContent = t;
+      return d.innerHTML;
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? '#ef4444' : 'var(--accent-green)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

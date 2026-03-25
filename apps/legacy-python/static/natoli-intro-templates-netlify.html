@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natoli Message Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f1419;
+      --bg-card: #1c2128;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-light: #21262d;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --orange: #f0883e;
+      --purple: #a371f7;
+      --cyan: #39c5cf;
+      --red: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .app-header {
+      background: linear-gradient(135deg, #1c2128 0%, #0f1419 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .app-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-header h1 span { color: var(--orange); }
+    .app-header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
+    .main-content { display: flex; min-height: calc(100vh - 80px); }
+    .sidebar {
+      width: 380px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+      position: sticky;
+      top: 80px;
+    }
+    .content-area {
+      flex: 1;
+      padding: 24px 32px;
+      overflow-y: auto;
+    }
+    .form-section { margin-bottom: 24px; }
+    .form-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+    .form-group textarea { min-height: 60px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .section-header h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-header .icon { font-size: 1.1rem; }
+    .section-header .count {
+      background: var(--border);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .section-body { padding: 16px 20px; }
+    .territory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .territory-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 16px;
+      transition: border-color 0.15s;
+    }
+    .territory-card:hover { border-color: var(--border); }
+    .territory-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .territory-name::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+    }
+    .rep-list { display: flex; flex-direction: column; gap: 8px; }
+    .rep-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .rep-info { display: flex; align-items: center; gap: 8px; }
+    .rep-role {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .rep-role.sales { background: rgba(240, 136, 62, 0.2); color: var(--orange); }
+    .rep-role.tooling { background: rgba(88, 166, 255, 0.2); color: var(--blue); }
+    .rep-role.parts { background: rgba(163, 113, 247, 0.2); color: var(--purple); }
+    .rep-role.encap { background: rgba(57, 197, 207, 0.2); color: var(--cyan); }
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-generate { background: var(--green); color: #000; }
+    .btn-generate:hover { background: #46c258; }
+    .btn-secondary { background: var(--border); color: var(--text); }
+    .btn-primary { background: var(--blue); color: #000; }
+    .btn-lg { padding: 10px 20px; font-size: 0.875rem; }
+    .cx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .cx-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cx-info { font-size: 0.85rem; }
+    .cx-email { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+    .output-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    .output-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .output-header h3 { font-size: 0.95rem; font-weight: 600; }
+    .output-body { padding: 20px; }
+    .email-subject {
+      color: var(--blue);
+      font-weight: 500;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.9rem;
+    }
+    .email-body {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .output-actions { display: flex; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-input);
+      padding: 4px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      border: none;
+      background: transparent;
+    }
+    .tab.active { background: var(--border); color: var(--text); }
+    .tab:hover:not(.active) { color: var(--text); }
+    .intro-content {
+      background: var(--bg-input);
+      border-radius: 8px;
+      padding: 24px;
+      line-height: 1.8;
+    }
+    .intro-content h2 {
+      color: var(--blue);
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+    .intro-content p { margin-bottom: 12px; }
+    .intro-content ul { margin-left: 20px; margin-bottom: 16px; }
+    .intro-content li { margin-bottom: 6px; }
+    .highlight { background: rgba(63, 185, 80, 0.15); padding: 2px 6px; border-radius: 4px; color: var(--green); }
+    .section-label { color: var(--green); font-weight: 600; margin-top: 20px; margin-bottom: 10px; font-size: 0.95rem; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .contact-item {
+      background: var(--bg-card);
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+    }
+    .contact-item .name { font-weight: 500; font-size: 0.85rem; }
+    .contact-item .email { font-size: 0.75rem; color: var(--text-dim); }
+    .region-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 12px 0;
+    }
+    .region-table th, .region-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .region-table th { background: var(--bg-card); color: var(--blue); font-weight: 500; }
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--green);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transform: translateY(100px);
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { transform: translateY(0); }
+    .templates-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 40px;
+    }
+    .templates-modal.show { display: block; }
+    .templates-modal-content {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .templates-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .templates-modal-header h2 { font-size: 1.2rem; }
+    .templates-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .templates-modal-close:hover { color: var(--text); }
+    .templates-modal-body { padding: 24px; }
+    .template-card {
+      background: var(--bg-input);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+    }
+    .template-card:last-child { margin-bottom: 0; }
+    .template-card h3 {
+      color: var(--orange);
+      font-size: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .template-card .subject {
+      color: var(--blue);
+      font-weight: 500;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+    .template-card .body {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+    .view-all-btn {
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.2), rgba(163, 113, 247, 0.2));
+      border: 1px solid rgba(88, 166, 255, 0.4);
+      color: var(--blue);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-left: 16px;
+    }
+    .view-all-btn:hover { background: rgba(88, 166, 255, 0.3); }
+    @media (max-width: 900px) {
+      .main-content { flex-direction: column; }
+      .sidebar { width: 100%; max-height: none; position: static; }
+      .content-area { padding: 16px; }
+      .territory-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <h1><span>Natoli</span> Message Generator</h1>
+        <p>Generate personalized outreach by territory, rep, or CX team</p>
+      </div>
+      <button class="view-all-btn" onclick="showAllTemplates()">View All Templates</button>
+    </div>
+  </header>
+
+  <div id="templatesModal" class="templates-modal">
+    <div class="templates-modal-content" style="max-width: 1100px;">
+      <div class="templates-modal-header">
+        <h2>Email Templates Library</h2>
+        <button class="templates-modal-close" onclick="hideAllTemplates()">&times;</button>
+      </div>
+      <div class="templates-modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <p style="color: var(--text-muted); margin-bottom: 20px;">All templates use the StoryBrand framework: identify the problem, position as guide, keep it brief. Opening line: "Tooling is a strategic decision, not a commodity purchase."</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="template-card">
+            <h3>Initial Introduction (New)</h3>
+            <div class="subject">Subject: Quick question for [Company]</div>
+            <div class="body">[First Name],
+
+Tooling is a strategic decision, not a commodity purchase.
+
+I came across [Company] while researching companies in [state] that work with powder compaction.
+
+Most companies in your space deal with [industry-specific pain points].
+
+If you're dealing with any of these, I'd welcome a conversation.
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Follow-Up (No Response)</h3>
+            <div class="subject">Subject: Following up - [Company]</div>
+            <div class="body">[First Name],
+
+I reached out recently about tablet compression challenges at [Company].
+
+I know timing isn't always right. If [pain points] become a priority, I'm here to help.
+
+Worth a 10-minute call?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Technical Problem</h3>
+            <div class="subject">Subject: Re: Tablet compression issue at [Company]</div>
+            <div class="body">[First Name],
+
+You mentioned [specific issue]. This is something we see regularly.
+
+Most of the time, the root cause is one of three things: punch tip condition, formulation sensitivity, or press settings. We can usually identify it quickly.
+
+Would it help to talk through what you're seeing?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Trade Show Lead</h3>
+            <div class="subject">Subject: Good meeting you - [Company]</div>
+            <div class="body">[First Name],
+
+Great connecting at [show name].
+
+[You mentioned X.] I'd like to continue our conversation about how Natoli might help [Company].
+
+Would next week work for a follow-up call?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Referral Introduction</h3>
+            <div class="subject">Subject: Introduction from [Referrer]</div>
+            <div class="body">[First Name],
+
+[Referrer name] suggested I reach out.
+
+They mentioned [Company] might benefit from our tablet compression expertise.
+
+Would you have 15 minutes to talk about how Natoli might help?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Competitive Displacement</h3>
+            <div class="subject">Subject: Alternative approach for [Company]</div>
+            <div class="body">[First Name],
+
+Most companies only explore new tooling partners when something isn't working.
+
+If [Company] is experiencing issues with current tooling quality, lead times, or support, it might be worth a conversation.
+
+Natoli focuses on root-cause solutions, not just selling more tooling.
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Post-Demo / Post-Visit</h3>
+            <div class="subject">Subject: Next steps - [Company]</div>
+            <div class="body">[First Name],
+
+Thanks for your time today.
+
+As we discussed, [summary]. I'll send over the information we discussed.
+
+What would be the best next step from your side?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+
+          <div class="template-card">
+            <h3>Upgrade / Upsell</h3>
+            <div class="subject">Subject: Something that might help</div>
+            <div class="body">[First Name],
+
+Based on what [Company] has been working on, we have some options that might be worth exploring.
+
+Can I share more details?
+
+[Your Name]
+[Your Role], Natoli Engineering
+636-926-8900</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; background: rgba(240, 136, 62, 0.1); border-radius: 8px; border: 1px solid rgba(240, 136, 62, 0.3);">
+          <h4 style="color: var(--orange); margin-bottom: 8px;">Industry-Specific Pain Points</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; color: var(--text-muted);">
+            <div><strong>Pharmaceutical:</strong> FDA compliance, sticking/capping, weight variation</div>
+            <div><strong>Generic Pharma:</strong> Speed-to-market, cost control, multi-product</div>
+            <div><strong>Nutraceutical:</strong> High-volume, quick changeovers, cost efficiency</div>
+            <div><strong>503B Facility:</strong> Scale-up, sterility, outsourcing flexibility</div>
+            <div><strong>CDMO:</strong> Multi-client specs, rapid changeovers, documentation</div>
+            <div><strong>Battery/Energy:</strong> Electrode consistency, cell uniformity, high-pressure</div>
+            <div><strong>Veterinary:</strong> Large tablets, coating challenges, durability</div>
+            <div><strong>Nuclear/SMR:</strong> Pellet uniformity, precision density, regulatory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <aside class="sidebar">
+      <div class="form-section">
+        <div class="form-section-title">📝 Company Details</div>
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" id="companyName" placeholder="e.g., Catalent Pharma Solutions">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Industry</label>
+            <select id="industry" onchange="updateIndustryHint()">
+              <option value="pharmaceutical" data-hint="FDA compliance, validation, sticking/capping, tooling wear">Pharmaceutical</option>
+              <option value="generic" data-hint="Speed-to-market, cost control, multi-product flexibility">Generic Pharma</option>
+              <option value="nutraceutical" data-hint="High-volume production, quick changeovers, cost efficiency">Nutraceutical</option>
+              <option value="503b" data-hint="Scale-up challenges, sterility, outsourcing flexibility">503B Facility</option>
+              <option value="cdmo" data-hint="Multi-client specs, rapid changeovers, documentation">CDMO</option>
+              <option value="veterinary" data-hint="Large tablet sizes, coating challenges, durability">Veterinary</option>
+              <option value="battery" data-hint="Electrode consistency, cell uniformity, high-pressure compaction">Battery/Energy</option>
+              <option value="catalyst" data-hint="Precise porosity, strength requirements, custom shapes">Catalyst</option>
+              <option value="ceramics" data-hint="High-temp materials, precise density, specialty tooling">Ceramics</option>
+              <option value="nuclear" data-hint="Fuel pellet uniformity, precision density, regulatory compliance">Nuclear/SMR</option>
+              <option value="cosmetics" data-hint="Pressed powder consistency, aesthetic quality, fragility">Cosmetics</option>
+              <option value="other" data-hint="Powder compaction challenges, tooling optimization">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>State / Location</label>
+            <input type="text" id="state" placeholder="e.g., NJ">
+          </div>
+        </div>
+        <div id="industryHint" style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.8rem; color: var(--blue); display: none;">
+          <strong>Industry Focus:</strong> <span id="hintText"></span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Natoli Fit</label>
+            <select id="fit">
+              <option value="Engineering">Engineering</option>
+              <option value="Scientific">Scientific</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Relationship</label>
+            <select id="relationship">
+              <option value="new">New Customer</option>
+              <option value="existing">Existing</option>
+              <option value="lapsed">Lapsed (12+ mo)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" id="contactName" placeholder="e.g., John Smith">
+        </div>
+        <div class="form-group">
+          <label>Contact Title (optional)</label>
+          <input type="text" id="contactTitle" placeholder="e.g., Director of Manufacturing">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">📧 Message Type</div>
+        <div class="form-group">
+          <label>Template</label>
+          <select id="templateType">
+            <option value="intro">Initial Introduction</option>
+            <option value="followup">Follow-Up (No Response)</option>
+            <option value="technical">Technical Problem Focus</option>
+            <option value="tradeshow">Trade Show Lead</option>
+            <option value="referral">Referral Introduction</option>
+            <option value="competitive">Competitive Displacement</option>
+            <option value="postdemo">Post-Demo/Visit</option>
+            <option value="upgrade">Upgrade/Upsell</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🔧 Product/Service Focus (optional)</div>
+        <div class="form-group">
+          <label>Highlight Product</label>
+          <select id="productFocus">
+            <option value="">None - General Outreach</option>
+            <option value="tooling">Tablet Compression Tooling</option>
+            <option value="custom">Custom Tooling Design</option>
+            <option value="nprd30">NP-RD30 Tablet Press</option>
+            <option value="parts">Tablet Press Parts</option>
+            <option value="scientific">Natoli Scientific Services</option>
+            <option value="training">Training Programs</option>
+            <option value="encapsulation">Encapsulation Equipment</option>
+          </select>
+        </div>
+        <div id="productDetail" style="background: rgba(63, 185, 80, 0.1); border: 1px solid rgba(63, 185, 80, 0.3); border-radius: 6px; padding: 10px 12px; margin-top: 10px; font-size: 0.8rem; display: none;">
+          <div style="color: var(--green); font-weight: 600; margin-bottom: 6px;" id="productName"></div>
+          <div style="color: var(--text-muted);" id="productDesc"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">💬 Context</div>
+        <div class="form-group">
+          <label>Specific Challenge/Trigger (optional)</label>
+          <textarea id="reason" placeholder="e.g., Mentioned sticking issues at INTERPHEX, expanding to new facility, recently acquired by..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Referral Source (if applicable)</label>
+          <input type="text" id="referralSource" placeholder="e.g., Met at INTERPHEX, John Smith referred me">
+        </div>
+      </div>
+    </aside>
+
+    <main class="content-area">
+      <div class="section-card">
+        <div class="section-header" onclick="toggleSection('territories')">
+          <h3><span class="icon">🗺️</span> Sales Territories</h3>
+          <span class="count">8 regions</span>
+        </div>
+        <div class="section-body" id="territories">
+          <div class="territory-grid">
+            <div class="territory-card">
+              <div class="territory-name">West Coast / HI / AK</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Fernando Delgado</div>
+                  <button class="btn btn-generate" onclick="gen('Fernando Delgado','Sales','West Coast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> Anna King</div>
+                  <button class="btn btn-generate" onclick="gen('Anna King','Tooling','West Coast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Angie Diaz</div>
+                  <button class="btn btn-generate" onclick="gen('Angie Diaz','Parts','West Coast')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Rocky Mountain</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Eric Maughan</div>
+                  <button class="btn btn-generate" onclick="gen('Eric Maughan','Sales','Rocky Mountain')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> Anna King</div>
+                  <button class="btn btn-generate" onclick="gen('Anna King','Tooling','Rocky Mountain')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Natalie Bausch</div>
+                  <button class="btn btn-generate" onclick="gen('Natalie Bausch','Parts','Rocky Mountain')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Midwest</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> David Nelson</div>
+                  <button class="btn btn-generate" onclick="gen('David Nelson','Tooling','Midwest')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Arthur Dodson</div>
+                  <button class="btn btn-generate" onclick="gen('Arthur Dodson','Parts','Midwest')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Jennifer Bergauer</div>
+                  <button class="btn btn-generate" onclick="gen('Jennifer Bergauer','Parts','Midwest')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Northeast</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Raffaele Romano</div>
+                  <button class="btn btn-generate" onclick="gen('Raffaele Romano','Sales','Northeast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> Samantha Bowman</div>
+                  <button class="btn btn-generate" onclick="gen('Samantha Bowman','Tooling','Northeast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Kelley Jeffries</div>
+                  <button class="btn btn-generate" onclick="gen('Kelley Jeffries','Parts','Northeast')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Southeast</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Danny Ambrose</div>
+                  <button class="btn btn-generate" onclick="gen('Danny Ambrose','Sales','Southeast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> Heather Noll</div>
+                  <button class="btn btn-generate" onclick="gen('Heather Noll','Tooling','Southeast')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Natalie Bausch</div>
+                  <button class="btn btn-generate" onclick="gen('Natalie Bausch','Parts','Southeast')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Puerto Rico</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Emmanuel Davilla</div>
+                  <button class="btn btn-generate" onclick="gen('Emmanuel Davilla','Sales','Puerto Rico')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> Tiffany Simonpietri</div>
+                  <button class="btn btn-generate" onclick="gen('Tiffany Simonpietri','Tooling','Puerto Rico')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Natalie Bausch</div>
+                  <button class="btn btn-generate" onclick="gen('Natalie Bausch','Parts','Puerto Rico')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Canada</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role sales">Sales</span> Fazal Mohideen</div>
+                  <button class="btn btn-generate" onclick="gen('Fazal Mohideen','Sales','Canada')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role tooling">Tooling</span> David Nelson</div>
+                  <button class="btn btn-generate" onclick="gen('David Nelson','Tooling','Canada')">Generate</button>
+                </div>
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role parts">Parts</span> Arthur Dodson</div>
+                  <button class="btn btn-generate" onclick="gen('Arthur Dodson','Parts','Canada')">Generate</button>
+                </div>
+              </div>
+            </div>
+            <div class="territory-card">
+              <div class="territory-name">Encapsulation</div>
+              <div class="rep-list">
+                <div class="rep-row">
+                  <div class="rep-info"><span class="rep-role encap">Encap</span> Caitlyn Partl</div>
+                  <button class="btn btn-generate" onclick="gen('Caitlyn Partl','Encapsulation','All Regions')">Generate</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header" onclick="toggleSection('cxTeam')">
+          <h3><span class="icon">👥</span> Customer Experience Team</h3>
+          <span class="count">6 reps</span>
+        </div>
+        <div class="section-body" id="cxTeam">
+          <div class="cx-grid">
+            <div class="cx-card">
+              <div class="cx-info"><div>Gregory Lyle</div><div class="cx-email">cx-greg@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Gregory Lyle','CX','All')">Generate</button>
+            </div>
+            <div class="cx-card">
+              <div class="cx-info"><div>Ada Obi-Ibeabuchi</div><div class="cx-email">cx-ada@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Ada Obi-Ibeabuchi','CX','All')">Generate</button>
+            </div>
+            <div class="cx-card">
+              <div class="cx-info"><div>Christopher Tichacek</div><div class="cx-email">cx-christopher@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Christopher Tichacek','CX','All')">Generate</button>
+            </div>
+            <div class="cx-card">
+              <div class="cx-info"><div>Elisabeth Colburn</div><div class="cx-email">cx-elisabeth@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Elisabeth Colburn','CX','All')">Generate</button>
+            </div>
+            <div class="cx-card">
+              <div class="cx-info"><div>Kate Emmerth</div><div class="cx-email">cx-kate@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Kate Emmerth','CX','All')">Generate</button>
+            </div>
+            <div class="cx-card">
+              <div class="cx-info"><div>Eric Tucker</div><div class="cx-email">cx-eric@natoli.com</div></div>
+              <button class="btn btn-generate" onclick="gen('Eric Tucker','CX','All')">Generate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-panel" id="outputPanel" style="display: none;">
+        <div class="output-header">
+          <h3>📧 Generated Message</h3>
+          <button class="btn btn-secondary" onclick="closeOutput()">✕ Close</button>
+        </div>
+        <div class="output-body">
+          <div class="email-subject" id="outputSubject"></div>
+          <div class="email-body" id="outputBody"></div>
+          <div class="output-actions">
+            <button class="btn btn-primary btn-lg" onclick="copyMsg()">📋 Copy to Clipboard</button>
+            <button class="btn btn-secondary btn-lg" onclick="closeOutput()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <h3><span class="icon">📄</span> Introduction Documents</h3>
+        </div>
+        <div class="section-body">
+          <div class="tabs">
+            <button class="tab active" onclick="showIntro('new', this)">New Customer</button>
+            <button class="tab" onclick="showIntro('existing', this)">Existing Customer</button>
+          </div>
+          <div id="introNew" class="intro-content">
+            <h2>Welcome to Natoli Engineering</h2>
+            <p>Natoli Engineering is a long-standing partner to manufacturers running solid oral dose operations where <span class="highlight">consistency, reliability, and process control</span> matter.</p>
+            <p>For over 50 years, we have supported pharmaceutical, nutraceutical, and industrial tablet manufacturers with the tooling, equipment, and expertise required to maintain production quality and efficiency.</p>
+            <div class="section-label">What We Provide</div>
+            <ul>
+              <li><strong>Tablet Compression Tooling</strong> — Punches, dies, and tooling accessories for all major press brands</li>
+              <li><strong>Tablet Press Parts & Service</strong> — OEM-equivalent replacement parts and preventive maintenance</li>
+              <li><strong>Compaction Science & Formulation Support</strong> — R&D services through Natoli Scientific</li>
+              <li><strong>Training & Technical Resources</strong> — Operator training, troubleshooting support, and industry education</li>
+            </ul>
+            <div class="section-label">Customer Experience Team</div>
+            <div class="contact-grid">
+              <div class="contact-item"><div class="name">Gregory Lyle</div><div class="email">cx-greg@natoli.com</div></div>
+              <div class="contact-item"><div class="name">Ada Obi-Ibeabuchi</div><div class="email">cx-ada@natoli.com</div></div>
+              <div class="contact-item"><div class="name">Christopher Tichacek</div><div class="email">cx-christopher@natoli.com</div></div>
+              <div class="contact-item"><div class="name">Elisabeth Colburn</div><div class="email">cx-elisabeth@natoli.com</div></div>
+              <div class="contact-item"><div class="name">Kate Emmerth</div><div class="email">cx-kate@natoli.com</div></div>
+              <div class="contact-item"><div class="name">Eric Tucker</div><div class="email">cx-eric@natoli.com</div></div>
+            </div>
+            <div class="section-label">Regional Sales Contacts</div>
+            <table class="region-table">
+              <thead><tr><th>Region</th><th>Sales Rep</th><th>Tooling</th><th>Parts</th></tr></thead>
+              <tbody>
+                <tr><td>West Coast / HI / AK</td><td>Fernando Delgado</td><td>Anna King</td><td>Angie Diaz</td></tr>
+                <tr><td>Rocky Mountain</td><td>Eric Maughan</td><td>Anna King</td><td>Natalie Bausch</td></tr>
+                <tr><td>Midwest</td><td>—</td><td>David Nelson</td><td>Arthur Dodson / Jennifer Bergauer</td></tr>
+                <tr><td>Northeast</td><td>Raffaele Romano</td><td>Samantha Bowman</td><td>Kelley Jeffries</td></tr>
+                <tr><td>Southeast</td><td>Danny Ambrose</td><td>Heather Noll</td><td>Natalie Bausch</td></tr>
+                <tr><td>Puerto Rico</td><td>Emmanuel/Noel Davilla</td><td>Tiffany Simonpietri</td><td>Natalie Bausch</td></tr>
+                <tr><td>Canada</td><td>Fazal Mohideen</td><td>David Nelson</td><td>Arthur Dodson</td></tr>
+              </tbody>
+            </table>
+            <p style="margin-top: 16px;"><strong>Encapsulation:</strong> Caitlyn Partl</p>
+            <p style="margin-top: 16px;"><strong>Phone:</strong> 636-926-8900 &nbsp;|&nbsp; <strong>Website:</strong> natoli.com &nbsp;|&nbsp; <strong>Email:</strong> info@natoli.com</p>
+          </div>
+          <div id="introExisting" class="intro-content" style="display: none;">
+            <h2>Continuing Our Partnership</h2>
+            <p>Natoli Engineering has supported manufacturing teams like yours over time, helping maintain <span class="highlight">consistency, reliability, and performance</span> as processes and demands evolve.</p>
+            <p>Whether it's been months or years since we last connected, our commitment to your production success remains unchanged.</p>
+            <div class="section-label">How We Continue to Support You</div>
+            <ul>
+              <li><strong>Tablet Compression Tooling</strong> — Same precision, same reliability, expanded options</li>
+              <li><strong>Tablet Press Parts & Service</strong> — Genuine replacement parts and preventive maintenance programs</li>
+              <li><strong>Compaction Science & Formulation Support</strong> — Natoli Scientific for R&D and troubleshooting</li>
+              <li><strong>Training & Technical Resources</strong> — Updated programs for new team members or refreshers</li>
+            </ul>
+            <div class="section-label">Reconnecting</div>
+            <p>If your needs have changed or you're exploring new directions, we'd welcome the opportunity to reconnect. No pressure, no pitch — just a conversation about how we might help.</p>
+            <p style="margin-top: 16px;"><strong>Phone:</strong> 636-926-8900 &nbsp;|&nbsp; <strong>Website:</strong> natoli.com &nbsp;|&nbsp; <strong>Email:</strong> info@natoli.com</p>
+          </div>
+          <div style="margin-top: 16px; display: flex; gap: 10px;">
+            <button class="btn btn-primary" onclick="copyIntro()">📋 Copy as Text</button>
+            <button class="btn btn-secondary" onclick="printIntro()">🖨️ Print</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let currentIntro = 'new';
+    let currentMessage = { subject: '', body: '' };
+
+    function showAllTemplates() {
+      document.getElementById('templatesModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function hideAllTemplates() {
+      document.getElementById('templatesModal').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('templatesModal').addEventListener('click', function(e) {
+      if (e.target === this) hideAllTemplates();
+    });
+
+    // Industry-specific pain points
+    const INDUSTRY_PAINS = {
+      pharmaceutical: 'sticking, capping, weight variation, or FDA compliance concerns',
+      generic: 'speed-to-market pressure, cost control, or multi-product changeovers',
+      nutraceutical: 'high-volume throughput, quick changeovers, or ingredient sticking',
+      '503b': 'scale-up challenges, sterility requirements, or outsourcing flexibility',
+      cdmo: 'multi-client specifications, rapid changeovers, or documentation requirements',
+      veterinary: 'large tablet formats, coating adhesion, or durability in handling',
+      battery: 'electrode consistency, cell uniformity, or high-pressure compaction',
+      catalyst: 'precise porosity control, strength requirements, or custom geometries',
+      ceramics: 'high-temp material handling, precise density control, or specialty tooling',
+      nuclear: 'fuel pellet uniformity, precision density, or regulatory compliance',
+      cosmetics: 'pressed powder consistency, aesthetic quality, or fragility during packaging',
+      other: 'powder compaction challenges or tooling optimization'
+    };
+
+    // Product details
+    const PRODUCTS = {
+      tooling: { name: 'Tablet Compression Tooling', desc: 'Precision-engineered punches and dies for consistent tablet quality. Standard and custom designs available.' },
+      custom: { name: 'Custom Tooling Design', desc: 'Engineered solutions for unique tablet shapes, sizes, and compression requirements.' },
+      nprd30: { name: 'NP-RD30 Tablet Press', desc: 'Single-station R&D tablet press for formulation development and small-batch production.' },
+      parts: { name: 'Tablet Press Parts', desc: 'Genuine replacement parts and wear components for all major tablet press brands.' },
+      scientific: { name: 'Natoli Scientific Services', desc: 'Compaction research, formulation troubleshooting, and material characterization.' },
+      training: { name: 'Training Programs', desc: 'Hands-on training for tablet compression, troubleshooting, and tooling maintenance.' },
+      encapsulation: { name: 'Encapsulation Equipment', desc: 'Capsule filling equipment, change parts, and technical support.' }
+    };
+
+    // Template library - organized by type
+    const TEMPLATES = {
+      // INITIAL INTRODUCTION
+      intro: {
+        new: {
+          subject: (c) => `Quick question for ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Tooling is a strategic decision, not a commodity purchase.
+
+I came across ${d.company} while researching companies${d.state ? ' in ' + d.state : ''} that work with powder compaction.
+
+${getIndustryLine(d)}
+
+If you're dealing with any of these, I'd welcome a conversation.${d.productLine ? '\n\n' + d.productLine : ''}
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Quick check-in`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Wanted to check in on ${d.company}.
+
+Any tablet compression challenges on your radar right now?${d.productLine ? '\n\n' + d.productLine : ''}
+
+If so, happy to talk through it. If not, just wanted you to know we're here when you need us.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Worth reconnecting?`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+It's been a while since ${d.company} worked with Natoli.
+
+If any new challenges have come up, we've likely seen them before and can help.${d.productLine ? '\n\n' + d.productLine : ''}
+
+What's the biggest tablet compression issue you're dealing with right now?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // FOLLOW-UP (no response)
+      followup: {
+        new: {
+          subject: (c) => `Following up - ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+I reached out recently about tablet compression challenges at ${d.company}.
+
+I know timing isn't always right. If ${INDUSTRY_PAINS[d.industry] || 'tooling challenges'} become a priority, I'm here to help.
+
+Worth a 10-minute call?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Checking back in`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Just circling back on my last note.
+
+If things have picked up at ${d.company}, happy to reconnect whenever timing works.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `One more try`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+I'll keep this short. If ${d.company} is dealing with any tablet compression challenges, I'd like to help.
+
+If not, no worries. Just wanted to make sure we connected.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // TECHNICAL PROBLEM
+      technical: {
+        new: {
+          subject: (c) => `Re: Tablet compression issue at ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.reason ? 'You mentioned ' + d.reason.toLowerCase() + '. ' : ''}This is something we see regularly.
+
+Most of the time, the root cause is one of three things: punch tip condition, formulation sensitivity, or press settings. We can usually identify it quickly.
+
+Would it help to talk through what you're seeing?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Technical support available`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.reason ? 'Heard about the ' + d.reason.toLowerCase() + ' issue. ' : 'If you're running into any production issues, '}our team has seen this before.
+
+Happy to jump on a quick call to troubleshoot.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Can we help with this?`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.reason ? 'Heard about ' + d.reason.toLowerCase() + '. ' : ''}Even though it's been a while, our technical support is still available to ${d.company}.
+
+Sometimes a fresh set of eyes helps.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // TRADE SHOW LEAD
+      tradeshow: {
+        new: {
+          subject: (c) => `Good meeting you - ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource ? 'Great connecting at ' + d.referralSource + '.' : 'Good meeting you at the show.'}
+
+${d.reason ? 'You mentioned ' + d.reason.toLowerCase() + '. ' : ''}I'd like to continue our conversation about how Natoli might help ${d.company}.
+
+Would next week work for a follow-up call?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Great seeing you again`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource ? 'Good catching up at ' + d.referralSource + '.' : 'Great seeing you at the show.'}
+
+Let me know if there's anything new at ${d.company} we can help with.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Good to reconnect`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource ? 'Good running into you at ' + d.referralSource + '.' : 'Great reconnecting at the show.'}
+
+It's been a while since we worked together. If ${d.company} has new needs, I'd welcome the chance to help again.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // REFERRAL
+      referral: {
+        new: {
+          subject: (c) => `Introduction from ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource || 'A colleague'} suggested I reach out.
+
+They mentioned ${d.company} ${d.reason ? 'is dealing with ' + d.reason.toLowerCase() : 'might benefit from our tablet compression expertise'}.
+
+Would you have 15 minutes to talk about how Natoli might help?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Connecting on a referral`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource || 'Someone on your team'} mentioned you might be the right person to talk to about ${d.reason || 'your current needs'}.
+
+Happy to discuss how we can help.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Reconnecting via referral`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.referralSource || 'A mutual contact'} suggested I reach back out to ${d.company}.
+
+We've worked together before. If there's a new opportunity to help, I'd welcome the conversation.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // COMPETITIVE DISPLACEMENT
+      competitive: {
+        new: {
+          subject: (c) => `Alternative approach for ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Most companies only explore new tooling partners when something isn't working.
+
+If ${d.company} is experiencing issues with current tooling quality, lead times, or support, it might be worth a conversation.
+
+Natoli focuses on root-cause solutions, not just selling more tooling.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Expanding the relationship`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+We've worked together on some things. If there are other areas where ${d.company} is using different suppliers and not fully satisfied, we may be able to help.
+
+Worth exploring?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Room for improvement?`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Since we last worked together, ${d.company} may have tried other approaches.
+
+If you're not getting the results you need, we'd welcome the opportunity to show what's changed at Natoli.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // POST-DEMO / POST-VISIT
+      postdemo: {
+        new: {
+          subject: (c) => `Next steps - ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Thanks for your time ${d.referralSource ? 'during our ' + d.referralSource : 'today'}.
+
+${d.reason ? 'As we discussed, ' + d.reason.toLowerCase() + '. ' : ''}I'll send over the information we discussed.
+
+What would be the best next step from your side?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Following up from our meeting`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Good seeing the team at ${d.company} ${d.referralSource ? 'during ' + d.referralSource : 'again'}.
+
+${d.reason ? 'I'll follow up on ' + d.reason.toLowerCase() + '. ' : ''}Let me know if you need anything else.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `Great reconnecting`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Thanks for making time to reconnect.
+
+I'm glad we had a chance to discuss what's changed at both ${d.company} and Natoli. Looking forward to working together again.
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      },
+
+      // UPGRADE / UPSELL
+      upgrade: {
+        new: {
+          subject: (c) => `Opportunity for ${c}`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+${d.reason ? 'Given ' + d.reason.toLowerCase() + ', ' : ''}${d.company} might benefit from ${d.productLine || 'some of our newer capabilities'}.
+
+Worth a quick conversation to see if it makes sense?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        existing: {
+          subject: () => `Something that might help`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Based on what ${d.company} has been working on, ${d.productLine || 'we have some options'} that might be worth exploring.
+
+Can I share more details?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        },
+        lapsed: {
+          subject: () => `New capabilities since we last worked together`,
+          body: (d, sender, role) => `${d.contactName || '[First Name]'},
+
+Since we last worked with ${d.company}, Natoli has expanded our capabilities.
+
+${d.productLine || 'We have new options'} that might address challenges you're facing now.
+
+Open to a quick update call?
+
+${sender}
+${role}, Natoli Engineering
+636-926-8900`
+        }
+      }
+    };
+
+    function getIndustryLine(d) {
+      const pain = INDUSTRY_PAINS[d.industry] || 'powder compaction challenges';
+      return `Most companies in your space deal with ${pain}.`;
+    }
+
+    function gen(sender, role, territory) {
+      const company = document.getElementById('companyName').value.trim();
+      if (!company) { toast('Enter a company name first', true); return; }
+      
+      const productFocus = document.getElementById('productFocus').value;
+      const product = PRODUCTS[productFocus];
+      
+      const d = {
+        company,
+        industry: document.getElementById('industry').value,
+        state: document.getElementById('state').value.trim(),
+        fit: document.getElementById('fit').value,
+        relationship: document.getElementById('relationship').value,
+        contactName: document.getElementById('contactName').value.trim(),
+        contactTitle: document.getElementById('contactTitle')?.value?.trim() || '',
+        reason: document.getElementById('reason').value.trim(),
+        referralSource: document.getElementById('referralSource')?.value?.trim() || '',
+        productLine: product ? `We offer ${product.name} — ${product.desc.split('.')[0].toLowerCase()}.` : ''
+      };
+      
+      const templateType = document.getElementById('templateType').value;
+      const templates = TEMPLATES[templateType] || TEMPLATES.intro;
+      const t = templates[d.relationship] || templates.new;
+      
+      currentMessage.subject = t.subject(d.company, sender);
+      currentMessage.body = t.body(d, sender, role);
+      document.getElementById('outputSubject').textContent = 'Subject: ' + currentMessage.subject;
+      document.getElementById('outputBody').textContent = currentMessage.body;
+      document.getElementById('outputPanel').style.display = 'block';
+      document.getElementById('outputPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Helper functions for sidebar
+    function updateIndustryHint() {
+      const select = document.getElementById('industry');
+      const hint = select.options[select.selectedIndex].dataset.hint;
+      const hintBox = document.getElementById('industryHint');
+      const hintText = document.getElementById('hintText');
+      if (hint) {
+        hintText.textContent = hint;
+        hintBox.style.display = 'block';
+      } else {
+        hintBox.style.display = 'none';
+      }
+    }
+
+    // Product focus display
+    document.getElementById('productFocus')?.addEventListener('change', function() {
+      const product = PRODUCTS[this.value];
+      const detailBox = document.getElementById('productDetail');
+      if (product) {
+        document.getElementById('productName').textContent = product.name;
+        document.getElementById('productDesc').textContent = product.desc;
+        detailBox.style.display = 'block';
+      } else {
+        detailBox.style.display = 'none';
+      }
+    });
+
+    function copyMsg() {
+      navigator.clipboard.writeText('Subject: ' + currentMessage.subject + '\n\n' + currentMessage.body);
+      toast('Copied to clipboard!');
+    }
+
+    function closeOutput() { document.getElementById('outputPanel').style.display = 'none'; }
+
+    function showIntro(type, el) {
+      currentIntro = type;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('introNew').style.display = type === 'new' ? 'block' : 'none';
+      document.getElementById('introExisting').style.display = type === 'existing' ? 'block' : 'none';
+    }
+
+    function copyIntro() {
+      const el = document.getElementById(currentIntro === 'new' ? 'introNew' : 'introExisting');
+      navigator.clipboard.writeText(el.innerText);
+      toast('Intro copied!');
+    }
+
+    function printIntro() {
+      const el = document.getElementById(currentIntro === 'new' ? 'introNew' : 'introExisting');
+      const w = window.open('', '_blank');
+      w.document.write(`<html><head><title>Print</title><style>body{font-family:Arial;max-width:800px;margin:40px auto;line-height:1.6}h2{color:#0066cc}.section-label{color:#22c55e;font-weight:bold;margin-top:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;border-bottom:1px solid #ddd}th{background:#f5f5f5}</style></head><body>${el.innerHTML}</body></html>`);
+      w.document.close();
+      w.print();
+    }
+
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'block';
+    }
+
+    function toast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.background = isError ? '#f85149' : 'var(--green)';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - TonyOS</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #e11d48;
+            margin-bottom: 1rem;
+        }
+        .error-message {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        .back-link {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #e11d48, #ff3b6a);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">403</div>
+        <div class="error-message">Authentication Error</div>
+        <p style="color: #aaa; margin-bottom: 2rem;">There was a problem signing you in. Please try again.</p>
+        <a href="/" class="back-link">Go Home</a>
+    </div>
+</body>
+</html>

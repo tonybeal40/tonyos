@@ -1,0 +1,133 @@
+3️⃣ Python code: Exclude current Natoli accounts
+
+This plugs after your discovery pipeline and before final CSV output.
+
+📁 Inputs
+
+natoli_us_targets.csv → output of your discovery pipeline
+
+1 19 2026 Clean Natoli LIst .xlsx → your existing accounts
+
+📁 Output
+
+natoli_net_new_targets.csv
+
+✅ FULL PYTHON CODE (EXCLUSION ENGINE)
+import pandas as pd
+from urllib.parse import urlparse
+import re
+
+# -----------------------------
+# FILE PATHS
+# -----------------------------
+
+DISCOVERY_FILE = "natoli_us_targets.csv"
+EXCLUSION_FILE = "/mnt/data/1 19 2026 Clean Natoli LIst .xlsx"
+OUTPUT_FILE = "natoli_net_new_targets.csv"
+
+# -----------------------------
+# NORMALIZATION FUNCTIONS
+# -----------------------------
+
+def normalize_name(name):
+    if not isinstance(name, str):
+        return ""
+    name = name.lower()
+    name = re.sub(r"[^a-z0-9 ]", "", name)
+    name = re.sub(r"\b(inc|llc|ltd|corp|corporation|pharma|pharmaceuticals)\b", "", name)
+    return name.strip()
+
+def extract_domain(url):
+    if not isinstance(url, str) or not url:
+        return ""
+    try:
+        return urlparse(url).netloc.replace("www.", "").lower()
+    except:
+        return ""
+
+# -----------------------------
+# LOAD DATA
+# -----------------------------
+
+discovery_df = pd.read_csv(DISCOVERY_FILE)
+exclusion_df = pd.read_excel(EXCLUSION_FILE)
+
+# -----------------------------
+# BUILD EXCLUSION SETS
+# -----------------------------
+
+exclusion_df["norm_name"] = exclusion_df["Company"].apply(normalize_name)
+exclusion_df["domain"] = exclusion_df["Website"].apply(extract_domain)
+
+exclude_names = set(exclusion_df["norm_name"].dropna())
+exclude_domains = set(exclusion_df["domain"].dropna())
+
+# -----------------------------
+# APPLY NORMALIZATION TO DISCOVERY
+# -----------------------------
+
+discovery_df["norm_name"] = discovery_df["Company"].apply(normalize_name)
+discovery_df["domain"] = discovery_df["Website"].apply(extract_domain)
+
+# -----------------------------
+# EXCLUSION LOGIC
+# -----------------------------
+
+def is_net_new(row):
+    if row["norm_name"] in exclude_names:
+        return False
+    if row["domain"] in exclude_domains and row["domain"] != "":
+        return False
+    return True
+
+net_new_df = discovery_df[discovery_df.apply(is_net_new, axis=1)]
+
+# -----------------------------
+# CLEAN OUTPUT
+# -----------------------------
+
+net_new_df.drop(columns=["norm_name", "domain"], inplace=True)
+net_new_df.reset_index(drop=True, inplace=True)
+
+net_new_df.to_csv(OUTPUT_FILE, index=False)
+
+print(f"Net-new target file created: {OUTPUT_FILE}")
+print(f"Excluded {len(discovery_df) - len(net_new_df)} existing Natoli accounts")
+
+4️⃣ Why this is solid (operator logic)
+
+✔ Uses your real Natoli account list
+
+✔ Prevents duplicate outreach
+
+✔ Handles naming inconsistencies
+
+✔ Scales automatically as the list grows
+
+✔ Zero manual cleanup
+
+This is RevOps discipline, not marketing.
+
+5️⃣ Optional upgrades (worth doing later)
+
+If you want to tighten this even more, next steps could be:
+
+Subsidiary → parent rollups
+
+“Exclude by press brand” logic (if already standardized)
+
+Territory-based exclusions
+
+Time-based exclusions (e.g., “no contact in last 24 months”)
+
+Confidence flags instead of hard excludes
+
+But what you have right now is already very strong.
+
+One-line summary you can use internally
+
+“We automatically exclude all current Natoli accounts from discovery so we only surface new manufacturing opportunities.”
+
+That’s clean. That’s safe. That’s how it should be done.
+
+If you want, next I can help you chain this directly into the discovery pipeline so it’s one command from search → clean net-new CSV.

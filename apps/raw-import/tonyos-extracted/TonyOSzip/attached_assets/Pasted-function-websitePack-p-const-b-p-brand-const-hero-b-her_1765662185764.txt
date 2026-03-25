@@ -1,0 +1,52 @@
+function websitePack(p){
+  const b = p.brand || {};
+  const hero = b.hero || {};
+  const problem = b.problem || {};
+  const guide = b.guide || {};
+  const plan = b.plan || {};
+  const success = b.success || {};
+  const cta = b.cta || {};
+
+  const h1 = hero.want
+    ? `Get ${hero.want} without ${problem.external || "the chaos"}`
+    : `Clarity that turns into action`;
+
+  const sub = `For ${hero.who || "teams"} who want ${hero.want || "a better outcome"} but keep running into ${problem.external || "the same blockers"}, we bring a simple plan you can execute and track.`;
+
+  const benefits = [
+    `Less ${problem.internal || "stress"} and more control`,
+    `A clear path to ${success.win || "measurable wins"}`,
+    `A plan that does not depend on luck`
+  ];
+
+  const steps = [
+    plan.step1 || "Assess the current state",
+    plan.step2 || "Create a clear plan",
+    plan.step3 || "Execute and track weekly"
+  ];
+
+  const faq = [
+    {
+      q: "Who is this for?",
+      a: `Best fit: ${hero.who || "a defined customer"} who wants ${hero.want || "a defined outcome"}.`
+    },
+    {
+      q: "How fast can I see results?",
+      a: "Usually you see clarity immediately and early results within weeks, depending on effort and constraints."
+    },
+    {
+      q: "What do you need from me?",
+      a: "A clear goal, access to the current process, and willingness to follow the plan for 30 days."
+    }
+  ];
+
+  const testimonials = [
+    { name: "Client A", quote: `We finally got ${success.win || "predictable results"} and stopped guessing.` },
+    { name: "Client B", quote: `The plan was simple, the execution was clean, and we saw progress fast.` },
+    { name: "Client C", quote: `Best part: less chaos, more confidence, and clear weekly tracking.` }
+  ];
+
+  const about = [
+    `You are not hiring a hype machine.`,
+    `You are hiring a guide who has ${guide.empathy || "been in the messy middle"} and brings ${guide.authority || "a proven method"}.`,
+    `The goal is simple: ${success.win || "a measurable

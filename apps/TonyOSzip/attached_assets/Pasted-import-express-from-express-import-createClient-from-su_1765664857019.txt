@@ -1,0 +1,257 @@
+import express from "express";
+import { createClient } from "@supabase/supabase-js";
+
+const app = express();
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static("public"));
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!OPENAI_API_KEY) console.warn("Missing OPENAI_API_KEY");
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) console.warn("Missing Supabase env vars");
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+/**
+ * ------------- Memory Rules -------------
+ * Short-term: last N messages from this conversation (tight context)
+ * Long-term: retrieve relevant memories using vector similarity
+ * Save: store all messages. Store memories only when they are stable and important
+ */
+
+const SHORT_TERM_TURNS = 20;  // last 20 messages (not pairs)
+const LONG_TERM_MATCHES = 8;  // retrieve top 8 memories
+
+function systemForMode(mode = "default") {
+  const base = `
+You are TonyOS.
+Be direct, clear, and practical.
+No em dashes.
+Never invent facts.
+If you do not know, say you do not know.
+Use short paragraphs and clean bullets.
+`;
+
+  const modes = {
+    default: base + `You help Tony execute, build, and decide.`,
+    storybrand: base + `You are the StoryBrand Pro Engine. Output structured sections.`,
+    analyzer: base + `You are the Website Analyzer. Output fixes and priorities.`,
+    jobs: base + `You are Job Search HQ. Output scripts and next actions.`,
+    money: base + `You are Money and Budget. Be conservative and numeric.`,
+    builder: base + `You are Website Builder. Return clean copy and HTML sections.`
+  };
+  return modes[mode] || modes.default;
+}
+
+async function openaiResponses(input) {
+  const r = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "gpt-5",
+      input
+    })
+  });
+
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`OpenAI error: ${txt}`);
+  }
+  return r.json();
+}
+
+async function embedText(text) {
+  // Using embeddings endpoint. If you change embedding model, also change vector dim in Supabase.
+  const r = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "text-embedding-3-small",
+      input: text
+    })
+  });
+
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`Embedding error: ${txt}`);
+  }
+
+  const data = await r.json();
+  return data.data[0].embedding;
+}
+
+async function getOrCreateConversation(sessionId) {
+  // sessionId is a stable browser id. We map it to a conversation row.
+  // Easiest: store sessionId as the conversation id itself (text) elsewhere.
+  // Simpler: create one conversation per sessionId and store mapping in a table.
+  // Minimal approach: use conversations.id = sessionId if it is a UUID.
+  // If your sessionId is not a UUID, do a mapping table. For now we’ll create a new conversation each time if not found.
+
+  // Try to treat sessionId as conversation_id:
+  const { data: existing } = await supabase
+    .from("conversations")
+    .select("id")
+    .eq("id", sessionId)
+    .maybeSingle();
+
+  if (existing?.id) return existing.id;
+
+  // Create new conversation; ignore sessionId shape
+  const { data: created, error } = await supabase
+    .from("conversations")
+    .insert({})
+    .select("id")
+    .single();
+
+  if (error) throw error;
+  return created.id;
+}
+
+async function loadShortTerm(conversationId) {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("role,content,created_at")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true })
+    .limit(500);
+
+  if (error) throw error;
+
+  // Keep last N messages
+  const clipped = (data || []).slice(-SHORT_TERM_TURNS);
+  return clipped.map(m => ({ role: m.role, content: m.content }));
+}
+
+async function saveMessage(conversationId, role, content) {
+  const { error } = await supabase
+    .from("messages")
+    .insert({ conversation_id: conversationId, role, content });
+
+  if (error) throw error;
+}
+
+function shouldSaveAsMemory(text) {
+  // Simple heuristic: only save stable facts/preferences/projects
+  // Avoid saving one-off emotions or random details.
+  const t = text.toLowerCase();
+  const signals = [
+    "remember",
+    "from now on",
+    "my goal is",
+    "i prefer",
+    "always",
+    "never",
+    "this is important",
+    "my project",
+    "my workflow",
+    "my system"
+  ];
+  return signals.some(s => t.includes(s));
+}
+
+async function saveLongTermMemory(userId, memoryText, importance = 3) {
+  const embedding = await embedText(memoryText);
+
+  const { error } = await supabase
+    .from("memories")
+    .insert({
+      user_id: userId,
+      memory: memoryText,
+      importance,
+      embedding
+    });
+
+  if (error) throw error;
+}
+
+async function retrieveLongTermMemories(userId, queryText) {
+  const queryEmbedding = await embedText(queryText);
+
+  const { data, error } = await supabase.rpc("match_memories", {
+    p_user_id: userId,
+    p_query_embedding: queryEmbedding,
+    p_match_count: LONG_TERM_MATCHES
+  });
+
+  if (error) throw error;
+
+  // Filter weak matches a bit
+  const good = (data || []).filter(m => (m.similarity ?? 0) >= 0.78);
+
+  // Sort by (importance + similarity) so important memories win
+  good.sort((a, b) => {
+    const sa = (a.importance || 3) * 0.1 + (a.similarity || 0);
+    const sb = (b.importance || 3) * 0.1 + (b.similarity || 0);
+    return sb - sa;
+  });
+
+  return good;
+}
+
+app.post("/api/chat", async (req, res) => {
+  try {
+    if (!OPENAI_API_KEY) return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      return res.status(500).json({ error: "Missing Supabase secrets" });
+    }
+
+    const { sessionId, message, mode } = req.body || {};
+    if (!sessionId || !message) return res.status(400).json({ error: "sessionId and message required" });
+
+    const userId = "tony"; // Replace later with real auth user id
+    const conversationId = await getOrCreateConversation(sessionId);
+
+    // Short-term memory
+    const shortTerm = await loadShortTerm(conversationId);
+
+    // Long-term memory retrieval (only based on the user message for now)
+    const longTerm = await retrieveLongTermMemories(userId, message);
+
+    const longTermBlock = longTerm.length
+      ? longTerm.map(m => `- ${m.memory}`).join("\n")
+      : "";
+
+    const system = systemForMode(mode);
+
+    const input = [
+      { role: "system", content: system },
+      ...(longTermBlock
+        ? [{ role: "system", content: `Long-term memory about the user:\n${longTermBlock}` }]
+        : []),
+      ...shortTerm,
+      { role: "user", content: message }
+    ];
+
+    // Save user message first
+    await saveMessage(conversationId, "user", message);
+
+    const data = await openaiResponses(input);
+    const reply = data?.output_text || "";
+
+    await saveMessage(conversationId, "assistant", reply);
+
+    // Optional: save a long-term memory when it looks stable/important
+    if (shouldSaveAsMemory(message)) {
+      // Keep it short and clean, not the whole rant
+      const trimmed = message.slice(0, 400);
+      await saveLongTermMemory(userId, trimmed, 3);
+    }
+
+    res.json({ reply });
+  } catch (e) {
+    res.status(500).json({ error: "Server exception", detail: String(e) });
+  }
+});
+
+app.get("/health", (req, res) => res.send("ok"));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("TonyOS running on port", PORT));

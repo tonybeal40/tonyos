@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IPT (Innovations in Pharmaceutical Technology) - Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #facc15;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>IPT (Innovations in Pharmaceutical Technology) - Full Media Evaluation</h1>
+        <p>
+          Qualitative review of IPT as part of the Natoli media mix. This page explains where IPT fits, what it is good
+          for, and how the planned front cover logo, e-blasts, banners and back cover ads should be treated in the 2026 plan.
+        </p>
+        <div class="chip-row">
+          <div class="chip">PHARMA MANUFACTURING</div>
+          <div class="chip">SOLID DOSE & TECHNOLOGY</div>
+          <div class="chip">TIER 1 / TIER 2 PHARMA</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">A-</div>
+        <div class="grade-caption">
+          Strong pharma technology focus with real buyer overlap.<br />
+          Best used as a core solid dose channel with structured follow up.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.samedanltd.com/magazine/13" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit IPT site
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary - decision first</h2>
+    <p class="section-intro">
+      IPT is a specialist title focused on pharmaceutical technology and manufacturing. The Natoli package combines front
+      cover logo visibility, multiple e-blasts and resends, newsletter banner positions, and full page back cover ads with
+      2-page advertorials and product news items. Total annual spend is roughly 21,700, split across print, digital and
+      lead generation with about 9,200 in print, 9,200 in digital, and 3,300 devoted to lead gen email activity.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for 2026 planning</h3>
+      <p>
+        IPT should be treated as one of Natoli's primary solid dose and pharma technology channels. It reaches decision
+        makers who care about equipment, process and technical detail, and the program is built to combine branding and
+        direct response.
+      </p>
+      <ul>
+        <li>Front cover logo and back cover pages give Natoli high visual authority in print.</li>
+        <li>Multiple e-blasts and newsletter banners drive direct clicks and lead gen.</li>
+        <li>2-page advertorials and product news items support deeper story telling around tooling and compaction.</li>
+        <li>Overall cost is meaningful, so IPT must sit in the serious buyer cluster, not in the lab awareness bucket.</li>
+      </ul>
+      <p class="pill-tagline">
+        Bottom line: IPT is a core pharma technology partner and should be part of the main commercial media spine for Natoli.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Solid dose and compaction stories that speak to pharma manufacturing teams.</li>
+          <li>Case studies on tablet press performance, tooling life, defect reduction and scale up.</li>
+          <li>Launch or reinforcement of Natoli solutions where both engineering and process people are in the room.</li>
+          <li>Lead generation programs tied to e-blasts, newsletter banners and back cover calls to action.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>General lab or discovery awareness that belongs in broad scientific titles.</li>
+          <li>Non-specific corporate branding with no clear link to solid dose or compaction.</li>
+          <li>One-off placements without aligned sales follow up or C2 tracking.</li>
+          <li>Campaigns where the main KPI is cheap impressions instead of qualified pharma buyers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis - who is actually in the audience</h2>
+    <p class="section-intro">
+      Mapping the IPT audience against the Natoli ICP tiers shows a good mix of pharma manufacturing and technology roles,
+      with a strong Tier 1 and Tier 2 presence.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 - true buyers:</strong> manufacturing, technical operations, engineering and process leaders in
+          pharma who are directly responsible for solid dose equipment, tooling and process performance.
+        </li>
+        <li>
+          <strong>Tier 2 - adjacent roles:</strong> formulation, MS&T, QA and project roles who influence how equipment is
+          chosen and how processes are set up, even if they do not sign the checks.
+        </li>
+        <li>
+          <strong>Tier 3 - background audience:</strong> broader pharma and supplier roles that add reach but sit further
+          away from direct tablet tooling spend.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: IPT offers a strong concentration of pharma technology buyers, especially when compared with generic
+        lab titles, and should be treated as a high value commercial environment.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The IPT program is built as a blend of brand and direct response. The key commercial test is how the buyer density
+      justifies that blended spend.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Front cover and back cover placements give Natoli repeated prominence in each issue where we are present.</li>
+        <li>E-blasts and resends, plus newsletter banners, provide repeat digital touch points and trackable clicks.</li>
+        <li>When filtered for Tier 1 and Tier 2 pharma roles, the cost per real buyer sits in an acceptable range for a
+            premium technology title.</li>
+        <li>ROI depends on disciplined routing of responses into C2 and coordinated follow up from the sales team.</li>
+      </ul>
+      <p class="pill-tagline">
+        For a CFO, IPT looks reasonable as long as it is clearly linked to pipeline and quote activity, not just estimated
+        impressions.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      IPT content sits close to Natoli's world. It focuses on pharmaceutical technology, equipment and process topics rather
+      than pure basic science.
+    </p>
+
+    <div class="card">
+      <h3>Typical topics seen</h3>
+      <ul>
+        <li>Solid dose manufacturing, process technology and pharma equipment features.</li>
+        <li>Articles on process optimisation, technology transfer and manufacturing scale up.</li>
+        <li>Supplier and equipment coverage that speaks to practical production outcomes.</li>
+      </ul>
+      <p class="pill-tagline">
+        This is an environment where tablet compression, tooling performance and defect troubleshooting stories feel natural.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades use the same scale applied across the rest of the Natoli Media Scorecard and combine workbook data with this
+      qualitative analysis.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>A-</span></div>
+        <div class="bubble">Buyer density<span>B+</span></div>
+        <div class="bubble">Scientific credibility<span>B+</span></div>
+        <div class="bubble">Engineering relevance<span>B+</span></div>
+        <div class="bubble">Natoli fit<span>A-</span></div>
+        <div class="bubble">ROI probability<span>Moderate to high</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: IPT is one of the stronger environments for reaching real pharma technology buyers and
+        supporting Natoli's commercial story.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for Dave and leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> high Tier 1 to Tier 2 pharma technology channel.</li>
+        <li><strong>Role:</strong> core solid dose and pharma technology media that supports both Natoli Engineering and
+            Natoli Scientific where relevant.</li>
+        <li><strong>Sales posture:</strong> include IPT in SQL and quote targets and measure performance alongside APR,
+            Tablets and Capsules and other top titles.</li>
+        <li><strong>Budget posture:</strong> maintain meaningful but disciplined investment and adjust based on real
+            opportunity creation and quality of leads.</li>
+      </ul>
+      <p class="pill-tagline">
+        IPT earns its place when Natoli wants to sit in the center of the pharma technology conversation, not on the edges.
+      </p>
+    </div>
+
+    <!-- 8. OS box -->
+    <h2 class="section-title">8. How to reuse this framework for other media buys</h2>
+    <p class="section-intro">
+      This IPT page mirrors the same evaluation structure used for PMT, Labmate, APR and Scientist Live. It lets leadership
+      compare publications quickly without going back into the workbook.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> - how closely the readership matches Natoli's solid dose and compaction ICP.</li>
+        <li><strong>Buyer density</strong> - share of true Tier 1 and Tier 2 pharma buyers versus background audience.</li>
+        <li><strong>Scientific credibility</strong> - strength as a home for Natoli Scientific and technical content.</li>
+        <li><strong>Engineering relevance</strong> - depth on equipment, processes, presses and tooling.</li>
+        <li><strong>Natoli fit</strong> - combined value across Natoli Engineering and Natoli Scientific.</li>
+        <li><strong>ROI probability</strong> - realistic chance that budget leads to commercial outcomes, not just views.</li>
+      </ul>
+      <p class="pill-tagline">
+        Rule of thumb: IPT sits in the core commercial media spine where media budget is expected to connect to sales work,
+        not in the light awareness tier.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2026 planning. Summary based on the IPT sheet in the Media
+      Placement 2025 workbook and the Natoli ICP tiering model.
+    </p>
+  </div>
+</body>
+</html>

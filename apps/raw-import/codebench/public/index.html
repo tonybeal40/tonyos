@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Codebench</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</head>
+<body>
+  <header class="top">
+    <span class="homeLink" id="homeBtn" title="Switch to TonyOS (port 3001)">TonyOS</span>
+    <div class="brand">
+      <div class="brandTitle">Codebench</div>
+      <div class="brandSub">AI powered sandbox</div>
+    </div>
+
+    <div class="toolbar">
+      <div class="group">
+        <button class="btn" id="runBtn">Run</button>
+        <button class="btn" id="openTabBtn">Open tab</button>
+      </div>
+
+      <div class="group">
+        <button class="btn" id="aiDebugBtn">Debug</button>
+        <button class="btn" id="aiImproveBtn">Improve</button>
+        <button class="btn" id="aiBuildBtn">Build</button>
+        <button class="btn" id="aiExplainBtn">Explain</button>
+      </div>
+
+      <div class="group">
+        <button class="btn" id="undoBtn" disabled>Undo AI</button>
+        <span id="status" class="status">Idle</span>
+      </div>
+
+      <div class="group">
+        <button class="btn" id="newProjectBtn">New</button>
+        <button class="btn" id="saveProjectBtn">Save</button>
+        <button class="btn" id="loadProjectBtn">Load</button>
+      </div>
+
+      <div class="group">
+        <select id="templateSelect" class="select">
+          <option value="">Templates</option>
+          <option value="todo">Todo + search + localStorage</option>
+          <option value="landing">Landing page</option>
+          <option value="dashboard">Mini dashboard</option>
+          <option value="form">Form + validation</option>
+        </select>
+      </div>
+
+      <div class="group">
+        <select id="providerSelect" class="select">
+          <option value="openai">OpenAI</option>
+        </select>
+        <select id="modelSelect" class="select">
+          <option value="gpt-4o">GPT-4o</option>
+        </select>
+      </div>
+
+      <div class="group">
+        <button class="btn" id="zipBtn">Download ZIP</button>
+        <button class="btn" id="copyBtn">Copy files</button>
+      </div>
+
+      <div class="group authGroup">
+        <div id="userInfo" class="userInfo hidden">
+          <img id="userAvatar" class="userAvatar" src="" alt="avatar" />
+          <span id="userName"></span>
+          <button class="btn small" id="logoutBtn">Sign out</button>
+        </div>
+        <button class="btn" id="loginBtn">Sign in with Replit</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="html">index.html</button>
+        <button class="tab" data-tab="css">style.css</button>
+        <button class="tab" data-tab="js">app.js</button>
+      </div>
+
+      <div class="editor">
+        <textarea id="html" class="code active" spellcheck="false"></textarea>
+        <textarea id="css" class="code" spellcheck="false"></textarea>
+        <textarea id="js" class="code" spellcheck="false"></textarea>
+      </div>
+
+      <div class="lower">
+        <div class="promptRow">
+          <input id="prompt" placeholder="Tell the AI what to do" />
+          <button class="btn" id="sendPrompt">Send</button>
+        </div>
+
+        <div class="twoCols">
+          <div class="box">
+            <div class="boxHead">
+              <div>AI output</div>
+              <div class="mini" id="aiMeta"></div>
+            </div>
+            <pre id="aiOut" class="out"></pre>
+          </div>
+
+          <div class="box">
+            <div class="boxHead">
+              <div>Errors</div>
+              <div class="boxActions">
+                <button class="btn small" id="clearErrorsBtn">Clear</button>
+                <button class="btn small" id="fixErrorBtn" disabled>Fix with AI</button>
+              </div>
+            </div>
+            <pre id="errOut" class="out err"></pre>
+          </div>
+        </div>
+
+        <div class="history">
+          <div class="boxHead">
+            <div>Prompt history</div>
+            <button class="btn small" id="clearHistoryBtn">Clear</button>
+          </div>
+          <div id="historyList" class="historyList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="previewHeader">
+        <div>Preview</div>
+        <div class="smallMuted">Runs in a sandboxed iframe</div>
+      </div>
+      <iframe id="preview" sandbox="allow-scripts"></iframe>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="modalTitle" id="modalTitle">Load project</div>
+        <button class="btn small" id="closeModalBtn">Close</button>
+      </div>
+      <div id="modalBody" class="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

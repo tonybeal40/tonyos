@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS – Company Intel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="logo-dot"></div>
+          <div class="logo-text">TONYOS</div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item" onclick="window.location.href='/'">
+            <span>Console</span>
+          </button>
+          <button class="nav-item" onclick="window.location.href='/research'">
+            <span>Research</span>
+          </button>
+          <button class="nav-item" onclick="window.location.href='/memory'">
+            <span>Memory</span>
+          </button>
+          <button class="nav-item" onclick="window.location.href='/offer'">
+            <span>AI Revenue Engine</span>
+            <span class="nav-tag">Client view</span>
+          </button>
+          <button class="nav-item" onclick="window.location.href='/tools'">
+            <span>Tools</span>
+          </button>
+          <button class="nav-item active" onclick="window.location.href='/company'">
+            <span>Company intel</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="build-label">TonyOS v0.3 • Company intel online</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-panel">
+      <header class="main-header">
+        <div class="header-left">
+          <p class="eyebrow">Account prep</p>
+          <h1>Company intel & consulting brief.</h1>
+          <p class="subcopy">
+            Drop a company site in here and TonyOS will give you a fast brief:
+            what they do, who they sell to, weak spots, and how you can help.
+          </p>
+        </div>
+
+        <div class="header-right">
+          <div class="summary-card">
+            <div class="summary-label">How to use this</div>
+            <div class="summary-main">
+              Before a call:
+              paste the site, add your goal,
+              and walk in with a sharper POV than anyone else in the room.
+            </div>
+            <div class="summary-divider"></div>
+            <ul class="summary-list">
+              <li>Use for first-call prep</li>
+              <li>Use for outbound targeting</li>
+              <li>Save good briefs into your notes</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section class="research-layout">
+        <!-- Left side: inputs -->
+        <div class="research-input-card">
+          <h2>Company URL</h2>
+          <input
+            id="company-url"
+            type="text"
+            placeholder="https://example.com"
+            style="border-radius:16px;border:1px solid var(--border-soft);padding:8px 10px;font-size:14px;"
+          />
+
+          <h2 style="margin-top:10px;">Your goal with this account</h2>
+          <textarea
+            id="company-goal"
+            rows="3"
+            placeholder="Example: I want a strategy call to show them how AI outbound + RevOps could give them more pipeline without a bigger team."
+          ></textarea>
+
+          <h2 style="margin-top:10px;">Extra notes (optional)</h2>
+          <textarea
+            id="company-notes"
+            rows="3"
+            placeholder="Anything you already know, concerns, where they found you, etc."
+          ></textarea>
+
+          <button id="run-company-btn" class="primary-btn wide" style="margin-top:10px;">
+            Run company intel
+          </button>
+        </div>
+
+        <!-- Right side: output -->
+        <div class="research-output-card">
+          <h2>Consulting brief</h2>
+          <div id="company-output" class="research-output">
+            <p class="muted-text">
+              You will get a short consulting report:
+              what they do, who they sell to, weak spots, how you can help,
+              and a POV you can open the call with.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    async function runCompanyIntel() {
+      const urlInput = document.getElementById("company-url");
+      const goalInput = document.getElementById("company-goal");
+      const notesInput = document.getElementById("company-notes");
+      const output = document.getElementById("company-output");
+
+      const url = urlInput.value.trim();
+      const goal = goalInput.value.trim();
+      const notes = notesInput.value.trim();
+
+      if (!url) {
+        output.textContent = "Please paste a company URL first.";
+        return;
+      }
+
+      output.textContent = "Running company intel and generating your brief...";
+
+      try {
+        const res = await fetch("/analyze_company", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, goal, notes })
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+          output.textContent = data.error;
+          return;
+        }
+
+        const safe = data.report
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+        output.innerHTML =
+          "<pre style='white-space:pre-wrap;font-size:13px;line-height:1.5;'>" +
+          safe +
+          "</pre>";
+      } catch (err) {
+        console.error(err);
+        output.textContent = "Error running intel. Check that the server is running.";
+      }
+    }
+
+    document
+      .getElementById("run-company-btn")
+      .addEventListener("click", runCompanyIntel);
+  </script>
+</body>
+</html>

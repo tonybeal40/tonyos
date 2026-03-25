@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="shell console-shell">
+    <header class="top-bar">
+      <div class="brand">
+        <a href="/" class="brand-link">
+          <div class="online-dot"></div>
+          <span class="brand-title">TonyOS</span>
+        </a>
+        <span class="brand-status" id="status-label">online</span>
+      </div>
+      <div class="top-right">
+        <div class="provider-selector">
+          <select id="model-select" class="model-dropdown">
+            <option value="gpt-4o">GPT-4o (Best)</option>
+            <option value="gpt-4o-mini">GPT-4o Mini (Fast)</option>
+            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+          </select>
+        </div>
+        <div class="persona-selector">
+          <select id="persona-select" class="persona-dropdown">
+            <option value="default">Strategist</option>
+            <option value="engineer">Engineer</option>
+          </select>
+        </div>
+        <div class="mood-selector">
+          <button class="mood-btn active" data-mood="neutral" title="Neutral">😐</button>
+          <button class="mood-btn" data-mood="happy" title="Happy">😊</button>
+          <button class="mood-btn" data-mood="sad" title="Sad">😔</button>
+          <button class="mood-btn" data-mood="mad" title="Mad">😤</button>
+        </div>
+        <label class="truth-toggle">
+          <input type="checkbox" id="truth-mode">
+          <span class="truth-label">Truth Mode</span>
+        </label>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="normal">Deep mode</button>
+          <button class="mode-btn" data-mode="fast">Fast mode</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="console-grid">
+      <section class="panel console">
+        <div class="panel-header">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2>AI Chat</h2>
+              <p>Your personal strategist. Plans, offers, outreach, or anything else.</p>
+            </div>
+            <button id="clear-chat-btn" class="clear-btn" title="Clear chat">Clear</button>
+          </div>
+        </div>
+
+        <div id="chat-log" class="chat-log"></div>
+
+        <form id="chat-form" class="chat-input">
+          <textarea
+            id="chat-message"
+            placeholder="Type your message here..."
+            rows="2"
+          ></textarea>
+          <button type="submit" id="send-btn">Send</button>
+        </form>
+      </section>
+
+      <aside class="panel side">
+        <div class="card">
+          <h3>Current mode</h3>
+          <p id="current-mode-label">Deep mode, for slower but stronger thinking.</p>
+          <ul class="mode-notes">
+            <li><strong>Deep mode</strong> - strategy, writing, complex plans.</li>
+            <li><strong>Fast mode</strong> - quick answers, rapid testing.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Mood & Truth</h3>
+          <p id="mood-label">Mood: Neutral - crisp, balanced responses.</p>
+          <ul class="mode-notes">
+            <li><strong>😐 Neutral</strong> - crisp, balanced</li>
+            <li><strong>😊 Happy</strong> - upbeat, encouraging</li>
+            <li><strong>😔 Sad</strong> - calm, empathetic</li>
+            <li><strong>😤 Mad</strong> - blunt, no excuses</li>
+          </ul>
+          <p class="note" style="margin-top: 0.5rem;">
+            <strong>Truth Mode:</strong> When on, AI cites sources and admits uncertainty.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Memory</h3>
+          <p>
+            TonyOS writes key insights into a local memory file on your machine
+            so it can remember your world across sessions.
+          </p>
+          <ul class="mode-notes">
+            <li>File: <code>long_memory.txt</code></li>
+            <li>Log: <code>memory_log.jsonl</code></li>
+          </ul>
+          <p class="note">
+            This never leaves your machine unless you send it somewhere.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Suggested prompts</h3>
+          <ul class="prompt-list">
+            <li class="prompt-chip" data-prompt="Help me design a one week execution plan for outreach and content.">
+              One week execution plan
+            </li>
+            <li class="prompt-chip" data-prompt="Audit my current projects and tell me what to cut, delegate, or double down on.">
+              Audit my projects
+            </li>
+            <li class="prompt-chip" data-prompt="Help me turn my experience into a clear offer with pricing tiers.">
+              Turn experience into an offer
+            </li>
+            <li class="prompt-chip" data-prompt="Look at my current goals and help me choose the single highest leverage move for this week.">
+              Pick my highest leverage move
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Quick links</h3>
+          <ul class="mode-notes">
+            <li><a href="/">Home</a></li>
+            <li><a href="/chat">Chat</a></li>
+            <li><a href="/research">Research</a></li>
+            <li><a href="/memory">Memory</a></li>
+            <li><a href="/tools">Tools</a></li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+</body>
+</html>

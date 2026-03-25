@@ -1,0 +1,1152 @@
+<script>
+  // ====== SHARED STORAGE KEYS (use these across ALL pages) ======
+  const STORAGE_KEY = "NATOLI_OUTBOUND_CONTACTS_V2";
+  const TARGET_KEY  = "NATOLI_OUTBOUND_WEEKLY_TARGET_V1";
+
+  // ====== GOOGLE APPS SCRIPT WEB APP (YOUR URL) ======
+  const API_URL = "https://script.google.com/macros/s/AKfycbzZSMVIjihGnzUHsliYOvr3zVYzf_-ezy1EeG2S7yZcq0BDVVhmIiuQ1HmUKRtSX8wlpw/exec";
+
+  // Optional broadcast channel: lets Overview refresh automatically when open in another tab.
+  const BC = ("BroadcastChannel" in window) ? new BroadcastChannel("natoli_outbound_updates") : null;
+
+  let contacts = [];
+  let editId = null;
+
+  // Sync control
+  let syncTimer = null;
+  let isSyncing = false;
+  let lastServerSyncAt = 0;
+
+  function setStatus(msg){
+    const el = document.getElementById("importStatus");
+    if (el) el.textContent = msg || "";
+  }
+
+  function broadcastUpdate(){
+    try{
+      if (BC) BC.postMessage({ type:"contacts_updated", at: new Date().toISOString() });
+    }catch(e){}
+    try{
+      localStorage.setItem("NATOLI_OUTBOUND_LAST_UPDATE", String(Date.now()));
+    }catch(e){}
+  }
+
+  function uid() {
+    return "c_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
+
+  function safeLower(s) {
+    return (s || "").trim().toLowerCase();
+  }
+
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
+  function parseIso(iso) {
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function startOfDay(d) {
+    const x = new Date(d);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+
+  function isSameDay(a, b) {
+    return startOfDay(a).getTime() === startOfDay(b).getTime();
+  }
+
+  function startOfWeek(d) {
+    const x = new Date(d);
+    const day = (x.getDay() + 6) % 7; // Monday = 0
+    x.setDate(x.getDate() - day);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+
+  function endOfWeek(d) {
+    const s = startOfWeek(d);
+    const e = new Date(s);
+    e.setDate(e.getDate() + 6);
+    e.setHours(23,59,59,999);
+    return e;
+  }
+
+  function inRange(date, start, end) {
+    const t = date.getTime();
+    return t >= start.getTime() && t <= end.getTime();
+  }
+
+  function formatDateShort(d) {
+    return d.toLocaleDateString(undefined, { month: "short", day: "2-digit" });
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function normalizeContact(c) {
+    const out = Object.assign({}, c);
+
+    out.id = out.id || uid();
+    out.firstName = (out.firstName || out["First Name"] || "").toString();
+    out.lastName = (out.lastName || out["Last Name"] || "").toString();
+    out.title = (out.title || out["Title"] || "").toString();
+    out.company = (out.company || out["Company Name"] || out.companyName || "").toString();
+    out.email = (out.email || out["Email"] || "").toString();
+    out.phone = (out.phone || out["Phone"] || "").toString();
+    out.industry = (out.industry || out["Industry"] || "").toString();
+    out.linkedin = (out.linkedin || out["Person Linkedin Url"] || out.personLinkedinUrl || "").toString();
+
+    out.createdAt = out.createdAt || out["Created At"] || nowIso();
+    out.updatedAt = out.updatedAt || out["Updated At"] || nowIso();
+
+    out.sent = typeof out.sent === "boolean" ? out.sent : (safeLower(out["Sent"]) === "yes");
+    out.sentDate = out.sentDate || out["Sent Date"] || null;
+
+    out.stage = out.stage || out["Stage"] || "New";
+    out.notes = out.notes || out["Notes"] || "";
+    out.nextStep = out.nextStep || out["Next Step"] || "";
+
+    return out;
+  }
+
+  // ====== GOOGLE APPS SCRIPT API HELPERS ======
+  async function apiGetState(){
+    const url = API_URL + "?action=get_state&ts=" + Date.now();
+    const res = await fetch(url, { method: "GET" });
+    if (!res.ok) throw new Error("Server get_state failed: " + res.status);
+    const data = await res.json();
+    if (!data || data.ok === false) throw new Error(data && data.error ? data.error : "Server returned error");
+    return data;
+  }
+
+  async function apiSetState(payload){
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.assign({ action: "set_state" }, payload))
+    });
+    if (!res.ok) throw new Error("Server set_state failed: " + res.status);
+    const data = await res.json();
+    if (!data || data.ok === false) throw new Error(data && data.error ? data.error : "Server returned error");
+    return data;
+  }
+
+  function mergeContacts(localList, remoteList){
+    const local = (Array.isArray(localList) ? localList : []).map(normalizeContact);
+    const remote = (Array.isArray(remoteList) ? remoteList : []).map(normalizeContact);
+
+    // Index by id first
+    const byId = new Map();
+    local.forEach(c => byId.set(c.id, c));
+
+    // Also index by dedupe key for items that do not share id
+    const byKey = new Map();
+    function keyFor(c){
+      const email = safeLower(c.email);
+      if (email) return "e:" + email;
+      const fn = safeLower(c.firstName);
+      const ln = safeLower(c.lastName);
+      const co = safeLower(c.company);
+      if (fn && co) return "n:" + fn + "|" + ln + "|" + co;
+      return "id:" + c.id;
+    }
+    local.forEach(c => byKey.set(keyFor(c), c.id));
+
+    remote.forEach(rc => {
+      const existing = byId.get(rc.id);
+      if (existing) {
+        const eUpd = parseIso(existing.updatedAt) || new Date(0);
+        const rUpd = parseIso(rc.updatedAt) || new Date(0);
+        byId.set(rc.id, (rUpd >= eUpd) ? rc : existing);
+        return;
+      }
+
+      const k = keyFor(rc);
+      const matchId = byKey.get(k);
+      if (matchId && byId.has(matchId)) {
+        const existing2 = byId.get(matchId);
+        const eUpd2 = parseIso(existing2.updatedAt) || new Date(0);
+        const rUpd2 = parseIso(rc.updatedAt) || new Date(0);
+        const winner = (rUpd2 >= eUpd2) ? Object.assign({}, existing2, rc, { id: existing2.id }) : existing2;
+        byId.set(existing2.id, winner);
+        return;
+      }
+
+      byId.set(rc.id, rc);
+      byKey.set(k, rc.id);
+    });
+
+    return Array.from(byId.values());
+  }
+
+  // ====== TARGET LOAD/SAVE ======
+  function loadTarget() {
+    const raw = localStorage.getItem(TARGET_KEY);
+    const n = raw ? Number(raw) : 0;
+    document.getElementById("weeklyTarget").value = (Number.isFinite(n) && n >= 0) ? n : 0;
+  }
+
+  function saveTargetLocal() {
+    const val = Number(document.getElementById("weeklyTarget").value || 0);
+    const clean = Number.isFinite(val) && val >= 0 ? Math.floor(val) : 0;
+    localStorage.setItem(TARGET_KEY, String(clean));
+    broadcastUpdate();
+    renderAll();
+    scheduleSync("Target saved. Sync queued.");
+  }
+
+  // ====== STORAGE LOAD/SAVE ======
+  function loadFromStorageOnly() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      contacts = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(contacts)) contacts = [];
+    } catch (e) {
+      contacts = [];
+    }
+
+    contacts = contacts.map(c => normalizeContact(c));
+    saveToStorage(false);
+    loadTarget();
+    renderAll();
+  }
+
+  function saveToStorage(renderAfter = true) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
+    broadcastUpdate();
+    if (renderAfter) renderAll();
+  }
+
+  // ====== SYNC (LOCAL <-> SERVER) ======
+  function scheduleSync(statusMsg){
+    if (statusMsg) setStatus(statusMsg);
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => syncNow().catch(() => {}), 600); // small debounce
+  }
+
+  async function syncNow(){
+    if (isSyncing) return;
+    isSyncing = true;
+
+    try{
+      setStatus("Syncing to Google Sheets...");
+
+      const targetRaw = localStorage.getItem(TARGET_KEY);
+      const target = targetRaw ? Number(targetRaw) : 0;
+
+      const payload = {
+        contacts: contacts.map(normalizeContact),
+        target: (Number.isFinite(target) && target >= 0) ? Math.floor(target) : 0,
+        clientSyncedAt: nowIso()
+      };
+
+      await apiSetState(payload);
+
+      lastServerSyncAt = Date.now();
+      setStatus("Synced to Google Sheets");
+    }catch(err){
+      setStatus("Sync failed. Still saved locally.\n" + (err && err.message ? err.message : String(err)));
+    }finally{
+      isSyncing = false;
+    }
+  }
+
+  async function pullFromServerAndMerge(){
+    try{
+      setStatus("Loading from Google Sheets...");
+      const data = await apiGetState();
+
+      const remoteContacts = Array.isArray(data.contacts) ? data.contacts : [];
+      const remoteTarget = (data && Number.isFinite(Number(data.target))) ? Math.floor(Number(data.target)) : null;
+
+      // Merge, prefer newer updatedAt
+      contacts = mergeContacts(contacts, remoteContacts);
+
+      // Apply target if server provided it
+      if (remoteTarget !== null) {
+        localStorage.setItem(TARGET_KEY, String(remoteTarget));
+      }
+
+      saveToStorage(true);
+      loadTarget();
+      renderAll();
+
+      setStatus("Loaded from Google Sheets");
+    }catch(err){
+      setStatus("Server load failed. Using local data.\n" + (err && err.message ? err.message : String(err)));
+    }
+  }
+
+  // ====== KPI + RENDERING ======
+  function computeKPIs() {
+    const total = contacts.length;
+    const sentTotal = contacts.filter(c => c.sent).length;
+
+    const today = new Date();
+    const weekStart = startOfWeek(today);
+    const weekEnd = endOfWeek(today);
+
+    const addedToday = contacts.filter(c => {
+      const d = parseIso(c.createdAt);
+      return d ? isSameDay(d, today) : false;
+    }).length;
+
+    const addedWeek = contacts.filter(c => {
+      const d = parseIso(c.createdAt);
+      return d ? inRange(d, weekStart, weekEnd) : false;
+    }).length;
+
+    const sentToday = contacts.filter(c => {
+      const d = parseIso(c.sentDate);
+      return d ? isSameDay(d, today) : false;
+    }).length;
+
+    const sentWeek = contacts.filter(c => {
+      const d = parseIso(c.sentDate);
+      return d ? inRange(d, weekStart, weekEnd) : false;
+    }).length;
+
+    return { total, sentTotal, addedToday, addedWeek, sentToday, sentWeek, weekStart, weekEnd };
+  }
+
+  function renderKPIStrip(k) {
+    document.getElementById("kpiTotal").textContent = k.total;
+    document.getElementById("kpiSent").textContent = k.sentTotal;
+
+    document.getElementById("kpiAddedToday").textContent = k.addedToday;
+    document.getElementById("kpiAddedWeek").textContent = k.addedWeek;
+
+    document.getElementById("kpiSentToday").textContent = k.sentToday;
+    document.getElementById("kpiSentWeek").textContent = k.sentWeek;
+
+    const tag = document.getElementById("kpiProgressTag");
+    tag.innerHTML = `<span class="dot green"></span><span>${k.sentTotal} of ${k.total} completed</span>`;
+
+    document.getElementById("weekRangeLabel").textContent =
+      `Week: ${formatDateShort(k.weekStart)} to ${formatDateShort(k.weekEnd)}`;
+
+    const targetRaw = localStorage.getItem(TARGET_KEY);
+    const target = targetRaw ? Number(targetRaw) : 0;
+    const t = Number.isFinite(target) && target > 0 ? target : 0;
+
+    const pct = t === 0 ? 0 : Math.min(100, Math.round((k.sentWeek / t) * 100));
+    document.getElementById("weekProgressBar").style.width = pct + "%";
+
+    const progText = document.getElementById("weekProgressText");
+    if (t === 0) {
+      progText.textContent = `${k.sentWeek} sent this week. Set a target to track pace`;
+    } else {
+      const remaining = Math.max(0, t - k.sentWeek);
+      progText.textContent = `${k.sentWeek} of ${t} sent this week. ${remaining} remaining`;
+    }
+  }
+
+  function applyViewFilters(list) {
+    const q = safeLower(document.getElementById("search").value);
+    const filter = document.getElementById("filterSent").value;
+
+    let out = list.slice();
+
+    if (q) {
+      out = out.filter(c => {
+        const hay = [c.firstName, c.lastName, c.company, c.email, c.title, c.industry]
+          .map(safeLower).join(" ");
+        return hay.includes(q);
+      });
+    }
+
+    if (filter === "sent") out = out.filter(c => c.sent);
+    if (filter === "notSent") out = out.filter(c => !c.sent);
+
+    const sortBy = document.getElementById("sortBy").value;
+
+    out.sort((a,b) => {
+      const da = parseIso(a.createdAt) || new Date(0);
+      const db = parseIso(b.createdAt) || new Date(0);
+      const sa = parseIso(a.sentDate) || new Date(0);
+      const sb = parseIso(b.sentDate) || new Date(0);
+
+      if (sortBy === "newest") return db - da;
+      if (sortBy === "oldest") return da - db;
+      if (sortBy === "companyAZ") return safeLower(a.company).localeCompare(safeLower(b.company));
+      if (sortBy === "companyZA") return safeLower(b.company).localeCompare(safeLower(a.company));
+      if (sortBy === "sentNewest") return sb - sa;
+      if (sortBy === "sentOldest") return sa - sb;
+      return db - da;
+    });
+
+    return out;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("contactsBody");
+    tbody.innerHTML = "";
+
+    const view = applyViewFilters(contacts);
+
+    view.forEach(c => {
+      const tr = document.createElement("tr");
+
+      const makeCell = (text, isLink) => {
+        const td = document.createElement("td");
+        if (isLink && text && text.startsWith("http")) {
+          const a = document.createElement("a");
+          a.href = text;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = "Profile";
+          td.appendChild(a);
+        } else {
+          td.textContent = text || "";
+        }
+        return td;
+      };
+
+      tr.appendChild(makeCell(c.firstName));
+      tr.appendChild(makeCell(c.lastName));
+      tr.appendChild(makeCell(c.title));
+      tr.appendChild(makeCell(c.company));
+      tr.appendChild(makeCell(c.email));
+      tr.appendChild(makeCell(c.phone));
+      tr.appendChild(makeCell(c.industry));
+      tr.appendChild(makeCell(c.linkedin, true));
+
+      const stageTd = document.createElement("td");
+      const stagePill = document.createElement("span");
+      stagePill.className = "pill-stage";
+      stagePill.textContent = c.stage || "New";
+      stageTd.appendChild(stagePill);
+      tr.appendChild(stageTd);
+
+      const statusTd = document.createElement("td");
+      const sp = document.createElement("span");
+      sp.className = c.sent ? "pill-sent" : "pill-not";
+      sp.textContent = c.sent ? "Sent" : "Not sent";
+      statusTd.appendChild(sp);
+      tr.appendChild(statusTd);
+
+      tr.appendChild(makeCell(c.nextStep));
+
+      const notesTd = document.createElement("td");
+      notesTd.className = "mini-note";
+      notesTd.textContent = c.notes || "";
+      tr.appendChild(notesTd);
+
+      const actionsTd = document.createElement("td");
+      actionsTd.style.whiteSpace = "normal";
+
+      const actions = document.createElement("div");
+      actions.className = "row-actions";
+
+      const b1 = document.createElement("button");
+      b1.className = "btn-small btn-ghost";
+      b1.textContent = c.sent ? "Mark not sent" : "Mark sent";
+      b1.addEventListener("click", () => toggleSent(c.id));
+      actions.appendChild(b1);
+
+      const b2 = document.createElement("button");
+      b2.className = "btn-small btn-ghost";
+      b2.textContent = "Edit";
+      b2.addEventListener("click", () => loadForEdit(c.id));
+      actions.appendChild(b2);
+
+      const b3 = document.createElement("button");
+      b3.className = "btn-small btn-ghost";
+      b3.textContent = "Copy email";
+      b3.addEventListener("click", () => copyToClipboard(c.email || ""));
+      actions.appendChild(b3);
+
+      const b4 = document.createElement("button");
+      b4.className = "btn-small btn-ghost";
+      b4.textContent = "Open LinkedIn";
+      b4.addEventListener("click", () => {
+        if (c.linkedin && c.linkedin.startsWith("http")) window.open(c.linkedin, "_blank", "noopener");
+      });
+      actions.appendChild(b4);
+
+      const b5 = document.createElement("button");
+      b5.className = "btn-small btn-danger";
+      b5.textContent = "Delete";
+      b5.addEventListener("click", () => deleteContact(c.id));
+      actions.appendChild(b5);
+
+      actionsTd.appendChild(actions);
+      tr.appendChild(actionsTd);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function copyToClipboard(text) {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const t = document.createElement("textarea");
+      t.value = text;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand("copy");
+      document.body.removeChild(t);
+    }
+  }
+
+  function upsertByDedupe(contact) {
+    const emailKey = safeLower(contact.email);
+    const keyName = safeLower(contact.firstName) + "|" + safeLower(contact.lastName) + "|" + safeLower(contact.company);
+
+    let idx = -1;
+
+    if (emailKey) {
+      idx = contacts.findIndex(c => safeLower(c.email) === emailKey);
+    } else if (safeLower(contact.firstName) && safeLower(contact.company)) {
+      idx = contacts.findIndex(c => {
+        const k = safeLower(c.firstName) + "|" + safeLower(c.lastName) + "|" + safeLower(c.company);
+        return k === keyName;
+      });
+    }
+
+    if (idx >= 0) {
+      const existing = contacts[idx];
+      contacts[idx] = Object.assign({}, existing, contact, {
+        id: existing.id,
+        createdAt: existing.createdAt || contact.createdAt,
+        sent: typeof contact.sent === "boolean" ? contact.sent : existing.sent,
+        sentDate: contact.sent ? (contact.sentDate || existing.sentDate || nowIso()) : (contact.sent === false ? null : existing.sentDate),
+        updatedAt: nowIso()
+      });
+      return { mode: "updated" };
+    } else {
+      contacts.push(Object.assign({}, contact, { id: uid(), updatedAt: nowIso() }));
+      return { mode: "added" };
+    }
+  }
+
+  function addOrUpdateFromForm(e) {
+    e.preventDefault();
+
+    const contact = {
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      title: document.getElementById("title").value.trim(),
+      company: document.getElementById("company").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      industry: document.getElementById("industry").value.trim(),
+      linkedin: document.getElementById("linkedin").value.trim(),
+      stage: document.getElementById("stage").value,
+      nextStep: document.getElementById("nextStep").value.trim(),
+      notes: document.getElementById("notes").value.trim(),
+      createdAt: nowIso(),
+      sent: false,
+      sentDate: null
+    };
+
+    if (!contact.firstName) {
+      alert("First name is required");
+      return;
+    }
+
+    if (editId) {
+      const idx = contacts.findIndex(c => c.id === editId);
+      if (idx >= 0) {
+        const existing = contacts[idx];
+        contacts[idx] = Object.assign({}, existing, contact, {
+          id: existing.id,
+          createdAt: existing.createdAt,
+          updatedAt: nowIso()
+        });
+        editId = null;
+        document.getElementById("submitBtn").textContent = "Add contact to list";
+      }
+      saveToStorage();
+      setStatus("Saved changes. Sync queued.");
+      scheduleSync();
+      e.target.reset();
+      return;
+    }
+
+    const result = upsertByDedupe(contact);
+    saveToStorage();
+    setStatus(result.mode === "updated" ? "Updated existing record (dedupe match). Sync queued." : "Added contact. Sync queued.");
+    scheduleSync();
+
+    e.target.reset();
+  }
+
+  function loadForEdit(id) {
+    const c = contacts.find(x => x.id === id);
+    if (!c) return;
+
+    editId = id;
+
+    document.getElementById("firstName").value = c.firstName || "";
+    document.getElementById("lastName").value = c.lastName || "";
+    document.getElementById("title").value = c.title || "";
+    document.getElementById("company").value = c.company || "";
+    document.getElementById("email").value = c.email || "";
+    document.getElementById("phone").value = c.phone || "";
+    document.getElementById("industry").value = c.industry || "";
+    document.getElementById("linkedin").value = c.linkedin || "";
+    document.getElementById("stage").value = c.stage || "New";
+    document.getElementById("nextStep").value = c.nextStep || "";
+    document.getElementById("notes").value = c.notes || "";
+
+    document.getElementById("submitBtn").textContent = "Save changes";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function toggleSent(id) {
+    const idx = contacts.findIndex(c => c.id === id);
+    if (idx < 0) return;
+
+    const c = contacts[idx];
+    const next = !c.sent;
+
+    c.sent = next;
+    c.sentDate = next ? nowIso() : null;
+    c.updatedAt = nowIso();
+
+    if (next && (c.stage === "New" || c.stage === "Researched")) c.stage = "Contacted";
+    if (!next && c.stage === "Contacted") c.stage = "Researched";
+
+    saveToStorage();
+    setStatus("Updated status. Sync queued.");
+    scheduleSync();
+  }
+
+  function deleteContact(id) {
+    const c = contacts.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm(`Delete ${c.firstName || ""} ${c.lastName || ""} at ${c.company || ""}?`)) return;
+
+    contacts = contacts.filter(x => x.id !== id);
+    saveToStorage();
+    setStatus("Deleted. Sync queued.");
+    scheduleSync();
+  }
+
+  function clearAllContacts() {
+    if (!confirm("Clear all contacts from this page storage and Google Sheets?")) return;
+    contacts = [];
+    localStorage.removeItem(STORAGE_KEY);
+    broadcastUpdate();
+    renderAll();
+    setStatus("Cleared all contacts. Sync queued.");
+    scheduleSync();
+  }
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let cur = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const next = text[i + 1];
+
+      if (ch === '"' && inQuotes && next === '"') {
+        cur += '"';
+        i++;
+        continue;
+      }
+
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+        continue;
+      }
+
+      if (ch === "," && !inQuotes) {
+        row.push(cur);
+        cur = "";
+        continue;
+      }
+
+      if ((ch === "\n" || ch === "\r") && !inQuotes) {
+        if (ch === "\r" && next === "\n") i++;
+        row.push(cur);
+        cur = "";
+        if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+        row = [];
+        continue;
+      }
+
+      cur += ch;
+    }
+
+    row.push(cur);
+    if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+    return rows;
+  }
+
+  function handleCsvImport() {
+    const input = document.getElementById("csvFile");
+
+    if (!input.files || !input.files[0]) {
+      alert("Choose a CSV file first");
+      return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      const text = e.target.result;
+      const rows = parseCSV(String(text || ""));
+
+      if (rows.length < 2) {
+        setStatus("CSV looks empty or missing rows");
+        return;
+      }
+
+      const header = rows[0].map(h => safeLower(String(h)));
+      const col = (name) => header.indexOf(safeLower(name));
+
+      const idxFirst = col("first name");
+      const idxLast = col("last name");
+      const idxTitle = col("title");
+      const idxCompany = col("company name");
+      const idxEmail = col("email");
+      const idxPhone = col("phone");
+      const idxIndustry = col("industry");
+      const idxLinkedin = col("person linkedin url");
+
+      const idxStage = col("stage");
+      const idxNotes = col("notes");
+      const idxNext = col("next step");
+      const idxCreated = col("created at");
+      const idxSent = col("sent");
+      const idxSentDate = col("sent date");
+      const idxUpdated = col("updated at");
+
+      let added = 0;
+      let updated = 0;
+
+      for (let r = 1; r < rows.length; r++) {
+        const row = rows[r];
+
+        const contact = normalizeContact({
+          firstName: idxFirst >= 0 ? String(row[idxFirst] || "").trim() : "",
+          lastName: idxLast >= 0 ? String(row[idxLast] || "").trim() : "",
+          title: idxTitle >= 0 ? String(row[idxTitle] || "").trim() : "",
+          company: idxCompany >= 0 ? String(row[idxCompany] || "").trim() : "",
+          email: idxEmail >= 0 ? String(row[idxEmail] || "").trim() : "",
+          phone: idxPhone >= 0 ? String(row[idxPhone] || "").trim() : "",
+          industry: idxIndustry >= 0 ? String(row[idxIndustry] || "").trim() : "",
+          linkedin: idxLinkedin >= 0 ? String(row[idxLinkedin] || "").trim() : "",
+          stage: idxStage >= 0 ? String(row[idxStage] || "").trim() : "New",
+          notes: idxNotes >= 0 ? String(row[idxNotes] || "").trim() : "",
+          nextStep: idxNext >= 0 ? String(row[idxNext] || "").trim() : "",
+          createdAt: idxCreated >= 0 ? String(row[idxCreated] || "").trim() : nowIso(),
+          updatedAt: idxUpdated >= 0 ? String(row[idxUpdated] || "").trim() : nowIso(),
+          sent: idxSent >= 0 ? safeLower(String(row[idxSent] || "")) === "yes" : false,
+          sentDate: idxSentDate >= 0 ? String(row[idxSentDate] || "").trim() : null
+        });
+
+        if (!contact.firstName && !contact.email && !contact.company) continue;
+
+        const res = upsertByDedupe(contact);
+        if (res.mode === "updated") updated++;
+        else added++;
+      }
+
+      saveToStorage();
+      setStatus(`Imported ${file.name}\nAdded: ${added}\nUpdated (dedupe): ${updated}\nSync queued.`);
+      scheduleSync();
+    };
+
+    reader.onerror = () => alert("Could not read file");
+    reader.readAsText(file);
+  }
+
+  function csvQuote(val) {
+    const s = String(val ?? "");
+    const needs = s.includes(",") || s.includes('"') || s.includes("\n") || s.includes("\r");
+    if (!needs) return s;
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+
+  function getExportList(mode) {
+    const today = new Date();
+    const wStart = startOfWeek(today);
+    const wEnd = endOfWeek(today);
+
+    if (mode === "sent") return contacts.filter(c => c.sent);
+    if (mode === "notSent") return contacts.filter(c => !c.sent);
+    if (mode === "thisWeek") {
+      return contacts.filter(c => {
+        const d = parseIso(c.createdAt);
+        return d ? inRange(d, wStart, wEnd) : false;
+      });
+    }
+    return contacts.slice();
+  }
+
+  function exportCsv() {
+    const mode = document.getElementById("exportMode").value;
+    const list = getExportList(mode);
+
+    if (!list.length) {
+      alert("No contacts to export in this mode");
+      return;
+    }
+
+    const headers = [
+      "First Name","Last Name","Title","Company Name","Email","Phone","Industry","Person Linkedin Url",
+      "Stage","Next Step","Notes","Created At","Updated At","Sent","Sent Date"
+    ];
+
+    const lines = [];
+    lines.push(headers.join(","));
+
+    list.forEach(c => {
+      const row = [
+        c.firstName || "",
+        c.lastName || "",
+        c.title || "",
+        c.company || "",
+        c.email || "",
+        c.phone || "",
+        c.industry || "",
+        c.linkedin || "",
+        c.stage || "",
+        c.nextStep || "",
+        c.notes || "",
+        c.createdAt || "",
+        c.updatedAt || "",
+        c.sent ? "Yes" : "No",
+        c.sentDate || ""
+      ].map(csvQuote).join(",");
+      lines.push(row);
+    });
+
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `natoli_outbound_contacts_${mode}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadJsonBackup() {
+    const payload = { exportedAt: nowIso(), version: 2, contacts };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "natoli_outbound_contacts_backup.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function restoreJson() {
+    const input = document.getElementById("jsonFile");
+
+    if (!input.files || !input.files[0]) {
+      alert("Choose a JSON file first");
+      return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      try {
+        const payload = JSON.parse(String(e.target.result || "{}"));
+        const list = Array.isArray(payload.contacts) ? payload.contacts : (Array.isArray(payload) ? payload : null);
+        if (!list) {
+          setStatus("JSON format not recognized");
+          return;
+        }
+
+        const normalized = list.map(c => normalizeContact(c));
+
+        let added = 0, updated = 0;
+        normalized.forEach(c => {
+          const res = upsertByDedupe(c);
+          if (res.mode === "updated") updated++;
+          else added++;
+        });
+
+        saveToStorage();
+        setStatus(`Restored from ${file.name}\nAdded: ${added}\nUpdated (dedupe): ${updated}\nSync queued.`);
+        scheduleSync();
+      } catch (err) {
+        setStatus("Could not parse JSON file");
+      }
+    };
+
+    reader.onerror = () => alert("Could not read file");
+    reader.readAsText(file);
+  }
+
+  function toggleListVisibility() {
+    document.getElementById("listSection").classList.toggle("hidden");
+  }
+
+  function renderWeeklyChart() {
+    const canvas = document.getElementById("weeklyChart");
+    const ctx = canvas.getContext("2d");
+
+    const cssWidth = canvas.clientWidth;
+    const cssHeight = canvas.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(cssWidth * dpr);
+    canvas.height = Math.floor(cssHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const w = cssWidth;
+    const h = cssHeight;
+
+    ctx.clearRect(0,0,w,h);
+
+    const today = new Date();
+    const thisWeekStart = startOfWeek(today);
+
+    const weeks = [];
+    for (let i = 7; i >= 0; i--) {
+      const s = new Date(thisWeekStart);
+      s.setDate(s.getDate() - (i * 7));
+      const e = new Date(s);
+      e.setDate(e.getDate() + 6);
+      e.setHours(23,59,59,999);
+      weeks.push({ start: s, end: e, added: 0, sent: 0 });
+    }
+
+    contacts.forEach(c => {
+      const created = parseIso(c.createdAt);
+      const sent = parseIso(c.sentDate);
+
+      weeks.forEach(wk => {
+        if (created && inRange(created, wk.start, wk.end)) wk.added++;
+        if (sent && inRange(sent, wk.start, wk.end)) wk.sent++;
+      });
+    });
+
+    const maxVal = Math.max(1, ...weeks.map(x => Math.max(x.added, x.sent)));
+
+    const padL = 36;
+    const padR = 12;
+    const padT = 12;
+    const padB = 28;
+
+    ctx.strokeStyle = "rgba(34,38,56,.75)";
+    ctx.lineWidth = 1;
+
+    const gridY = 4;
+    for (let i = 0; i <= gridY; i++) {
+      const y = padT + (i / gridY) * (h - padT - padB);
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(w - padR, y);
+      ctx.stroke();
+    }
+
+    const plotW = (w - padL - padR);
+    const plotH = (h - padT - padB);
+    const groupW = plotW / weeks.length;
+    const barW = Math.max(10, groupW * 0.28);
+    const gap = groupW * 0.10;
+
+    function yFor(val) {
+      const pct = val / maxVal;
+      return padT + (1 - pct) * plotH;
+    }
+
+    const red = "rgba(255,59,106,.95)";
+    const green = "rgba(34,197,94,.9)";
+    const text = "rgba(177,182,200,.95)";
+
+    ctx.font = "12px system-ui, -apple-system, Segoe UI, sans-serif";
+    ctx.fillStyle = text;
+
+    weeks.forEach((wk, i) => {
+      const x0 = padL + i * groupW;
+
+      const xAdded = x0 + gap;
+      const xSent = xAdded + barW + gap;
+
+      const yA = yFor(wk.added);
+      ctx.fillStyle = red;
+      ctx.fillRect(xAdded, yA, barW, padT + plotH - yA);
+
+      const yS = yFor(wk.sent);
+      ctx.fillStyle = green;
+      ctx.fillRect(xSent, yS, barW, padT + plotH - yS);
+
+      ctx.fillStyle = text;
+      const label = wk.start.toLocaleDateString(undefined, { month:"short", day:"2-digit" });
+      ctx.fillText(label, x0 + 2, h - 10);
+    });
+
+    ctx.fillStyle = text;
+    ctx.fillText(String(maxVal), 6, padT + 10);
+    ctx.fillText("0", 12, h - padB + 10);
+  }
+
+  function renderCompanyRollup() {
+    const tbody = document.getElementById("companyBody");
+    tbody.innerHTML = "";
+
+    const q = safeLower(document.getElementById("companySearch").value);
+    const limit = Number(document.getElementById("rollupLimit").value || 15);
+
+    const map = new Map();
+
+    contacts.forEach(c => {
+      const name = (c.company || "").trim() || "(No company)";
+      const key = safeLower(name);
+      if (q && !key.includes(q)) return;
+
+      if (!map.has(key)) {
+        map.set(key, {
+          company: name,
+          contacts: 0,
+          sent: 0,
+          notSent: 0,
+          lastActivity: null,
+          nextCue: ""
+        });
+      }
+      const agg = map.get(key);
+      agg.contacts++;
+      if (c.sent) agg.sent++;
+      else agg.notSent++;
+
+      const dates = [parseIso(c.updatedAt), parseIso(c.sentDate), parseIso(c.createdAt)].filter(Boolean);
+      const best = dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : null;
+      if (best && (!agg.lastActivity || best > agg.lastActivity)) agg.lastActivity = best;
+
+      const cue = (c.nextStep || "").trim();
+      if (cue) {
+        const cueDate = parseIso(c.updatedAt) || parseIso(c.createdAt) || new Date(0);
+        const aggCueDate = agg._cueDate || new Date(0);
+        if (cueDate > aggCueDate) {
+          agg.nextCue = cue;
+          agg._cueDate = cueDate;
+        }
+      }
+    });
+
+    let rows = Array.from(map.values());
+
+    rows.sort((a,b) => {
+      if (b.contacts !== a.contacts) return b.contacts - a.contacts;
+      const da = a.lastActivity ? a.lastActivity.getTime() : 0;
+      const db = b.lastActivity ? b.lastActivity.getTime() : 0;
+      return db - da;
+    });
+
+    rows = rows.slice(0, limit);
+
+    const atRiskCount = rows.filter(r => r.contacts >= 3 && r.sent === 0).length;
+    document.getElementById("riskBadge").textContent = `${atRiskCount} at risk`;
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.className = "click-row";
+      tr.title = "Click to filter list by this company";
+      tr.addEventListener("click", () => {
+        document.getElementById("search").value = r.company === "(No company)" ? "" : r.company;
+        document.getElementById("filterSent").value = "all";
+        document.getElementById("sortBy").value = "newest";
+        const listSection = document.getElementById("listSection");
+        if (listSection.classList.contains("hidden")) listSection.classList.remove("hidden");
+        renderTable();
+      });
+
+      const rate = r.contacts === 0 ? 0 : Math.round((r.sent / r.contacts) * 100);
+      const last = r.lastActivity ? r.lastActivity.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" }) : "";
+
+      const flagTd = document.createElement("td");
+      if (r.contacts >= 3 && r.sent === 0) {
+        const risk = document.createElement("span");
+        risk.className = "pill-risk";
+        risk.textContent = "At risk";
+        flagTd.appendChild(risk);
+      } else {
+        flagTd.textContent = "";
+      }
+
+      tr.innerHTML = `
+        <td>${escapeHtml(r.company)}</td>
+        <td>${r.contacts}</td>
+        <td>${r.sent}</td>
+        <td>${r.notSent}</td>
+        <td>${rate}%</td>
+        <td>${last}</td>
+        <td class="mini-note">${escapeHtml(r.nextCue || "")}</td>
+      `;
+      tr.appendChild(flagTd);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderAll() {
+    const k = computeKPIs();
+    renderKPIStrip(k);
+    renderWeeklyChart();
+    renderCompanyRollup();
+    renderTable();
+  }
+
+  // ====== Event wiring ======
+  document.getElementById("contactForm").addEventListener("submit", addOrUpdateFromForm);
+  document.getElementById("clearAll").addEventListener("click", clearAllContacts);
+
+  document.getElementById("importCsv").addEventListener("click", handleCsvImport);
+  document.getElementById("exportCsv").addEventListener("click", exportCsv);
+
+  document.getElementById("backupJson").addEventListener("click", downloadJsonBackup);
+  document.getElementById("restoreJson").addEventListener("click", restoreJson);
+
+  document.getElementById("toggleList").addEventListener("click", toggleListVisibility);
+
+  document.getElementById("saveTarget").addEventListener("click", saveTargetLocal);
+
+  ["search","filterSent","sortBy"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderTable);
+    document.getElementById(id).addEventListener("change", renderTable);
+  });
+
+  ["companySearch","rollupLimit"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderCompanyRollup);
+    document.getElementById(id).addEventListener("change", renderCompanyRollup);
+  });
+
+  window.addEventListener("resize", () => renderWeeklyChart());
+
+  // If another tab updates the data, refresh automatically
+  window.addEventListener("storage", (e) => {
+    if (e.key === STORAGE_KEY || e.key === "NATOLI_OUTBOUND_LAST_UPDATE") {
+      loadFromStorageOnly();
+      // Also pull from server in the background
+      pullFromServerAndMerge();
+    }
+  });
+  if (BC) {
+    BC.onmessage = (msg) => {
+      if (msg && msg.data && msg.data.type === "contacts_updated") {
+        loadFromStorageOnly();
+        pullFromServerAndMerge();
+      }
+    };
+  }
+
+  // ====== Boot ======
+  // 1) Fast local load
+  loadFromStorageOnly();
+  // 2) Then server load + merge
+  pullFromServerAndMerge();
+</script>

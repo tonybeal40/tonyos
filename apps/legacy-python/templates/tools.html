@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS – Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-dot"></div>
+        <div class="logo-text">TONYOS</div>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-item" onclick="window.location.href='/'">
+          <span>Console</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='/research'">
+          <span>Research</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='/memory'">
+          <span>Memory</span>
+        </button>
+        <button class="nav-item active" onclick="window.location.href='/tools'">
+          <span>Tools</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="build-label">TonyOS v1.0 • Local</div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="main-header">
+        <div class="header-left">
+          <p class="eyebrow">Execution shortcuts</p>
+          <h1>Tools that turn ideas into assets.</h1>
+          <p class="subcopy">
+            Use these builders when you want something concrete: an offer,
+            an outbound message, content ideas, or account intel.
+          </p>
+        </div>
+      </header>
+
+      <section class="tools-grid">
+        <!-- Offer Builder -->
+        <div class="tool-card">
+          <div class="tool-label">Offer builder</div>
+          <h2>Turn a rough idea into a clear offer.</h2>
+          <p class="tool-copy">
+            Give me the basics and I will return a name, pitch, bullets, and who it is for.
+          </p>
+
+          <label class="tool-label">Audience</label>
+          <textarea id="offer-audience" rows="2" placeholder="Who is this for?"></textarea>
+
+          <label class="tool-label">Main problem</label>
+          <textarea id="offer-problem" rows="2" placeholder="What is hurting them or slowing them down?"></textarea>
+
+          <label class="tool-label">Desired outcome</label>
+          <textarea id="offer-outcome" rows="2" placeholder="What result do you want to help them get?"></textarea>
+
+          <label class="tool-label">Proof / assets</label>
+          <textarea id="offer-proof" rows="2" placeholder="Wins, experience, systems, or case studies you can lean on."></textarea>
+
+          <button class="primary-btn" style="margin-top:8px;" onclick="runOfferBuilder()">
+            Generate offer
+          </button>
+
+          <div id="offer-output" class="tool-output"></div>
+        </div>
+
+        <!-- Outreach Generator -->
+        <div class="tool-card">
+          <div class="tool-label">Outreach generator</div>
+          <h2>Challenger-style outbound.</h2>
+          <p class="tool-copy">
+            Get a short email, a LinkedIn note, and a follow-up line built around your offer.
+          </p>
+
+          <label class="tool-label">Persona / target</label>
+          <textarea id="outreach-persona" rows="2" placeholder="Role, industry, what they own."></textarea>
+
+          <label class="tool-label">Context</label>
+          <textarea id="outreach-context" rows="2" placeholder="What is happening in their world or account?"></textarea>
+
+          <label class="tool-label">Offer or angle</label>
+          <textarea id="outreach-angle" rows="2" placeholder="What are you leading with?"></textarea>
+
+          <label class="tool-label">Channel</label>
+          <input id="outreach-channel" type="text" placeholder="email + LinkedIn (default)" />
+
+          <button class="primary-btn" style="margin-top:8px;" onclick="runOutreachBuilder()">
+            Generate outreach
+          </button>
+
+          <div id="outreach-output" class="tool-output"></div>
+        </div>
+
+        <!-- Content Ideas -->
+        <div class="tool-card">
+          <div class="tool-label">Content ideas</div>
+          <h2>Posts that point back to pipeline.</h2>
+          <p class="tool-copy">
+            Plan content that builds demand and credibility instead of random inspiration.
+          </p>
+
+          <label class="tool-label">Niche / focus</label>
+          <textarea id="content-niche" rows="2" placeholder="Example: AI for manufacturing founders, RevOps, etc."></textarea>
+
+          <label class="tool-label">Platform</label>
+          <input id="content-platform" type="text" value="LinkedIn (default)" />
+
+          <label class="tool-label">Angle / themes</label>
+          <textarea id="content-themes" rows="2" placeholder="What do you want to hammer on?"></textarea>
+
+          <button class="primary-btn" style="margin-top:8px;" onclick="runContentIdeas()">
+            Generate content ideas
+          </button>
+
+          <div id="content-output" class="tool-output"></div>
+        </div>
+
+        <!-- Company Intel -->
+        <div class="tool-card" style="grid-column: 1 / -1;">
+          <div class="tool-label">Company intel</div>
+          <h2>Quick account brief from a URL.</h2>
+          <p class="tool-copy">
+            Paste a company site and your goal. TonyOS will pull out positioning angles and talking points.
+          </p>
+
+          <label class="tool-label">Company URL</label>
+          <input id="intel-url" type="text" placeholder="https://example.com" />
+
+          <label class="tool-label">Your goal with this account</label>
+          <textarea id="intel-goal" rows="2" placeholder="Example: Start a conversation about fractional RevOps help."></textarea>
+
+          <button class="primary-btn" style="margin-top:8px;" onclick="runCompanyIntel()">
+            Run company intel
+          </button>
+
+          <div id="intel-output" class="tool-output"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    async function runOfferBuilder() {
+      const audience = document.getElementById("offer-audience").value;
+      const problem = document.getElementById("offer-problem").value;
+      const outcome = document.getElementById("offer-outcome").value;
+      const proof = document.getElementById("offer-proof").value;
+      const out = document.getElementById("offer-output");
+      out.textContent = "Thinking through your offer...";
+
+      try {
+        const res = await fetch("/api/offer_builder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audience, problem, outcome, proof })
+        });
+        const data = await res.json();
+        out.textContent = data.text || data.error || "No response.";
+      } catch (err) {
+        out.textContent = "Error. Check the server.";
+      }
+    }
+
+    async function runOutreachBuilder() {
+      const persona = document.getElementById("outreach-persona").value;
+      const context = document.getElementById("outreach-context").value;
+      const angle = document.getElementById("outreach-angle").value;
+      const channel = document.getElementById("outreach-channel").value;
+      const out = document.getElementById("outreach-output");
+      out.textContent = "Drafting outreach...";
+
+      try {
+        const res = await fetch("/api/outreach_builder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ persona, context, angle, channel })
+        });
+        const data = await res.json();
+        out.textContent = data.text || data.error || "No response.";
+      } catch (err) {
+        out.textContent = "Error. Check the server.";
+      }
+    }
+
+    async function runContentIdeas() {
+      const niche = document.getElementById("content-niche").value;
+      const platform = document.getElementById("content-platform").value;
+      const themes = document.getElementById("content-themes").value;
+      const out = document.getElementById("content-output");
+      out.textContent = "Generating ideas...";
+
+      try {
+        const res = await fetch("/api/content_ideas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ niche, platform, themes })
+        });
+        const data = await res.json();
+        out.textContent = data.text || data.error || "No response.";
+      } catch (err) {
+        out.textContent = "Error. Check the server.";
+      }
+    }
+
+    async function runCompanyIntel() {
+      const url = document.getElementById("intel-url").value;
+      const goal = document.getElementById("intel-goal").value;
+      const out = document.getElementById("intel-output");
+      out.textContent = "Pulling company intel...";
+
+      try {
+        const res = await fetch("/api/company_intel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, goal })
+        });
+        const data = await res.json();
+        out.textContent = data.text || data.error || "No response.";
+      } catch (err) {
+        out.textContent = "Error. Check the server.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TM-II Software Design Specification | SPEC-0169357</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', 'Calibri', Arial, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      line-height: 1.7;
+      font-size: 11pt;
+    }
+    
+    .no-print {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .no-print h1 {
+      color: #60a5fa;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .no-print .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .no-print button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-word { background: #2563eb; color: white; }
+    .btn-pdf { background: #dc2626; color: white; }
+    .btn-word:hover { background: #1d4ed8; }
+    .btn-pdf:hover { background: #b91c1c; }
+    
+    .document {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 60px;
+      background: white;
+    }
+    
+    .doc-header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 3px solid #1e3a5f;
+    }
+    
+    .doc-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    
+    .doc-header h1 {
+      font-size: 1.8rem;
+      color: #1e3a5f;
+      margin-bottom: 10px;
+    }
+    
+    .doc-header .subtitle {
+      font-size: 1.3rem;
+      color: #475569;
+    }
+    
+    .doc-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 30px 0;
+      padding: 25px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    
+    .doc-meta p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    
+    .doc-meta strong {
+      color: #1e3a5f;
+      min-width: 140px;
+      display: inline-block;
+    }
+    
+    h2 {
+      color: #1e3a5f;
+      font-size: 1.3rem;
+      margin-top: 40px;
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      background: linear-gradient(90deg, #1e3a5f, #2563eb);
+      color: white;
+      border-radius: 4px;
+    }
+    
+    h3 {
+      color: #1e3a5f;
+      font-size: 1.1rem;
+      margin-top: 25px;
+      margin-bottom: 12px;
+      padding-left: 10px;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    h4 {
+      color: #334155;
+      font-size: 1rem;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      margin-bottom: 12px;
+      text-align: justify;
+    }
+    
+    ul, ol {
+      margin-left: 25px;
+      margin-bottom: 15px;
+    }
+    
+    li {
+      margin-bottom: 8px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    
+    th {
+      background: #1e3a5f;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    td {
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    
+    .urs-ref {
+      font-family: 'Consolas', monospace;
+      font-weight: 600;
+      color: #1e3a5f;
+    }
+    
+    .impact-direct {
+      background: #dcfce7;
+      color: #166534;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .impact-nondirect {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .design-response {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 12px 15px;
+      margin: 10px 0;
+      font-style: italic;
+    }
+    
+    .signature-section {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 2px solid #e2e8f0;
+    }
+    
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 25px;
+    }
+    
+    .signature-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .signature-box h4 {
+      color: #1e3a5f;
+      margin-bottom: 15px;
+      border: none;
+      padding: 0;
+    }
+    
+    .sig-line {
+      border-bottom: 1px solid #64748b;
+      height: 35px;
+      margin-bottom: 5px;
+    }
+    
+    .sig-label {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    
+    .toc {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 8px;
+      margin: 30px 0;
+    }
+    
+    .toc h3 {
+      border: none;
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    
+    .toc ol {
+      margin-left: 20px;
+    }
+    
+    .toc li {
+      margin-bottom: 5px;
+    }
+    
+    .page-break {
+      page-break-after: always;
+    }
+    
+    @media print {
+      .no-print { display: none !important; }
+      .document { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      h2 { font-size: 12pt; }
+      @page { margin: 0.75in; }
+    }
+    
+    @media (max-width: 768px) {
+      .document { padding: 30px 20px; }
+      .doc-meta { grid-template-columns: 1fr; }
+      .signature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <h1>TM-II Software Design Specification</h1>
+    <div class="controls">
+      <button class="btn-word" onclick="downloadWord()">Download Word Document</button>
+      <button class="btn-pdf" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <div class="document" id="document">
+    <div class="doc-header">
+      <div class="logo">NATOLI ENGINEERING</div>
+      <h1>SOFTWARE DESIGN SPECIFICATION</h1>
+      <p class="subtitle">Natoli Tool Management II (TM-II) Software</p>
+    </div>
+    
+    <div class="doc-meta">
+      <div>
+        <p><strong>Document Number:</strong> SDS-TMII-2025-001</p>
+        <p><strong>Version:</strong> 1.0</p>
+        <p><strong>Status:</strong> Draft</p>
+        <p><strong>Reference URS:</strong> SPEC-0169357 v1.0</p>
+      </div>
+      <div>
+        <p><strong>Effective Date:</strong> January 29, 2026</p>
+        <p><strong>Prepared By:</strong> Natoli Engineering</p>
+        <p><strong>Software Version:</strong> TM-II 2025.6</p>
+        <p><strong>Classification:</strong> cGMP Compliant</p>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h3>Table of Contents</h3>
+      <ol>
+        <li>Purpose and Scope</li>
+        <li>System Description</li>
+        <li>Design Response to Software Requirements (URS 5.1)
+          <ul style="list-style-type: disc; margin-left: 20px; margin-top: 5px;">
+            <li>3.1 Tool Directory Management</li>
+            <li>3.2 Set Directory Management</li>
+            <li>3.3 Product/Tablet Directory Management</li>
+            <li>3.4 LVS Interface and Inspection</li>
+            <li>3.5 Usage History and Reporting</li>
+            <li>3.6 Tool Check In/Out</li>
+            <li>3.7 Utilities (including 3.7.6 Main Utilities Menu)</li>
+          </ul>
+        </li>
+        <li>Design Response to Hardware Requirements (URS 6)</li>
+        <li>Design Response to Utility Requirements (URS 7)</li>
+        <li>Design Response to Computerized System Compliance (URS 8)</li>
+        <li>System Architecture Summary</li>
+        <li>References</li>
+        <li>Document Approval</li>
+      </ol>
+    </div>
+
+    <h2>1. Purpose and Scope</h2>
+    <p>This Software Design Specification (SDS) defines the functional, architectural, and operational design of the Tool Management II (TM-II) software system. This document establishes the design baseline and demonstrates how each User Requirement from SPEC-0169357 v1.0 is addressed by the TM-II software design.</p>
+    <p>The scope of this SDS covers the Natoli Tooling Management TM-II software for use in the Process Area 5 compression area at the Newark, Delaware site. The associated Natoli Laser Vision System (LVS) interface is included; however, LVS has been separately validated.</p>
+
+    <h2>2. System Description</h2>
+    <p>Tool Management II (TM-II) is a comprehensive tool management software designed for tablet manufacturers. The system provides tool control and inspection features that improve product quality and consistency, eliminate waste, and ensure compliance with cGMP record keeping requirements.</p>
+    
+    <h3>2.1 Core Capabilities</h3>
+    <ul>
+      <li>Tool storage and inventory management</li>
+      <li>Inspection and tolerance reporting</li>
+      <li>Usage monitoring and history tracking</li>
+      <li>Tool location identification</li>
+      <li>Tool drawing file maintenance</li>
+      <li>Comprehensive reporting capabilities</li>
+      <li>Purchase order creation for replacement tools</li>
+    </ul>
+    
+    <h3>2.2 System Architecture</h3>
+    <p>TM-II is built on Magic Software XPA, an off-the-shelf development platform with a large installed base. The system utilizes three primary data structures:</p>
+    <ul>
+      <li><strong>Tool Directory</strong> - Main table containing entries for all punches and dies</li>
+      <li><strong>Set Directory</strong> - Links tools into logical sets for production</li>
+      <li><strong>Product Directory</strong> - Associates tool sets with products/tablets</li>
+    </ul>
+
+    <h2>3. Design Response to Software Requirements (URS Section 5)</h2>
+    
+    <h3>3.1 Tool Directory Management</h3>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.1</td>
+        <td>The system shall be able to manage a tool directory that contains entries for punches and dies used in production.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>TM-II provides a comprehensive Tool Directory as the main table. Each tool entry is assigned a unique system-generated ENTRY # and supports PART types: U (Upper Punch), L (Lower Punch), D (Die).</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.1.1</td>
+        <td>The tool directory shall contain: Identifier information, Supplier information, Tooling Material information, Tool Drawings, Tool Tolerance information, Overall Tool status information.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>The Tool Directory includes all required fields:
+          <ul>
+            <li><strong>Identifier:</strong> ENTRY #, HOB/DIE #, MACHINE ID, TYPE</li>
+            <li><strong>Supplier:</strong> Supplier ID, P.O. Number fields</li>
+            <li><strong>Material:</strong> Steel type, Max tip force fields</li>
+            <li><strong>Drawings:</strong> Tool drawing file attachment support</li>
+            <li><strong>Tolerance:</strong> SIZE, SHAPE, CUP DEPTH, LAND, QTY, TIPS</li>
+            <li><strong>Status:</strong> INSPECTION date, LOCATION, MAINTENANCE, QUARANTINE status</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.1.2</td>
+        <td>The system shall have the ability to add, edit, or remove new tools to the tool directory.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>TM-II provides Add, Edit, and Delete functions for the Tool Directory. The ADD/COPY NEW TOOLS user right controls this access. All modifications are audit-logged with user ID and timestamp.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.1.3</td>
+        <td>The system shall permit tool data to be imported directly into the Tooling Directory.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>TM-II supports data import functionality through the DOWNLOAD DATA DISK utility, allowing bulk tool data import.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.1.4</td>
+        <td>The system shall have the capability to search the tool directory list by text query.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>The Tool Directory provides search/filter functionality. Users can query by any field including ENTRY #, PART type, MACHINE ID, HOB/DIE #, TYPE, and status fields.</td>
+      </tr>
+    </table>
+
+    <h3>3.2 Set Directory Management</h3>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.2</td>
+        <td>The system shall be able to manage a set directory which contains an entry of all tools contained in each set.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>TM-II provides a Set Directory with fields: SET ID (20 char), SET NAME (30 char), and NOTES (150 char). Each set entry links to associated tools.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.2.1</td>
+        <td>The system shall have the ability to add, edit, or remove Sets.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Set management is controlled via the SETS and ASSEMBLE/DELETE SETS user rights. Functions include: Assemble (create), Limits (edit), Delete (remove), List, and Stamp.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.3</td>
+        <td>The system shall be able to link Tools from the Tool Directory to Tool Sets in the Tool Sets Directory.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>The Assemble function allows linking tools to sets. A tool can be in more than one set. The system maintains referential integrity between directories.</td>
+      </tr>
+    </table>
+
+    <h3>3.3 Product/Tablet Directory Management</h3>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.4</td>
+        <td>The system shall be able to manage a Product/Tablet Directory that contains an entry for every product or tablet.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>TM-II provides a Products Directory for managing product/tablet entries. Access is controlled via ADD/CHANGE PRODUCTS user right.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.4.1</td>
+        <td>The Product directory shall contain: Product overview information, Recommended default limits, Product tolerances as related to tool wear.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Product Directory includes:
+          <ul>
+            <li><strong>Product Overview:</strong> Product identification and details</li>
+            <li><strong>Recommended Limits:</strong> Default tablet limits per punch</li>
+            <li><strong>Product Tolerances:</strong> Tolerances related to tool wear</li>
+            <li><strong>Estimated Limits:</strong> Default values when inventoried</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.5</td>
+        <td>The system shall be able to link Tool Sets from the Set Directory to Products in the Product/Tablet Directory.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>Sets can be inventoried to Products. The Product Directory provides the link between Sets and the products they produce.</td>
+      </tr>
+    </table>
+
+    <h3>3.4 LVS Interface and Inspection</h3>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.6</td>
+        <td>The system must be able to interface with the Natoli Laser Vision System.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>TM-II provides direct LVS integration. The USE LVS field enables automatic inspection with the Natoli LVS. Inspection data transfers seamlessly between systems.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.12</td>
+        <td>The system shall have the ability to perform tool inspections in conjunction with a validated tooling measurement system.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Inspection module supports:
+          <ul>
+            <li><strong>In-Process Inspection:</strong> Standard gages or Natoli LVS</li>
+            <li><strong>Supplier Inspection:</strong> Incoming tool verification</li>
+          </ul>
+          Fields include: INSPECTION DATE, INSPECTOR ID, UNIT OF MEASURE, O.L. REFERENCE PT., up to 5 optional measurements.
+        </td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.13</td>
+        <td>The system shall be able to display results from completed tool inspections.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Inspection results are stored and displayed within the Tool Directory. The Matching Report provides inspection analysis. Historical inspection data is maintained.</td>
+      </tr>
+    </table>
+
+    <h3>3.5 Usage History and Reporting</h3>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.7</td>
+        <td>The system shall have the ability to maintain a history of tool usage which includes at a minimum the total number of tablets produced per tool.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>TM-II tracks usage history via UPDATE TOOL USAGE HISTORY function. Usage Status shows usage as percentage of limits. Limits function allows viewing/editing history limits.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.8</td>
+        <td>The system shall be able to generate a maintenance report for each Tool.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Maintenance Report available through Set Reports. Tracks all maintenance activities with timestamps.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.9</td>
+        <td>The system shall be able to generate a usage report for each tool.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Usage Report provides detailed usage history. Usage Status Report shows usage as percentage of limits.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.10</td>
+        <td>The system shall be able to generate a Tool Summary report which includes at a minimum a high level overview of the activity for each Tool or Tool Set.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Summary Report provides high-level activity overview. Additional reports: Location Report, Check In/Out Report, Discard Report.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">5.1.11</td>
+        <td>The system shall have the ability to quarantine Tools and Tool Sets as needed.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>UPDATE TOOL QUARANTINE function allows quarantine management. QUARANTINE field tracks status and date. Quarantine Report lists all quarantined tools.</td>
+      </tr>
+    </table>
+
+    <h3>3.6 Tool Check In/Out</h3>
+    <p>The Tool Check In/Out module provides controlled workflow management for tool movement between storage locations and production areas. This functionality ensures complete chain of custody tracking and supports cGMP documentation requirements.</p>
+    
+    <h4>3.6.1 Check Out Process</h4>
+    <table>
+      <tr>
+        <th width="25%">Function</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>CHECK OUT</strong></td>
+        <td>Removes tools from inventory for production use. Updates tool LOCATION field and records transaction with timestamp and user ID.</td>
+      </tr>
+      <tr>
+        <td><strong>Set Check Out</strong></td>
+        <td>Checks out entire tool set as a unit. All tools in set are updated simultaneously. Set maintains linked status during production.</td>
+      </tr>
+      <tr>
+        <td><strong>Destination Tracking</strong></td>
+        <td>Records destination location (press, production area, maintenance) for each check out. Supports user-defined location codes.</td>
+      </tr>
+      <tr>
+        <td><strong>Usage Assignment</strong></td>
+        <td>Associates check out with Product/Batch for usage tracking. Links to usage history for tablet count accumulation.</td>
+      </tr>
+    </table>
+
+    <h4>3.6.2 Check In Process</h4>
+    <table>
+      <tr>
+        <th width="25%">Function</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>CHECK IN</strong></td>
+        <td>Returns tools to inventory after production. Updates LOCATION field and usage history. Records return timestamp and user ID.</td>
+      </tr>
+      <tr>
+        <td><strong>Usage Update</strong></td>
+        <td>Prompts for tablet count produced during check out period. Updates TABLETS PRODUCED field and usage percentage.</td>
+      </tr>
+      <tr>
+        <td><strong>Condition Assessment</strong></td>
+        <td>Optional inspection prompt on check in. Can flag tools for maintenance, polishing, or quarantine based on condition.</td>
+      </tr>
+      <tr>
+        <td><strong>Location Verification</strong></td>
+        <td>Confirms return to designated storage location. Updates storage position (cabinet, drawer, slot) as applicable.</td>
+      </tr>
+    </table>
+
+    <h4>3.6.3 Check In/Out Fields</h4>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>TRANSACTION ID</td>
+        <td>System Generated</td>
+        <td>Unique identifier for each check in/out transaction</td>
+      </tr>
+      <tr>
+        <td>TRANSACTION TYPE</td>
+        <td>Selection</td>
+        <td>CHECK IN or CHECK OUT</td>
+      </tr>
+      <tr>
+        <td>ENTRY #</td>
+        <td>Reference</td>
+        <td>Tool Directory entry number</td>
+      </tr>
+      <tr>
+        <td>SET ID</td>
+        <td>Reference</td>
+        <td>Set Directory ID (if checking out as set)</td>
+      </tr>
+      <tr>
+        <td>FROM LOCATION</td>
+        <td>Text (20 char)</td>
+        <td>Origin location for the tool</td>
+      </tr>
+      <tr>
+        <td>TO LOCATION</td>
+        <td>Text (20 char)</td>
+        <td>Destination location for the tool</td>
+      </tr>
+      <tr>
+        <td>PRODUCT</td>
+        <td>Reference</td>
+        <td>Product being manufactured (for usage tracking)</td>
+      </tr>
+      <tr>
+        <td>BATCH/LOT</td>
+        <td>Text (30 char)</td>
+        <td>Batch or lot number for traceability</td>
+      </tr>
+      <tr>
+        <td>TABLETS PRODUCED</td>
+        <td>Numeric</td>
+        <td>Count entered on check in</td>
+      </tr>
+      <tr>
+        <td>USER ID</td>
+        <td>Reference</td>
+        <td>User performing the transaction</td>
+      </tr>
+      <tr>
+        <td>DATE/TIME</td>
+        <td>Timestamp</td>
+        <td>System-recorded date and time</td>
+      </tr>
+      <tr>
+        <td>NOTES</td>
+        <td>Text (150 char)</td>
+        <td>Optional comments or observations</td>
+      </tr>
+    </table>
+
+    <h4>3.6.4 Check In/Out User Rights</h4>
+    <table>
+      <tr>
+        <th>User Right</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>UPDATE TOOL LOCATION</td>
+        <td>Required to perform check in/out operations</td>
+      </tr>
+      <tr>
+        <td>UPDATE TOOL USAGE HISTORY</td>
+        <td>Required to update tablet counts on check in</td>
+      </tr>
+      <tr>
+        <td>VIEW CHECK IN/OUT HISTORY</td>
+        <td>Required to view historical transactions</td>
+      </tr>
+    </table>
+
+    <h3>3.7 Utilities</h3>
+    <p>The Utilities module provides system administration and maintenance functions for TM-II. These tools support data management, system configuration, and operational tasks.</p>
+
+    <h4>3.7.1 Data Management Utilities</h4>
+    <table>
+      <tr>
+        <th width="25%">Utility</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>DOWNLOAD DATA DISK</strong></td>
+        <td>Imports tool data from external source (USB, network share). Supports bulk data loading for new tool inventory. Maps external data fields to TM-II directory structure.</td>
+      </tr>
+      <tr>
+        <td><strong>BACKUP DATABASE</strong></td>
+        <td>Creates backup copy of entire TM-II database. Supports scheduled and on-demand backup. Recommended before system updates or major changes.</td>
+      </tr>
+      <tr>
+        <td><strong>RESTORE DATABASE</strong></td>
+        <td>Restores database from previous backup. Requires Supervisor-level access. All current data replaced with backup contents.</td>
+      </tr>
+      <tr>
+        <td><strong>EXPORT DATA</strong></td>
+        <td>Exports tool, set, or product data to external file formats. Supports CSV, Excel, and text formats. Configurable field selection.</td>
+      </tr>
+      <tr>
+        <td><strong>ARCHIVE DATA</strong></td>
+        <td>Moves inactive/obsolete records to archive tables. Reduces active database size while preserving historical records. Archived data remains searchable.</td>
+      </tr>
+    </table>
+
+    <h4>3.7.2 System Configuration Utilities</h4>
+    <table>
+      <tr>
+        <th width="25%">Utility</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>MODIFY SETUP TABLES</strong></td>
+        <td>Configures system lookup tables: Machine Types, Locations, Suppliers, Steel Types, Tool Types. User right controls access.</td>
+      </tr>
+      <tr>
+        <td><strong>SYSTEM PREFERENCES</strong></td>
+        <td>Configures global system settings: default units of measure, date format, report headers, company information.</td>
+      </tr>
+      <tr>
+        <td><strong>USER MANAGEMENT</strong></td>
+        <td>Add, modify, or remove user accounts. Assign user rights and access levels. Reset passwords. View user activity logs.</td>
+      </tr>
+      <tr>
+        <td><strong>LICENSE MANAGEMENT</strong></td>
+        <td>View HASP license key information. Display licensed features and user count. Verify license validity.</td>
+      </tr>
+      <tr>
+        <td><strong>LVS CONFIGURATION</strong></td>
+        <td>Configure Laser Vision System connection settings. Set communication parameters. Test LVS connectivity.</td>
+      </tr>
+    </table>
+
+    <h4>3.7.3 Maintenance Utilities</h4>
+    <table>
+      <tr>
+        <th width="25%">Utility</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>DATABASE MAINTENANCE</strong></td>
+        <td>Optimize database performance. Rebuild indexes. Reclaim storage space. Recommended for periodic maintenance.</td>
+      </tr>
+      <tr>
+        <td><strong>AUDIT LOG VIEWER</strong></td>
+        <td>View complete audit trail of system activity. Filter by date range, user, or action type. Export audit records.</td>
+      </tr>
+      <tr>
+        <td><strong>ERROR LOG VIEWER</strong></td>
+        <td>View system error and warning messages. Useful for troubleshooting. Includes timestamp and error details.</td>
+      </tr>
+      <tr>
+        <td><strong>PURGE OLD RECORDS</strong></td>
+        <td>Removes records older than specified retention period. Requires Supervisor access. Generates purge report before execution.</td>
+      </tr>
+    </table>
+
+    <h4>3.7.4 Reporting Utilities</h4>
+    <table>
+      <tr>
+        <th width="25%">Utility</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>REPORT DESIGNER</strong></td>
+        <td>Create custom reports using available data fields. Save report templates for reuse. Configure output format and layout.</td>
+      </tr>
+      <tr>
+        <td><strong>SCHEDULED REPORTS</strong></td>
+        <td>Configure automatic report generation. Set schedule (daily, weekly, monthly). Email or save to network location.</td>
+      </tr>
+      <tr>
+        <td><strong>PRINT MANAGER</strong></td>
+        <td>Configure default printers for reports and labels. Set print preferences. Manage print queue.</td>
+      </tr>
+    </table>
+
+    <h4>3.7.5 Utility Access Rights</h4>
+    <table>
+      <tr>
+        <th>User Right</th>
+        <th>Controlled Functions</th>
+      </tr>
+      <tr>
+        <td>MODIFY SETUP TABLES</td>
+        <td>Access to all setup table configuration</td>
+      </tr>
+      <tr>
+        <td>ELECTRONIC AUDIT</td>
+        <td>View audit trail and system logs</td>
+      </tr>
+      <tr>
+        <td>BACKUP/RESTORE</td>
+        <td>Database backup and restore operations</td>
+      </tr>
+      <tr>
+        <td>EXPORT DATA</td>
+        <td>Export tool and set data to external files</td>
+      </tr>
+      <tr>
+        <td>USER ADMINISTRATION</td>
+        <td>Manage user accounts and permissions</td>
+      </tr>
+      <tr>
+        <td>SYSTEM CONFIGURATION</td>
+        <td>Modify system preferences and settings</td>
+      </tr>
+    </table>
+
+    <h4>3.7.6 Main Utilities Menu Functions</h4>
+    <p>The following utilities are accessible from the main UTILITIES menu on the TM-II home screen:</p>
+    <table>
+      <tr>
+        <th width="25%">Utility</th>
+        <th width="75%">Description</th>
+      </tr>
+      <tr>
+        <td><strong>PURCHASE ORDERS</strong></td>
+        <td>Creates and manages purchase orders for replacement tooling. Generates POs based on tool wear, usage limits, or manual request. Links to supplier directory for vendor information. Tracks PO status from creation through receipt. Supports export to ERP/procurement systems.</td>
+      </tr>
+      <tr>
+        <td><strong>MACHINE SETUP</strong></td>
+        <td>Configures tablet press machine definitions within TM-II. Defines machine ID, type (rotary, single station), station count, and location. Associates machines with tool sets for production tracking. Manages machine-specific inspection parameters and tolerance defaults.</td>
+      </tr>
+      <tr>
+        <td><strong>MACHINE SETUP PROCEDURES</strong></td>
+        <td>Stores and retrieves standard operating procedures for machine setup activities. Links SOPs to specific machine types and tool configurations. Provides step-by-step guidance for operators during tool installation. Supports attachment of reference documents and images.</td>
+      </tr>
+      <tr>
+        <td><strong>SETUP TABLES</strong></td>
+        <td>Maintains system lookup tables and reference data. Includes: Supplier Master List, Steel Type Codes, Tool Type Classifications, Location Codes, Machine Type Definitions, Unit of Measure settings, and custom field definitions. Changes are audit-logged per 21 CFR Part 11 requirements.</td>
+      </tr>
+      <tr>
+        <td><strong>CHANGE TOOL IDs</strong></td>
+        <td>Modifies tool identification numbers in controlled manner. Supports bulk ID changes for tool sets. Maintains audit trail of all ID modifications with before/after values. Requires elevated user rights for execution. Updates all related records (sets, products, history) automatically.</td>
+      </tr>
+      <tr>
+        <td><strong>S.O.P. MAINTENANCE</strong></td>
+        <td>Standard Operating Procedure document management within TM-II. Create, edit, and version-control SOPs for tool handling, inspection, and maintenance activities. Links SOPs to specific operations and tool types. Tracks SOP revision history and approval status. Supports electronic signatures for SOP approval per 21 CFR Part 11.</td>
+      </tr>
+      <tr>
+        <td><strong>ELECTRONIC AUDIT</strong></td>
+        <td>Complete audit trail viewer for all system transactions. Displays user ID, timestamp, action type, and before/after values for all data modifications. Filter by date range, user, table, or action type. Export audit records to CSV or PDF. Immutable records ensure data integrity for regulatory inspections. Required for 21 CFR Part 11 compliance.</td>
+      </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>4. Design Response to Hardware Requirements (URS Section 6)</h2>
+    
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">6.1</td>
+        <td>The system shall utilize a Windows-based computer running Windows 10 or newer.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>TM-II is designed for Windows operating systems. Fully compatible with Windows 10 and Windows 11. Built on Magic Software XPA platform.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">6.2</td>
+        <td>The system shall have a minimum of 64MB memory.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>TM-II requires minimum 64MB RAM. Recommended: 4GB or higher for optimal performance.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">6.3</td>
+        <td>The system shall have a minimum of 800MB available disk space.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>Installation requires minimum 800MB disk space. Recommended: 2GB+ for database growth.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">6.4</td>
+        <td>The system shall have a DVD drive and a USB port.</td>
+        <td><span class="impact-nondirect">Non-Direct</span></td>
+        <td>DVD drive supported for installation media. USB port required for HASP license key and data transfer.</td>
+      </tr>
+    </table>
+
+    <h2>5. Design Response to Utility Requirements (URS Section 7)</h2>
+    <p>TM-II is designed as a standalone software application. No external utility connections (power, water, compressed air, HVAC) are required beyond standard computer power requirements.</p>
+
+    <h2>6. Design Response to Computerized System Compliance (URS Section 8)</h2>
+    
+    <h3>6.1 21 CFR Part 11 Compliance</h3>
+    <table>
+      <tr>
+        <th width="15%">URS Reference</th>
+        <th width="40%">Requirement</th>
+        <th width="12%">Impact</th>
+        <th width="33%">Design Response</th>
+      </tr>
+      <tr>
+        <td class="urs-ref">8.1</td>
+        <td>The system shall maintain an electronic audit trail that records user ID, date, and time for all applicable actions.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>Electronic Audit function provides complete audit trail. All modifications logged with User ID, Date, Time. View Modify Stamps shows change history. Audit records are immutable.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">8.2</td>
+        <td>The system shall provide user authentication with unique user identification.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>User authentication requires unique User ID and password. Default: Supervisor (not case-sensitive). Security module manages user accounts and access rights.</td>
+      </tr>
+      <tr>
+        <td class="urs-ref">8.3</td>
+        <td>The system shall provide role-based access control.</td>
+        <td><span class="impact-direct">Direct</span></td>
+        <td>25+ configurable user rights including: MODIFY INSPECTIONS, CREATE INSPECTIONS, UPDATE TOOL LOCATION, UPDATE TOOL USAGE HISTORY, UPDATE TOOL QUARANTINE, ADD/COPY NEW TOOLS, ASSEMBLE/DELETE SETS, MODIFY SETUP TABLES, ELECTRONIC AUDIT, and more.</td>
+      </tr>
+    </table>
+    
+    <h3>6.2 License and Security</h3>
+    <p>System authorization is enforced through a HASP hardware license key. The USB-based dongle must be present for application execution. This provides physical security control and license enforcement.</p>
+
+    <h2>7. System Architecture Summary</h2>
+    
+    <h3>7.1 Tool Directory Fields</h3>
+    <table>
+      <tr><th>Field</th><th>Description</th></tr>
+      <tr><td>ENTRY #</td><td>System-generated unique identifier</td></tr>
+      <tr><td>PART</td><td>U (Upper Punch), L (Lower Punch), D (Die)</td></tr>
+      <tr><td>HOB/DIE #</td><td>Hob or Die number</td></tr>
+      <tr><td>MACHINE ID</td><td>Machine designation</td></tr>
+      <tr><td>TYPE</td><td>Tool type (B, D, etc.)</td></tr>
+      <tr><td>QTY</td><td>Quantity available</td></tr>
+      <tr><td>TIPS</td><td>Number of tips</td></tr>
+      <tr><td>SIZE</td><td>Tablet size produced</td></tr>
+      <tr><td>SHAPE</td><td>Tablet shape produced</td></tr>
+      <tr><td>CUP DEPTH</td><td>Punch cup depth</td></tr>
+      <tr><td>LAND</td><td>Punch land area</td></tr>
+      <tr><td>MANUFACTURED DATE</td><td>Manufacture/shipment date</td></tr>
+      <tr><td>INSPECTION</td><td>Most recent inspection date/user</td></tr>
+      <tr><td>LOCATION</td><td>Current location status</td></tr>
+      <tr><td>MAINTENANCE</td><td>Maintenance status</td></tr>
+      <tr><td>QUARANTINE</td><td>Quarantine status and date</td></tr>
+    </table>
+    
+    <h3>7.2 Available Reports</h3>
+    <ul>
+      <li>Summary Report - High-level activity overview</li>
+      <li>Usage Status Report - Usage as percentage of limits</li>
+      <li>Usage Report - Detailed usage history</li>
+      <li>Location Report - Tool location tracking</li>
+      <li>Maintenance Report - Maintenance history</li>
+      <li>Quarantine Report - Quarantined tools list</li>
+      <li>Discard Report - Discarded tools list</li>
+      <li>Check In/Out Report - Set movement history</li>
+      <li>Matching Report - Inspection analysis</li>
+      <li>Set List Report - All sets listing</li>
+    </ul>
+
+    <h2>8. References</h2>
+    <ul>
+      <li>SPEC-0169357 v1.0 - Natoli Tool System TM-II User Requirements Specification (Approved: 18 Dec 2025)</li>
+      <li>Tool Management II User Reference Manual Version 2025 Rev. 1</li>
+      <li>21 CFR Part 11 - Electronic Records; Electronic Signatures</li>
+      <li>FDA Guidance for Industry - Computerized Systems Used in Clinical Investigations</li>
+      <li>GAMP 5 - Good Automated Manufacturing Practice</li>
+    </ul>
+
+    <div class="signature-section">
+      <h2>9. Document Approval</h2>
+      <p>The signatures below confirm that this Software Design Specification adequately addresses all User Requirements from SPEC-0169357 v1.0 and provides a suitable design baseline for Installation Qualification (IQ) and Operational Qualification (OQ).</p>
+      
+      <div class="signature-grid">
+        <div class="signature-box">
+          <h4>Prepared By</h4>
+          <div class="sig-line"></div>
+          <p class="sig-label">Name: ___________________________</p>
+          <div class="sig-line"></div>
+          <p class="sig-label">Signature / Date</p>
+        </div>
+        <div class="signature-box">
+          <h4>System Owner</h4>
+          <div class="sig-line"></div>
+          <p class="sig-label">Name: ___________________________</p>
+          <div class="sig-line"></div>
+          <p class="sig-label">Signature / Date</p>
+        </div>
+        <div class="signature-box">
+          <h4>Quality Assurance</h4>
+          <div class="sig-line"></div>
+          <p class="sig-label">Name: ___________________________</p>
+          <div class="sig-line"></div>
+          <p class="sig-label">Signature / Date</p>
+        </div>
+        <div class="signature-box">
+          <h4>Validation Lead</h4>
+          <div class="sig-line"></div>
+          <p class="sig-label">Name: ___________________________</p>
+          <div class="sig-line"></div>
+          <p class="sig-label">Signature / Date</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Software Design Specification | SDS-TMII-2025-001 v1.0</p>
+      <p>Natoli Engineering Co., Inc. | 28 Research Park Circle | St. Charles, MO 63304</p>
+      <p>Confidential - For Customer Use Only</p>
+    </div>
+  </div>
+
+  <script>
+function downloadWord() {
+  const content = document.getElementById('document').outerHTML;
+  const styles = `<style>
+    body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#333;}
+    h1{font-size:18pt;color:#1e3a5f;text-align:center;}
+    h2{font-size:14pt;color:#fff;background:#1e3a5f;padding:8px 12px;margin-top:25px;}
+    h3{font-size:12pt;color:#1e3a5f;border-left:4px solid #3b82f6;padding-left:10px;margin-top:20px;}
+    table{width:100%;border-collapse:collapse;margin:15px 0;font-size:10pt;}
+    th{background:#1e3a5f;color:white;padding:8px;text-align:left;}
+    td{padding:8px;border:1px solid #e2e8f0;vertical-align:top;}
+    .doc-meta{background:#f8fafc;padding:15px;margin:20px 0;border:1px solid #e2e8f0;}
+    .signature-box{border:1px solid #cbd5e1;padding:15px;margin:10px 0;}
+    .sig-line{border-bottom:1px solid #64748b;height:25px;margin:8px 0;}
+    .impact-direct{background:#dcfce7;color:#166534;padding:2px 8px;}
+    .impact-nondirect{background:#f1f5f9;color:#475569;padding:2px 8px;}
+    .urs-ref{font-family:Consolas,monospace;font-weight:bold;}
+    .footer{text-align:center;margin-top:40px;font-size:9pt;color:#666;}
+  </style>`;
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>TM-II Software Design Specification</title>${styles}</head><body>${content}</body></html>`;
+  
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'TMII_SDS_SPEC-0169357_Response.doc';
+  a.click();
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{
+  "name": "tonyos",
+  "version": "1.0.0",
+  "description": "TonyOS - Personal AI Command Center",
+  "main": "main.js",
+  "author": "Tony Beal",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.tonybeal.tonyos",
+    "productName": "TonyOS",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "icons/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "app",
+        "filter": [
+          "**/*",
+          "!electron/**",
+          "!*.pyc",
+          "!__pycache__/**",
+          "!.git/**",
+          "!dist/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icons/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "icons/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "icons/icon.png",
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

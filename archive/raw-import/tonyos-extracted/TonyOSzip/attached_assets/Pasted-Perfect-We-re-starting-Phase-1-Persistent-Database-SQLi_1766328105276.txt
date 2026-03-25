@@ -1,0 +1,223 @@
+Perfect. We’re starting Phase 1: Persistent Database (SQLite).
+
+This will give you:
+
+A real database
+
+Permanent records
+
+Zero data loss
+
+Clean foundation for everything else
+
+Everything below is copy/paste ready for Replit.
+No guessing. No missing steps.
+
+PHASE 1 — SQLITE DATABASE FOUNDATION
+What we are building in Phase 1
+
+By the end of this phase, you will have:
+
+A SQLite database file
+
+Tables for:
+
+Accounts (companies)
+
+Contacts (decision makers)
+
+Notes (institutional memory)
+
+Safe read/write helpers
+
+Database initialized automatically on startup
+
+This turns your app from a “script” into a real CRM system of record.
+
+1️⃣ Install dependencies (Replit)
+
+In your Replit Shell, run:
+
+npm install sqlite3 better-sqlite3
+
+
+We use better-sqlite3 because:
+
+It’s stable
+
+It’s fast
+
+No async headaches
+
+Perfect for Replit
+
+2️⃣ Project structure (update this)
+
+Your project should now look like this:
+
+/server
+  ├── index.js
+  ├── db.js
+  ├── schema.js
+
+
+If these files don’t exist yet, create them exactly.
+
+3️⃣ Database connection file
+/server/db.js
+import Database from "better-sqlite3";
+import { initializeSchema } from "./schema.js";
+
+const db = new Database("tony_crm.db");
+
+// Enable foreign keys
+db.pragma("foreign_keys = ON");
+
+// Create tables if they don't exist
+initializeSchema(db);
+
+export default db;
+
+
+What this does:
+
+Creates tony_crm.db automatically
+
+Keeps it persistent in Replit
+
+Ensures schema is always present
+
+4️⃣ Database schema (this is the CRM backbone)
+/server/schema.js
+export function initializeSchema(db) {
+  // ACCOUNTS (companies)
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS accounts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company_name TEXT NOT NULL,
+      domain TEXT UNIQUE NOT NULL,
+      website TEXT,
+      linkedin_url TEXT,
+      industry TEXT,
+      naics TEXT,
+      sic TEXT,
+      employees INTEGER,
+      revenue TEXT,
+      division_fit TEXT,
+      persona_score INTEGER,
+      tier TEXT,
+      pain_points TEXT,
+      why_natoli TEXT,
+      status TEXT DEFAULT 'New',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+
+  // CONTACTS (decision makers only)
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS contacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      account_id INTEGER NOT NULL,
+      name TEXT,
+      title TEXT,
+      linkedin_url TEXT,
+      persona_type TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+    )
+  `).run();
+
+  // NOTES (institutional memory)
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      account_id INTEGER NOT NULL,
+      note TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+    )
+  `).run();
+}
+
+
+This is clean, minimal, and correct.
+
+No fluff fields. No CRM bloat.
+
+5️⃣ Verify database initializes on startup
+
+Update your existing /server/index.js temporarily to test DB creation.
+
+/server/index.js
+import express from "express";
+import db from "./db.js";
+
+const app = express();
+app.use(express.json());
+
+// Simple test route
+app.get("/health", (req, res) => {
+  res.json({ status: "Tony CRM database online" });
+});
+
+app.listen(3000, () => {
+  console.log("Tony CRM running on port 3000");
+});
+
+6️⃣ Test it (don’t skip)
+
+In your browser, go to:
+
+https://<your-replit-url>/health
+
+
+You should see:
+
+{ "status": "Tony CRM database online" }
+
+
+Then in your file tree you should see:
+
+tony_crm.db
+
+
+That means:
+✅ Database created
+✅ Tables initialized
+✅ CRM persistence working
+
+7️⃣ What we just accomplished (important)
+
+You now have:
+
+A real CRM database
+
+Persistent company records
+
+Contact relationships
+
+Decision memory
+
+A system leadership can trust
+
+This is no longer a prototype.
+
+What comes next (Phase 2 preview)
+
+Phase 2: CRM Core Models
+We will add:
+
+Create account
+
+Update account
+
+Read account list
+
+Add contacts
+
+Add notes
+
+Update status
+
+This turns the database into a usable CRM, not just storage.

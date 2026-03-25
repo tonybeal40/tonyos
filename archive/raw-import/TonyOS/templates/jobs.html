@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Search OS - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .jobs-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    .jobs-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .jobs-header h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .jobs-header p {
+      margin: 0.25rem 0 0;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+    .btn-back {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.3);
+      background: rgba(7,11,26,0.95);
+      color: var(--accent);
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .btn-back:hover {
+      background: rgba(56,189,248,0.1);
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.4fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 860px) {
+      .jobs-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .jobs-card {
+      background: linear-gradient(145deg, rgba(15,23,42,0.95), rgba(2,6,23,0.98));
+      border-radius: 1.25rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(56,189,248,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .jobs-card.full-width {
+      grid-column: 1 / -1;
+    }
+    .jobs-card h2 {
+      margin: 0 0 0.6rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .jobs-card > p {
+      margin: 0 0 0.8rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+    .jobs-card ul {
+      margin: 0.4rem 0 0.8rem 1.2rem;
+      padding: 0;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+    .jobs-card ul li {
+      margin-bottom: 0.4rem;
+    }
+    .jobs-textarea {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(55,65,81,0.7);
+      background: rgba(2,6,23,0.95);
+      color: var(--text-main);
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .jobs-textarea:focus {
+      border-color: var(--accent);
+    }
+    .jobs-textarea::placeholder {
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+    .jobs-input {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.7rem;
+      border: 1px solid rgba(55,65,81,0.7);
+      background: rgba(2,6,23,0.95);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 0.8rem;
+      transition: border-color 0.2s ease;
+    }
+    .jobs-input:focus {
+      border-color: var(--accent);
+    }
+    .jobs-input::placeholder {
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+    .jobs-label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-soft);
+      margin-bottom: 0.4rem;
+      margin-top: 0.8rem;
+    }
+    .jobs-label:first-child {
+      margin-top: 0;
+    }
+    .jobs-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #020617;
+      box-shadow: 0 6px 16px rgba(56,189,248,0.35);
+      margin-top: 0.6rem;
+      transition: all 0.2s ease;
+    }
+    .jobs-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(56,189,248,0.45);
+    }
+    .daily-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      background: rgba(2,6,23,0.8);
+      border-radius: 0.7rem;
+      border: 1px solid rgba(55,65,81,0.5);
+      transition: all 0.2s ease;
+    }
+    .checklist-item:hover {
+      border-color: rgba(56,189,248,0.3);
+    }
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .checklist-item label {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      cursor: pointer;
+      flex: 1;
+    }
+    .checklist-item.checked label {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      flex: 1;
+      min-width: 100px;
+      background: rgba(2,6,23,0.8);
+      border-radius: 0.8rem;
+      padding: 0.8rem;
+      text-align: center;
+      border: 1px solid rgba(55,65,81,0.5);
+    }
+    .stat-box .number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-box .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-top: 0.2rem;
+    }
+    .tip-box {
+      background: linear-gradient(145deg, rgba(56,189,248,0.08), rgba(2,6,23,0.95));
+      border: 1px solid rgba(56,189,248,0.25);
+      border-radius: 0.8rem;
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      margin-top: 0.8rem;
+    }
+    .tip-box strong {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="jobs-shell">
+    <header class="jobs-header">
+      <div>
+        <h1>Job Search OS</h1>
+        <p>One page to track roles, messaging, and your daily actions.</p>
+      </div>
+      <a href="/" class="btn-back">Back to TonyOS</a>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="number" id="apps-count">0</div>
+        <div class="label">Applications</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="dms-count">0</div>
+        <div class="label">Direct Messages</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="interviews-count">0</div>
+        <div class="label">Interviews</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="streak-count">0</div>
+        <div class="label">Day Streak</div>
+      </div>
+    </div>
+
+    <div class="jobs-grid">
+      <section class="jobs-card">
+        <h2>Target Roles and Companies</h2>
+        <p>List 10 dream roles and the companies that actually match your skills and pay goals.</p>
+        <textarea class="jobs-textarea" id="target-roles" placeholder="Example:
+1. Outside Sales - Red Bud Industries - pay target 90k
+2. Business Development - Natoli - pay target 85k
+3. RevOps Lead - Manufacturing company - remote friendly
+4. ..."></textarea>
+      </section>
+
+      <section class="jobs-card">
+        <h2>Daily Non-Negotiables</h2>
+        <p>Keep this simple and brutal. What you hit every day no matter what.</p>
+        <div class="daily-checklist">
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <input type="checkbox" id="check1">
+            <label for="check1">3 targeted applications</label>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <input type="checkbox" id="check2">
+            <label for="check2">5 direct messages to hiring leaders</label>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <input type="checkbox" id="check3">
+            <label for="check3">15 minutes improving resume or portfolio</label>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <input type="checkbox" id="check4">
+            <label for="check4">1 meaningful LinkedIn post or comment</label>
+          </div>
+        </div>
+        <textarea class="jobs-textarea" style="min-height:80px;" placeholder="Add your own daily standards here..."></textarea>
+      </section>
+
+      <section class="jobs-card">
+        <h2>Search Planner</h2>
+        <p>Define your search criteria to build a targeted job hunt.</p>
+        <label class="jobs-label">Target role title</label>
+        <input class="jobs-input" type="text" placeholder="Example: Business Development Manager, Outside Sales, RevOps Lead">
+        <label class="jobs-label">Location or region</label>
+        <input class="jobs-input" type="text" placeholder="Example: St. Louis, Missouri or remote friendly">
+        <label class="jobs-label">Must haves and deal breakers</label>
+        <textarea class="jobs-textarea" style="min-height:80px;" placeholder="Travel limits, comp targets, type of product or industry, deal size, culture..."></textarea>
+        <button class="jobs-btn" onclick="alert('Use the main TonyOS chat with this info to generate search queries and a plan.')">
+          Build Search Plan
+        </button>
+      </section>
+
+      <section class="jobs-card">
+        <h2>Outreach Scripts</h2>
+        <p>Paste your best LinkedIn and email scripts here so they live in one place.</p>
+        <textarea class="jobs-textarea" placeholder="Paste your best connection requests, email openers, and follow up lines here.
+
+Example LinkedIn:
+Hey [Name], saw you lead [team] at [company]. I have [X years] in [field] and would love to learn how you think about [topic]. Open to connecting?"></textarea>
+        <div class="tip-box">
+          <strong>Tip:</strong> Use the TonyOS chat to generate personalized outreach for specific roles and companies.
+        </div>
+      </section>
+
+      <section class="jobs-card full-width">
+        <h2>Interview Notes</h2>
+        <p>Quick notes after every conversation so you never lose context.</p>
+        <textarea class="jobs-textarea" placeholder="Company | Who you spoke with | What they cared about | Your impression | Next steps
+
+Example:
+Natoli Engineering | Sarah (VP Sales) | Cares about dealer relationships and CRM adoption | Good culture fit, they move fast | Follow up Thursday with case study"></textarea>
+      </section>
+
+      <section class="jobs-card full-width" style="border-color: rgba(167,139,250,0.4);">
+        <h2 style="background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Job Operator - Role Analysis</h2>
+        <p>Paste the job description, your resume summary, and your proof log. Get a blunt, honest analysis to help you decide if the role is worth pursuing.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label class="jobs-label">Job Description</label>
+            <textarea id="job-desc" class="jobs-textarea" style="min-height: 180px;" placeholder="Paste the full job description here..."></textarea>
+          </div>
+          <div>
+            <label class="jobs-label">Your Resume Summary</label>
+            <textarea id="job-resume" class="jobs-textarea" style="min-height: 180px;" placeholder="Key points from your resume: titles, years, industries, skills..."></textarea>
+          </div>
+        </div>
+        
+        <label class="jobs-label">Proof Log (Wins, Metrics, Systems)</label>
+        <textarea id="job-proof" class="jobs-textarea" style="min-height: 100px;" placeholder="Example: Grew pipeline 40% in 6 months. Built Apollo targeting system. Closed $1.2M in new business. Implemented HubSpot for 15-person team."></textarea>
+        
+        <button class="jobs-btn" style="margin-top: 1rem; background: linear-gradient(135deg, #a78bfa, #38bdf8);" onclick="analyzeJob()">Analyze This Role</button>
+        
+        <div id="job-analysis" style="margin-top: 1rem; background: rgba(2,6,23,0.9); border: 1px solid rgba(167,139,250,0.3); border-radius: 0.8rem; padding: 1rem; display: none;">
+          <h3 style="color: #a78bfa; margin-bottom: 0.8rem;">Analysis Results</h3>
+          <pre id="job-analysis-text" style="white-space: pre-wrap; font-size: 0.85rem; color: var(--text-soft); font-family: inherit;"></pre>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    async function analyzeJob() {
+      const desc = document.getElementById("job-desc").value.trim();
+      const resume = document.getElementById("job-resume").value.trim();
+      const proof = document.getElementById("job-proof").value.trim();
+      const resultDiv = document.getElementById("job-analysis");
+      const resultText = document.getElementById("job-analysis-text");
+      
+      if (!desc) {
+        alert("Paste the job description first.");
+        return;
+      }
+      
+      resultDiv.style.display = "block";
+      resultText.textContent = "Analyzing role fit... This takes a moment.";
+      
+      try {
+        const res = await fetch("/api/job_analysis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description: desc, resume: resume, proof: proof })
+        });
+        const data = await res.json();
+        resultText.textContent = data.analysis || data.error || "No analysis returned.";
+        
+        // Sync to Google Sheets
+        if (data.analysis && window.SheetsSync) {
+          window.SheetsSync.sync('Jobs', {
+            company: '',
+            title: desc.substring(0, 100),
+            link: '',
+            status: 'analyzed',
+            notes: data.analysis.substring(0, 3000),
+            source: 'Job Operator'
+          });
+        }
+      } catch (err) {
+        resultText.textContent = "Error analyzing role. Check the server.";
+      }
+    }
+
+    function toggleCheck(item) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      item.classList.toggle('checked', checkbox.checked);
+      updateStats();
+    }
+
+    function updateStats() {
+      const checks = document.querySelectorAll('.checklist-item input:checked').length;
+      const total = document.querySelectorAll('.checklist-item').length;
+      if (checks === total && total > 0) {
+        let streak = parseInt(localStorage.getItem('jobStreak') || '0');
+        const lastDate = localStorage.getItem('jobStreakDate');
+        const today = new Date().toDateString();
+        if (lastDate !== today) {
+          streak++;
+          localStorage.setItem('jobStreak', streak);
+          localStorage.setItem('jobStreakDate', today);
+        }
+        document.getElementById('streak-count').textContent = streak;
+      }
+    }
+
+    document.getElementById('streak-count').textContent = localStorage.getItem('jobStreak') || '0';
+  </script>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+</body>
+</html>

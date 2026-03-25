@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scientist Live / EuroLab – Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #facc15;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo in top left if you have natoli-logo.png in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>Scientist Live / EuroLab – Full Media Evaluation</h1>
+        <p>
+          Qualitative review of Scientist Live and EuroLab as part of the Natoli media mix. This page explains in plain
+          terms where this channel fits, what it is good for, and why it should not carry commercial budget for tooling,
+          presses or solid dose revenue.
+        </p>
+        <div class="chip-row">
+          <div class="chip">LAB</div>
+          <div class="chip">GENERAL SCIENCE</div>
+          <div class="chip">TIER 3 VISIBILITY</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">C-</div>
+        <div class="grade-caption">
+          High noise, low buyer signal.<br />
+          Visibility channel for Natoli Scientific, not a revenue engine.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.scientistlive.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Scientist Live site
+      </a>
+    </div>
+
+    <!-- Executive summary -->
+    <h2 class="section-title">1. Executive summary – decision first</h2>
+    <p class="section-intro">
+      Scientist Live and EuroLab reach a wide scientific audience, but only a small fraction of that audience overlaps
+      with Natoli's core buyers in tooling, solid dose, MS and T, and scale up. The channel builds scientific visibility,
+      yet it does not concentrate true tablet compaction decision makers. Cost per real buyer is high, and commercial
+      impact is weak compared to Tier 1 publications.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for 2026 planning</h3>
+      <p>
+        Scientist Live should be treated as a controlled visibility channel for Natoli Scientific, not as a commercial
+        engine for Natoli Engineering.
+      </p>
+      <ul>
+        <li>Useful for CT imaging stories, analytical case studies and broad scientific thought leadership.</li>
+        <li>Too diluted to support tooling, press reliability or production scale campaigns.</li>
+        <li>Audience mix is heavily weighted toward general research roles that will never buy tablet tooling.</li>
+        <li>Compared with Tier 1 titles, this channel has a far higher cost per true compaction buyer.</li>
+      </ul>
+      <p class="pill-tagline">
+        Bottom line: keep only light awareness activity under Natoli Scientific. Do not fund this as a sales pipeline
+        driver.
+      </p>
+    </div>
+
+    <!-- Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Natoli Scientific branding around CT imaging and analytical compaction work.</li>
+          <li>Editorial pieces that position Natoli as a scientific authority in Europe and the United Kingdom.</li>
+          <li>Occasional visibility around broad R and D themes where tablet compression is part of a wider story.</li>
+          <li>Exhibitor promotion when Natoli Scientific sits beside other lab focused brands.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>Tooling campaigns that aim at press operators, maintenance or reliability engineers.</li>
+          <li>Tablet press or scale up campaigns where MS and T and process engineers are the target.</li>
+          <li>SQL or revenue driven media buys for Natoli Engineering.</li>
+          <li>Any program where success is measured in qualified opportunities or quotes issued.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis – who is actually in the audience</h2>
+    <p class="section-intro">
+      Using the official Natoli tier system, Scientist Live's audience was mapped against real job roles and functions.
+      The result confirms that this is a broad science channel, not a tablet press buyer hub.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 – true buyers:</strong> MS and T, formulation, process engineers, scale up contacts. Only a small
+          slice of the list qualifies. Roughly one in five names match Natoli's primary ICP.
+        </li>
+        <li>
+          <strong>Tier 2 – adjacent roles:</strong> scientific and technical contacts with some overlap, but not directly
+          responsible for tablet tooling or press performance.
+        </li>
+        <li>
+          <strong>Tier 3 – broad research base:</strong> the large majority of the audience. Lab, academic and analytical
+          roles with no path to solid dose equipment or tooling spend.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: most of the reach is interesting science, not buying power. It is difficult to turn this audience
+        into commercial wins for Natoli Engineering.
+      </p>
+    </div>
+
+    <!-- Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The package includes banners, editorial visibility and email exposure. On the surface the numbers look acceptable.
+      The problem is the mix of who those numbers represent.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Campaigns generate opens and clicks, but most engagement comes from general lab roles.</li>
+        <li>
+          When you focus only on Tier 1 buyers, the effective cost per true buyer is many times higher than Natoli's Tier 1
+          channels such as APR and Tablets and Capsules.
+        </li>
+        <li>
+          Compared to those titles, Scientist Live delivers a fraction of the relevant buyer volume at a similar or higher
+          spend level.
+        </li>
+        <li>
+          This is the core reason the channel earns a low commercial grade even though the brand looks reputable on paper.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        For a CFO, the story is simple: too much budget required for each real buyer, especially when better options exist.
+      </p>
+    </div>
+
+    <!-- Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      A review of recent newsletters and issues shows why the commercial signal is weak. The topics lean into general
+      research and instrumentation, not tablet compression.
+    </p>
+
+    <div class="card">
+      <h3>Typical topics seen</h3>
+      <ul>
+        <li>Alzheimer research, DNA and RNA extraction, chromatography and aerosol detection.</li>
+        <li>High performance liquid chromatography and general analytical systems.</li>
+        <li>Instrument and lab technology features with very little connection to solid dose tooling or presses.</li>
+      </ul>
+      <p class="pill-tagline">
+        These themes help scientific awareness, but they do not position Natoli in front of engineers who own tablet
+        presses, tool life, or compaction scale up.
+      </p>
+    </div>
+
+    <!-- Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades use the same scale applied across the full Natoli Media Scorecard. Letters reflect both the hard data in the
+      spreadsheet and the qualitative analysis above.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>C</span></div>
+        <div class="bubble">Buyer density<span>F</span></div>
+        <div class="bubble">Scientific credibility<span>B</span></div>
+        <div class="bubble">Engineering relevance<span>F</span></div>
+        <div class="bubble">Natoli fit<span>D</span></div>
+        <div class="bubble">ROI probability<span>Very low</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: solid scientific brand with weak overlap to Natoli's core revenue drivers. Strong enough to
+        support Natoli Scientific awareness, too weak to justify commercial spend.
+      </p>
+    </div>
+
+    <!-- Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for Dave and leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 3 visibility channel.</li>
+        <li><strong>Role:</strong> optional awareness support for Natoli Scientific only.</li>
+        <li><strong>Sales posture:</strong> do not count this channel in any SQL or revenue plan.</li>
+        <li><strong>Budget posture:</strong> keep spend light and controlled. Reallocate serious commercial budget to APR,
+            Tablets and Capsules, and other Tier 1 buyers.</li>
+      </ul>
+      <p class="pill-tagline">
+        If Natoli funds weak channels, it dilutes presence where the real buyers live. Scientist Live should not carry that
+        weight in 2026.
+      </p>
+    </div>
+
+    <!-- OS box -->
+    <h2 class="section-title">8. How to reuse this framework for other media buys</h2>
+    <p class="section-intro">
+      This page is a template that can be copied for APR, Tablets and Capsules, Contract Pharma and every other publication
+      in the workbook. The criteria stay fixed, only the grades and narrative change.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> – does the title reach tablet and compaction decision makers.</li>
+        <li><strong>Buyer density</strong> – how much of the list is true Tier 1 ICP, not background noise.</li>
+        <li><strong>Scientific credibility</strong> – authority level for Natoli Scientific stories.</li>
+        <li><strong>Engineering relevance</strong> – depth of content around tooling, presses and reliability.</li>
+        <li><strong>Natoli fit</strong> – combined view for Natoli Engineering and Natoli Scientific.</li>
+        <li><strong>ROI probability</strong> – likelihood that spend produces real commercial outcomes.</li>
+      </ul>
+      <p class="pill-tagline">
+        Rule of thumb: sales budget lives in Tier 1 channels where buyer density and intent are high. Tier 2 and Tier 3
+        channels are awareness tools for carefully chosen scientific plays only.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2026 planning. Qualitative summary based on the Media Placement
+      2025 workbook and Natoli ICP tiering model.
+    </p>
+  </div>
+</body>
+</html>

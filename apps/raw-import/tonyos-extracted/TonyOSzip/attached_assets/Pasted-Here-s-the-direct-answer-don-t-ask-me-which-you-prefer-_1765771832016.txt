@@ -1,0 +1,162 @@
+Here’s the direct answer: don’t ask me which you prefer. Do this in a way that doesn’t break anything.
+
+You can run TonyOS on 8787 and keep Codebench on 5000 at the same time. No drama. No choosing.
+
+Below is the exact backend patch you need plus the exact UI wiring so “code mode” actually behaves differently.
+
+Goal
+
+Add code mode to your TonyOS backend so:
+
+mode=code routes to a code focused system prompt
+
+truth/deep/fast/code are all supported
+
+UI selector works
+
+No port conflicts
+
+1) Backend update (copy paste patch)
+A) Add “code” support in your lane selection
+
+Find your choose_lane() and replace with this:
+
+def choose_lane(user_msg: str, mode: str) -> str:
+    s = (user_msg or "").lower().strip()
+
+    # Respect explicit mode first
+    if mode in ("truth", "deep", "fast", "code"):
+        return mode
+
+    # Auto routing fallback (if mode is missing)
+    if any(k in s for k in ["error", "stack trace", "bug", "debug", "fix", "crash", "compile", "syntax"]):
+        return "code"
+
+    return "truth"
+
+B) Make sure your model map includes “code”
+
+Where you have your model map, make it like this:
+
+DEFAULT_MODEL_MAP = {
+    "truth": ("openai", "gpt-4o"),
+    "deep":  ("openai", "gpt-4o"),
+    "fast":  ("openai", "gpt-4o-mini"),
+    "code":  ("openai", "gpt-4o")
+}
+
+C) Add a code specific system prompt
+
+Add this near your other prompts:
+
+SYSTEM_PROMPT_CODE = """
+You are TonyOS in CODE mode.
+
+Rules:
+- You are a senior engineer + debugger.
+- Output corrected code only when asked for "final code".
+- When debugging: identify the root cause, then give the minimum patch.
+- Never invent file contents. If missing, ask for the exact file or snippet.
+- Prefer small changes over rewrites.
+- If a command is needed, provide the exact command.
+- Keep formatting clean and copy-paste ready.
+"""
+
+D) Use the correct system prompt based on mode
+
+Where you call the model, apply this:
+
+lane = choose_lane(user_msg, payload.mode)
+provider, model = DEFAULT_MODEL_MAP[lane]
+
+system_prompt = SYSTEM_PROMPT
+if lane == "code":
+    system_prompt = SYSTEM_PROMPT_CODE
+
+raw = call_provider(provider, model, system_prompt, messages)
+
+
+That’s the backend “code mode” done properly.
+
+2) Run TonyOS without killing Codebench
+Start TonyOS on 8787
+
+In your TonyOS run command, force port 8787:
+
+If you use Uvicorn:
+
+uvicorn app:app --host 127.0.0.1 --port 8787 --reload
+
+
+If your file is TonyOS/app.py:
+
+uvicorn TonyOS.app:app --host 127.0.0.1 --port 8787 --reload
+
+
+Codebench stays on 5000. No conflict.
+
+3) Update the UI (so it actually sends code mode)
+
+In your console UI, the payload must include:
+
+{
+  message,
+  mode: "code",
+  mood: "neutral",
+  session_id
+}
+
+
+If your UI already has the selector, you’re good. If not, here’s the key part:
+
+const payload = {
+  message,
+  mode: document.getElementById("mode").value,   // truth/deep/fast/code
+  mood: document.getElementById("mood").value,
+  session_id: document.getElementById("sessionId").value || "default",
+  research_urls: withResearch ? urls : null
+}
+
+4) What you should do right now
+
+Do this in order:
+
+Patch backend with the code above
+
+Start TonyOS on 8787
+
+Keep Codebench on 5000
+
+In UI, set Server URL to http://127.0.0.1:8787
+
+Test by sending:
+
+Message:
+
+I have a TypeError reading charAt. Fix it.
+
+
+Mode:
+code
+
+Expected result:
+It should respond like a developer, not like a “life coach chatbot”.
+
+5) The prompt you should type into TonyOS for best results
+
+When you want “smartest code mode,” use this:
+
+Mode: code
+
+Task: fix this issue with the smallest patch possible
+Context: this is in TonyOS backend, FastAPI, local desktop
+Here is the exact file and lines:
+<paste>
+
+Output:
+1) Root cause in one sentence
+2) The patch only (copy paste)
+3) The command to run
+
+
+That’s how you force it to behave like an engineer and not a storyteller.

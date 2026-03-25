@@ -1,0 +1,143 @@
+REQUIRED Replit file structure (do not skip)
+
+Your project must look like this:
+
+/
+├─ index.html
+├─ tonyos.html        (optional, if you already have it)
+├─ assets/
+│  ├─ style.css
+│  ├─ revops-modal.js
+│  └─ (any other css/js you already use)
+
+
+That’s it.
+
+If your files match this, Replit will run it without complaint.
+
+Step-by-step: what to paste where
+1️⃣ index.html
+
+Paste the entire HTML I gave you
+
+If you already have an index, merge:
+
+The topbar button
+
+The RevOps modal block
+
+The <script src="assets/revops-modal.js"></script> line
+
+⚠️ Make sure this line exists in <head>:
+
+<link rel="stylesheet" href="assets/style.css" />
+
+2️⃣ assets/style.css
+
+Paste the entire CSS section
+
+If you already have CSS:
+
+Paste this at the bottom
+
+It won’t override anything unless class names match
+
+3️⃣ assets/revops-modal.js
+
+Create this file
+
+Paste the JS exactly as given
+
+Do not inline it inside HTML
+
+Replit will auto-serve it.
+
+How to run it in Replit (important)
+Option A (recommended)
+
+Click Run
+
+Replit will auto-detect index.html
+
+It opens in the preview browser
+
+Option B (manual)
+
+If Replit asks what type:
+
+Choose Static HTML / CSS / JS
+
+Not Node
+
+Not Flask
+
+How to verify it works (30-second checklist)
+
+Once loaded:
+
+✅ You see Back to TonyOS
+✅ You see Natoli Revenue OS button
+✅ You see SYNCED TO TONYOS DATA
+✅ Click Natoli Revenue OS
+✅ Modal opens
+✅ ESC key closes it
+✅ Clicking background closes it
+✅ Print button works
+
+If all of those pass, you’re done.
+
+Common Replit mistakes (avoid these)
+
+❌ Putting CSS in the wrong folder
+❌ Forgetting assets/ in file paths
+❌ Running as a Node server
+❌ Multiple index.html files
+❌ Capitalization mismatches (Style.css ≠ style.css)
+
+Replit is case-sensitive.
+
+Important reassurance
+
+Replit does not need to “understand”:
+
+RevOps
+
+CRM logic
+
+Your business rules
+
+It just needs to:
+
+Serve files
+
+Run JavaScript
+
+Render HTML
+
+And this setup is well within that lane.
+
+Coach moment
+
+What you built is not fragile.
+
+This is executive-safe front-end logic:
+
+No API calls
+
+No tokens
+
+No backend risk
+
+No runtime surprises
+
+You can demo this confidently.
+
+If you want next, I can:
+
+Adapt this to Netlify or Vercel
+
+Add a read-only mode for execs
+
+Or wire it later to real CRM data when you’re ready
+
+But for now — yes, Replit will handle this cleanly.

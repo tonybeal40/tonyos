@@ -1,0 +1,65 @@
+// script.js
+
+const API_URL = "https://script.google.com/macros/s/your_script_id_here/exec";
+let contacts = JSON.parse(localStorage.getItem("NATOLI_OUTBOUND_CONTACTS_V2") || "[]");
+
+function saveContacts() {
+  localStorage.setItem("NATOLI_OUTBOUND_CONTACTS_V2", JSON.stringify(contacts));
+}
+
+function renderContacts() {
+  const table = document.querySelector("#contact-table tbody");
+  table.innerHTML = "";
+  contacts.forEach(c => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${c.first} ${c.last}</td><td>${c.email || ""}</td><td>${c.company || ""}</td><td>${c.stage || ""}</td><td>${c.sent || ""}</td>`;
+    table.appendChild(tr);
+  });
+
+  document.querySelector("#kpi-contacts").textContent = contacts.length;
+  document.querySelector("#kpi-sent").textContent = contacts.filter(c => c.sent).length;
+}
+
+document.querySelector("#contact-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const form = e.target;
+  const newContact = {
+    first: form.first.value,
+    last: form.last.value,
+    email: form.email.value,
+    company: form.company.value,
+    stage: form.stage.value,
+    sent: false,
+    created: new Date().toISOString()
+  };
+  contacts.push(newContact);
+  saveContacts();
+  renderContacts();
+  form.reset();
+  document.querySelector("#importStatus").textContent = "Saved locally.";
+  scheduleSync();
+});
+
+function scheduleSync() {
+  if (navigator.onLine) {
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ contacts }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.querySelector("#importStatus").textContent = "Synced to Google Sheets.";
+    })
+    .catch(() => {
+      document.querySelector("#importStatus").textContent = "Sync failed. Will retry.";
+    });
+  } else {
+    document.querySelector("#importStatus").textContent = "Offline – saved locally.";
+  }
+}
+
+window.addEventListener("load", () => {
+  renderContacts();
+  scheduleSync();
+});

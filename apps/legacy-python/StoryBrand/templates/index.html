@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StoryBrand Engine – TonyOS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <!-- Top bar -->
+    <header class="top">
+      <div class="logo">
+        <span class="orb"></span>
+        <div class="logo-text">
+          <div class="logo-title">StoryBrand Engine</div>
+          <div class="logo-sub">Powered by TonyOS</div>
+        </div>
+      </div>
+      <div class="badge">
+        Build StoryBrand BrandScripts from any site or idea
+      </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Turn any website into a clear StoryBrand message</h1>
+        <p>
+          Paste a URL or answer a few questions and the engine will build a full BrandScript,
+          homepage copy, and elevator pitch built on the 7 part framework.
+        </p>
+        <ul>
+          <li>Customer is the hero</li>
+          <li>Your brand is the guide</li>
+          <li>Clear plan, clear call to action</li>
+        </ul>
+      </div>
+      <div class="hero-card">
+        <div class="tab-row">
+          <button class="tab active" data-tab="url-tab">Website Mode</button>
+          <button class="tab" data-tab="wizard-tab">Question Wizard</button>
+        </div>
+
+        <!-- Website mode -->
+        <div class="tab-panel" id="url-tab">
+          <label class="field-label">Website URL</label>
+          <input id="urlInput" class="field-input" placeholder="https://example.com" />
+          <label class="field-label" style="margin-top:14px;">Brand name (optional)</label>
+          <input id="brandInput" class="field-input" placeholder="Brand or product name" />
+          <button id="generateFromUrl" class="primary-btn">Generate StoryBrand from site</button>
+        </div>
+
+        <!-- Wizard mode -->
+        <div class="tab-panel hidden" id="wizard-tab">
+          <div class="wizard-wrap">
+            <label class="field-label">Brand name</label>
+            <input id="wizBrand" class="field-input" placeholder="Brand or product name" />
+
+            <label class="field-label">1. Who is the hero?</label>
+            <textarea id="hero" class="field-area" placeholder="Describe your ideal customer"></textarea>
+
+            <label class="field-label">2. What do they want?</label>
+            <textarea id="want" class="field-area" placeholder="What result are they chasing"></textarea>
+
+            <label class="field-label">3. What problem do they face?</label>
+            <textarea id="problem" class="field-area" placeholder="External, internal, or big picture problem"></textarea>
+
+            <label class="field-label">4. Who or what is the villain or root cause?</label>
+            <textarea id="villain" class="field-area" placeholder="Optional but powerful"></textarea>
+
+            <label class="field-label">5. How does your brand guide them?</label>
+            <textarea id="guide" class="field-area" placeholder="Empathy plus authority"></textarea>
+
+            <label class="field-label">6. What is the plan?</label>
+            <textarea id="plan" class="field-area" placeholder="Simple 3 step process you take them through"></textarea>
+
+            <label class="field-label">7. What is the call to action?</label>
+            <textarea id="cta" class="field-area" placeholder="What do you want them to do next"></textarea>
+
+            <label class="field-label">8. What is at stake if they do nothing?</label>
+            <textarea id="stakes" class="field-area" placeholder="What they lose if they stay stuck"></textarea>
+
+            <label class="field-label">9. What does success look like?</label>
+            <textarea id="success" class="field-area" placeholder="Paint the happy ending"></textarea>
+
+            <button id="generateFromWizard" class="primary-btn">Generate StoryBrand from answers</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Output section -->
+    <section class="output">
+      <div class="output-header">
+        <h2>BrandScript Output</h2>
+        <button id="downloadBtn" class="ghost-btn">Download as text file</button>
+      </div>
+      <div id="outputBox" class="output-box">
+        <p class="muted">Your BrandScript will appear here.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      Designed so you can charge clients for a full StoryBrand messaging build.
+    </footer>
+  </div>
+
+  <script>
+    // Tab logic
+    const tabs = document.querySelectorAll(".tab");
+    const panels = document.querySelectorAll(".tab-panel");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        panels.forEach(p => p.classList.add("hidden"));
+
+        tab.classList.add("active");
+        const target = document.getElementById(tab.dataset.tab);
+        target.classList.remove("hidden");
+      });
+    });
+
+    async function callEngine(payload) {
+      const box = document.getElementById("outputBox");
+      box.innerHTML = "<p>Working on your BrandScript, one second.</p>";
+
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        box.textContent = data.result || "No result returned.";
+      } catch (err) {
+        box.textContent = "Error calling engine: " + err;
+      }
+    }
+
+    // Website mode button
+    document.getElementById("generateFromUrl").addEventListener("click", () => {
+      const url = document.getElementById("urlInput").value;
+      const brand = document.getElementById("brandInput").value;
+      callEngine({ url: url, brandName: brand, answers: {} });
+    });
+
+    // Wizard mode button
+    document.getElementById("generateFromWizard").addEventListener("click", () => {
+      const answers = {
+        hero: document.getElementById("hero").value,
+        want: document.getElementById("want").value,
+        problem: document.getElementById("problem").value,
+        villain: document.getElementById("villain").value,
+        guide: document.getElementById("guide").value,
+        plan: document.getElementById("plan").value,
+        cta: document.getElementById("cta").value,
+        stakes: document.getElementById("stakes").value,
+        success: document.getElementById("success").value
+      };
+      const brand = document.getElementById("wizBrand").value;
+      callEngine({ url: "", brandName: brand, answers });
+    });
+
+    // Download button
+    document.getElementById("downloadBtn").addEventListener("click", async () => {
+      window.location.href = "/api/download";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli RevOps | Downloads</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Internal Assets</h1>
+        <p class="revops-subtitle">Resources and templates</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona">Personas</a>
+      <a href="/natoli-revops/results">Results</a>
+      <a href="/natoli-revops/downloads" class="active">Downloads</a>
+      <a href="/natoli-revops/message-center">Message Center</a>
+    </nav>
+
+    <div class="download-grid">
+      <div class="download-item" style="border: 3px solid #06b6d4; background: linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(59,130,246,0.15) 100%); grid-column: 1 / -1;">
+        <h4 style="font-size: 20px; color: #22d3ee;">📊 Customer Intelligence Dashboard</h4>
+        <p style="font-size: 14px; line-height: 1.5;">Fortune-50 quality customer data hub. <strong>4 unified views</strong> with <strong>2024 &amp; 2025 year tabs</strong>: 1,423 Discovery Prospects, New Customers Who Ordered (2025: 108, 2024: 106), New Customers No Order (2025: 159, 2024: 155), and 1,038 Lapsed Customers. Every record enriched with websites, phone numbers, LinkedIn URLs, and Natoli division classification (Scientific / Engineering / Both). ZIP download, Apollo search guide, CSV export.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+          <a href="/static/natoli-clean-list/index.html" target="_blank" class="action-btn" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); font-size: 14px; padding: 10px 24px;">Open Dashboard</a>
+          <a href="/static/natoli-clean-list/index.html" target="_blank" class="action-btn" style="background: #22c55e; font-size: 14px; padding: 10px 24px;">Download ZIP for Netlify ↗</a>
+          <span style="color: #94a3b8; font-size: 11px; display: block; margin-top: 6px;">Open dashboard → click 📦 ZIP Package button → deploy ZIP to Netlify</span>
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px;">
+          <span style="color: #06b6d4;">Discovery: <strong>1,423</strong></span>
+          <span style="color: #10b981;">Ordered: <strong>108</strong> (2025) + <strong>106</strong> (2024)</span>
+          <span style="color: #f59e0b;">No Order: <strong>159</strong> (2025) + <strong>155</strong> (2024)</span>
+          <span style="color: #ef4444;">Lapsed: <strong>1,038</strong></span>
+          <span style="color: #9ca3af;">|</span>
+          <span style="color: #a855f7;">Scientific / Engineering / Both</span>
+          <span style="color: #9ca3af;">|</span>
+          <span style="color: #22c55e;">All websites verified &bull; Apollo Guide</span>
+        </div>
+      </div>
+      <div class="download-item" style="border: 3px solid #b30000; background: linear-gradient(135deg, rgba(179,0,0,0.2) 0%, rgba(139,0,0,0.1) 100%);">
+        <h4 style="font-size: 18px; color: #ff6b6b;">🎯 Territory Rep Portal - Full RevOps App</h4>
+        <p>Complete sales command center by territory. Each rep sees their own accounts, contacts with click-to-call/email/LinkedIn. Upload CSV to add new accounts. Deterministic classification (no AI). Deploys to Netlify as static HTML.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/territory-rep-portal/index.html" target="_blank" class="action-btn" style="background: #b30000;">Open Rep Portal</a>
+          <a href="/static/internal/territory-rep-portal/index.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Reps:</strong> Danny (NE) • Mike (SE) • Chris (MW) • Sarah (W) • Tom (RM) • Mark (CAN) | <strong>Features:</strong> 24 example accounts • CSV import • Contact actions • Export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.15);">
+        <h4>CSV Company Viewer</h4>
+        <p>Upload any company CSV to view with clickable Website and LinkedIn links. Auto-detects columns, filters by Territory and Natoli Fit, search, and export filtered results.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/csv-viewer.html" target="_blank" class="action-btn" style="background: #22c55e; color: #000;">Open CSV Viewer</a>
+          <a href="/static/csv-viewer.html" download="csv-viewer.html" class="action-btn secondary">Download for Offline</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Supports:</strong> Company, City, State, Territory, Phone, Website, LinkedIn, Natoli Fit columns
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #10b981; background: rgba(16, 185, 129, 0.15);">
+        <h4>Tony Job Engine</h4>
+        <p>Career intelligence dashboard for RevOps, Growth, and Business Development roles. 20+ target keywords, one-click searches across Google, LinkedIn, Indeed, Glassdoor. Paste job descriptions to score fit. Save and export matches.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/tony-job-engine.html" target="_blank" class="action-btn" style="background: #10b981;">Open Job Engine</a>
+          <a href="/static/tony-job-engine.html" download="tony-job-engine.html" class="action-btn" style="background: #22c55e;">Download for Offline</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Keyword scoring | Quick search links | Job fit analysis | CSV export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f97316; background: rgba(249, 115, 22, 0.15);">
+        <h4>Lapsed Customers Re-Engagement List</h4>
+        <p>1,104 validated companies that haven't ordered in over 1 year. All websites verified working. Natoli Fit classification, search and filter, CSV export. Ready for re-engagement campaigns.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/exports/lapsed-customers-netlify.html" target="_blank" class="action-btn" style="background: #f97316;">View Lapsed Customers</a>
+          <a href="/static/exports/lapsed-customers-netlify.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Breakdown:</strong> Scientific | Engineering | Both - with phone, website, LinkedIn links
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #0077b5; background: rgba(0, 119, 181, 0.15);">
+        <h4>LinkedIn Banner Studio</h4>
+        <p>Create professional LinkedIn banners instantly. Live preview, 6 color themes, exports PNG at perfect 1584x396 resolution. Edit name, title, tagline in real-time.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/linkedin-banner-studio.html" target="_blank" class="action-btn" style="background: #0077b5;">Open Banner Studio</a>
+          <a href="/static/linkedin-banner-studio.html" download="linkedin-banner-studio.html" class="action-btn" style="background: #22c55e;">Download for Offline</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Themes:</strong> Ocean | Sunset | Forest | Midnight | Fire | Natoli
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #22d3ee; background: rgba(34, 211, 238, 0.15);">
+        <h4>Natoli Message Center - Netlify Ready</h4>
+        <p>Complete sales & CX messaging hub with 20+ email templates. Intro emails, follow-ups, thank you notes, customer check-ins, Why Natoli messaging, and LinkedIn templates. Includes Natoli landing page.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/exports/natoli-message-center-netlify.html" target="_blank" class="action-btn" style="background: #22d3ee; color: #000;">View Message Center</a>
+          <a href="/static/exports/natoli-message-center-netlify.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Teams:</strong> Sales (orange) | Customer Experience (green) | Why Natoli (purple)
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f59e0b; background: rgba(245, 158, 11, 0.15);">
+        <h4>Territory Report (Pre-Loaded) - Netlify Ready</h4>
+        <p>2,755 qualified companies across 23 industries. 109 verified Tier 1 targets with StoryBrand reasoning for why they need Natoli. Each Tier 1 shows exactly why they're a top target.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/territory-report.html" target="_blank" class="action-btn" style="background: #f59e0b; color: #000;">View Report</a>
+          <button class="action-btn secondary" onclick="showTerritoryReportCode()">Get Source Code</button>
+          <a href="/static/natoli-territory-report-netlify.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+          <p style="font-size: 11px; color: #9ca3af; margin-bottom: 8px;">CSV Exports:</p>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <a href="/static/exports/NATOLI_ALL_COMPANIES.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">All (2,755)</a>
+            <a href="/static/exports/NATOLI_TIER1_PRIORITY.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px; background: #22c55e;">Tier 1 (109)</a>
+                        <a href="/static/exports/NATOLI_NEEDS_RESEARCH.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px; background: #ef4444;">Needs Research (876)</a>
+            <a href="/static/exports/NATOLI_WEST_COAST.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">West (238)</a>
+            <a href="/static/exports/NATOLI_MIDWEST.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">Midwest (249)</a>
+            <a href="/static/exports/NATOLI_NORTHEAST.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">Northeast (415)</a>
+            <a href="/static/exports/NATOLI_SOUTHEAST.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">Southeast (197)</a>
+            <a href="/static/exports/NATOLI_ROCKY_MOUNTAIN.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">Rocky Mtn (149)</a>
+            <a href="/static/exports/NATOLI_INTERNATIONAL.csv" download class="action-btn" style="font-size: 10px; padding: 4px 8px;">International (1,501)</a>
+          </div>
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #ef4444; background: rgba(239, 68, 68, 0.15);">
+        <h4>🏥 503B Outsourcing Facilities Database</h4>
+        <p>47 FDA-registered 503B compounding pharmacies with Natoli fit classification. Includes phone, contact, website, LinkedIn, and why each is relevant to Engineering or Scientific.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/503b-companies.html" target="_blank" class="action-btn" style="background: #ef4444;">View 503B Database</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Source:</strong> FDA Registered Outsourcing Facilities list (updated Jan 2026)
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #ec4899; background: rgba(236, 72, 153, 0.15);">
+        <h4>🌴 Sandra's West Coast Target List</h4>
+        <p>19 Sandra List companies with tablet fit reasoning, contacts, phone numbers, LinkedIn links. Netlify-ready static HTML.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/exports/sandra-west-coast-targets.html" target="_blank" class="action-btn" style="background: #ec4899;">View Target List</a>
+          <a href="/static/exports/sandra-west-coast-targets.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Includes:</strong> Sandra List tablet targets • Key contacts (Fernando Delgado)
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.15);">
+        <h4>📊 RevOps Database Tool</h4>
+        <p>Account scoring and classification tool. Import CSV, auto-score Natoli Fit (Engineering/Scientific/Both/No Fit), add accounts manually, filter and export. Uses the standard 9-column structure.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/revops-database.html" target="_blank" class="action-btn" style="background: #3b82f6;">Open Database Tool</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Key Titles:</strong> Director of Engineering, Manufacturing Manager, Operations Manager, Director of Quality
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #06b6d4; background: rgba(6, 182, 212, 0.15);">
+        <h4>🔍 Market Intelligence Discovery</h4>
+        <p>AI-powered company discovery engine using OpenAI. Finds US tablet manufacturers by industry, auto-classifies Natoli Fit, extracts location, calculates confidence scores. Includes account exclusion and sales rep assignment.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/market-discovery.html" target="_blank" class="action-btn" style="background: #06b6d4;">Open Discovery Tool</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> 30 industries • OpenAI-powered • Sales rep assignment • Account exclusion • CSV export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f97316; background: rgba(249, 115, 22, 0.15);">
+        <h4>✉️ Natoli Message Generator</h4>
+        <p>AI-powered personalized outreach message generator. Creates professional emails following Natoli tone: calm, credible, manufacturing-first. Supports new, existing, and lapsed customer messaging.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/message-generator.html" target="_blank" class="action-btn" style="background: #f97316;">Open Message Generator</a>
+          <a href="/static/netlify-message-generator.zip" download class="action-btn" style="background: #22c55e;">Download Netlify Package (Secure)</a>
+          <a href="/static/natoli-message-generator-netlify.html" download="index.html" class="action-btn secondary">Single File (Requires API Key Input)</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Netlify Package:</strong> Includes serverless function - API key stays secure on server, never exposed in browser
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #a855f7; background: rgba(168, 85, 247, 0.15);">
+        <h4>Territory Intelligence Tool</h4>
+        <p>Upload your own Apollo CSV to classify by territory, industry, and Natoli fit. Filters, exports, and full source code.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/territory-intelligence.html" target="_blank" class="action-btn" style="background: #a855f7;">Open Tool</a>
+          <button class="action-btn secondary" onclick="showTerritoryCode()">Get Source Code</button>
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #6b7280; background: rgba(107, 114, 128, 0.15);">
+        <h4>TonyRevOps Internal</h4>
+        <p>Private downloads hub. LinkedIn background, resume, internal reference docs. Set-and-forget infrastructure.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/tonyrevops-downloads/index.html" target="_blank" class="action-btn" style="background: #6b7280;">Open Internal Downloads</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Slots:</strong> LinkedIn Background • Resume / One-Pager • Internal Reference
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #14b8a6; background: rgba(20, 184, 166, 0.15);">
+        <h4>Manufacturing Deep Search</h4>
+        <p>Signal triangulation for manufacturing intelligence. Infer likely manufacturing model, location, and confidence. Stack weak signals into strong inference.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/manufacturing-intel/index.html" target="_blank" class="action-btn" style="background: #14b8a6;">Open Deep Search</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Signals:</strong> FDA Registration • Job Roles • LinkedIn Density • cGMP Claims • Import/Export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.15);">
+        <h4>📋 Validation Document Generator</h4>
+        <p>GMP-compliant validation documentation tool. Create URS, SDS, IQ, OQ protocols with full lifecycle traceability. Document control metadata, company branding, revision history, and PDF export.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/validation-doc-generator.html" target="_blank" class="action-btn" style="background: #22c55e;">Open Generator</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Document Types:</strong> URS • SDS • IQ • OQ • PQ • Validation Protocol
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #dc2626; background: rgba(220, 38, 38, 0.15);">
+        <h4>🧠 Compaction Intelligence</h4>
+        <p>AI-powered sales intelligence for tablet manufacturing. Upload CSV contacts, enrich with likely tooling class, press OEM exposure, production stage, probable defects, and ready-to-use outreach messaging.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/compaction-intelligence/index.html" target="_blank" class="action-btn" style="background: #dc2626;">Open Compaction Intelligence</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Enriches:</strong> Tooling Class • Press OEM • Defects • Email Subject • LinkedIn Opening
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #1f2937; background: rgba(31, 41, 55, 0.15);">
+        <h4>📄 Strategic Account Brief Generator</h4>
+        <p>Upload enriched CSVs to generate print-ready account briefs. Merge multiple files, deep research for Manufacturing Model & Fit Reason, deduplicate, and export CSV or PDF.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/strategic-account-brief.html" target="_blank" class="action-btn" style="background: #1f2937;">Open Brief Generator</a>
+          <a href="/static/internal/strategic-account-brief.html" download="strategic-account-brief.html" class="action-btn" style="background: #22c55e;">Download for Offline</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Multi-CSV upload • Deep Research • Deduplication • CSV & PDF export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #b30000; background: rgba(179, 0, 0, 0.15);">
+        <h4>📊 NEW ACCOUNTS BRIEF (Feb 2026)</h4>
+        <p><strong>625 new accounts</strong> ready for review. Pre-generated with Industry, Manufacturing Model, Natoli Fit, Fit Reason, Retail Presence. Excludes existing Clean Natoli List.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/new-accounts-brief.html" target="_blank" class="action-btn" style="background: #b30000;">View New Accounts PDF</a>
+          <a href="/static/internal/new-accounts-brief.html" download="new-accounts-brief.html" class="action-btn" style="background: #22c55e;">Download HTML</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Summary:</strong> 228 Strong Fit • 176 Medium Fit • 276 High Confidence | Print as PDF (Ctrl+P)
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f97316; background: rgba(249, 115, 22, 0.15);">
+        <h4>🔄 LAPSED CUSTOMERS BRIEF (1+ Year Inactive)</h4>
+        <p><strong>1,104 lapsed customers</strong> ready for re-engagement. Includes Industry classification, Territory assignment, Division fit, and re-engagement focus suggestions.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/lapsed-customers-brief.html" target="_blank" class="action-btn" style="background: #f97316;">View Lapsed Customers PDF</a>
+          <a href="/static/exports/lapsed_customers_enriched.csv" download class="action-btn" style="background: #22c55e;">Download CSV</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Breakdown:</strong> 497 Both • 443 Scientific • 164 Engineering | 351 International • 247 Northeast • 185 West
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.1);">
+        <h4>Event ROI & Buyer Alignment Report</h4>
+        <p>Executive report with trade show grades, competitor analysis, and animated bubbles. Answers Dale's question about OEM presence.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/event-roi-report.html" target="_blank" class="action-btn">View Report</a>
+          <button class="action-btn secondary" onclick="showSourceCode()">Get Source Code</button>
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.1);">
+        <h4>Apollo Sales Intelligence Export</h4>
+        <p>Standalone Netlify-deployable CRM with 29,514 contacts, login auth, and industry filtering.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/apollo-netlify" target="_blank" class="action-btn">View App</a>
+          <button class="action-btn secondary" onclick="showApolloCode()">Get Source Code</button>
+        </div>
+      </div>
+      <div class="download-item">
+        <h4>Targeting Checklist</h4>
+        <p>Environment qualification criteria for Tier 1 accounts.</p>
+        <button class="action-btn secondary" disabled>Coming Soon</button>
+      </div>
+      <div class="download-item">
+        <h4>Persona Messaging Examples</h4>
+        <p>Talk tracks and value props by role.</p>
+        <button class="action-btn secondary" disabled>Coming Soon</button>
+      </div>
+      <div class="download-item">
+        <h4>LinkedIn Outreach Samples</h4>
+        <p>Connection requests and follow-up sequences.</p>
+        <button class="action-btn secondary" disabled>Coming Soon</button>
+      </div>
+      <div class="download-item" style="border: 2px solid #f97316; background: rgba(249, 115, 22, 0.15);">
+        <h4>🏢 Natoli Formal Introduction System (Dale's Request)</h4>
+        <p>Professional introduction templates for new prospects and existing/lapsed customers. Printable documents, email templates, LinkedIn posts, team roster with photos and titles.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/natoli-intro-system-netlify.html" target="_blank" class="action-btn" style="background: #f97316;">Open System</a>
+          <a href="/static/natoli-intro-system-netlify.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Includes:</strong> Ada, Tiffany, Jennifer, Caitlyn, Katrina, Sandra • 7 Sales Regions • Email Templates • LinkedIn Posts • Print-Ready Documents
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.15);">
+        <h4>📧 Natoli Message Generator</h4>
+        <p>Quick message generator with company form. Generate personalized emails by clicking any rep or CX team member button.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/natoli-intro-templates-netlify.html" target="_blank" class="action-btn" style="background: #3b82f6;">Open Generator</a>
+          <a href="/static/natoli-intro-templates-netlify.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Company form • Generate per rep • New/Existing/Lapsed templates
+        </div>
+      </div>
+      <div class="download-item">
+        <h4>Email Frameworks</h4>
+        <p>Cold outreach and nurture templates.</p>
+        <button class="action-btn secondary" disabled>Coming Soon</button>
+      </div>
+      <div class="download-item" style="border: 2px solid #10b981; background: rgba(16, 185, 129, 0.15);">
+        <h4>🔧 Company Profile Enrichment</h4>
+        <p>Paste a list of company names, get enriched profiles with website, location, industry, and Natoli Fit classification. Uses OpenAI only - no external APIs required.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/company-enrichment.html" target="_blank" class="action-btn" style="background: #10b981;">Open Enrichment Tool</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Output:</strong> Company, Website, City, State, Industry, Natoli Fit, Confidence
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f97316; background: rgba(249, 115, 22, 0.15);">
+        <h4>🔄 Lapsed Account Enrichment</h4>
+        <p>Upload CSV of lapsed accounts, enrich with website, phone, city/state, LinkedIn, and Natoli Fit. Filters by confidence level. Batch processing with progress tracking.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/lapsed-account-enrichment.html" target="_blank" class="action-btn" style="background: #f97316;">Open Lapsed Enrichment</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> CSV upload • Batch processing • High/Medium/Low confidence filter • Export enriched CSV
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #8b5cf6; background: rgba(139, 92, 246, 0.15);">
+        <h4>📊 Apollo Enriched Export (Jan 2026)</h4>
+        <p>110 companies enriched with missing data: phone numbers, employee counts, industry, city/state, LinkedIn. Includes pharma, compounding, cosmetics, battery/energy, and semiconductor companies.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/exports/apollo_enriched_export.csv" download class="action-btn" style="background: #8b5cf6;">Download Enriched CSV</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Data:</strong> 83% phones • 84% employees • 90% industry • 91% location complete
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #6366f1; background: rgba(99, 102, 241, 0.15);">
+        <h4>📜 Enrichment Scripts & Docs</h4>
+        <p>Python scripts for advanced enrichment using Bing Web Search API + OpenAI. For server-side batch processing with phone numbers, addresses, and LinkedIn URLs.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="action-btn" style="background: #6366f1;" onclick="showEnrichmentCode()">View Python Code</button>
+          <button class="action-btn secondary" onclick="showEnrichmentDocs()">View Documentation</button>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Requires:</strong> Bing API Key + OpenAI API Key
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #10b981; background: rgba(16, 185, 129, 0.15);">
+        <h4>📋 Validation Lifecycle Traceability (URS → SDS → IQ → OQ)</h4>
+        <p>Full validation documentation generator. Create Software Design Specifications with URS requirements, traceability matrices, IQ/OQ references, and printable document packages. cGMP compliant.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/validation-lifecycle.html" target="_blank" class="action-btn" style="background: #10b981;">Open Validation Tool</a>
+          <a href="/static/tmii-sds-generator.html" target="_blank" class="action-btn" style="background: #3b82f6;">TM-II SDS Generator</a>
+          <a href="/static/validation-lifecycle.html" download="validation-lifecycle.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> URS requirements entry • Design → IQ → OQ traceability matrix • Print-ready SDS • CSV export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #1e3a5f; background: rgba(30, 58, 95, 0.2);">
+        <h4>📄 TM-II SDS Complete (SPEC-0169357 Response)</h4>
+        <p>Pre-filled Software Design Specification answering ALL 19 URS requirements from SPEC-0169357 v1.0. Complete with design responses, traceability matrix, 21 CFR Part 11 compliance, and signature blocks. Ready to send to customer.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/tmii-sds-complete.html" target="_blank" class="action-btn" style="background: #1e3a5f;">View Complete SDS</a>
+          <a href="/static/tmii-sds-complete.html" download="TMII_SDS_SPEC-0169357.html" class="action-btn" style="background: #2563eb;">Download Word</a>
+          <a href="/static/tmii-sds-complete.html" download="index.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Covers:</strong> URS 5.1.1-5.1.13 (Software) • URS 6.1-6.4 (Hardware) • URS 8.1-8.3 (Compliance) • All Direct/Non-Direct impacts
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #0ea5e9; background: rgba(14, 165, 233, 0.15);">
+        <h4>🌊 Website Discovery Report: Ayala Water & Ecology</h4>
+        <p>Consultant-style website messaging analysis. Demonstrates discovery methodology - strengths, gaps, messaging clarity score, and how to help. Professional format for prospect presentations.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/ayala-discovery.html" target="_blank" class="action-btn" style="background: #0ea5e9;">View Discovery Report</a>
+          <a href="/static/internal/ayala-discovery.html" download="ayala-discovery.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Format:</strong> Tony Beal Consulting • Messaging Analysis • Clarity Score • Services Offered • Before/After Examples
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #1e3a8a; background: rgba(30, 58, 138, 0.15);">
+        <h4>🏢 Fortune 50 Enterprise Lead Engine</h4>
+        <p>Enterprise RevOps lead qualification platform. Fill out contact and manufacturing profile, auto-generate Natoli fit, buying group, account strategy, and outreach talk track. Copy formatted output for email.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/fortune50-lead-engine.html" target="_blank" class="action-btn" style="background: #1e3a8a;">Open Lead Engine</a>
+          <a href="/static/internal/fortune50-lead-engine.html" download="fortune50-lead-engine.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Auto Natoli Fit • Buying Group • Account Strategy • Talk Track • Copy for Email • Print PDF
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #ec4899; background: rgba(236, 72, 153, 0.15);">
+        <h4>📄 Resume & Cover Letter Generator</h4>
+        <p>ATS-optimized, Fortune 50-ready resume and cover letter builder. Pre-loaded with TonyOS and Natoli transformation highlights. Editable fields, live preview, and PDF export. Target company presets for Nestlé, Pfizer, J&J, Merck, AbbVie.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/resume-generator.html" target="_blank" class="action-btn" style="background: #ec4899;">Open Resume Builder</a>
+          <a href="/static/internal/resume-generator.html" download="resume-generator.html" class="action-btn" style="background: #22c55e;">Download for Netlify</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Resume Builder • Cover Letter • Live Preview • PDF Export • ATS Keywords • Enterprise Coded
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #14b8a6; background: rgba(20, 184, 166, 0.15);">
+        <h4>💬 Natoli Reachout Generator</h4>
+        <p>Copy-paste LinkedIn/email outreach generator. Paste names and titles from Sales Navigator, get Tier classification, Persona identification, Natoli Fit, LinkedIn connection messages, emails, and C2 notes. Manual send only - no automation risk.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/reachout" target="_blank" class="action-btn" style="background: #14b8a6;">Open Reachout Tool</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Tier 1/2/3 Classification • Decision Maker/Influencer/Blocker • LinkedIn + Email + C2 Notes • Copy Buttons
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f59e0b; background: rgba(245, 158, 11, 0.15);">
+        <h4>📧 Customer Communications & West Coast Accounts</h4>
+        <p>Customer letter generator with team roster and West Coast Engineering accounts database. Generate Thank You, Sales Handoff, Welcome, and Nurture letters. Export 50 West Coast accounts to CSV.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/natoli-engineering-app/index.html" target="_blank" class="action-btn" style="background: #f59e0b;">Customer Letters</a>
+          <a href="/static/internal/natoli-engineering-app/accounts.html" target="_blank" class="action-btn" style="background: #3b82f6;">West Coast Accounts</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> 4 Letter Templates • Team Roster • 50 Accounts • CSV Export • Netlify Ready
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #0077b5; background: rgba(0, 119, 181, 0.15);">
+        <h4>LinkedIn Article Cover Fixer (AI)</h4>
+        <p>Upload any article cover image (1200x630). AI reads the text, fixes spelling and spacing errors, renders it professionally, and lets you download the corrected PNG.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/downloads/linkedin-cover-fixer.html" target="_blank" class="action-btn" style="background: #0077b5;">Open Cover Fixer</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Size:</strong> 1200x630px • AI text extraction • Auto-fix spelling • PNG download
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #a855f7; background: rgba(168, 85, 247, 0.15);">
+        <h4>LinkedIn Post Image Fixer (AI)</h4>
+        <p>Upload any square post image (1080x1080). AI reads the text, fixes all spelling and spacing errors, renders with beautiful gradient design, and downloads as PNG.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/downloads/linkedin-post-fixer.html" target="_blank" class="action-btn" style="background: #a855f7;">Open Post Fixer</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Size:</strong> 1080x1080px • AI text extraction • Beautiful gradient design • PNG download
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #f59e0b; background: rgba(245, 158, 11, 0.15);">
+        <h4>Award-Winning Article Generator (AI)</h4>
+        <p>Paste your text or rough draft. AI transforms it into a polished, professional article with compelling title, lead paragraph, proper formatting, and professional disclaimer. Download as HTML or print to PDF.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/downloads/article-generator.html" target="_blank" class="action-btn" style="background: #f59e0b; color: #000;">Open Article Generator</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Features:</strong> Multiple tones • Category selection • Professional formatting • Disclaimers • HTML/PDF export
+        </div>
+      </div>
+      <div class="download-item" style="border: 2px solid #6366f1; background: rgba(99, 102, 241, 0.15);">
+        <h4>LinkedIn Article Cover Template</h4>
+        <p>Pre-built "Showing Up Is Easy. Staying With It Is the Real Work." cover with perfect text rendering. Blue gradient design at 1200x630px ready for download.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="/static/internal/downloads/linkedin-cover-generator.html" target="_blank" class="action-btn" style="background: #6366f1;">Open Template</a>
+          <a href="/static/internal/downloads/linkedin-cover-generator.html" download="linkedin-cover-generator.html" class="action-btn" style="background: #22c55e;">Download HTML</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: #9ca3af;">
+          <strong>Size:</strong> 1200x630px (LinkedIn Article Cover) • Perfect text • One-click PNG download
+        </div>
+      </div>
+    </div>
+
+    <div id="codeModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; padding:40px; overflow:auto;">
+      <div style="max-width:1200px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h2 id="modalTitle" style="color:#fff;">Source Code</h2>
+          <button onclick="closeModal()" style="background:#dc2626; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Close</button>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+          <button onclick="copyCode()" style="background:#22c55e; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Copy All Code</button>
+          <button onclick="downloadCode()" style="background:#3b82f6; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Download HTML</button>
+        </div>
+        <pre id="codeContent" style="background:#1a1a2e; color:#e5e5e5; padding:24px; border-radius:12px; overflow-x:auto; font-size:13px; line-height:1.5; white-space:pre-wrap; word-wrap:break-word;"></pre>
+      </div>
+    </div>
+
+    <script>
+      let currentCode = '';
+      let currentFilename = 'template.html';
+
+      async function showSourceCode() {
+        const response = await fetch('/static/event-roi-report.html');
+        currentCode = await response.text();
+        currentFilename = 'event-roi-report.html';
+        document.getElementById('modalTitle').textContent = 'Event ROI Report - Source Code';
+        document.getElementById('codeContent').textContent = currentCode;
+        document.getElementById('codeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      async function showApolloCode() {
+        const response = await fetch('/static/apollo-netlify-export.html');
+        currentCode = await response.text();
+        currentFilename = 'apollo-netlify-export.html';
+        document.getElementById('modalTitle').textContent = 'Apollo Sales Intelligence - Source Code';
+        document.getElementById('codeContent').textContent = currentCode;
+        document.getElementById('codeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      async function showTerritoryCode() {
+        const response = await fetch('/static/territory-intelligence.html');
+        currentCode = await response.text();
+        currentFilename = 'territory-intelligence.html';
+        document.getElementById('modalTitle').textContent = 'Territory Intelligence Tool - Source Code';
+        document.getElementById('codeContent').textContent = currentCode;
+        document.getElementById('codeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      async function showTerritoryReportCode() {
+        try {
+          const [htmlRes, dataRes] = await Promise.all([
+            fetch('/static/territory-report.html'),
+            fetch('/static/territory-data.js')
+          ]);
+          const html = await htmlRes.text();
+          const data = await dataRes.text();
+          currentCode = html.replace('<scr' + 'ipt src="territory-data.js"></scr' + 'ipt>', '<scr' + 'ipt>\n' + data + '\n</scr' + 'ipt>');
+          currentFilename = 'territory-report-standalone.html';
+          document.getElementById('modalTitle').textContent = 'Territory Report (Full Standalone) - Source Code';
+          document.getElementById('codeContent').textContent = currentCode;
+          document.getElementById('codeModal').style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        } catch(e) {
+          alert('Error loading code. Please try again.');
+        }
+      }
+
+      function showEnrichmentCode() {
+        currentCode = `# Company Profile Enrichment + Cleanup (Legal)
+# Enriches company data using Bing Web Search API and OpenAI
+
+# Requirements:
+# pip install requests beautifulsoup4 pandas openai
+
+import requests
+import pandas as pd
+import re
+import time
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+from openai import OpenAI
+
+# ===============================
+# CONFIG
+# ===============================
+
+BING_API_KEY = "YOUR_BING_API_KEY"
+OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
+
+USER_AGENT = "NatoliCompanyResearch/1.0 (+public-data)"
+REQUEST_DELAY = 2.0
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+INPUT_FILE = "natoli_net_new_targets.csv"  # or your source file
+OUTPUT_FILE = "natoli_company_profiles.csv"
+
+BING_ENDPOINT = "https://api.bing.microsoft.com/v7.0/search"
+HEADERS = {
+    "Ocp-Apim-Subscription-Key": BING_API_KEY,
+    "User-Agent": USER_AGENT
+}
+
+# ===============================
+# HELPERS
+# ===============================
+
+def bing_search(query):
+    params = {"q": query, "count": 5}
+    r = requests.get(BING_ENDPOINT, headers=HEADERS, params=params)
+    r.raise_for_status()
+    return r.json().get("webPages", {}).get("value", [])
+
+def extract_phone(text):
+    if not text:
+        return ""
+    match = re.search(r"(\\(?\d{3}\\)?[-.\\s]\d{3}[-.\\s]\d{4})", text)
+    return match.group(1) if match else ""
+
+def extract_address(text):
+    if not text:
+        return "", "", ""
+    city_state = re.search(r"([A-Z][a-zA-Z\\s]+),\\s([A-Z]{2})", text)
+    if city_state:
+        return city_state.group(1), city_state.group(2), ""
+    return "", "", ""
+
+def fetch_site_text(url):
+    try:
+        r = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=6)
+        if r.status_code != 200:
+            return ""
+        soup = BeautifulSoup(r.text, "html.parser")
+        return soup.get_text(" ", strip=True)
+    except:
+        return ""
+
+def find_linkedin(results):
+    for r in results:
+        url = r.get("url", "")
+        if "linkedin.com/company" in url:
+            return url
+    return ""
+
+# ===============================
+# OPENAI CLEANUP / CONFIDENCE
+# ===============================
+
+def assess_profile_confidence(company, website, phone, city, state, linkedin):
+    prompt = f"""
+You are validating a public company profile.
+
+Company: {company}
+Website: {website}
+Phone: {phone}
+City: {city}
+State: {state}
+LinkedIn: {linkedin}
+
+Return one word only:
+High, Medium, or Low
+
+High = most fields present and consistent
+Medium = partial but reasonable
+Low = sparse or uncertain
+"""
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+    return response.choices[0].message.content.strip()
+
+# ===============================
+# PIPELINE
+# ===============================
+
+df = pd.read_csv(INPUT_FILE)
+rows = []
+
+for _, row in df.iterrows():
+    company = row["Company"]
+
+    results = bing_search(company)
+    website = results[0]["url"] if results else ""
+    snippet = results[0]["snippet"] if results else ""
+
+    site_text = fetch_site_text(website)
+    combined_text = snippet + " " + site_text
+
+    phone = extract_phone(combined_text)
+    city, state, address = extract_address(combined_text)
+    linkedin = find_linkedin(results)
+
+    confidence = assess_profile_confidence(
+        company, website, phone, city, state, linkedin
+    )
+
+    rows.append({
+        "Company": company,
+        "Website": website,
+        "Phone": phone,
+        "City": city,
+        "State": state,
+        "Address": address,
+        "LinkedIn": linkedin,
+        "Source": urlparse(website).netloc,
+        "Profile_Confidence": confidence
+    })
+
+    time.sleep(REQUEST_DELAY)
+
+out_df = pd.DataFrame(rows)
+out_df.to_csv(OUTPUT_FILE, index=False)
+
+print("Company profile enrichment complete:", OUTPUT_FILE)
+`;
+        currentFilename = 'company_profile_enrichment.py';
+        document.getElementById('modalTitle').textContent = 'Company Profile Enrichment - Python Code';
+        document.getElementById('codeContent').textContent = currentCode;
+        document.getElementById('codeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function showEnrichmentDocs() {
+        currentCode = `# COMPANY PROFILE ENRICHMENT - LEGAL COMPLIANCE DOCUMENTATION
+# ============================================================
+
+## CRITICAL CLARIFICATION (Legal Protection)
+
+### What We Are NOT Doing:
+- We are NOT "scraping OpenAI"
+- OpenAI is NOT a data source
+- It cannot browse the internet or fetch live company info
+
+### What We ARE Doing (100% Legal):
+1. Legally discover companies using licensed search APIs (Bing Web Search)
+2. Collect public factual data from:
+   - Company websites
+   - Search result metadata
+   - Public business listings
+3. Use OpenAI only to:
+   - Clean and normalize data
+   - Resolve bad descriptions
+   - Infer missing structure
+   - Standardize outputs
+   - Assess confidence levels
+
+This approach is compliant, common, and defensible.
+
+
+## DATA SOURCES USED (All Legal)
+
+| Source | Type | Legal Basis |
+|--------|------|-------------|
+| Bing Web Search API | Licensed | Paid API subscription |
+| Public company websites | Public | Robots.txt compliant |
+| Public "Contact / About" pages | Public | Publicly available |
+| LinkedIn company URLs | Public | From search results only |
+
+
+## DATA COLLECTED
+
+### What We Collect:
+- Company name
+- Website URL
+- Phone number (if publicly listed)
+- Address (city/state if available)
+- LinkedIn company URL (best-effort from search)
+
+### What We Do NOT Collect:
+- Personal emails
+- Private data
+- LinkedIn scraping (only URLs from search results)
+- Protected or gated information
+
+
+## OUTPUT FORMAT (CSV)
+
+| Column | Description |
+|--------|-------------|
+| Company | Company name |
+| Website | Primary website URL |
+| Phone | Public phone number |
+| City | City location |
+| State | State/province |
+| Address | Full address if available |
+| LinkedIn | LinkedIn company page URL |
+| Source | Domain source |
+| Profile_Confidence | High/Medium/Low quality score |
+
+
+## CONFIDENCE SCORING
+
+OpenAI assesses profile completeness:
+- HIGH: Most fields present and consistent
+- MEDIUM: Partial but reasonable data
+- LOW: Sparse or uncertain information
+
+
+## REALISTIC EXPECTATIONS
+
+| Metric | Expected Result |
+|--------|-----------------|
+| Usable profiles | 60-80% |
+| Complete data | 40-60% |
+| Phone numbers | 50-70% |
+| LinkedIn URLs | 30-50% |
+
+
+## INTERNAL STATEMENT (For Legal/Compliance)
+
+"We enrich company profiles using licensed search APIs and public websites, 
+then use AI to normalize and assess confidence. No personal data is collected. 
+No scraping of protected platforms. All data sources are publicly available 
+or licensed."
+
+
+## REQUIREMENTS
+
+pip install requests beautifulsoup4 pandas openai
+
+
+## CONFIGURATION
+
+1. Get Bing Web Search API key from Azure
+2. Get OpenAI API key
+3. Prepare input CSV with "Company" column
+4. Run script
+
+
+## EXTENSIONS (Available on Request)
+
+1. Merge with LastSaleDateBefore2025.csv to auto-classify lapsed accounts
+2. Add industry inference
+3. Add Natoli Fit verification
+4. Build single master RevOps table
+`;
+        currentFilename = 'enrichment_documentation.md';
+        document.getElementById('modalTitle').textContent = 'Company Profile Enrichment - Documentation';
+        document.getElementById('codeContent').textContent = currentCode;
+        document.getElementById('codeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        document.getElementById('codeModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      function copyCode() {
+        navigator.clipboard.writeText(currentCode).then(() => {
+          alert('Code copied to clipboard!');
+        });
+      }
+
+      function downloadCode() {
+        const blob = new Blob([currentCode], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = currentFilename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    </script>
+  </div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+</body>
+</html>

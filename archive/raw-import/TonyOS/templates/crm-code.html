@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Portal Code - Netlify Ready</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.header { text-align: center; margin-bottom: 32px; }
+.header h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+.header p { color: #94a3b8; }
+.back-link { display: inline-block; margin-bottom: 20px; color: #60a5fa; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.instructions { background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+.instructions h2 { font-size: 16px; margin-bottom: 12px; color: #10b981; }
+.instructions ol { margin-left: 20px; line-height: 1.8; color: #cbd5e1; }
+.instructions code { background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+.code-section { margin-bottom: 32px; }
+.code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.code-header h3 { font-size: 14px; color: #94a3b8; }
+.copy-btn { background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.copy-btn:hover { background: #059669; }
+.code-box { background: #1e293b; border-radius: 8px; padding: 16px; overflow-x: auto; max-height: 400px; overflow-y: auto; }
+.code-box pre { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; line-height: 1.5; color: #e2e8f0; white-space: pre-wrap; word-break: break-all; }
+.download-section { text-align: center; margin-top: 32px; padding: 24px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; border: 1px solid #334155; }
+.download-section h3 { margin-bottom: 16px; color: #fff; }
+.download-btn { display: inline-block; background: #00d4aa; color: #0e1e25; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; margin: 0 8px; }
+.download-btn:hover { background: #00b894; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">&larr; Back to TonyOS</a>
+  
+  <div class="header">
+    <h1>Territory Rep Portal - Full Code</h1>
+    <p>Copy these files to deploy on Netlify or any static host</p>
+  </div>
+  
+  <div class="instructions">
+    <h2>How to Deploy to Netlify</h2>
+    <ol>
+      <li>Create a new folder on your computer called <code>natoli-crm</code></li>
+      <li>Copy the <b>index.html</b> code below into a file named <code>index.html</code></li>
+      <li>Copy the <b>accounts.json</b> code below into a file named <code>accounts.json</code></li>
+      <li>Go to <a href="https://app.netlify.com" target="_blank" style="color:#60a5fa;">app.netlify.com</a></li>
+      <li>Drag your <code>natoli-crm</code> folder onto the Netlify deploy area</li>
+      <li>Done! Your CRM is live.</li>
+    </ol>
+  </div>
+  
+  <div class="code-section">
+    <div class="code-header">
+      <h3>index.html</h3>
+      <button class="copy-btn" onclick="copyCode('htmlCode')">Copy HTML</button>
+    </div>
+    <div class="code-box">
+      <pre id="htmlCode">{{ html_code | e }}</pre>
+    </div>
+  </div>
+  
+  <div class="code-section">
+    <div class="code-header">
+      <h3>accounts.json</h3>
+      <button class="copy-btn" onclick="copyCode('jsonCode')">Copy JSON</button>
+    </div>
+    <div class="code-box">
+      <pre id="jsonCode">{{ json_code | e }}</pre>
+    </div>
+  </div>
+  
+  <div class="download-section">
+    <h3>Or Download Everything as ZIP</h3>
+    <a href="/static/crm-portal.zip" download class="download-btn">Download ZIP File</a>
+  </div>
+</div>
+
+<script>
+function copyCode(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text);
+  alert('Copied to clipboard!');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+Company,Product Type,Retail Presence,Manufacturing Model,Division,Natoli Fit,Fit Reason,Confidence,Next Steps
+"Global Nuclear Fuel - Americas, LLC",Nuclear fuel pellets,None,In-house,Engineering,Weak,"Focus on nuclear fuel production, limited overlap with tablet compression.",High,Low priority
+Framatome Inc.,Nuclear fuel components,None,In-house,Engineering,Weak,Focus on nuclear energy rather than tablet compression.,High,Low priority
+"BWX Technologies, Inc.","Nuclear fuel pellets, battery components",None,In-house,Engineering,Weak,"Focus on nuclear and energy sectors, limited overlap with tablet compression.",High,Low priority
+Areva Inc.,"Tablets, pellets, compacts",None,In-house,Both,Strong,Areva's offerings align well with Natoli's tablet press and tooling products.,High,Research and outreach
+"Nuclear Fuel Services, Inc.",Nuclear fuel pellets,None,In-house,Engineering,Weak,Focus on nuclear applications limits broader tablet compression market.,High,Low priority
+Energy Harbor Corp.,Energy products,None,Unknown,NoFit,Weak,"Focus on energy sector, not tablet compression.",High,Low priority
+Terrestrial Energy USA,Nuclear fuel pellets,None,Unknown,Engineering,Weak,Focus on nuclear energy rather than tablet compression.,High,Low priority
+X-energy,"Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,X-energy's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Southern Company,Energy solutions,None,In-house,NoFit,Weak,Focus on energy rather than tablet compression.,Medium,Low priority
+Dominion Energy,Energy-related materials,None,Unknown,NoFit,Weak,"Focus on energy, not tablet compression.",High,Low priority
+Pacific Gas and Electric Company,None,None,Unknown,NoFit,NoFit,"PG&E operates in energy, not tablet compression.",High,Low priority
+Public Service Enterprise Group (PSEG),None,None,Unknown,NoFit,NoFit,"PSEG focuses on energy and utilities, not tablet compression.",High,Low priority
+W.R. Grace & Co,Powders for various applications,None,Hybrid,Both,Strong,W.R. Grace's diverse applications align with Natoli's tablet compression services.,High,Research and outreach
+UOP LLC (Honeywell),"Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,UOP's technologies align with Natoli's tablet compression needs.,High,Research and outreach
+INEOS Olefins & Polymers USA,Polymers and olefins,None,In-house,Engineering,Weak,Focus on chemical production rather than tablet compression.,High,Low priority
+Chevron Phillips Chemical Company,Polymers and chemicals,None,In-house,Engineering,Weak,Focus on chemical production rather than tablet compression.,High,Low priority
+LyondellBasell Industries,Plastics and polymers,None,In-house,Engineering,Weak,"Focus on plastics, not tablet compression.",High,Low priority
+Flint Hills Resources,Various powders for tablets and pellets,None,In-house,Engineering,Medium,Potential for collaboration in powder compression technology.,High,Research and outreach
+American Elements,"Powders into tablets, pellets, or compacts",None,Hybrid,Engineering|Scientific,Strong,Complementary products and services for tablet manufacturing,High,Research and outreach
+Dow Chemical Company,Chemicals and materials for various applications,None,In-house,Both,Medium,Potential for collaboration in tablet formulation and material development.,High,Research and outreach
+Shell Catalysts & Technologies,Catalysts and related materials,None,In-house,Engineering,Medium,Potential need for tablet compression in catalyst production.,High,Research and outreach
+Plug Power Inc.,Hydrogen fuel cells,None,In-house,Engineering,Weak,"Focus on fuel cells, not tablet compression.",High,Low priority
+Proton OnSite,Hydrogen generation systems,None,In-house,Engineering,Weak,"Focus on hydrogen technology, limited overlap with tablet compression.",High,Low priority
+Hexagon Lincoln,Hydrogen tanks,None,In-house,Engineering,Weak,"Focus on gas storage, not tablet compression.",High,Low priority
+Giner ELX,Hydrogen fuel cells and related technologies,None,In-house,Engineering|Scientific,Medium,Potential for collaboration in R&D for tablet formulations and compression technologies.,High,Research and outreach
+McPhy Energy,Hydrogen storage and production solutions,None,Unknown,Engineering,Weak,Focus on energy solutions rather than tablet compression.,High,Low priority
+Hydrogenics USA,Hydrogen fuel cells and related technologies,None,In-house,Engineering,Weak,Focus on hydrogen technology rather than tablet compression.,High,Low priority
+Nel Hydrogen,Hydrogen pellets,None,Unknown,Engineering,Weak,"Focus on hydrogen solutions, limited overlap with tablet compression.",High,Low priority
+"Praxair, Inc.",Gases for compression processes,None,In-house,Engineering,Medium,Praxair provides gases essential for tablet compression processes.,High,Research and outreach
+StratosFuel,Powders for tablets and pellets,None,In-house,Both,Strong,StratosFuel's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Hyon USA,Powders for tablets and pellets,None,CDMO,Both,Strong,Hyon's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+PowerCell Sweden AB,Hydrogen fuel cells,None,In-house,Engineering,Medium,Potential for collaboration in tablet press technology for battery components.,High,Research and outreach
+Linde Engineering North America,Gases and engineering solutions for compression,None,In-house,Engineering,Medium,Provides engineering solutions relevant to tablet compression processes.,High,Research and outreach
+"Nuvera Fuel Cells, LLC",Hydrogen fuel cells,None,Unknown,Engineering,Weak,"Focus on fuel cells, not tablet compression.",High,Low priority
+United Hydrogen Group,"Hydrogen pellets, catalysts",None,In-house,Engineering,Medium,Potential for tablet press applications in hydrogen storage and catalysts.,High,Research and outreach
+Hazer Group Limited,Hydrogen pellets,None,In-house,Engineering,Medium,Potential for tablet press applications in hydrogen storage.,High,Research and outreach
+Carbon Clean Solutions,"Powders for tablets, pellets, compacts",None,Unknown,Engineering,Medium,Potential collaboration in R&D and engineering solutions for powder compression.,High,Research and outreach
+Global Thermostat,Powders for tablets and pellets,None,Hybrid,Engineering,Strong,Natoli's products align with Global Thermostat's powder compression needs.,High,Research and outreach
+Svante Inc.,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Svante's technology aligns with Natoli's tablet pressing and tooling services.,High,Research and outreach
+LanzaTech,Biofuels and chemicals,None,Hybrid,Scientific,Weak,"LanzaTech focuses on gas fermentation technology, not tablet compression.",High,Low priority
+CarbonCure Technologies,Carbon dioxide for concrete,None,In-house,Engineering,Weak,Focus on carbon utilization rather than tablet compression.,High,Low priority
+Climeworks,Carbon dioxide,None,In-house,Scientific,Weak,"Focus on carbon capture, not tablet compression.",High,Low priority
+Carbon Engineering,"Hydrogen, Catalyst",None,Unknown,Engineering,Weak,Focus on engineering solutions rather than tablet compression.,High,Low priority
+AirCapture LLC,"Powders into tablets, pellets, or compacts",None,Unknown,Engineering|Scientific,Medium,Potential collaboration in R&D and tooling for tablet production,High,Research and outreach
+CarbonFree Chemicals,Chemicals for various applications,None,In-house,Scientific,Medium,Potential for tablet compression in chemical applications.,High,Research and outreach
+Opus 12,Hydrogen and other gases,None,Unknown,Scientific,Medium,"Opus 12 focuses on gas conversion, which may align with industries using tablet presses for specialized applications.",High,Research and outreach
+Charm Industrial,Biomass pellets,None,In-house,Engineering,Medium,"Charm Industrial focuses on biomass conversion, which aligns with Natoli's tablet compression technology.",High,Research and outreach
+CleanO2 Carbon Capture Technologies,Carbon capture systems,None,Unknown,Engineering,Weak,Focus on carbon capture rather than tablet compression.,High,Low priority
+Heirloom Carbon Technologies,Carbon-based materials,None,Unknown,Scientific,Medium,Potential for tablet compression in carbon applications.,High,Research and outreach
+Remora Carbon,Carbon-based materials,None,Unknown,Scientific,Medium,Potential use of tablet presses for carbon material applications.,High,Research and outreach
+Ebb Carbon,Carbon capture solutions,None,Unknown,NoFit,Weak,"Focus on carbon capture, not tablet compression.",High,Low priority
+CarbonBuilt,Carbon-based materials,None,Unknown,Engineering,Medium,Potential for powder compression technology in carbon materials.,High,Research and outreach
+Mission Zero Technologies,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Aligns with tablet compression and R&D services.,High,Research and outreach
+Noya,"Tablets, pellets, compacts",None,In-house,Both,Strong,Noya's offerings align well with Natoli's tablet pressing and tooling services.,High,Research and outreach
+42,"Tablets, pellets, compacts",None,In-house,Both,Strong,Natoli's products and services align well with companies in various industries that require powder compression.,High,Research and outreach
+"Ceradyne, Inc.",Ceramic materials and components,None,In-house,Engineering|Scientific,Medium,"Ceradyne specializes in advanced materials, relevant for tablet compression.",High,Research and outreach
+Corning Incorporated,"Pharmaceuticals, Specialty Glass",None,In-house,Scientific,Medium,"Corning specializes in advanced materials and technologies, relevant to tablet production.",High,Research and outreach
+Blasch Precision Ceramics,Ceramic components for various applications,None,In-house,Engineering,Medium,Potential for collaboration in tablet compression technologies.,High,Research and outreach
+Advanced Ceramics Manufacturing,Ceramics and powders,None,In-house,Engineering,Strong,Natoli's products align with the tablet pressing needs of ceramics.,High,Research and outreach
+"Ceramic Tech, Inc.",Ceramics and powders,None,In-house,Engineering,Medium,Ceramic Tech's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+CoorsTek Medical,Medical devices and components,None,CDMO,Engineering|Scientific,Medium,"CoorsTek Medical focuses on medical applications, which may require tablet compression technologies.",High,Research and outreach
+Rauschert Industries,Powders and materials for various applications,None,In-house,Engineering,Medium,"Rauschert provides materials that can be compressed into tablets, aligning with Natoli's target market.",High,Research and outreach
+"Ceramic Components & Technology, Inc.",Ceramic components and powders,None,In-house,Engineering,Medium,They may require tablet presses for ceramic powder applications.,High,Research and outreach
+"Thermal Ceramics, Inc.",Ceramic materials and components,None,In-house,Engineering,Medium,Thermal Ceramics produces materials that may be compressed into tablets or components.,High,Research and outreach
+McDanel Advanced Ceramic Technologies,Ceramic powders and composites,None,In-house,Engineering,Medium,Potential for collaboration in tablet and pellet production using advanced ceramics.,High,Research and outreach
+"LSP Industrial Ceramics, Inc.",Ceramics and advanced materials,None,In-house,Engineering,Medium,Potential for collaboration in tablet compression technology.,High,Research and outreach
+GKN Powder Metallurgy,Metal powders for compaction,None,In-house,Engineering,Medium,"GKN specializes in powder metallurgy, aligning with Natoli's focus on powder compression.",High,Research and outreach
+Metco Division of Oerlikon,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Metco's expertise in powder processing aligns with Natoli's offerings.,High,Research and outreach
+Rio Tinto Metal Powders,Metal powders for various applications,None,In-house,Engineering,Medium,Potential for collaboration in powder compression technology,High,Research and outreach
+Sandvik Additive Manufacturing,Powders for 3D printing and additive manufacturing,None,In-house,Engineering|Scientific,Medium,Potential collaboration in powder processing and tablet formulation.,High,Research and outreach
+Carpenter Additive,Metal powders for additive manufacturing,None,CDMO,Scientific,Medium,Potential collaboration in powder formulation and processing.,High,Research and outreach
+Höganäs AB,Metal powders and composites,None,In-house,Engineering|Scientific,Medium,They produce metal powders suitable for tablet compression.,High,Research and outreach
+"Royal Metal Powders, Inc.",Metal powders for tablet compression,None,In-house,Engineering,Strong,Royal Metal Powders provides essential materials for tablet manufacturing.,High,Research and outreach
+"US Metal Powders, Inc.",Metal powders for tablet compression,None,In-house,Engineering,Strong,US Metal Powders provides essential materials for tablet manufacturing.,High,Research and outreach
+North American Höganäs,"Powders for tablets, pellets, compacts",None,In-house,Engineering,Strong,Complementary products for tablet manufacturing,High,Research and outreach
+Makin Metal Powders,Metal powders for tablet compression,None,In-house,Engineering,Strong,Makin Metal Powders provides essential raw materials for tablet production.,High,Research and outreach
+LPW Technology Inc.,"Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,LPW's technology aligns with Natoli's tablet press and tooling offerings.,High,Research and outreach
+"Sumitomo Electric Carbide, Inc.",Carbide tools for powder compression,None,In-house,Engineering,Medium,"Provides tooling for tablet production, relevant to Natoli's market.",High,Research and outreach
+Tekna Advanced Materials Inc.,Advanced materials for various applications,None,In-house,Scientific,Medium,Tekna's focus on advanced materials aligns with Natoli's tablet compression needs.,High,Research and outreach
+Arnold Magnetic Technologies,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Complementary services in powder compression,High,Research and outreach
+Quadrant Magnetics,"Powders into tablets, pellets, or compacts",None,CDMO,Engineering,Strong,Quadrant's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+"Molycorp, Inc.",Powders for various applications,None,Unknown,NoFit,Weak,"Focus on rare earth materials, not tablet compression.",High,Low priority
+Bunting Magnetics Co.,"Powders into tablets, pellets, or compacts",None,Hybrid,Engineering,Strong,Complementary products and services for tablet manufacturing,High,Research and outreach
+"Dura Magnetics, Inc.",Powders for tablets and compacts,None,Unknown,Engineering,Medium,Potential collaboration in powder compression technology.,High,Research and outreach
+"Magnet Sales & Manufacturing, Inc.","Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,"They manufacture equipment for powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Integrated Magnetics,Magnets and magnetic components,None,In-house,Engineering,Medium,Potential collaboration in tablet press technology and magnetic applications.,High,Research and outreach
+Apex Magnets,Magnets,"Amazon, Walmart, None",Unknown,Scientific,Medium,Potential collaboration in R&D for tablet formulation using magnetic materials.,High,Research and outreach
+"Thomas & Skinner, Inc.","Tablets, pellets, compacts",None,Hybrid,Both,Strong,Complementary products and services for tablet manufacturing.,High,Research and outreach
+"Applied Materials, Inc.","Tablets, pellets, compacts",None,Hybrid,Engineering,Strong,Applied Materials' technology aligns with Natoli's tablet compression needs.,High,Research and outreach
+Broadcom Inc.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Broadcom's technology can enhance tablet compression processes.,High,Research and outreach
+Texas Instruments Incorporated,Not applicable,None,Unknown,Engineering,Weak,"Texas Instruments focuses on semiconductors, not tablet compression.",High,Low priority
+"Micron Technology, Inc.",Powders for tablets and pellets,None,Unknown,Scientific,Medium,Micron's focus on powder processing aligns with Natoli's tablet compression needs.,High,Research and outreach
+Qualcomm Incorporated,None,None,Unknown,NoFit,NoFit,"Qualcomm focuses on semiconductors and telecommunications, not tablet compression.",High,Low priority
+"Analog Devices, Inc.","Tablets, pellets, compacts",None,Unknown,Engineering,Medium,"Analog Devices focuses on semiconductor solutions, which may indirectly support tablet compression technology.",High,Research and outreach
+"Cree, Inc.","Tablets, pellets, compacts",None,Unknown,Engineering,Medium,Potential for collaboration in R&D and manufacturing processes.,High,Research and outreach
+"Amkor Technology, Inc.",Semiconductors,None,Unknown,Engineering,Weak,"Focus on semiconductor packaging, limited overlap with tablet compression.",High,Low priority
+GlobalFoundries Inc.,"Tablets, pellets, compacts",None,In-house,Both,Strong,GlobalFoundries operates in multiple industries that require powder compression.,High,Research and outreach
+"Qorvo, Inc.",Powders for tablets and pellets,None,Unknown,NoFit,Weak,"Qorvo focuses on semiconductor solutions, not tablet compression.",High,Low priority
+Marvell Technology Group Ltd.,Not applicable,None,Unknown,NoFit,NoFit,"Marvell focuses on semiconductor technology, not tablet compression.",High,Low priority
+"Teradyne, Inc.","Tablets, pellets, compacts",None,Hybrid,Engineering,Strong,Teradyne's technology supports various industries that require precision in powder compression.,High,Research and outreach
+Orbital ATK,"Tablets, pellets, compacts",None,In-house,Engineering,Medium,Potential for collaboration in tablet compression technology.,High,Research and outreach
+Aerojet Rocketdyne,Propellants|Explosives,None,In-house,Engineering,Weak,Focus on aerospace propulsion rather than tablet compression.,High,Low priority
+Chemring Energetics,Explosives and munitions,None,In-house,Engineering,Medium,Potential need for tablet presses in explosive formulations.,High,Research and outreach
+Dyno Nobel,Explosives,None,In-house,Engineering,Weak,"Focus on explosives, not tablet compression.",High,Low priority
+Pacific Scientific Energetic Materials Company,Energetic materials,None,In-house,Scientific,Medium,Potential need for tablet presses in material formulation.,High,Research and outreach
+Ensign-Bickford Aerospace & Defense Company,Explosives and munitions,None,In-house,Engineering,Weak,"Focus on defense and aerospace, limited overlap with tablet compression.",High,Low priority
+Austin Powder Company,Explosives and related materials,None,In-house,Engineering,Medium,Focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Hodgdon Powder Company,Gunpowder and related products,None,In-house,NoFit,Medium,"Hodgdon specializes in explosives, which may require different compression technologies.",High,Research and outreach
+St. Marks Powder,Powders for tablets and pellets,None,In-house,Engineering,Strong,"St. Marks Powder compresses various powders, aligning with Natoli's offerings.",High,Research and outreach
+American Ordnance,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+Estes Industries,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,"Estes Industries compresses various materials, aligning with Natoli's offerings.",High,Research and outreach
+Nammo Talley,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Complementary products and services for tablet manufacturing,High,Research and outreach
+"El Dorado Engineering, Inc.","Powders into tablets, pellets, or compacts",None,CDMO,Engineering,Strong,"El Dorado specializes in engineering solutions for powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Vista Outdoor Inc.,"Ammunition, Outdoor Equipment","Amazon,Walmart,Target",In-house,NoFit,Weak,"Focus on outdoor products, not tablet compression.",High,Low priority
+"Remington Arms Company, LLC",Ammunition components,None,In-house,Engineering,Weak,Focus on ammunition rather than tablet compression.,High,Low priority
+Hornady Manufacturing Company,Ammunition,None,In-house,NoFit,Weak,Focus on ammunition rather than tablet compression.,High,Low priority
+Federal Premium Ammunition,Ammunition pellets,None,In-house,Engineering,Medium,Potential need for tablet presses in ammunition production.,High,Research and outreach
+"Barnes Bullets, LLC",Bullets,None,In-house,Engineering,Medium,"Barnes Bullets compress metal powders for ammunition, aligning with Natoli's tablet press capabilities.",High,Research and outreach
+"Nosler, Inc.","Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,Provides essential equipment and services for powder compression.,High,Research and outreach
+Liberty Ammunition,Ammunition,None,In-house,NoFit,Weak,Focus on ammunition limits alignment with tablet pressing and formulation services.,High,Low priority
+Norma Precision Inc.,"Tablets, pellets, compacts",None,In-house,Engineering|Scientific,Strong,Aligns with tablet compression and R&D services.,High,Research and outreach
+Winchester Ammunition,Ammunition powders,None,In-house,Engineering,Medium,Uses powder compression for ammunition manufacturing.,High,Research and outreach
+Black Hills Ammunition,Ammunition pellets,None,In-house,Engineering,Medium,"They compress powders for ammunition, aligning with Natoli's offerings.",High,Research and outreach
+Speer Ammunition,Ammunition pellets,None,In-house,Engineering,Medium,"Speer compresses powders for ammunition, aligning with Natoli's offerings.",High,Research and outreach
+CCI Ammunition,Ammunition pellets,None,In-house,Engineering,Medium,Uses compression technology for ammunition production.,High,Research and outreach
+PMC Ammunition,Ammunition pellets,None,In-house,Engineering,Medium,"PMC manufactures compressed ammunition, aligning with Natoli's tablet press capabilities.",High,Research and outreach
+Fiocchi of America,Ammunition,None,In-house,NoFit,Medium,"Fiocchi focuses on ammunition, which may require compression technology but is not a primary target for Natoli.",High,Research and outreach
+"Sellier & Bellot, Inc.","Tablets, pellets, compacts",None,CDMO,Both,Strong,Natoli's offerings align well with Sellier & Bellot's focus on compression technology.,High,Research and outreach
+Underwood Ammo,Ammunition,None,In-house,NoFit,Medium,"Underwood Ammo focuses on ammunition, which may require specialized tooling but is not a primary market for tablet presses.",High,Research and outreach
+Magtech Ammunition,Ammunition cartridges,None,In-house,Engineering,Medium,Potential for tablet press applications in ammunition production.,High,Research and outreach
+Berger Bullets,Bullets,None,In-house,Engineering,Medium,"Berger Bullets compresses materials for ammunition, aligning with Natoli's tablet press capabilities.",High,Research and outreach
+Norton Abrasives,Abrasives and related materials,None,In-house,Engineering,Medium,Norton provides materials that can be used in tablet compression processes.,High,Research and outreach
+Carborundum Universal Limited,Powders for various applications,None,In-house,Engineering,Medium,Potential for collaboration in powder compression technologies.,High,Research and outreach
+Washington Mills,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Complementary services in powder compression,High,Research and outreach
+Weiler Abrasives,Abrasives and grinding products,None,Unknown,Engineering,Medium,Weiler's products may be used in tablet manufacturing processes.,High,Research and outreach
+"Flexovit USA, Inc.","Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Natoli's products align with Flexovit's tablet compression needs.,High,Research and outreach
+"Klingspor Abrasives, Inc.",Abrasives for tablet compression,None,Unknown,Engineering,Medium,Klingspor provides abrasives that may be used in tablet production processes.,High,Research and outreach
+Camel Grinding Wheels,Grinding wheels and tools for powder compression,None,In-house,Engineering,Medium,Camel's products support tablet manufacturing processes.,High,Research and outreach
+"Radiac Abrasives, A TYROLIT Company",Abrasives for tablet compression,None,In-house,Engineering,Medium,Potential use of tablet presses for compressing abrasive materials.,High,Research and outreach
+Sungold Abrasives,Abrasives and related materials,None,In-house,Engineering,Medium,Sungold's products may complement Natoli's tooling for tablet presses.,High,Research and outreach
+SIA Abrasives,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Complementary products and services for tablet manufacturing,High,Research and outreach
+Pearl Abrasive Co.,Abrasives and related materials,None,Unknown,Both,Medium,Pearl's products support various industries that utilize tablet compression.,High,Research and outreach
+"ARC Abrasives, Inc.",Abrasives and related materials,None,Unknown,Engineering,Medium,ARC provides abrasives that may be used in tablet compression processes.,High,Research and outreach
+Merit Abrasives,Abrasives for tablet compression,None,In-house,Engineering,Medium,Merit provides abrasives that may be used in tablet production processes.,High,Research and outreach
+"Grier Abrasive Co., Inc.",Abrasives and related materials,None,Unknown,Engineering,Medium,Potential for collaboration in tablet compression applications.,High,Research and outreach
+Hermes Abrasives Ltd,Abrasives for tablet compression,None,In-house,Engineering,Medium,They provide abrasives used in tablet manufacturing processes.,High,Research and outreach
+Rex-Cut Abrasives,Abrasives for tablet compression,None,Unknown,Engineering,Medium,Rex-Cut provides abrasives that may be used in tablet production processes.,High,Research and outreach
+Estée Lauder Companies Inc.,Cosmetic tablets/pellets,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Estée Lauder may use tablet presses for cosmetic formulations.,High,Research and outreach
+"Revlon, Inc.","Cosmetic tablets, powders","Amazon,Walmart,CVS,Target",In-house,Both,Medium,"Revlon compresses powders for cosmetic products, aligning with Natoli's offerings.",High,Research and outreach
+Coty Inc.,Cosmetics and personal care products,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,"Coty compresses powders for cosmetics, aligning with Natoli's tablet press offerings.",High,Research and outreach
+Mary Kay Inc.,Cosmetic tablets and powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Potential need for tablet compression in cosmetic formulations.,High,Research and outreach
+Urban Decay Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,Uses compressed powders for cosmetics.,High,Research and outreach
+"Bare Escentuals, Inc.",Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Uses powder compression for cosmetic products.,High,Research and outreach
+Tarte Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Potential need for tablet presses for cosmetic formulations.,High,Research and outreach
+Anastasia Beverly Hills,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Uses compressed powders for cosmetics.,High,Research and outreach
+Too Faced Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,They may require tablet presses for compacting powders in cosmetics.,High,Research and outreach
+MAC Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,MAC Cosmetics compresses powders for makeup products.,High,Research and outreach
+e.l.f. Cosmetics,Cosmetic tablets and powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,Potential need for tablet presses for cosmetic formulations.,High,Research and outreach
+Smashbox Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,They may require tablet presses for compacting powders in cosmetic formulations.,High,Research and outreach
+NYX Professional Makeup,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,Uses tablet presses for compacting powders in cosmetics.,High,Research and outreach
+Kylie Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Potential need for tablet presses for cosmetic formulations.,High,Research and outreach
+Juvia's Place,Cosmetic powders,"Amazon,Walmart,Target",In-house,Both,Medium,Uses compressed powders for cosmetic products.,High,Research and outreach
+ColourPop Cosmetics,Cosmetic powders,"Amazon,Walmart,Target",In-house,Scientific,Medium,"ColourPop uses compressed powders for cosmetics, aligning with Natoli's offerings.",High,Research and outreach
+Milani Cosmetics,Cosmetic tablets and powders,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Milani Cosmetics compresses powders for cosmetic products, aligning well with Natoli's offerings.",High,Research and outreach
+BH Cosmetics,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on cosmetics, not tablet compression.",High,Low priority
+IT Cosmetics,Cosmetic products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on cosmetics, not tablet compression.",High,Low priority
+ICL Specialty Fertilizers,Fertilizers,None,Unknown,Both,Medium,Potential for tablet press use in fertilizer production.,High,Research and outreach
+Jobe's Company,Tablets|Pellets|Compacts,None,In-house,Both,Strong,"Jobe's Company compresses powders, aligning with Natoli's offerings.",High,Research and outreach
+Scotts Miracle-Gro,Fertilizers|Plant Nutrients,"Amazon,Walmart,Target",In-house,NoFit,Medium,"Focus on consumer gardening products, not tablet compression.",High,Research and outreach
+Florikan,Fertilizers|Soil Amendments,None,In-house,Scientific,Medium,Florikan's focus on powder formulations aligns with Natoli's tablet compression services.,High,Research and outreach
+BioGreen USA,Plant-based powders,None,In-house,Both,Strong,BioGreen's focus on compressing plant materials aligns with Natoli's tablet press offerings.,High,Research and outreach
+"Andersons, Inc.","Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,Andersons' focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Gowan Company,"Powders for tablets, pellets, or compacts",None,In-house,Both,Strong,Gowan's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Growcentia,"Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,Growcentia's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Hawthorne Gardening Company,Plant nutrients and growing media,"Amazon,Walmart",In-house,Scientific,Medium,They may require tablet presses for nutrient formulations.,High,Research and outreach
+Winfield United,Powders for agricultural and consumer products,None,In-house,Both,Medium,Potential for tablet compression in agricultural formulations,High,Research and outreach
+"GreenSoil, Inc.",Powders for tablets and pellets,None,CDMO,Both,Strong,GreenSoil's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Floraplex,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Floraplex's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Nature Safe Fertilizers,Fertilizers,None,In-house,Engineering,Medium,Potential use of tablet presses for fertilizer formulation.,High,Research and outreach
+Ferti Technologies,"Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,"Ferti Technologies targets multiple industries that require powder compression, aligning well with Natoli's offerings.",High,Research and outreach
+The Espoma Company,Organic fertilizers and soil amendments,None,In-house,NoFit,Medium,"Espoma focuses on organic products, which may require different processing than traditional tablet compression.",High,Research and outreach
+Helena Agri-Enterprises,"Agricultural products, fertilizers",None,In-house,Scientific,Medium,Potential need for tablet presses in fertilizer formulation.,High,Research and outreach
+Agrium Advanced Technologies,Fertilizers,None,In-house,Scientific,Medium,Potential for tablet formulation in agricultural products.,High,Research and outreach
+Piramal Pharma Solutions,"Pharmaceuticals, Nutraceuticals",None,CDMO,Scientific,Strong,"Piramal specializes in pharmaceutical development and manufacturing, aligning with Natoli's tablet compression services.",High,Research and outreach
+Recro Gainesville,Tablets|Pellets|Compacts,None,CDMO,Both,Strong,"Recro specializes in tablet formulation and production, aligning with Natoli's offerings.",High,Research and outreach
+Metrics Contract Services,"Tablets, pellets, compacts",None,CDMO,Both,Strong,"Metrics provides comprehensive services for tablet compression, aligning well with Natoli's offerings.",High,Research and outreach
+DPT Laboratories,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,"DPT specializes in tablet formulation and manufacturing, aligning with Natoli's offerings.",High,Research and outreach
+Avista Pharma Solutions,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,Avista's focus on formulation R&D aligns with Natoli's tablet compression solutions.,High,Research and outreach
+Olon Ricerca Bioscience,Pharmaceutical compounds,None,CDMO,Scientific,Strong,"Olon specializes in drug development and manufacturing, aligning with Natoli's tablet compression solutions.",High,Research and outreach
+"Ash Stevens, LLC",Pharmaceutical compounds,None,CDMO,Scientific,Strong,They require tablet presses and tooling for drug formulation.,High,Research and outreach
+Xcelience,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Xcelience's focus on R&D and tablet compression aligns well with Natoli's offerings.,High,Research and outreach
+Norwich Pharma Services,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,They provide R&D services for tablet formulation.,High,Research and outreach
+Particle Testing Authority,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,Complementary services for tablet formulation and testing.,High,Research and outreach
+Brookfield Engineering,"Powders into tablets, pellets, or compacts",None,In-house,Engineering,Strong,Complementary products and services for tablet manufacturing,High,Research and outreach
+"Retsch, Inc.","Powders into tablets, pellets, or compacts",None,In-house,Scientific,Strong,"Retsch provides essential equipment for powder compression, aligning with Natoli's offerings.",High,Research and outreach
+"Q Laboratories, Inc.","Tablets, pellets, compacts",None,CDMO,Both,Strong,"Q Laboratories provides essential services for companies compressing powders, aligning well with Natoli's offerings.",High,Research and outreach
+Particle Technology Labs,"Powders for tablets, pellets, and compacts",None,CDMO,Scientific,Strong,Complementary services in powder compression and formulation R&D.,High,Research and outreach
+"Merit Laboratories, Inc.",Pharmaceuticals and Nutraceuticals,None,CDMO,Scientific,Strong,"Merit specializes in formulation and testing, aligning with Natoli's tablet compression focus.",High,Research and outreach
+Pine Environmental Services,Powders,None,Hybrid,Both,Strong,"Pine serves diverse industries that require powder compression, aligning well with Natoli's offerings.",High,Research and outreach
+EAG Laboratories,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,EAG's focus on R&D aligns with Natoli's tablet compression needs.,High,Research and outreach
+Acorda Therapeutics,Tablets,None,In-house,Scientific,Strong,Acorda develops therapies that require tablet formulation and compression.,High,Research and outreach
+Athenex Pharma Solutions,Pharmaceuticals|Nutraceuticals,None,CDMO,Scientific,Strong,"Athenex specializes in drug development and manufacturing, aligning with Natoli's tablet compression solutions.",High,Research and outreach
+Fagron Sterile Services US,Pharmaceuticals and sterile compounds,None,CDMO,Scientific,Strong,"Fagron specializes in sterile compounding, aligning with Natoli's tablet compression services.",High,Research and outreach
+QuVa Pharma,"Tablets, pellets, compacts",None,CDMO,Both,Strong,"QuVa Pharma compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Central Admixture Pharmacy Services (CAPS),Pharmaceutical preparations,None,CDMO,Scientific,Strong,"CAPS specializes in compounding and preparing medications, aligning with Natoli's tablet compression services.",High,Research and outreach
+PharMEDium Services,Pharmaceutical preparations,None,CDMO,Scientific,Strong,"PharMEDium specializes in compounding and manufacturing, aligning well with Natoli's tablet compression equipment.",High,Research and outreach
+Edge Pharma,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Edge Pharma targets companies that require tablet compression and related services.,High,Research and outreach
+Olympia Compounding Pharmacy,Compounded medications,None,In-house,Scientific,Medium,They compress powders for custom formulations.,High,Research and outreach
+Avella Specialty Pharmacy,Pharmaceuticals,None,In-house,Scientific,Medium,"Avella specializes in compounding medications, which may require tablet compression.",High,Research and outreach
+Triad Isotopes,Radioactive isotopes for medical applications,None,In-house,Scientific,Medium,Potential need for tablet compression in radiopharmaceuticals.,High,Research and outreach
+"CPS Solutions, LLC",Powders for tablets and pellets,None,CDMO,Both,Strong,"CPS Solutions specializes in powder compression, aligning with Natoli's offerings.",High,Research and outreach
+"Advanced Pharma, Inc.","tablets, pellets, compacts",None,CDMO,Both,Strong,Natoli's products align with Advanced Pharma's tablet compression needs.,High,Research and outreach
+Pentec Health,Pharmaceuticals,None,CDMO,Scientific,Strong,"Pentec Health focuses on pharmaceutical products, aligning with Natoli's tablet compression services.",High,Research and outreach
+US Compounding,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Natoli's products align with US Compounding's tablet compression needs.,High,Research and outreach
+Ajinomoto Bio-Pharma Services,Pharmaceuticals and biologics,None,CDMO,Scientific,Strong,They provide contract development and manufacturing services for tablet formulations.,High,Research and outreach
+Velesco Pharma,Pharmaceutical formulations,None,CDMO,Scientific,Strong,"Velesco Pharma specializes in formulation development, aligning with Natoli's tablet compression services.",High,Research and outreach
+Noramco,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Noramco's focus on R&D and tablet compression aligns well with Natoli's offerings.,High,Research and outreach
+Formex LLC,"Tablets, pellets, compacts",None,In-house,Both,Strong,"Formex targets a wide range of industries that require powder compression, aligning well with Natoli's offerings.",High,Research and outreach
+Bend Research,"Powders into tablets, pellets, or compacts",None,CDMO,Scientific,Strong,"Bend Research specializes in formulation R&D, aligning with Natoli's target market.",High,Research and outreach
+"Aurobindo Pharma USA, Inc.","Tablets, pellets",None,In-house,Both,Strong,"Aurobindo manufactures tablets, aligning with Natoli's offerings.",High,Research and outreach
+GlaxoSmithKline USA,Pharmaceutical tablets and pellets,None,In-house,Both,Strong,GSK requires tablet presses and tooling for their pharmaceutical products.,High,Research and outreach
+"GNC Holdings, Inc.","Tablets, pellets, compacts","Amazon,Walmart,CVS,Target",In-house,Both,Strong,"GNC manufactures dietary supplements in tablet form, aligning with Natoli's offerings.",High,Research and outreach
+NOW Foods,"Nutritional supplements, vitamins, and herbal products","Amazon,Walmart,CVS,Target",In-house,Both,Strong,"NOW Foods compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+The Nature's Bounty Co.,"Tablets, pellets, compacts","Amazon,Walmart,CVS,Target",In-house,Both,Strong,They manufacture dietary supplements that require tablet compression.,High,Research and outreach
+Vital Nutrients,Nutritional supplements,None,In-house,Both,Strong,Vital Nutrients requires tablet presses and tooling for their supplement production.,High,Research and outreach
+"Nutrisystem, Inc.","Tablets, pellets, compacts",None,In-house,Engineering,Strong,Nutrisystem's focus on tablet formulation aligns with Natoli's offerings.,High,Research and outreach
+"Metagenics, Inc.","Nutraceuticals, dietary supplements","Amazon,Walmart,CVS,Target",In-house,Scientific,Strong,"Metagenics compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Bodybuilding.com,Nutritional supplements,"Amazon,Walmart,CVS,Target",Hybrid,NoFit,Medium,Focus on retail and consumer products rather than manufacturing equipment.,High,Research and outreach
+Garden of Life,Vitamins|Supplements|Herbal Products,"Amazon,Walmart,CVS,Target",In-house,Scientific,Strong,"Garden of Life produces compressed supplements, aligning with Natoli's tablet press offerings.",High,Research and outreach
+MegaFood,Vitamins|Supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"MegaFood compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Nature Made,Vitamins and dietary supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Nature Made produces tablets, aligning with Natoli's offerings.",High,Research and outreach
+The Vitamin Shoppe,Vitamins and dietary supplements,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,They produce tablets and supplements requiring compression.,High,Research and outreach
+Solgar Inc.,"Tablets, pellets, compacts","Amazon,Walmart,CVS,Target",Hybrid,Both,Strong,Solgar's focus on compressing powders aligns with Natoli's offerings.,High,Research and outreach
+NutraScience Labs,"Tablets, pellets, compacts",None,CDMO,Both,Strong,"NutraScience Labs targets companies that require tablet compression services, aligning well with Natoli's offerings.",High,Research and outreach
+Vitafusion,Vitamins and supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Vitafusion produces compressed vitamin products, aligning with Natoli's tablet press offerings.",High,Research and outreach
+Nature's Bounty,Vitamins and dietary supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Nature's Bounty compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Vitabiotics USA,"Dietary supplements, vitamins, and minerals","Amazon,Walmart,CVS,Target",CDMO,Both,Strong,"They manufacture tablets and supplements, aligning with Natoli's offerings.",High,Research and outreach
+Douglas Laboratories,"Tablets, pellets, compacts",None,CDMO,Both,Strong,"Douglas Laboratories compresses powders, aligning with Natoli's offerings.",High,Research and outreach
+Natures Plus,"Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,Complementary services in tablet manufacturing,High,Research and outreach
+"Rexall Sundown, Inc.",Vitamins and dietary supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Rexall Sundown compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+"21st Century HealthCare, Inc.","Tablets, pellets, compacts",None,In-house,Both,Strong,They require tablet presses and tooling for their products.,High,Research and outreach
+Hasa Inc.,"Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,Hasa's services align with Natoli's tablet press and tooling offerings.,High,Research and outreach
+Clearon Corp.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,"Clearon targets diverse industries that require powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Kuehne Company,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Kuehne's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+"Axiall, a Westlake Company",Chemicals|Plastics,None,In-house,Engineering,Weak,Focus on chemical production rather than tablet compression.,High,Low priority
+NC Brands L.P.,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Natoli's offerings align with NC Brands' need for tablet compression solutions.,High,Research and outreach
+"Haviland Enterprises, Inc.","Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,Haviland's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Solenis LLC,Powders for tablet and pellet compression,None,Hybrid,Both,Medium,Solenis provides solutions relevant to industries that utilize tablet compression.,High,Research and outreach
+"Arch Chemicals, Inc.",Chemicals and formulations,None,CDMO,Scientific,Medium,Potential collaboration in R&D for tablet formulation.,High,Research and outreach
+Robarb,"Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,Robarb's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+PuriChem,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,PuriChem's services align with Natoli's offerings for tablet compression.,High,Research and outreach
+"Taylor Technologies, Inc.","Tablets, pellets, compacts",None,In-house,Engineering,Strong,Complementary products and services for tablet manufacturing.,High,Research and outreach
+Procter & Gamble,"Tablets, pellets, personal care products","Amazon,Walmart,CVS,Target",In-house,Both,Strong,P&G compresses powders for various consumer and pharmaceutical products.,High,Research and outreach
+Ecolab Inc.,Powders for various applications,None,In-house,Both,Medium,Ecolab provides solutions for various industries that may require tablet compression.,High,Research and outreach
+"Church & Dwight Co., Inc.","Tablets, Pellets","Amazon,Walmart,CVS,Target",In-house,Both,Strong,They produce consumer products that require tablet compression.,High,Research and outreach
+Colgate-Palmolive Company,"Tablets, powders","Amazon,Walmart,CVS,Target",In-house,Both,Medium,Colgate-Palmolive compresses powders for oral care products.,High,Research and outreach
+Clorox Company,"Cleaning products, disinfecting wipes, and other consumer goods","Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,Clorox primarily focuses on consumer goods rather than tablet compression.,High,Low priority
+Kao USA Inc.,Powders for tablets and pellets,None,In-house,Both,Strong,Kao's focus on powder formulations aligns with Natoli's offerings.,High,Research and outreach
+Monument Chemical,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,Monument Chemical's focus on powder processing aligns well with Natoli's offerings.,High,Research and outreach
+"Liberty Industries, Inc.","Tablets, pellets, compacts",None,Hybrid,Both,Strong,Liberty's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Zep Inc.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,"Zep Inc. provides essential equipment for powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Puracy,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,Puracy's focus on R&D aligns with Natoli's tablet press and tooling offerings.,High,Research and outreach
+Ecover,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Ecover's focus on compressing powders aligns well with Natoli's offerings.,High,Research and outreach
+WD-40 Company,Aerosol lubricants and maintenance products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on maintenance products, not tablet compression.",High,Low priority
+Simple Green,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Simple Green's products align with Natoli's tablet compression needs.,High,Research and outreach
+"Jelmar, LLC",Cleaning products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on cleaning products, not tablet compression.",High,Low priority
+Arm & Hammer,"Baking soda, cleaning products, personal care items","Amazon,Walmart,CVS,Target",In-house,Both,Medium,Uses tablet compression in product formulations.,High,Research and outreach
+The Libman Company,Cleaning products,"Amazon,Walmart,Target",In-house,NoFit,Weak,"Focus on cleaning products, not tablet compression.",High,Low priority
+"GOJO Industries, Inc.",Hand sanitizers and soaps,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"GOJO focuses on liquid products, not tablet compression.",High,Low priority
+Green Works,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,"Green Works targets a wide range of industries that require powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Biokleen,Cleaning products,"Amazon,Walmart,Target",In-house,Scientific,Medium,Potential for tablet form cleaning products aligns with Natoli's offerings.,High,Research and outreach
+Lemi Shine,Cleaning products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on cleaning products, not tablet compression.",High,Low priority
+Sun & Earth,"Tablets, pellets, compacts",None,In-house,Both,Strong,"Sun & Earth compresses powders, aligning with Natoli's offerings.",High,Research and outreach
+Lysol (Reckitt Benckiser),Disinfectant tablets,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,Lysol produces disinfectant products that may require tablet compression technology.,High,Research and outreach
+Finish (Reckitt Benckiser),"Tablets, pellets","Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Finish produces tablet forms, aligning with Natoli's offerings.",High,Research and outreach
+BioClean Environmental Services,Environmental solutions and services,None,Unknown,NoFit,Weak,Focus on environmental services rather than tablet compression.,High,Low priority
+RID-X,"Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,"RID-X targets multiple industries that require tablet compression, aligning well with Natoli's offerings.",High,Research and outreach
+Green Gobbler,Cleaning products,"Amazon,Walmart,Target",In-house,NoFit,Medium,"Green Gobbler focuses on consumer cleaning products, not tablet compression.",High,Research and outreach
+"Roebic Laboratories, Inc.",Wastewater treatment products,None,In-house,Scientific,Weak,"Focus on wastewater treatment, not tablet compression.",High,Low priority
+Septic-Flow,"Powders for tablets, pellets, compacts",None,Hybrid,Both,Strong,Natoli's products align with Septic-Flow's compression needs.,High,Research and outreach
+Septic-Scrub,Septic treatment products,None,In-house,Both,Medium,Septic-Scrub may require tablet presses for product formulation.,High,Research and outreach
+Bio-Sol,Powders for tablets and pellets,None,In-house,Both,Strong,Bio-Sol's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Pro-Pump,Powders,None,Unknown,Engineering,Strong,Pro-Pump's focus on powder compression aligns well with Natoli's tablet press offerings.,High,Research and outreach
+Septic Seep,Septic treatment products,None,In-house,Scientific,Medium,Potential for tablet compression in septic solutions.,High,Research and outreach
+Enviro-Tab,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,"Enviro-Tab targets companies that require compression technology, aligning with Natoli's offerings.",High,Research and outreach
+Septic Maxx,Septic treatments,None,In-house,Scientific,Medium,Potential need for tablet presses for septic product formulations.,High,Research and outreach
+Enzymes by Bio-Solutions,Enzymes,None,In-house,Scientific,Medium,"Enzymes are often compressed into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Septic Safe,Septic treatment products,"Amazon,Walmart",In-house,Scientific,Medium,Potential need for tablet compression in product formulation.,High,Research and outreach
+Eco-Septic Solutions,Septic treatment products,None,Unknown,NoFit,Weak,"Focus on septic solutions, not tablet compression.",High,Low priority
+Septic Doctor,Septic system products,None,Unknown,NoFit,Weak,"Focus on septic systems, not tablet compression.",High,Low priority
+Septic Tech,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+Clearstream,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Clearstream's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+Septic Genie,Septic systems components,None,In-house,NoFit,Weak,"Focus on septic systems, not tablet compression.",Medium,Low priority
+Septic Relief,Powders for tablets,None,In-house,Both,Strong,Septic Relief compresses powders for various applications.,High,Research and outreach
+EcoSafe Labs,"Tablets, pellets, compacts",None,CDMO,Both,Strong,EcoSafe Labs requires advanced tablet pressing technology for their formulations.,High,Research and outreach
+GreenEarth Cleaning,Cleaning products,"Amazon,Walmart,Target",Unknown,NoFit,Weak,"Focus on cleaning products, not tablet compression.",Medium,Low priority
+BioClean Solutions,Powders for tablets and pellets,None,In-house,Both,Strong,"BioClean compresses powders, aligning with Natoli's offerings.",High,Research and outreach
+"Diversey, Inc.","Tablets, pellets, compacts",None,In-house,Both,Strong,Diversey serves multiple industries that require powder compression.,High,Research and outreach
+Caldrea Company,Household cleaning products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on cleaning products, not tablet compression.",High,Low priority
+Blueland,"Tablets, pellets, compacts",None,In-house,Both,Strong,Blueland's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+Truce Clean,Powders for tablets and pellets,None,In-house,Both,Strong,Truce Clean's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+"EcoSMART Technologies, Inc.","Powders into tablets, pellets, compacts",None,CDMO,Both,Strong,Aligns with tablet compression and R&D services.,High,Research and outreach
+"S.C. Johnson & Son, Inc.",Household products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focus on consumer goods, not tablet compression.",High,Low priority
+Scrubbing Bubbles,Cleaning tablets,"Amazon,Walmart,CVS,Target",In-house,NoFit,Medium,"Focus on cleaning products, not tablet compression.",Medium,Research and outreach
+Cascade,Tablets|Pellets|Compacts,None,CDMO,Both,Strong,Cascade's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+CLR Brands,"Tablets, pellets, compacts",None,CDMO,Both,Strong,"CLR Brands targets a wide range of industries that utilize tablet compression, aligning well with Natoli's offerings.",High,Research and outreach
+CBDfx,CBD products,"Amazon,Walmart,CVS,Target",Hybrid,Both,Medium,"CBDfx compresses powders for tablets and gummies, aligning with Natoli's offerings.",High,Research and outreach
+Medterra,CBD tablets and capsules,"Amazon, CVS",In-house,Both,Strong,"Medterra compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Veritas Farms,Cannabis products,None,Hybrid,Scientific,Medium,Potential need for tablet presses in cannabis product formulation.,High,Research and outreach
+CBD American Shaman,CBD products,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,They may require tablet presses for CBD formulations.,High,Research and outreach
+Diamond CBD,"CBD products, edibles","Amazon, Walmart, CVS",Hybrid,Both,Strong,"Diamond CBD compresses powders into tablets and edibles, aligning with Natoli's offerings.",High,Research and outreach
+Joy Organics,CBD products,"Amazon, CVS",In-house,Scientific,Medium,Potential for tablet compression in CBD formulations.,High,Research and outreach
+CBDistillery,CBD products,"Amazon, CVS, None",Hybrid,Scientific,Medium,CBDistillery requires tablet presses for product formulation.,High,Research and outreach
+Hemp Bombs,CBD products and other herbal supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,Hemp Bombs compresses powders for various CBD formulations.,High,Research and outreach
+PureKana,CBD products,"Amazon, CVS, Target",Hybrid,Scientific,Medium,Potential for tablet compression in CBD formulations.,High,Research and outreach
+Elixinol,Hemp-derived products,"Amazon, CVS",In-house,Scientific,Medium,Elixinol produces hemp products that may require tablet compression.,High,Research and outreach
+Lord Jones,Tablets,Amazon,In-house,Both,Medium,Potential need for tablet presses and tooling in cannabis product formulation.,High,Research and outreach
+Kanibi,"Tablets, pellets, compacts",None,In-house,Both,Strong,Kanibi's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+FAB CBD,CBD tablets and gummies,"Amazon, CVS",In-house,Both,Strong,"FAB CBD compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Populum,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Populum's focus on compressing powders aligns with Natoli's offerings.,High,Research and outreach
+Infinite CBD,CBD tablets and formulations,None,CDMO,Scientific,Strong,Both companies focus on tablet formulation and production.,High,Research and outreach
+Rainbow Light,Vitamins and dietary supplements,"Amazon,Walmart,CVS,Target",In-house,Scientific,Strong,"Rainbow Light compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+NBTY Inc.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+Optimum Nutrition,"Nutritional supplements, protein powders","Amazon,Walmart,CVS,Target",In-house,Scientific,Strong,"They produce tablets and powders, aligning with Natoli's offerings.",High,Research and outreach
+NutraClick LLC,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,NutraClick's focus on tablet formulation aligns with Natoli's offerings.,High,Research and outreach
+Vibrant Health,"Nutritional supplements, herbal tablets","Amazon,Walmart,CVS",In-house,Both,Strong,Vibrant Health's focus on tablet formulation aligns with Natoli's offerings.,High,Research and outreach
+Natrol LLC,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+"Enzymedica, Inc.",Enzyme supplements,"Amazon,CVS",In-house,Scientific,Medium,"Enzymedica compresses powders for supplements, aligning with Natoli's tablet press offerings.",High,Research and outreach
+"Doctor's Best, Inc.","Tablets, pellets, compacts","Amazon, CVS",In-house,Both,Strong,Natoli's products align with Doctor's Best's tablet compression needs.,High,Research and outreach
+Twinlab Consolidated Holdings,"Nutritional supplements, pharmaceuticals","Amazon,Walmart,CVS,Target",Hybrid,Scientific,Medium,Potential need for tablet presses and tooling in supplement production.,High,Research and outreach
+Vitamer Laboratories,"Tablets, pellets, compacts",None,CDMO,Scientific,Strong,"Vitamer specializes in tablet formulation and manufacturing, aligning well with Natoli's offerings.",High,Research and outreach
+"Integrated BioPharma, Inc.","Tablets, pellets, compacts",None,CDMO,Both,Strong,Integrated BioPharma's focus on tablet formulation aligns with Natoli's offerings.,High,Research and outreach
+Nutrigold Inc.,"Tablets, pellets, compacts",None,CDMO,Engineering,Strong,Nutrigold's services align with Natoli's tablet press and tooling offerings.,High,Research and outreach
+Roxane Laboratories,Pharmaceutical tablets and pellets,None,CDMO,Scientific,Strong,"Roxane specializes in tablet formulation and production, aligning with Natoli's offerings.",High,Research and outreach
+"NBTY, Inc.","Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+"Nutraceutix, Inc.","Tablets, pellets, compacts",None,CDMO,Engineering,Strong,Nutraceutix provides R&D services and products that align with Natoli's offerings.,High,Research and outreach
+PL Developments,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Complementary products and services for powder compression.,High,Research and outreach
+Reckitt Benckiser Group,"Tablets, pellets, consumer health products","Amazon,Walmart,CVS,Target",In-house,Both,Strong,"Reckitt produces compressed products, aligning with Natoli's offerings.",High,Research and outreach
+Vetoquinol USA,Veterinary pharmaceuticals,None,In-house,Scientific,Medium,They may require tablet presses for veterinary formulations.,High,Research and outreach
+Ceva Animal Health,Competitor,,Competitor,No Fit,No Fit,,High,SKIP - Natoli competitor
+Amprius Technologies,Lithium-ion batteries,None,In-house,Engineering,Weak,"Focus on battery technology, not tablet compression.",High,Low priority
+Sila Nanotechnologies,Battery materials,None,In-house,Scientific,Medium,Focus on advanced materials for batteries aligns with tablet compression technology.,High,Research and outreach
+Solid Power,"Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,Solid Power's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Wildcat Discovery Technologies,Pharmaceutical compounds and formulations,None,In-house,Scientific,Strong,Focus on R&D aligns with Natoli's tablet compression services.,High,Research and outreach
+Group14 Technologies,Battery materials,None,In-house,Engineering,Medium,Focus on advanced materials for battery applications aligns with tablet compression technology.,High,Research and outreach
+24M Technologies,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,24M's technology aligns with Natoli's focus on powder compression.,High,Research and outreach
+Farasis Energy USA,Batteries,None,Unknown,Engineering,Weak,"Focus on battery technology, limited overlap with tablet compression.",High,Low priority
+Forge Nano,"Powders into tablets, pellets, or compacts",None,Hybrid,Scientific,Strong,Forge Nano's technology complements Natoli's tablet compression and tooling services.,High,Research and outreach
+Microvast,Batteries,None,In-house,Engineering,Medium,Potential for tablet press applications in battery production.,High,Research and outreach
+Kore Power,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Kore Power's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Eos Energy Enterprises,"Powders into tablets, pellets, or compacts",None,Hybrid,Engineering|Scientific,Strong,Eos Energy's focus on energy solutions aligns with Natoli's tablet compression technology for R&D.,High,Research and outreach
+OneD Material,"Powders into tablets, pellets, or compacts",None,Hybrid,Both,Strong,Complementary services in tablet compression and R&D.,High,Research and outreach
+American Battery Technology Company,Batteries and related materials,None,Unknown,Scientific,Medium,Potential need for tablet presses in battery material production.,High,Research and outreach
+FMC Lithium,Lithium compounds,None,In-house,Engineering,Strong,"FMC Lithium compresses lithium for batteries, aligning with Natoli's tablet press capabilities.",High,Research and outreach
+Piedmont Lithium,Lithium compounds,None,In-house,Engineering,Medium,Potential use of tablet presses for lithium-based products.,High,Research and outreach
+"Tesla, Inc.",Batteries|Components|Materials,None,In-house,NoFit,Weak,"Tesla focuses on electric vehicles and energy solutions, not tablet compression.",High,Low priority
+American Battery Solutions,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Natoli's offerings align with tablet compression needs.,High,Research and outreach
+Romeo Power,Batteries,None,In-house,Engineering,Medium,Focus on battery technology aligns with tablet compression for energy storage.,High,Research and outreach
+EnerSys,Batteries,None,In-house,Engineering,Medium,"EnerSys focuses on energy solutions, which may require tablet compression for battery materials.",High,Research and outreach
+Factorial Energy,Batteries,None,In-house,Engineering,Medium,Focus on energy storage aligns with tablet compression technology.,High,Research and outreach
+Sion Power,Batteries,None,In-house,Engineering,Medium,Focus on advanced battery technology aligns with tablet compression processes.,High,Research and outreach
+Blue Current,"Tablets, pellets, compacts",None,In-house,Both,Strong,"Blue Current targets diverse industries that require powder compression, aligning well with Natoli's offerings.",High,Research and outreach
+BrightVolt,"Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,BrightVolt's technology aligns with Natoli's tablet compression needs.,High,Research and outreach
+Silatronix,Powders for tablets and pellets,None,Unknown,Scientific,Medium,Potential for R&D collaboration in tablet formulation.,High,Research and outreach
+"Giner, Inc.","Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,Giner's services align with Natoli's tablet compression needs.,High,Research and outreach
+PolyPlus Battery Company,Battery materials,None,In-house,Engineering,Medium,Potential need for tablet presses in battery material production.,High,Research and outreach
+Centrus Energy Corp.,Uranium fuel pellets,None,In-house,Engineering,Weak,Focus on nuclear energy rather than tablet compression.,High,Low priority
+Areva NP Inc.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Areva NP's focus on engineering aligns with Natoli's tablet press and tooling offerings.,High,Research and outreach
+Orano USA,"Nuclear materials, battery components",None,In-house,Engineering,Medium,Potential need for tablet presses in battery and nuclear applications.,High,Research and outreach
+GNF Enrichment Services,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,GNF's services align with Natoli's tablet compression and tooling offerings.,High,Research and outreach
+TerraPower,Nuclear fuel pellets,None,In-house,Engineering,Weak,Focus on nuclear energy rather than tablet compression.,High,Low priority
+"Thorium Power, Inc.",Nuclear fuel pellets,None,Unknown,Engineering,Weak,"Focus on nuclear applications, limited overlap with tablet compression.",High,Low priority
+Curium Pharma,"Tablets, pellets",None,In-house,Scientific,Strong,Curium Pharma compresses powders for pharmaceutical applications.,High,Research and outreach
+Nuclear Waste Partnership LLC,Nuclear waste materials,None,Unknown,NoFit,Weak,"Focus on nuclear waste management, not tablet compression.",High,Low priority
+Grace Catalysts Technologies,Catalysts and chemical formulations,None,In-house,Scientific,Medium,They develop catalysts which may require tablet compression for certain applications.,High,Research and outreach
+Axens North America,Powders,None,In-house,Engineering,Medium,Potential collaboration in powder processing technologies.,High,Research and outreach
+Sud-Chemie Inc.,Powders for tablets and pellets,None,CDMO,Scientific,Strong,Synergy in powder compression and formulation services.,High,Research and outreach
+"Haldor Topsoe, Inc.",Catalysts and chemical processes,None,In-house,Engineering,Medium,Focus on chemical processes aligns with tablet formulation.,High,Research and outreach
+Hyzon Motors Inc.,Hydrogen fuel cells,None,In-house,Engineering,Weak,"Focus on hydrogen technology, not tablet compression.",High,Low priority
+Linde PLC,Gases for compression and processing,None,In-house,Engineering,Medium,Linde provides essential gases for tablet production processes.,High,Research and outreach
+US Hybrid,"Tablets, pellets, compacts",None,Hybrid,Engineering|Scientific,Strong,US Hybrid's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+GenCell Energy,Hydrogen fuel cells,None,In-house,Engineering,Weak,Focus on energy solutions rather than tablet compression.,High,Low priority
+HyperSolar Inc.,Hydrogen pellets,None,Unknown,Scientific,Weak,"Focus on hydrogen production, not tablet compression.",High,Low priority
+ITM Power Inc.,Hydrogen fuel cells and related technologies,None,In-house,Engineering,Weak,"Focus on hydrogen solutions, not tablet compression.",High,Low priority
+"SunHydrogen, Inc.",Hydrogen pellets,None,Unknown,Scientific,Medium,Potential for collaboration in hydrogen-related tablet formulations.,High,Research and outreach
+Occidental Petroleum,Hydrocarbons,None,Unknown,NoFit,Weak,"Occidental focuses on oil and gas, not tablet compression.",High,Low priority
+NET Power,"Tablets, pellets, compacts",None,Hybrid,Engineering,Strong,NET Power's technology aligns with various industries that require powder compression.,High,Research and outreach
+Mitsubishi Heavy Industries America,Various industrial applications including pharmaceuticals and food,None,Hybrid,Engineering,Medium,Mitsubishi's engineering capabilities align with tablet press technology but focus is broader.,High,Research and outreach
+Honeywell UOP,Catalysts and process technologies,None,In-house,Engineering,Medium,Potential for collaboration in powder processing technologies.,High,Research and outreach
+CeramTec,Ceramics and advanced materials,None,In-house,Engineering|Scientific,Medium,CeramTec's advanced materials can be used in tablet production.,High,Research and outreach
+Corning Inc.,"Tablets, pellets, ceramics",None,In-house,Both,Medium,Corning's expertise in materials aligns with tablet compression technologies.,High,Research and outreach
+3M Ceramics,Ceramics and related materials,None,In-house,Engineering,Medium,Potential for collaboration in tablet press applications.,High,Research and outreach
+Advanced Ceramic Manufacturer,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Serves diverse industries needing powder compression,High,Research and outreach
+Rauschert Technical Ceramics,Ceramic components for various applications,None,In-house,Engineering,Medium,Potential for collaboration in tablet compression technology.,High,Research and outreach
+NGK Ceramics USA,Ceramics and related materials,None,In-house,Engineering,Medium,Potential collaboration in tablet compression technology.,High,Research and outreach
+Unifrax,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Unifrax's products align with Natoli's tablet compression services.,High,Research and outreach
+Schunk Carbon Technology,Carbon-based materials,None,In-house,Scientific,Medium,Potential overlap in powder compression technologies.,High,Research and outreach
+Carborundum Universal Ltd.,"Powders for tablets, pellets, and compacts",None,In-house,Engineering|Scientific,Medium,Potential for collaboration in powder compression technologies,High,Research and outreach
+Ortech Advanced Ceramics,Ceramic components,None,In-house,Engineering,Medium,Potential use of ceramics in tablet production.,High,Research and outreach
+"CerCo, LLC",Ceramics and powders,None,In-house,Scientific,Medium,CerCo specializes in powder processing which aligns with Natoli's offerings.,High,Research and outreach
+"ASML US, Inc.","Tablets, pellets, compacts",None,In-house,Engineering,Strong,ASML's technology supports precision in tablet compression.,High,Research and outreach
+GlobalFoundries U.S. Inc.,Silicon wafers,None,In-house,Engineering,Weak,"Focus on semiconductor manufacturing, not tablet compression.",High,Low priority
+"NXP Semiconductors USA, Inc.",Not applicable,None,Unknown,NoFit,NoFit,"NXP focuses on semiconductors, not tablet compression.",High,Low priority
+Microchip Technology Incorporated,Semiconductors,None,Unknown,Engineering,Weak,"Focus on semiconductors, not tablet compression.",High,Low priority
+"AMD (Advanced Micro Devices, Inc.)",Semiconductors,None,In-house,Engineering,Weak,"AMD focuses on semiconductor manufacturing, not tablet compression.",High,Low priority
+"Broadcom, Inc.","Tablets, pellets, compacts",None,In-house,Engineering,Medium,Broadcom's technology can support tablet compression processes.,High,Research and outreach
+L'Oréal USA,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,"L'Oréal compresses powders for cosmetics, aligning with Natoli's offerings.",High,Research and outreach
+"Elizabeth Arden, Inc.",Cosmetic tablets and powders,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Uses tablet compression for cosmetic products.,High,Research and outreach
+"Glossier, Inc.",Cosmetic products,"Amazon,Walmart,CVS,Target",In-house,NoFit,Weak,"Focuses on cosmetics, not tablet compression.",High,Low priority
+Morphe Brushes,Cosmetic powders,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,"Morphe Brushes compresses powders for cosmetic products, aligning with Natoli's offerings.",High,Research and outreach
+Agrium Inc.,Fertilizers,None,In-house,NoFit,Weak,"Agrium focuses on agricultural products, not tablet compression.",High,Low priority
+CF Industries,Fertilizers,None,In-house,NoFit,Weak,"Focus on fertilizers, not tablet compression.",High,Low priority
+Yara North America,Fertilizers and agricultural products,None,In-house,Scientific,Medium,Potential for tabletization of fertilizers.,High,Research and outreach
+J.R. Simplot Company,"Potato products, processed foods",None,In-house,Both,Medium,Potential for tablet applications in food and ag products.,High,Research and outreach
+Wilbur-Ellis Company,"Animal feed, fertilizers, and crop protection products",None,Hybrid,Both,Medium,Potential for collaboration in agricultural applications and formulations.,High,Research and outreach
+"Brandt Consolidated, Inc.","Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,Complementary products and services for tablet compression.,High,Research and outreach
+Koch Agronomic Services,Fertilizers and soil amendments,None,In-house,Scientific,Medium,Potential for tablet compression in fertilizer products.,High,Research and outreach
+"GROWMARK, Inc.","Agricultural products, fertilizers",None,Unknown,NoFit,Weak,"Focus on agriculture, not tablet compression.",High,Low priority
+CHS Inc.,"Powders into tablets, pellets, or compacts",None,CDMO,Engineering|Scientific,Strong,"CHS Inc. targets a wide range of industries that require powder compression, aligning well with Natoli's offerings.",High,Research and outreach
+SQM North America,"Tablets, pellets, compacts",None,CDMO,Engineering|Scientific,Strong,Natoli's products align with SQM's tablet compression needs.,High,Research and outreach
+Nutrien Ag Solutions,"Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,Nutrien's focus on agricultural solutions aligns with tablet compression needs.,High,Research and outreach
+PTI Engineered Plastics,Plastics and engineered materials,None,CDMO,Engineering,Strong,PTI's expertise in engineered plastics aligns with Natoli's focus on tablet pressing and tooling.,High,Research and outreach
+Harro Höfliger,"Tablets, pellets, and compacts",None,CDMO,Both,Strong,"Harro Höfliger specializes in equipment for powder processing, aligning well with Natoli's offerings.",High,Research and outreach
+Pharmatek Laboratories,Pharmaceutical formulations,None,CDMO,Scientific,Strong,"Pharmatek specializes in formulation and development, aligning well with Natoli's tablet compression services.",High,Research and outreach
+Avid Bioservices,Biologics|Pharmaceuticals,None,CDMO,Scientific,Medium,"Avid focuses on biologics, which may require tablet compression for certain formulations.",High,Research and outreach
+Cambrex High Point,Pharmaceuticals and Nutraceuticals,None,CDMO,Scientific,Strong,"Cambrex specializes in drug development and manufacturing, aligning well with Natoli's tablet compression services.",High,Research and outreach
+Ajanta Pharma USA,Tablets,None,In-house,Both,Strong,"Ajanta Pharma manufactures tablets, aligning with Natoli's offerings.",High,Research and outreach
+BioDuro-Sundia,Pharmaceuticals and nutraceuticals,None,CDMO,Scientific,Strong,They require tablet presses and tooling for their formulation services.,High,Research and outreach
+Pinnacle Biologics,Biologics,None,CDMO,Scientific,Strong,Pinnacle Biologics develops biologics which may require tablet compression for delivery.,High,Research and outreach
+Zhou Nutrition,Nutritional supplements,"Amazon,Walmart",In-house,Both,Strong,"Zhou Nutrition compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Infinite Labs,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Aligns with tablet compression and R&D services.,High,Research and outreach
+BioCare,Tablets|Pellets|Compacts,None,In-house,Both,Strong,BioCare's focus on compressing powders aligns well with Natoli's offerings.,High,Research and outreach
+Glanbia Nutritionals,Nutritional powders and supplements,None,In-house,Both,Strong,"Glanbia compresses nutritional powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+Gummi World,Gummies and other compressed products,"Amazon, Walmart, CVS, Target",CDMO,Both,Strong,"Gummi World compresses powders into gummies, aligning with Natoli's tablet press and tooling offerings.",High,Research and outreach
+"Solgar, Inc.",Nutritional supplements,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,"Solgar produces tablets, aligning with Natoli's offerings.",High,Research and outreach
+Carlson Labs,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Carlson Labs targets companies in need of tablet compression solutions.,High,Research and outreach
+Puritan's Pride,"Vitamins, supplements, herbal products","Amazon,Walmart,CVS,Target",In-house,Both,Medium,Potential for tablet compression in supplement production.,High,Research and outreach
+"Bio-Lab, Inc.","Pharmaceuticals, Nutraceuticals, Veterinary Products",None,In-house,Scientific,Strong,"Bio-Lab compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+"HASA, Inc.",Powders,None,In-house,Both,Strong,HASA's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+Robelle Industries,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Robelle's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+"Solvay Chemicals, Inc.",Chemicals for tablet formulation,None,In-house,Scientific,Medium,"Solvay provides chemical solutions that can be used in tablet formulation, aligning with Natoli's target market.",High,Research and outreach
+Aqua Chem,"Powders into tablets, pellets, or compacts",None,In-house,Both,Strong,Aqua Chem's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+Leslie's Pool Supplies,Pool chemicals,"Amazon,Walmart,Target",Unknown,NoFit,Weak,"Focus on pool supplies, not tablet compression.",Medium,Low priority
+Haviland Pool & Spa,Pool chemicals and related products,"Amazon,Walmart,Target",In-house,NoFit,Weak,"Focus on pool and spa products, not tablet compression.",Medium,Low priority
+AllChem Industries,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,AllChem's focus on powder compression aligns well with Natoli's offerings.,High,Research and outreach
+"Hawkins, Inc.","Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,"Hawkins provides essential services for tablet compression, aligning with Natoli's offerings.",High,Research and outreach
+"ChemTreat, Inc.",Chemicals and additives,None,In-house,Scientific,Medium,ChemTreat provides chemical solutions that may complement tablet formulation processes.,High,Research and outreach
+The Pool & Spa Warehouse,Pool and spa chemicals,None,Unknown,NoFit,Weak,"Focus on pool and spa products, not tablet compression.",High,Low priority
+"Kemira Chemicals, Inc.",Chemicals for various applications,None,In-house,Scientific,Medium,Kemira produces chemicals that may require tablet compression in various sectors.,High,Research and outreach
+Nalco Water,"Tablets, pellets, compacts",None,In-house,Engineering|Scientific,Strong,Provides essential equipment and services for powder compression.,High,Research and outreach
+"Pentair, Inc.","Tablets, pellets, compacts",None,Hybrid,Engineering,Medium,Pentair's expertise in fluid management aligns with tablet production processes.,High,Research and outreach
+"American Water Works Company, Inc.",Water treatment chemicals,None,Unknown,NoFit,Weak,"Focus on water utilities, not tablet compression.",High,Low priority
+"US Water Services, Inc.","Powders into tablets, pellets, or compacts",None,CDMO,Engineering,Strong,Complementary services for tablet manufacturing,High,Research and outreach
+BWT Pharma & Biotech Inc.,"Pharmaceuticals, Nutraceuticals",None,CDMO,Scientific,Strong,"BWT specializes in pharmaceutical development, aligning with Natoli's tablet compression solutions.",High,Research and outreach
+"Kroff Chemical Company, Inc.",Chemicals and formulations,None,CDMO,Scientific,Medium,Kroff provides chemical solutions that may complement Natoli's tablet compression services.,High,Research and outreach
+Garratt-Callahan Company,Water treatment chemicals,None,In-house,Scientific,Weak,Focus on water treatment rather than tablet compression.,High,Low priority
+"Chem-Aqua, Inc.",Chemicals and formulations,None,In-house,Scientific,Medium,Chem-Aqua's focus on chemical formulations aligns with Natoli's tablet compression services.,High,Research and outreach
+Siemens Water Technologies Corp.,Water treatment solutions,None,Unknown,Engineering,Weak,Focus on water technologies rather than tablet compression.,High,Low priority
+"Pace Analytical Services, LLC",Powders for tablets and pellets,None,CDMO,Scientific,Strong,They provide analytical services for various industries that require tablet formulation.,High,Research and outreach
+Henkel North America,"Adhesives, sealants, coatings",None,In-house,Both,Medium,Henkel's focus on adhesive technologies aligns with tablet compression needs.,High,Research and outreach
+Norwex USA,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,Specializes in tablet pressing and tooling for various industries.,High,Research and outreach
+"The Honest Company, Inc.","Tablets, capsules, personal care products","Amazon,Walmart,CVS,Target",Hybrid,Both,Medium,"They produce compressed products, aligning with Natoli's offerings.",High,Research and outreach
+"Eco Me, Inc.","Tablets, pellets, compacts",None,In-house,Both,Strong,Natoli's products align with Eco Me's tablet compression needs.,High,Research and outreach
+Planet Inc.,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Aligns with Natoli's focus on tablet manufacturing and tooling.,High,Research and outreach
+Kärcher North America,"Powders into tablets, pellets, or compacts",None,Unknown,Engineering,Medium,Potential collaboration in powder processing,High,Research and outreach
+Spartan Chemical Company,Chemical formulations,None,In-house,Scientific,Medium,Potential for tablet compression in chemical applications.,High,Research and outreach
+"Hillyard, Inc.","Tablets, pellets, compacts",None,Unknown,Both,Strong,Hillyard's focus on cleaning and sanitation aligns with industries that require tablet compression.,High,Research and outreach
+Reckitt Benckiser Group plc,"Tablets, pellets, and other compressed products","Amazon,Walmart,CVS,Target",In-house,Both,Strong,Reckitt compresses powders for various consumer and pharmaceutical products.,High,Research and outreach
+Oatey Co.,"Tablets, pellets, compacts",None,In-house,Engineering,Strong,"Oatey Co. targets multiple industries that require powder compression, aligning with Natoli's offerings.",High,Research and outreach
+Hain Celestial Group,Organic and natural food products,"Amazon,Walmart,CVS,Target",In-house,Both,Medium,"Hain Celestial produces compressed food products, aligning with Natoli's offerings.",High,Research and outreach
+Clorox Pool & Spa,Pool chemicals and maintenance products,"Amazon,Walmart,Target",In-house,NoFit,Medium,Potential for tabletized pool products but not a primary focus.,High,Research and outreach
+Bio-Dex Laboratories,Pharmaceuticals and Nutraceuticals,None,CDMO,Scientific,Strong,They require tablet presses and tooling for their products.,High,Research and outreach
+Applied Biochemists,Biochemicals and formulations,None,CDMO,Scientific,Strong,Focus on formulation aligns with R&D services offered by Natoli.,High,Research and outreach
+NutriSport Pharmacal,Nutraceuticals and dietary supplements,None,CDMO,Scientific,Strong,NutriSport's focus on tablet formulations aligns with Natoli's offerings.,High,Research and outreach
+"Vitalabs, Inc.","Tablets, pellets, compacts",None,CDMO,Both,Strong,Vitalabs' focus on tablet formulation aligns with Natoli's offerings.,High,Research and outreach
+Biomerics,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Biomerics compresses materials relevant to Natoli's offerings.,High,Research and outreach
+ABH Pharma Inc.,"tablets, pellets, compacts",None,CDMO,Engineering|Scientific,Strong,ABH Pharma's focus on tablet compression aligns well with Natoli's offerings.,High,Research and outreach
+Makers Nutrition,"Tablets, pellets, compacts",None,CDMO,Both,Strong,Makers Nutrition's focus on tablet production aligns well with Natoli's offerings.,High,Research and outreach
+Nutracap Labs,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,"Nutracap Labs targets companies that require tablet compression, aligning with Natoli's offerings.",High,Research and outreach
+Gencor,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,Gencor's focus on powder compression aligns with Natoli's offerings.,High,Research and outreach
+PLT Health Solutions,Nutraceuticals and dietary supplements,None,CDMO,Scientific,Medium,Potential collaboration in formulation and tablet production.,High,Research and outreach
+INW Manufacturing,"Tablets, pellets, compacts",None,In-house,Both,Strong,INW's focus aligns with Natoli's tablet compression technology.,High,Research and outreach
+Vesta Nutra,"Nutraceuticals, dietary supplements",None,CDMO,Both,Strong,"Vesta Nutra compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach
+NutraPak USA,"Powders into tablets, pellets, or compacts",None,CDMO,Both,Strong,NutraPak's focus on compression aligns with Natoli's offerings.,High,Research and outreach
+Reliance Private Label Supplements,Competitor,,Competitor,No Fit,No Fit,,High,SKIP - Natoli competitor
+Vega (WhiteWave Foods),Plant-based food products,"Amazon,Walmart,Target",In-house,NoFit,Medium,Focus on food products rather than tablet compression.,High,Research and outreach
+SmartyPants Vitamins,Vitamins and supplements,"Amazon,Walmart,CVS,Target",In-house,Both,Strong,They require tablet presses for vitamin production.,High,Research and outreach
+Vital Proteins,Collagen supplements,"Amazon,Walmart,CVS,Target",In-house,Scientific,Medium,Focus on health and wellness products aligns with tablet compression.,High,Research and outreach
+Nature's Plus,"Tablets, pellets, compacts",None,CDMO,Engineering,Strong,Complementary services in tablet manufacturing,High,Research and outreach
+Solaray,"Tablets, pellets, compacts",None,Hybrid,Both,Strong,Solaray's offerings align with Natoli's tablet pressing and tooling services.,High,Research and outreach
+Bluebonnet Nutrition,Nutritional supplements,"Amazon,Walmart",In-house,Scientific,Strong,They produce tablets and supplements requiring compression technology.,High,Research and outreach
+Dr. Mercola,"Nutritional supplements, herbal products","Amazon, Walmart, CVS",Hybrid,Scientific,Strong,"Dr. Mercola produces tablets and supplements, aligning with Natoli's offerings.",High,Research and outreach
+Nutricap Labs,"Nutraceuticals, dietary supplements",None,CDMO,Scientific,Strong,"Nutricap Labs compresses powders into tablets, aligning with Natoli's offerings.",High,Research and outreach

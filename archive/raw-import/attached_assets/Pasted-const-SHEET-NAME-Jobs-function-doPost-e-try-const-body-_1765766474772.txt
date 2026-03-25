@@ -1,0 +1,118 @@
+const SHEET_NAME = "Jobs";
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents || "{}");
+    const action = body.action;
+
+    if (!action) return json({ ok: false, error: "Missing action" });
+
+    if (action === "create") return createJob(body.data || {});
+    if (action === "list") return listJobs();
+    if (action === "update") return updateJob(body.id, body.data || {});
+    if (action === "delete") return deleteJob(body.id);
+
+    return json({ ok: false, error: "Unknown action: " + action });
+  } catch (err) {
+    return json({ ok: false, error: String(err) });
+  }
+}
+
+function createJob(data) {
+  const sh = getSheet_();
+  const now = new Date().toISOString();
+  const id = "job_" + Utilities.getUuid();
+
+  const row = [
+    id, now, now,
+    data.company || "",
+    data.title || "",
+    data.link || "",
+    data.status || "Interested",
+    data.contactName || "",
+    data.email || "",
+    data.phone || "",
+    data.location || "",
+    data.salaryRange || "",
+    data.nextStep || "",
+    data.nextStepDate || "",
+    data.notes || "",
+    data.source || ""
+  ];
+
+  sh.appendRow(row);
+  return json({ ok: true, id });
+}
+
+function listJobs() {
+  const sh = getSheet_();
+  const values = sh.getDataRange().getValues();
+  if (values.length < 2) return json({ ok: true, jobs: [] });
+
+  const headers = values[0];
+  const rows = values.slice(1);
+
+  const jobs = rows
+    .filter(r => r[0])
+    .map(r => {
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = r[i]);
+      return obj;
+    })
+    .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+
+  return json({ ok: true, jobs });
+}
+
+function updateJob(id, data) {
+  if (!id) return json({ ok: false, error: "Missing id" });
+
+  const sh = getSheet_();
+  const values = sh.getDataRange().getValues();
+  const headers = values[0];
+
+  const idCol = 0;
+  const rowIndex = values.findIndex((r, i) => i > 0 && r[idCol] === id);
+  if (rowIndex === -1) return json({ ok: false, error: "Job not found: " + id });
+
+  const updatedAtIndex = headers.indexOf("updatedAt");
+  const now = new Date().toISOString();
+
+  const row = values[rowIndex];
+  row[updatedAtIndex] = now;
+
+  Object.keys(data).forEach(key => {
+    const idx = headers.indexOf(key);
+    if (idx !== -1) row[idx] = data[key];
+  });
+
+  sh.getRange(rowIndex + 1, 1, 1, headers.length).setValues([row]);
+  return json({ ok: true });
+}
+
+function deleteJob(id) {
+  if (!id) return json({ ok: false, error: "Missing id" });
+
+  const sh = getSheet_();
+  const values = sh.getDataRange().getValues();
+  const idCol = 0;
+
+  const rowIndex = values.findIndex((r, i) => i > 0 && r[idCol] === id);
+  if (rowIndex === -1) return json({ ok: false, error: "Job not found: " + id });
+
+  sh.deleteRow(rowIndex + 1);
+  return json({ ok: true });
+}
+
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_NAME);
+  if (!sh) throw new Error("Missing sheet tab: " + SHEET_NAME);
+  return sh;
+}
+
+function json(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}

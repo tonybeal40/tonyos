@@ -1,0 +1,104 @@
+import csv
+from collections import defaultdict
+
+INPUT = "apollo_export.csv"
+OUTPUT = "output_natoli_sales_direction.csv"
+
+FINAL_COLUMNS = [
+    "First Name","Last Name","Title","Company Name","Email","Seniority","Departments",
+    "Corporate Phone","Employee count","Person Linkedin Url","Website","Company Linkedin Url",
+    "City","State","Country","Company Address","Company City","Company State","Company Country",
+    "Company Phone","Annual Revenue",
+    "Natoli Fit Tier (1 / 2 / 3)",
+    "Compaction Confidence",
+    "Tooling Exposure",
+    "Why This Account Matters",
+    "Natoli Context",
+    "Story Context",
+    "Discovery Needed",
+    "Employee Relevance Tier (A / B / C)",
+    "Industry_Normalized_Natoli"
+]
+
+TIER_A_KEYWORDS = [
+    "director","vp","head","plant","manufacturing","operations","engineering manager"
+]
+TIER_B_KEYWORDS = [
+    "engineer","process","ms&t","scientist","formulation","quality","r&d"
+]
+
+def employee_relevance(title):
+    t = (title or "").lower()
+    if any(k in t for k in TIER_A_KEYWORDS):
+        return "A"
+    if any(k in t for k in TIER_B_KEYWORDS):
+        return "B"
+    return "C"
+
+def normalize_industry(raw):
+    if not raw:
+        return "Industry Unclear – Discovery Required"
+    r = raw.lower()
+    if any(x in r for x in ["pharma","pharmaceutical","solid dose","tablet"]):
+        return "Solid-Dose Pharmaceutical Manufacturing"
+    if any(x in r for x in ["nutra","supplement","vitamin"]):
+        return "Nutraceutical / Dietary Supplements"
+    if any(x in r for x in ["chemical","powder","catalyst"]):
+        return "Specialty Chemicals / Powder Processing"
+    return "Industry Unclear – Discovery Required"
+
+def base_tier(industry):
+    if industry == "Solid-Dose Pharmaceutical Manufacturing":
+        return 1
+    if industry != "Industry Unclear – Discovery Required":
+        return 2
+    return 3
+
+companies = defaultdict(list)
+
+with open(INPUT, newline="", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    rows = list(reader)
+
+for r in rows:
+    companies[r["Company Name"]].append(r)
+
+final_rows = []
+
+for company, people in companies.items():
+    industry = normalize_industry(people[0].get("Industry",""))
+    tier = base_tier(industry)
+
+    a_count = sum(1 for p in people if employee_relevance(p.get("Title")) == "A")
+    if a_count >= 2:
+        tier = max(1, tier - 1)
+
+    emp_count = int(people[0].get("Employee count","0") or 0)
+    tooling = "High" if emp_count >= 500 else "Medium" if emp_count >= 150 else "Low"
+
+    compaction = (
+        "Confirmed" if tier == 1 else
+        "Likely" if tier == 2 else
+        "Unclear"
+    )
+
+    for p in people:
+        out = {c: p.get(c,"Unknown") for c in FINAL_COLUMNS}
+        out["Natoli Fit Tier (1 / 2 / 3)"] = tier
+        out["Industry_Normalized_Natoli"] = industry
+        out["Compaction Confidence"] = compaction
+        out["Tooling Exposure"] = tooling
+        out["Employee Relevance Tier (A / B / C)"] = employee_relevance(p.get("Title"))
+        out["Why This Account Matters"] = "Manufacturing scale and compaction exposure directly affect tooling wear and press uptime."
+        out["Natoli Context"] = "This manufacturing environment involves repetitive mechanical forming under load, where tooling geometry, wear, and consistency are critical."
+        out["Story Context"] = "As scale and formulation variability increase, sensitivity to tooling performance compounds over time."
+        out["Discovery Needed"] = "Press ownership model; tooling lifecycle strategy; in-house vs outsourced manufacturing"
+
+        final_rows.append(out)
+
+with open(OUTPUT,"w",newline="",encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=FINAL_COLUMNS)
+    writer.writeheader()
+    writer.writerows(final_rows)
+
+print("SUCCESS:", len(final_rows), "rows written")

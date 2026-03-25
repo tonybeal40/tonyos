@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchasing Command Center | TonyOS</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --bg-card: #1a1f2e;
+      --border-color: #374151;
+      --text-primary: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-blue: #3b82f6;
+      --accent-pink: #ec4899;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+    
+    .top-nav {
+      background: linear-gradient(135deg, #1a1f2e 0%, #0f172a 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo h1 { font-size: 1.5rem; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-actions { display: flex; gap: 12px; }
+    
+    .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: white; }
+    .btn-green { background: linear-gradient(135deg, var(--accent-green), #059669); color: white; }
+    .btn-cyan { background: linear-gradient(135deg, var(--accent-cyan), #0891b2); color: white; }
+    .btn-orange { background: linear-gradient(135deg, var(--accent-orange), #d97706); color: white; }
+    .btn-red { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
+    .btn-blue { background: linear-gradient(135deg, var(--accent-blue), #2563eb); color: white; }
+    .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-purple { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: white; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .btn-sm { padding: 6px 12px; font-size: 0.75rem; }
+    .btn-lg { padding: 14px 28px; font-size: 1rem; }
+    
+    .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+    
+    .dashboard-header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
+      border-radius: 16px;
+      border: 1px solid var(--accent-green);
+      margin-bottom: 30px;
+    }
+    .dashboard-header h2 { font-size: 2rem; margin-bottom: 12px; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dashboard-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+    
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .quick-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quick-action:hover { border-color: var(--accent-green); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(16,185,129,0.2); }
+    .quick-action .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .quick-action h4 { margin-bottom: 6px; }
+    .quick-action p { font-size: 0.8rem; color: var(--text-muted); }
+    
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg-card); padding: 6px; border-radius: 12px; flex-wrap: wrap; }
+    .tab { padding: 12px 20px; background: transparent; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); transition: all 0.2s; }
+    .tab:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .tab.active { background: var(--accent-green); color: white; }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .card-title .icon { font-size: 1.4rem; }
+    
+    .template-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .template-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    .template-card:hover { border-color: var(--accent-cyan); transform: translateY(-2px); }
+    .template-card h4 { color: var(--accent-cyan); margin-bottom: 8px; }
+    .template-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+    .template-card .meta { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; }
+    .template-card .actions { display: flex; gap: 8px; }
+    
+    .csv-dropzone {
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      padding: 60px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 24px;
+    }
+    .csv-dropzone:hover, .csv-dropzone.drag-over { border-color: var(--accent-cyan); background: rgba(6,182,212,0.1); }
+    .csv-dropzone .icon { font-size: 4rem; margin-bottom: 16px; }
+    .csv-dropzone h3 { margin-bottom: 8px; }
+    .csv-dropzone p { color: var(--text-muted); }
+    
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .data-table th { background: var(--bg-tertiary); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; position: sticky; top: 0; }
+    .data-table tr:hover { background: rgba(139,92,246,0.05); }
+    .table-scroll { max-height: 400px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+    
+    .workflow-list { display: flex; flex-direction: column; gap: 12px; }
+    .workflow-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .workflow-item:hover { border-color: var(--accent-purple); }
+    .workflow-item .info h4 { margin-bottom: 4px; }
+    .workflow-item .info p { font-size: 0.85rem; color: var(--text-muted); }
+    .workflow-item .steps { font-size: 0.8rem; color: var(--accent-cyan); }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg-tertiary); border-radius: 12px; padding: 20px; text-align: center; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; }
+    .stat-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    
+    .netlify-box { background: linear-gradient(135deg, rgba(0,173,181,0.1), rgba(16,185,129,0.1)); border: 2px solid var(--accent-cyan); border-radius: 16px; padding: 40px; text-align: center; }
+    .netlify-box h3 { color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 12px; }
+    .netlify-box p { color: var(--text-muted); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    
+    .toast { position: fixed; bottom: 24px; right: 24px; background: linear-gradient(135deg, var(--accent-green), #059669); color: white; padding: 14px 28px; border-radius: 10px; font-weight: 600; z-index: 9999; animation: slideIn 0.3s ease; box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+    .badge-green { background: rgba(16,185,129,0.2); color: #10b981; }
+    .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; }
+    .badge-blue { background: rgba(59,130,246,0.2); color: #3b82f6; }
+    .badge-purple { background: rgba(139,92,246,0.2); color: #8b5cf6; }
+    
+    .filter-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-row input, .filter-row select { padding: 10px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 0.85rem; }
+    .filter-row input:focus, .filter-row select:focus { outline: none; border-color: var(--accent-green); }
+    
+    @media (max-width: 768px) {
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-header h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="logo">
+      <h1>Purchasing Command Center</h1>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-blue" onclick="showHowToUse()">? How to Use</button>
+      <button class="btn btn-purple" onclick="showSavedData()">📂 Saved Files</button>
+      <a href="/" class="btn btn-secondary">← TonyOS</a>
+      <button class="btn btn-cyan" onclick="deployNetlify()">🚀 Netlify</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <h2>Purchasing Operations Platform</h2>
+      <p>Template library, CSV intelligence, workflow automation, and document control. Built for serious purchasing operations.</p>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-action" onclick="switchTab('templates')">
+        <div class="icon">📋</div>
+        <h4>Template Library</h4>
+        <p>RFQ, PO, Vendor docs</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('csv')">
+        <div class="icon">📊</div>
+        <h4>CSV Intelligence</h4>
+        <p>Upload & analyze data</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('workflows')">
+        <div class="icon">⚡</div>
+        <h4>Workflows</h4>
+        <p>Guided processes</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('dashboard')">
+        <div class="icon">📈</div>
+        <h4>Dashboard</h4>
+        <p>Operations overview</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('docs')">
+        <div class="icon">📁</div>
+        <h4>Document Control</h4>
+        <p>Version tracking</p>
+      </div>
+      <div class="quick-action" onclick="deployNetlify()">
+        <div class="icon">🚀</div>
+        <h4>Deploy to Netlify</h4>
+        <p>Share with team</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('templates')">📋 Templates</div>
+      <div class="tab" onclick="switchTab('csv')">📊 CSV Hub</div>
+      <div class="tab" onclick="switchTab('workflows')">⚡ Workflows</div>
+      <div class="tab" onclick="switchTab('dashboard')">📈 Dashboard</div>
+      <div class="tab" onclick="switchTab('docs')">📁 Documents</div>
+      <div class="tab" onclick="switchTab('deploy')">🚀 Deploy</div>
+    </div>
+
+    <div id="templatesTab" class="tab-content active">
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> Purchasing Template Library</div>
+        <div class="filter-row">
+          <input type="text" id="templateSearch" placeholder="Search templates..." onkeyup="filterTemplates()">
+          <select id="templateCategory" onchange="filterTemplates()">
+            <option value="all">All Categories</option>
+            <option value="rfq">RFQ / Quotes</option>
+            <option value="po">Purchase Orders</option>
+            <option value="vendor">Vendor Management</option>
+            <option value="compliance">Compliance</option>
+            <option value="audit">Audits</option>
+          </select>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </div>
+
+    <div id="csvTab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> CSV Intelligence Hub</div>
+        <div class="csv-dropzone" id="dropzone" onclick="document.getElementById('csvInput').click()">
+          <div class="icon">📁</div>
+          <h3>Drop CSV file here</h3>
+          <p>or click to browse</p>
+          <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleCSV(event)">
+        </div>
+        <div id="csvPreview" style="display:none;">
+          <div class="stats-grid" id="csvStats"></div>
+          <div class="filter-row">
+            <input type="text" id="csvSearch" placeholder="Search data..." onkeyup="filterCSVData()">
+            <button class="btn btn-green btn-sm" onclick="exportFilteredCSV()">📥 Export Filtered</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearCSV()">Clear Data</button>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="csvTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="workflowsTab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> Purchasing Workflows</div>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Step-by-step guided processes for common purchasing operations.</p>
+        <div class="workflow-list" id="workflowList"></div>
+      </div>
+    </div>
+
+    <div id="dashboardTab" class="tab-content">
+      <div id="dashboardContent"></div>
+      
+      <div class="card" style="margin-top: 24px;">
+        <div class="card-title"><span class="icon">📊</span> Excel Dashboard Generator</div>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Generate populated Excel dashboards with live data. Works offline - no server needed.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div class="dashboard-gen-card" onclick="generateExcelDashboard('purchasing')" style="background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">📦</div>
+            <h4 style="color: var(--accent-cyan); margin-bottom: 8px;">Purchasing Dashboard</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Full procurement analytics with vendor spend, order status, KPIs, and 50+ sample orders</p>
+          </div>
+          
+          <div class="dashboard-gen-card" onclick="generateExcelDashboard('vendor')" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05)); border: 1px solid var(--accent-purple); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">🏢</div>
+            <h4 style="color: var(--accent-purple); margin-bottom: 8px;">Vendor Spend Analytics</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Vendor performance scoring, spend breakdown, on-time delivery, and risk levels</p>
+          </div>
+          
+          <div class="dashboard-gen-card" onclick="generateExcelDashboard('inventory')" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">📋</div>
+            <h4 style="color: var(--accent-green); margin-bottom: 8px;">Inventory Dashboard</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Stock levels, low-stock alerts, velocity tracking, and reorder points</p>
+          </div>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 20px;">
+          <h4 style="color: var(--accent-orange); margin-bottom: 12px;">💡 How It Works</h4>
+          <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 20px;">
+            <li><strong>Data Sheet</strong> - Raw data in Excel table format (auto-refreshes charts)</li>
+            <li><strong>Dashboard Sheet</strong> - KPIs, summaries, and analytics</li>
+            <li><strong>Formulas</strong> - All calculations built-in (SUM, AVERAGE, COUNTIF)</li>
+            <li><strong>Ready to Customize</strong> - Add your own data, formulas update automatically</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="docsTab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span class="icon">📁</span> Document Control Center</div>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Track document versions, updates, and compliance status.</p>
+        <div class="table-scroll">
+          <table class="data-table" id="docsTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="deployTab" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span class="icon">🚀</span> Deploy to Netlify - Step by Step</div>
+        <div class="netlify-box">
+          <h3>Get Your Live URL in 5 Minutes</h3>
+          <p style="margin-bottom: 20px;">Follow these steps to deploy this Purchasing Command Center to Netlify for free.</p>
+          <button class="btn btn-lg btn-cyan" onclick="deployNetlify()">🚀 Step 1: Download for Netlify</button>
+        </div>
+        
+        <div style="margin-top: 30px;">
+          <h3 style="margin-bottom: 20px; color: var(--accent-green);">📋 Complete Deployment Instructions</h3>
+          
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 12px;">Step 1: Download Your Files</h4>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+              Click the "Download for Netlify" button above. This downloads a ZIP file containing:<br>
+              • <strong>index.html</strong> - The complete Purchasing Command Center<br>
+              • All functionality works offline with no server needed
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 12px;">Step 2: Go to Netlify Drop</h4>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+              1. Open your browser and go to: <strong style="color: var(--accent-green);">netlify.com/drop</strong><br>
+              2. You don't need to create an account (but you can to save your site)<br>
+              3. You'll see a big box that says "Drag and drop your site output folder here"
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 12px;">Step 3: Drag & Drop</h4>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+              1. Unzip the downloaded file<br>
+              2. Drag the entire folder (or just the index.html) onto the Netlify Drop box<br>
+              3. Wait 10-30 seconds for upload
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 12px;">Step 4: Get Your Live URL</h4>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+              1. Netlify gives you a random URL like: <strong style="color: var(--accent-orange);">random-name-12345.netlify.app</strong><br>
+              2. Click the link to see your live site!<br>
+              3. Share this URL with your team - they can access it from anywhere
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+            <h4 style="color: var(--accent-cyan); margin-bottom: 12px;">Step 5: (Optional) Customize Your URL</h4>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+              1. Create a free Netlify account to keep your site<br>
+              2. Go to Site Settings → Domain Management<br>
+              3. Click "Options" → "Edit site name"<br>
+              4. Change to something memorable: <strong style="color: var(--accent-green);">yourcompany-purchasing.netlify.app</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-title"><span class="icon">⚖️</span> Template22.com Comparison</div>
+        
+        <div style="margin-bottom: 30px;">
+          <h3 style="margin-bottom: 16px; color: var(--accent-orange);">What Template22.com Has That We Don't</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            
+            <div style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border: 1px solid var(--accent-red); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-red); margin-bottom: 10px;">🎨 Full Excel Styling</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Template22 uses pre-designed Excel files with:<br>
+                • Cell background colors (headers, sections)<br>
+                • Professional borders and gridlines<br>
+                • Custom fonts and text formatting<br>
+                • Company logos embedded in headers<br>
+                • Conditional formatting (color-coded cells)
+              </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border: 1px solid var(--accent-red); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-red); margin-bottom: 10px;">📊 Advanced Charts</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Their premium templates include:<br>
+                • Embedded Excel charts and graphs<br>
+                • Pivot tables pre-configured<br>
+                • Dynamic dashboards within Excel<br>
+                • Sparklines for quick trends
+              </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border: 1px solid var(--accent-red); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-red); margin-bottom: 10px;">🔐 Protected Sheets</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Template22 offers:<br>
+                • Locked formula cells<br>
+                • Password-protected sheets<br>
+                • Data validation dropdowns<br>
+                • VBA macros for automation
+              </p>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+          <h3 style="margin-bottom: 16px; color: var(--accent-green);">What WE Have That Template22 Doesn't</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            
+            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-green); margin-bottom: 10px;">🌐 Live Web Dashboard</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Template22 = static files only. We have:<br>
+                • Beautiful interactive web interface<br>
+                • Real-time KPI cards and charts<br>
+                • Gantt timeline visualization<br>
+                • Risk register with live status
+              </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-green); margin-bottom: 10px;">📤 CSV Intelligence</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Upload any CSV and instantly get:<br>
+                • Auto-analysis of your data<br>
+                • Column detection and statistics<br>
+                • Export to Excel with structure<br>
+                • Works with YOUR data, not just templates
+              </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-green); margin-bottom: 10px;">⚡ Guided Workflows</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Step-by-step process guidance:<br>
+                • New Vendor Approval (8 steps)<br>
+                • RFQ to PO Process (6 steps)<br>
+                • Emergency Purchase (4 steps)<br>
+                • Interactive checklist tracking
+              </p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px;">
+              <h4 style="color: var(--accent-green); margin-bottom: 10px;">💰 Completely Free</h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                Template22 charges $15-50 per template.<br>
+                Our platform is:<br>
+                • 100% free to use<br>
+                • Free to deploy on Netlify<br>
+                • No subscriptions or hidden fees
+              </p>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div>
+          <h3 style="margin-bottom: 16px; color: var(--accent-purple);">🚀 How We Could Match Template22 Styling</h3>
+          <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 24px;">
+            <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 16px;">
+              To get the same Excel styling as Template22.com, we would need one of these approaches:
+            </p>
+            <div style="display: grid; gap: 16px;">
+              <div style="background: var(--bg-card); border-left: 4px solid var(--accent-cyan); padding: 16px; border-radius: 0 8px 8px 0;">
+                <h4 style="color: var(--accent-cyan); margin-bottom: 8px;">Option 1: Pre-Made Template Files</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                  Create professionally-styled .xlsx templates in Excel/Google Sheets, then host them as downloadable files. Users get beautifully formatted templates but can't customize the structure.
+                </p>
+              </div>
+              <div style="background: var(--bg-card); border-left: 4px solid var(--accent-orange); padding: 16px; border-radius: 0 8px 8px 0;">
+                <h4 style="color: var(--accent-orange); margin-bottom: 8px;">Option 2: Server-Side Generation</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                  Use Python libraries (openpyxl, xlsxwriter) on a backend server to generate fully-styled Excel files with colors, borders, and formatting. Requires a running server (not Netlify static).
+                </p>
+              </div>
+              <div style="background: var(--bg-card); border-left: 4px solid var(--accent-green); padding: 16px; border-radius: 0 8px 8px 0;">
+                <h4 style="color: var(--accent-green); margin-bottom: 8px;">Option 3: ExcelJS Library</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                  Switch from SheetJS to ExcelJS (larger library, ~500KB). ExcelJS supports full cell styling including colors, borders, fonts, and images. Would work in browser but increases page load time.
+                </p>
+              </div>
+              <div style="background: var(--bg-card); border-left: 4px solid var(--accent-purple); padding: 16px; border-radius: 0 8px 8px 0;">
+                <h4 style="color: var(--accent-purple); margin-bottom: 8px;">Current Approach (What We Do)</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                  We use SheetJS (lightweight, fast) with Unicode box-drawing characters for visual structure. Templates are functional with formulas, proper column widths, and clear sections - just without background colors.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-title"><span class="icon">📦</span> Quick Actions</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div class="quick-action" onclick="exportAllTemplates()">
+            <div class="icon">📦</div>
+            <h4>Export All Templates</h4>
+            <p>Download template pack</p>
+          </div>
+          <div class="quick-action" onclick="exportWorkflowGuide()">
+            <div class="icon">📖</div>
+            <h4>Workflow Guide</h4>
+            <p>Process documentation</p>
+          </div>
+          <div class="quick-action" onclick="copyShareLink()">
+            <div class="icon">🔗</div>
+            <h4>Copy Share Link</h4>
+            <p>Share current view</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Template Data
+const templates = [
+  { id: 1, name: 'Request for Quote (RFQ)', category: 'rfq', desc: 'Standard RFQ template for soliciting vendor quotes', version: '2.1', updated: '2026-01-15', status: 'active' },
+  { id: 2, name: 'Purchase Order Standard', category: 'po', desc: 'Standard purchase order with terms and conditions', version: '3.0', updated: '2026-01-20', status: 'active' },
+  { id: 3, name: 'Vendor Onboarding Checklist', category: 'vendor', desc: 'Complete checklist for new vendor setup', version: '1.5', updated: '2026-01-10', status: 'active' },
+  { id: 4, name: 'Supplier Evaluation Form', category: 'vendor', desc: 'Scorecard for evaluating supplier performance', version: '2.0', updated: '2026-01-18', status: 'active' },
+  { id: 5, name: 'Compliance Audit Checklist', category: 'compliance', desc: 'Regulatory compliance verification checklist', version: '1.2', updated: '2025-12-20', status: 'active' },
+  { id: 6, name: 'Vendor Risk Assessment', category: 'vendor', desc: 'Risk evaluation template for critical suppliers', version: '1.0', updated: '2026-01-05', status: 'active' },
+  { id: 7, name: 'Quote Comparison Matrix', category: 'rfq', desc: 'Side-by-side vendor quote comparison tool', version: '1.3', updated: '2026-01-12', status: 'active' },
+  { id: 8, name: 'Emergency PO Request', category: 'po', desc: 'Expedited purchase order for urgent needs', version: '1.1', updated: '2025-11-30', status: 'active' },
+  { id: 9, name: 'Supplier Quality Audit', category: 'audit', desc: 'On-site quality assessment template', version: '2.2', updated: '2026-01-08', status: 'active' },
+  { id: 10, name: 'Contract Review Checklist', category: 'compliance', desc: 'Legal and commercial contract review guide', version: '1.4', updated: '2025-12-15', status: 'active' },
+  { id: 11, name: 'Price Negotiation Tracker', category: 'rfq', desc: 'Track negotiation rounds and outcomes', version: '1.0', updated: '2026-01-22', status: 'active' },
+  { id: 12, name: 'Blanket PO Agreement', category: 'po', desc: 'Long-term blanket purchase order template', version: '1.2', updated: '2026-01-03', status: 'active' }
+];
+
+// Workflow Data
+const workflows = [
+  { id: 1, name: 'New Vendor Approval', steps: 8, desc: 'Complete vendor qualification and approval process', category: 'vendor' },
+  { id: 2, name: 'RFQ to PO Process', steps: 6, desc: 'From quote request to purchase order issuance', category: 'procurement' },
+  { id: 3, name: 'Emergency Purchase', steps: 4, desc: 'Expedited approval for urgent purchases', category: 'procurement' },
+  { id: 4, name: 'Supplier Performance Review', steps: 5, desc: 'Quarterly supplier evaluation workflow', category: 'vendor' },
+  { id: 5, name: 'Contract Renewal', steps: 7, desc: 'End-to-end contract renewal process', category: 'compliance' },
+  { id: 6, name: 'Quality Issue Resolution', steps: 6, desc: 'NCR and corrective action workflow', category: 'quality' }
+];
+
+// Document Data
+const documents = [
+  { id: 1, name: 'Purchasing Policy Manual', version: '4.2', updated: '2026-01-15', owner: 'Procurement', status: 'Current' },
+  { id: 2, name: 'Approved Vendor List', version: '2026.01', updated: '2026-01-20', owner: 'Quality', status: 'Current' },
+  { id: 3, name: 'Delegation of Authority', version: '3.0', updated: '2025-12-01', owner: 'Finance', status: 'Current' },
+  { id: 4, name: 'Ethics & Compliance Guide', version: '2.1', updated: '2025-11-15', owner: 'Legal', status: 'Current' },
+  { id: 5, name: 'Supplier Terms Template', version: '1.8', updated: '2026-01-10', owner: 'Legal', status: 'Current' }
+];
+
+let csvData = [];
+let csvHeaders = [];
+
+function init() {
+  renderTemplates();
+  renderWorkflows();
+  renderDocuments();
+  renderDashboard();
+  setupDropzone();
+}
+
+function renderTemplates() {
+  const search = document.getElementById('templateSearch')?.value?.toLowerCase() || '';
+  const category = document.getElementById('templateCategory')?.value || 'all';
+  
+  let filtered = templates;
+  if (search) filtered = filtered.filter(t => t.name.toLowerCase().includes(search) || t.desc.toLowerCase().includes(search));
+  if (category !== 'all') filtered = filtered.filter(t => t.category === category);
+  
+  document.getElementById('templateGrid').innerHTML = filtered.map(t => `
+    <div class="template-card">
+      <h4>${t.name}</h4>
+      <p>${t.desc}</p>
+      <div class="meta">Version ${t.version} | Updated ${t.updated}</div>
+      <div class="actions">
+        <button class="btn btn-green btn-sm" onclick="downloadTemplate('${t.name}')">📥 Download</button>
+        <button class="btn btn-secondary btn-sm" onclick="previewTemplate('${t.name}')">👁 Preview</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterTemplates() { renderTemplates(); }
+
+function renderWorkflows() {
+  document.getElementById('workflowList').innerHTML = workflows.map(w => `
+    <div class="workflow-item">
+      <div class="info">
+        <h4>${w.name}</h4>
+        <p>${w.desc}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="steps">${w.steps} steps</div>
+        <button class="btn btn-green btn-sm" onclick="startWorkflow('${w.name}')">▶ Start</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDocuments() {
+  document.getElementById('docsTable').innerHTML = `
+    <thead><tr><th>Document</th><th>Version</th><th>Last Updated</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${documents.map(d => `
+      <tr>
+        <td><strong>${d.name}</strong></td>
+        <td>${d.version}</td>
+        <td>${d.updated}</td>
+        <td>${d.owner}</td>
+        <td><span class="badge badge-green">${d.status}</span></td>
+        <td><button class="btn btn-secondary btn-sm" onclick="viewDocument('${d.name}')">View</button></td>
+      </tr>
+    `).join('')}</tbody>
+  `;
+}
+
+function renderDashboard() {
+  const dashboardData = {
+    totalProjects: 12,
+    onTrack: 6,
+    atRisk: 3,
+    delayed: 3,
+    overallProgress: 65,
+    openRisks: { high: 3, med: 4, low: 2 },
+    openIssues: 7,
+    budgetVariance: -15400
+  };
+  
+  const projects = [
+    { name: 'Vendor Qualification', phase: 'Execution', milestone: 'Task 5', planned: 'May 3', forecast: 'May 8', status: 'Failed' },
+    { name: 'PO Automation', phase: 'Phases', milestone: 'Design Review', planned: 'Apr 22', forecast: 'Apr 29', status: 'Failed' },
+    { name: 'Supplier Portal', phase: 'Launch', milestone: 'Launch Readiness', planned: 'May 10', forecast: 'Pending', status: 'Pending' },
+    { name: 'Contract Renewal', phase: 'Design Rev', milestone: 'Design Review', planned: 'Apr 22', forecast: '7', status: 'Delay' }
+  ];
+  
+  const risks = [
+    { id: 'PR 15', project: 'Project B', type: 'Risk', severity: 'High', owner: 'Ahmed', due: 'May 1', status: 'Open' },
+    { id: 'IS-09', project: 'Project D', type: 'Issue', severity: 'Medium', owner: 'Emily', due: 'May 2', status: 'Monitoring' },
+    { id: 'PR 12', project: 'Project E', type: 'Risk', severity: 'Low', owner: 'Thomas', due: 'May 3', status: 'Monitoring' }
+  ];
+  
+  document.getElementById('dashboardContent').innerHTML = `
+    <style>
+      .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
+      .kpi-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center; position: relative; overflow: hidden; transition: all 0.3s; }
+      .kpi-box:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+      .kpi-box.gradient-cyan { background: linear-gradient(135deg, rgba(6,182,212,0.3), rgba(6,182,212,0.1)); border-color: var(--accent-cyan); }
+      .kpi-box.gradient-green { background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.1)); border-color: var(--accent-green); }
+      .kpi-box.gradient-orange { background: linear-gradient(135deg, rgba(245,158,11,0.3), rgba(245,158,11,0.1)); border-color: var(--accent-orange); }
+      .kpi-box.gradient-red { background: linear-gradient(135deg, rgba(239,68,68,0.3), rgba(239,68,68,0.1)); border-color: var(--accent-red); }
+      .kpi-box.gradient-purple { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(139,92,246,0.1)); border-color: var(--accent-purple); }
+      .kpi-box.gradient-blue { background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.1)); border-color: var(--accent-blue); }
+      .kpi-box .icon { font-size: 1.8rem; margin-bottom: 8px; }
+      .kpi-box .value { font-size: 2.2rem; font-weight: 800; }
+      .kpi-box .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+      .kpi-box .trend { font-size: 0.75rem; margin-top: 4px; }
+      .kpi-box .check { color: var(--accent-green); }
+      .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+      .dashboard-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+      .dashboard-card h4 { color: var(--accent-cyan); margin-bottom: 16px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+      .donut-container { display: flex; align-items: center; gap: 20px; }
+      .donut { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--accent-green) 0% 50%, var(--accent-orange) 50% 75%, var(--accent-red) 75% 100%); display: flex; align-items: center; justify-content: center; position: relative; }
+      .donut::after { content: ''; position: absolute; width: 60px; height: 60px; background: var(--bg-card); border-radius: 50%; }
+      .donut-center { position: absolute; z-index: 1; text-align: center; }
+      .donut-center .num { font-size: 1.5rem; font-weight: 700; color: var(--accent-cyan); }
+      .donut-center .txt { font-size: 0.65rem; color: var(--text-muted); }
+      .legend { display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; }
+      .legend-item { display: flex; align-items: center; gap: 8px; }
+      .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+      .progress-chart { height: 120px; display: flex; align-items: flex-end; gap: 4px; padding: 10px 0; }
+      .progress-bar { flex: 1; background: linear-gradient(to top, var(--accent-green), var(--accent-cyan)); border-radius: 4px 4px 0 0; min-height: 20px; }
+      .milestone-bars { display: flex; flex-direction: column; gap: 8px; }
+      .milestone-row { display: flex; align-items: center; gap: 8px; }
+      .milestone-label { width: 60px; font-size: 0.7rem; color: var(--text-muted); }
+      .milestone-track { flex: 1; height: 16px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; display: flex; }
+      .milestone-segment { height: 100%; }
+      .gantt-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+      .gantt-table th { background: var(--bg-tertiary); padding: 10px 8px; text-align: left; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.65rem; }
+      .gantt-table td { padding: 10px 8px; border-bottom: 1px solid var(--border-color); }
+      .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+      .status-failed { background: var(--accent-red); color: white; }
+      .status-pending { background: var(--accent-orange); color: white; }
+      .status-delay { background: #fbbf24; color: #1a1a2e; }
+      .status-open { background: var(--accent-red); color: white; }
+      .status-monitoring { background: var(--accent-cyan); color: white; }
+      .severity-high { background: var(--accent-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+      .severity-medium { background: var(--accent-orange); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+      .severity-low { background: var(--accent-green); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+      .summary-list { list-style: none; padding: 0; margin: 0; }
+      .summary-list li { padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; }
+      .summary-list li:last-child { border-bottom: none; }
+      .progress-ring { width: 80px; height: 80px; }
+      @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+    </style>
+    
+    <div class="kpi-row">
+      <div class="kpi-box gradient-cyan">
+        <div class="icon">📊</div>
+        <div class="value" style="color: var(--accent-cyan);">${dashboardData.totalProjects}</div>
+        <div class="label">Total Projects</div>
+        <div class="trend" style="color: var(--accent-green);">↑ 2 this month</div>
+      </div>
+      <div class="kpi-box gradient-green">
+        <div class="icon">✅</div>
+        <div class="value" style="color: var(--accent-green);">${dashboardData.onTrack}</div>
+        <div class="label">On Track</div>
+        <div class="trend" style="color: var(--accent-green);">50% of portfolio</div>
+      </div>
+      <div class="kpi-box gradient-orange">
+        <div class="icon">⚠️</div>
+        <div class="value" style="color: var(--accent-orange);">${dashboardData.atRisk}</div>
+        <div class="label">At Risk</div>
+        <div class="trend" style="color: var(--accent-orange);">Needs attention</div>
+      </div>
+      <div class="kpi-box gradient-red">
+        <div class="icon">🚨</div>
+        <div class="value" style="color: var(--accent-red);">${dashboardData.delayed}</div>
+        <div class="label">Delayed</div>
+        <div class="trend" style="color: var(--accent-red);">Action required</div>
+      </div>
+      <div class="kpi-box gradient-blue">
+        <div class="icon">📈</div>
+        <div class="value" style="color: var(--accent-blue);">${dashboardData.overallProgress}%</div>
+        <div class="label">Overall Progress</div>
+        <div class="trend" style="color: var(--accent-green);">↑ 5% vs last week</div>
+      </div>
+      <div class="kpi-box gradient-orange">
+        <div class="icon">🎯</div>
+        <div class="value" style="color: var(--accent-orange);">${dashboardData.openRisks.high + dashboardData.openRisks.med + dashboardData.openRisks.low}</div>
+        <div class="label">Open Risks</div>
+        <div class="trend">${dashboardData.openRisks.high} High | ${dashboardData.openRisks.med} Med</div>
+      </div>
+      <div class="kpi-box gradient-purple">
+        <div class="icon">📋</div>
+        <div class="value" style="color: var(--accent-purple);">${dashboardData.openIssues}</div>
+        <div class="label">Open Issues</div>
+        <div class="trend" style="color: var(--accent-cyan);">2 critical</div>
+      </div>
+      <div class="kpi-box gradient-red">
+        <div class="icon">💰</div>
+        <div class="value" style="color: var(--accent-red);">-$${Math.abs(dashboardData.budgetVariance / 1000).toFixed(1)}K</div>
+        <div class="label">Budget Variance</div>
+        <div class="trend" style="color: var(--accent-red);">Over budget</div>
+      </div>
+    </div>
+    
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h4>📊 Portfolio Health Overview</h4>
+        <div class="donut-container">
+          <div class="donut">
+            <div class="donut-center">
+              <div class="num">${dashboardData.totalProjects}</div>
+              <div class="txt">Projects</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--accent-green);"></div> On Track <strong>50%</strong></div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--accent-orange);"></div> At Risk <strong>25%</strong></div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--accent-red);"></div> Delayed <strong>25%</strong></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h4>📈 Projects Progress vs Plan</h4>
+        <div class="progress-chart">
+          <div class="progress-bar" style="height: 40%;"></div>
+          <div class="progress-bar" style="height: 55%;"></div>
+          <div class="progress-bar" style="height: 70%;"></div>
+          <div class="progress-bar" style="height: 65%;"></div>
+          <div class="progress-bar" style="height: 80%;"></div>
+          <div class="progress-bar" style="height: 75%;"></div>
+          <div class="progress-bar" style="height: 85%;"></div>
+          <div class="progress-bar" style="height: 90%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-muted);">
+          <span>Week 16</span><span>Week 17</span><span>Week 18</span><span>Week 19</span><span>Week 20</span><span>Week 21</span><span>Week 22</span><span>Week 23</span>
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h4>🎯 Milestones & Deliverables</h4>
+        <div class="milestone-bars">
+          <div class="milestone-row"><div class="milestone-label">Project A</div><div class="milestone-track"><div class="milestone-segment" style="width: 80%; background: var(--accent-green);"></div><div class="milestone-segment" style="width: 15%; background: var(--accent-orange);"></div></div></div>
+          <div class="milestone-row"><div class="milestone-label">Project B</div><div class="milestone-track"><div class="milestone-segment" style="width: 60%; background: var(--accent-green);"></div><div class="milestone-segment" style="width: 30%; background: var(--accent-orange);"></div></div></div>
+          <div class="milestone-row"><div class="milestone-label">Project C</div><div class="milestone-track"><div class="milestone-segment" style="width: 90%; background: var(--accent-green);"></div></div></div>
+          <div class="milestone-row"><div class="milestone-label">Project D</div><div class="milestone-track"><div class="milestone-segment" style="width: 45%; background: var(--accent-green);"></div><div class="milestone-segment" style="width: 35%; background: var(--accent-orange);"></div></div></div>
+          <div class="milestone-row"><div class="milestone-label">Project E</div><div class="milestone-track"><div class="milestone-segment" style="width: 70%; background: var(--accent-green);"></div><div class="milestone-segment" style="width: 20%; background: var(--accent-cyan);"></div></div></div>
+        </div>
+        <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 0.7rem;">
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent-green);border-radius:2px;margin-right:4px;"></span>Completed</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent-orange);border-radius:2px;margin-right:4px;"></span>Pending</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent-cyan);border-radius:2px;margin-right:4px;"></span>Plan</span>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px;">
+      <div class="dashboard-card">
+        <h4>📅 Gantt Timeline</h4>
+        <table class="gantt-table">
+          <thead>
+            <tr><th>Project</th><th>Phase</th><th>Task / Milestone</th><th>Planned Date</th><th>Actual / Forecast</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${projects.map(p => `
+              <tr>
+                <td><strong>${p.name}</strong></td>
+                <td>${p.phase}</td>
+                <td>${p.milestone}</td>
+                <td>${p.planned}</td>
+                <td>${p.forecast}</td>
+                <td><span class="status-badge status-${p.status.toLowerCase()}">${p.status}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="dashboard-card">
+        <h4>📋 Management Summary</h4>
+        <ul class="summary-list">
+          <li><span style="color: var(--accent-green);">●</span> Key wins this week</li>
+          <li><span style="color: var(--accent-red);">●</span> Biggest risks</li>
+          <li><span style="color: var(--accent-orange);">●</span> Approvals / decision needs</li>
+          <li><span style="color: var(--accent-cyan);">●</span> Next week focus</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="dashboard-card">
+        <h4>⚠️ Top Delays / Exceptions</h4>
+        <table class="gantt-table">
+          <thead>
+            <tr><th>Project</th><th>Phase</th><th>Task / Milestone</th><th>Planned Date</th><th>Variance D</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Project B</td><td>Execution</td><td>Task 5</td><td>May 3</td><td style="color: var(--accent-red);">5</td><td><span class="status-badge status-failed">Defect</span></td></tr>
+            <tr><td>Project C</td><td>Design Rev</td><td>Design Review</td><td>Apr 22</td><td style="color: var(--accent-orange);">7</td><td><span class="status-badge status-delay">Delay</span></td></tr>
+            <tr><td>Project D</td><td>Launch</td><td>Launch Readiness</td><td>May 10</td><td>-</td><td><span class="status-badge status-pending">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="dashboard-card">
+        <h4>🚨 Risk & Issue Register Highlights</h4>
+        <table class="gantt-table">
+          <thead>
+            <tr><th>ID</th><th>Project</th><th>Type</th><th>Severity</th><th>Owner</th><th>Due Date</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${risks.map(r => `
+              <tr>
+                <td>${r.id}</td>
+                <td>${r.project}</td>
+                <td>${r.type}</td>
+                <td><span class="severity-${r.severity.toLowerCase()}">${r.severity}</span></td>
+                <td>${r.owner}</td>
+                <td>${r.due}</td>
+                <td><span class="status-badge status-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function setupDropzone() {
+  const dropzone = document.getElementById('dropzone');
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag-over'); handleCSV({ target: { files: e.dataTransfer.files } }); });
+}
+
+function handleCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const text = event.target.result;
+    const lines = text.split('\n').filter(l => l.trim());
+    csvHeaders = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+    csvData = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+      const row = {};
+      csvHeaders.forEach((h, i) => row[h] = values[i] || '');
+      return row;
+    });
+    
+    renderCSVPreview();
+    renderDashboard();
+    toast('CSV loaded: ' + csvData.length + ' records');
+  };
+  reader.readAsText(file);
+}
+
+function renderCSVPreview() {
+  document.getElementById('csvPreview').style.display = 'block';
+  document.getElementById('dropzone').style.display = 'none';
+  
+  document.getElementById('csvStats').innerHTML = `
+    <div class="stat-card"><div class="value" style="color:var(--accent-cyan)">${csvData.length}</div><div class="label">Total Rows</div></div>
+    <div class="stat-card"><div class="value" style="color:var(--accent-green)">${csvHeaders.length}</div><div class="label">Columns</div></div>
+  `;
+  
+  renderCSVTable(csvData);
+}
+
+function renderCSVTable(data) {
+  document.getElementById('csvTable').innerHTML = `
+    <thead><tr>${csvHeaders.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${data.slice(0, 100).map(row => `<tr>${csvHeaders.map(h => `<td>${row[h] || ''}</td>`).join('')}</tr>`).join('')}</tbody>
+  `;
+}
+
+function filterCSVData() {
+  const search = document.getElementById('csvSearch').value.toLowerCase();
+  const filtered = csvData.filter(row => Object.values(row).some(v => String(v).toLowerCase().includes(search)));
+  renderCSVTable(filtered);
+}
+
+function clearCSV() {
+  csvData = [];
+  csvHeaders = [];
+  document.getElementById('csvPreview').style.display = 'none';
+  document.getElementById('dropzone').style.display = 'block';
+  renderDashboard();
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  const tab = document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`);
+  if (tab) tab.classList.add('active');
+  const content = document.getElementById(tabName + 'Tab');
+  if (content) content.classList.add('active');
+}
+
+function downloadTemplate(name) {
+  const template = templates.find(t => t.name === name);
+  if (!template) { toast('Template not found'); return; }
+  
+  const wb = XLSX.utils.book_new();
+  let ws;
+  const today = new Date().toLocaleDateString();
+  const companyName = 'YOUR COMPANY NAME';
+  
+  if (name.includes('RFQ') || name.includes('Request for Quote')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', '', ''],
+      ['', companyName, '', '', '', '', ''],
+      ['', 'REQUEST FOR QUOTE (RFQ)', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'RFQ Number:', 'RFQ-2026-001', '', 'Date:', today, ''],
+      ['', 'Project Name:', '', '', 'Due Date:', '', ''],
+      ['', 'Buyer Name:', '', '', 'Contact Email:', '', ''],
+      ['', 'Department:', '', '', 'Phone:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'VENDOR INFORMATION', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Company Name:', '', '', '', '', ''],
+      ['', 'Contact Person:', '', '', 'Title:', '', ''],
+      ['', 'Email:', '', '', 'Phone:', '', ''],
+      ['', 'Address:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'ITEMS REQUESTED', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Line #', 'Part Number', 'Description', 'Qty', 'Unit', 'Target Price', 'Lead Time'],
+      ['', '------', '------------', '-----------------------------------', '-----', '-----', '-------------', '---------'],
+      ['', 1, '', '', '', 'EA', '', ''],
+      ['', 2, '', '', '', 'EA', '', ''],
+      ['', 3, '', '', '', 'EA', '', ''],
+      ['', 4, '', '', '', 'EA', '', ''],
+      ['', 5, '', '', '', 'EA', '', ''],
+      ['', 6, '', '', '', 'EA', '', ''],
+      ['', 7, '', '', '', 'EA', '', ''],
+      ['', 8, '', '', '', 'EA', '', ''],
+      ['', 9, '', '', '', 'EA', '', ''],
+      ['', 10, '', '', '', 'EA', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'TERMS & CONDITIONS', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Payment Terms:', 'Net 30 Days', '', '', '', ''],
+      ['', 'Delivery Terms:', 'FOB Destination', '', '', '', ''],
+      ['', 'Quote Valid For:', '30 Days', '', '', '', ''],
+      ['', 'Shipping Method:', 'Best Way', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'SPECIAL INSTRUCTIONS / NOTES', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '───────────────────────────────────────────────────────────────', '', '', '', '', ''],
+      ['', 'Please return completed quote to the buyer listed above.', '', '', '', '', ''],
+      ['', 'Questions? Contact the buyer directly.', '', '', '', '', '']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:18}, {wch:20}, {wch:35}, {wch:10}, {wch:10}, {wch:14}, {wch:12}];
+  } else if (name.includes('Purchase Order')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', '', '', ''],
+      ['', companyName, '', '', '', '', '', ''],
+      ['', 'PURCHASE ORDER', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '╔══════════════════════════════════════════════════════════════════════╗', '', '', '', '', '', ''],
+      ['', 'PO Number:', 'PO-2026-0001', '', 'Date:', today, '', ''],
+      ['', 'Revision:', '0', '', 'Page:', '1 of 1', '', ''],
+      ['', '╚══════════════════════════════════════════════════════════════════════╝', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '┌─────────────────────────────────┬─────────────────────────────────────┐', '', '', '', '', '', ''],
+      ['', '│ VENDOR (Bill To)', '', '', '│ SHIP TO', '', '', ''],
+      ['', '├─────────────────────────────────┼─────────────────────────────────────┤', '', '', '', '', '', ''],
+      ['', 'Company:', '', '', 'Company:', companyName, '', ''],
+      ['', 'Address:', '', '', 'Address:', '', '', ''],
+      ['', 'City/State/ZIP:', '', '', 'City/State/ZIP:', '', '', ''],
+      ['', 'Contact:', '', '', 'Contact:', '', '', ''],
+      ['', 'Phone:', '', '', 'Phone:', '', '', ''],
+      ['', 'Email:', '', '', 'Email:', '', '', ''],
+      ['', '└─────────────────────────────────┴─────────────────────────────────────┘', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'LINE ITEMS', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'Line', 'Part Number', 'Description', 'Qty', 'Unit', 'Unit Price', 'Extended'],
+      ['', '────', '────────────', '─────────────────────────────────', '─────', '─────', '──────────', '──────────'],
+      ['', 1, '', '', '', 'EA', 0.00, {f:'E25*G25'}],
+      ['', 2, '', '', '', 'EA', 0.00, {f:'E26*G26'}],
+      ['', 3, '', '', '', 'EA', 0.00, {f:'E27*G27'}],
+      ['', 4, '', '', '', 'EA', 0.00, {f:'E28*G28'}],
+      ['', 5, '', '', '', 'EA', 0.00, {f:'E29*G29'}],
+      ['', 6, '', '', '', 'EA', 0.00, {f:'E30*G30'}],
+      ['', 7, '', '', '', 'EA', 0.00, {f:'E31*G31'}],
+      ['', 8, '', '', '', 'EA', 0.00, {f:'E32*G32'}],
+      ['', 9, '', '', '', 'EA', 0.00, {f:'E33*G33'}],
+      ['', 10, '', '', '', 'EA', 0.00, {f:'E34*G34'}],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', 'SUBTOTAL:', {f:'SUM(H25:H34)'}],
+      ['', '', '', '', '', '', 'TAX (0%):', 0.00],
+      ['', '', '', '', '', '', 'SHIPPING:', 0.00],
+      ['', '', '', '', '', '', '══════════', '══════════'],
+      ['', '', '', '', '', '', 'TOTAL:', {f:'H36+H37+H38'}],
+      ['', '', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'TERMS & CONDITIONS', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'Payment Terms:', 'Net 30 Days', '', 'Incoterms:', 'FOB Destination', '', ''],
+      ['', 'Required Date:', '', '', 'Ship Via:', 'Best Way', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'SPECIAL INSTRUCTIONS', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'AUTHORIZATION', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════', '', '', '', '', '', ''],
+      ['', 'Authorized By:', '________________________', '', 'Date:', '____________', '', ''],
+      ['', 'Print Name:', '', '', 'Title:', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '───────────────────────────────────────────────────────────────────────', '', '', '', '', '', ''],
+      ['', 'This Purchase Order is subject to the Terms and Conditions on file.', '', '', '', '', '', '']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:16}, {wch:18}, {wch:35}, {wch:8}, {wch:8}, {wch:12}, {wch:12}];
+  } else if (name.includes('Vendor') || name.includes('Supplier')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', '', ''],
+      ['', companyName, '', '', '', '', ''],
+      ['', name.toUpperCase(), '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Evaluation Date:', today, '', 'Evaluator:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'VENDOR INFORMATION', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Company Name:', '', '', '', '', ''],
+      ['', 'Address:', '', '', '', '', ''],
+      ['', 'City, State, ZIP:', '', '', '', '', ''],
+      ['', 'Phone:', '', '', 'Fax:', '', ''],
+      ['', 'Website:', '', '', '', '', ''],
+      ['', 'DUNS Number:', '', '', 'Tax ID:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'PRIMARY CONTACT', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Name:', '', '', 'Title:', '', ''],
+      ['', 'Email:', '', '', 'Phone:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'EVALUATION SCORECARD', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Criteria', 'Score (1-5)', 'Weight', 'Weighted', 'Rating Guide', ''],
+      ['', '─────────────────────', '───────────', '───────', '────────', '─────────────────────────', ''],
+      ['', 'Quality Performance', '', '25%', '', '5=Excellent 4=Good 3=Fair 2=Poor 1=Fail', ''],
+      ['', 'Delivery Performance', '', '20%', '', '', ''],
+      ['', 'Price Competitiveness', '', '20%', '', '', ''],
+      ['', 'Technical Capability', '', '15%', '', '', ''],
+      ['', 'Customer Service', '', '10%', '', '', ''],
+      ['', 'Financial Stability', '', '10%', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', '', '', 'TOTAL SCORE:', '', '', ''],
+      ['', '', '', 'MAX POSSIBLE:', '5.00', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'EVALUATION SUMMARY', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Strengths:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Weaknesses:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Corrective Actions Required:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'RECOMMENDATION', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', '[ ] APPROVED - Add to Approved Vendor List', '', '', '', '', ''],
+      ['', '[ ] CONDITIONAL - Requires corrective action', '', '', '', '', ''],
+      ['', '[ ] REJECTED - Does not meet requirements', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Approved By:', '________________________', '', 'Date:', '____________', ''],
+      ['', 'Print Name:', '', '', 'Title:', '', '']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:24}, {wch:14}, {wch:10}, {wch:10}, {wch:30}, {wch:5}];
+  } else if (name.includes('Compliance') || name.includes('Audit')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', ''],
+      ['', companyName, '', '', '', ''],
+      ['', name.toUpperCase(), '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Audit Date:', today, '', 'Audit #:', 'AUD-2026-001'],
+      ['', 'Auditor:', '', '', 'Lead Auditor:', ''],
+      ['', 'Vendor/Area:', '', '', 'Location:', ''],
+      ['', 'Audit Type:', '[ ] Initial  [ ] Annual  [ ] For Cause', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'AUDIT SCOPE', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'CHECKLIST ITEMS', 'STATUS', 'EVIDENCE REF', 'FINDINGS/NOTES', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '─────────────────────────────────', '──────', '────────────', '────────────────────────', ''],
+      ['', '1. QUALITY MANAGEMENT SYSTEM', '', '', '', ''],
+      ['', '   Quality Policy & Objectives', '', '', '', ''],
+      ['', '   Management Review Records', '', '', '', ''],
+      ['', '   Internal Audit Program', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '2. DOCUMENT CONTROL', '', '', '', ''],
+      ['', '   Document Control Procedure', '', '', '', ''],
+      ['', '   Revision History Maintained', '', '', '', ''],
+      ['', '   Obsolete Documents Controlled', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '3. PURCHASING CONTROLS', '', '', '', ''],
+      ['', '   Approved Supplier List', '', '', '', ''],
+      ['', '   Supplier Evaluation Records', '', '', '', ''],
+      ['', '   Incoming Inspection Records', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '4. PRODUCTION CONTROLS', '', '', '', ''],
+      ['', '   Work Instructions Available', '', '', '', ''],
+      ['', '   Process Validation Records', '', '', '', ''],
+      ['', '   Equipment Calibration', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '5. QUALITY RECORDS', '', '', '', ''],
+      ['', '   Training Records Current', '', '', '', ''],
+      ['', '   CAPA System Effective', '', '', '', ''],
+      ['', '   Complaint Records', '', '', '', ''],
+      ['', '   Product Traceability', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'STATUS KEY: ✓=PASS  ✗=FAIL  N/A  OBS=OBSERVATION', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'FINDINGS SUMMARY:', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'Major Findings:', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Minor Findings:', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Observations:', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'CONCLUSION', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '[ ] APPROVED - Supplier meets requirements', '', '', '', ''],
+      ['', '[ ] CONDITIONAL - Corrective action required', '', '', '', ''],
+      ['', '[ ] DISAPPROVED - Major nonconformances', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Auditor Signature:', '________________________', '', 'Date:', '____________'],
+      ['', 'Lead Auditor:', '________________________', '', 'Date:', '____________']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:35}, {wch:10}, {wch:14}, {wch:30}, {wch:5}];
+  } else if (name.includes('Quote Comparison') || name.includes('Matrix')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', '', ''],
+      ['', companyName, '', '', '', '', ''],
+      ['', 'QUOTE COMPARISON MATRIX', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Project:', '', '', 'Date:', today, ''],
+      ['', 'Buyer:', '', '', 'RFQ #:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'VENDOR INFORMATION', 'VENDOR A', 'VENDOR B', 'VENDOR C', 'VENDOR D', 'VENDOR E'],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Company Name', '', '', '', '', ''],
+      ['', 'Quote Number', '', '', '', '', ''],
+      ['', 'Quote Date', '', '', '', '', ''],
+      ['', 'Quote Valid Until', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'PRICING ANALYSIS', 'VENDOR A', 'VENDOR B', 'VENDOR C', 'VENDOR D', 'VENDOR E'],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Unit Price', '', '', '', '', ''],
+      ['', 'Quantity', '', '', '', '', ''],
+      ['', 'Extended Price', '', '', '', '', ''],
+      ['', 'Tooling/NRE', '', '', '', '', ''],
+      ['', 'Freight/Shipping', '', '', '', '', ''],
+      ['', 'Other Charges', '', '', '', '', ''],
+      ['', '───────────────────────', '───────────', '───────────', '───────────', '───────────', '───────────'],
+      ['', 'TOTAL COST', '', '', '', '', ''],
+      ['', '───────────────────────', '───────────', '───────────', '───────────', '───────────', '───────────'],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'TERMS COMPARISON', 'VENDOR A', 'VENDOR B', 'VENDOR C', 'VENDOR D', 'VENDOR E'],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Lead Time (weeks)', '', '', '', '', ''],
+      ['', 'Payment Terms', '', '', '', '', ''],
+      ['', 'Warranty Period', '', '', '', '', ''],
+      ['', 'MOQ', '', '', '', '', ''],
+      ['', 'Delivery Terms', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'EVALUATION SCORES (1-5)', 'VENDOR A', 'VENDOR B', 'VENDOR C', 'VENDOR D', 'VENDOR E'],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Price (30%)', '', '', '', '', ''],
+      ['', 'Quality (25%)', '', '', '', '', ''],
+      ['', 'Delivery (20%)', '', '', '', '', ''],
+      ['', 'Technical (15%)', '', '', '', '', ''],
+      ['', 'Service (10%)', '', '', '', '', ''],
+      ['', '───────────────────────', '───────────', '───────────', '───────────', '───────────', '───────────'],
+      ['', 'WEIGHTED SCORE', '', '', '', '', ''],
+      ['', 'RANK', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'DECISION', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'RECOMMENDED VENDOR:', '', '', '', '', ''],
+      ['', 'JUSTIFICATION:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Approved By:', '________________________', '', 'Date:', '____________', '']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:24}, {wch:14}, {wch:14}, {wch:14}, {wch:14}, {wch:14}];
+  } else if (name.includes('Contract')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', ''],
+      ['', companyName, '', '', '', ''],
+      ['', 'CONTRACT REVIEW CHECKLIST', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Contract Title:', '', '', '', ''],
+      ['', 'Vendor/Contractor:', '', '', 'Contract #:', ''],
+      ['', 'Contract Value:', '', '', 'Effective Date:', ''],
+      ['', 'Reviewer:', '', '', 'Review Date:', today],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'CONTRACT REVIEW ITEMS', 'OK', 'ISSUE', 'RISK LEVEL', 'NOTES/ACTION'],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '───────────────────────────────────', '────', '─────', '──────────', '─────────────────────────'],
+      ['', 'COMMERCIAL TERMS', '', '', '', ''],
+      ['', '───────────────────────────────────', '', '', '', ''],
+      ['', '  Scope of Work Clearly Defined', '', '', '', ''],
+      ['', '  Pricing/Rate Structure Clear', '', '', '', ''],
+      ['', '  Payment Terms Acceptable', '', '', '', ''],
+      ['', '  Delivery/Milestone Schedule', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'QUALITY & PERFORMANCE', '', '', '', ''],
+      ['', '───────────────────────────────────', '', '', '', ''],
+      ['', '  Quality Requirements Stated', '', '', '', ''],
+      ['', '  Acceptance Criteria Defined', '', '', '', ''],
+      ['', '  Warranty Terms Clear', '', '', '', ''],
+      ['', '  Performance Guarantees', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'LEGAL & COMPLIANCE', '', '', '', ''],
+      ['', '───────────────────────────────────', '', '', '', ''],
+      ['', '  Liability Limits Appropriate', '', '', '', ''],
+      ['', '  Indemnification Balanced', '', '', '', ''],
+      ['', '  Insurance Requirements', '', '', '', ''],
+      ['', '  Confidentiality/NDA Included', '', '', '', ''],
+      ['', '  IP Rights Clearly Defined', '', '', '', ''],
+      ['', '  Regulatory Compliance', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'ADMINISTRATIVE', '', '', '', ''],
+      ['', '───────────────────────────────────', '', '', '', ''],
+      ['', '  Termination Clause Present', '', '', '', ''],
+      ['', '  Force Majeure Included', '', '', '', ''],
+      ['', '  Dispute Resolution Clear', '', '', '', ''],
+      ['', '  Amendment Process Defined', '', '', '', ''],
+      ['', '  Governing Law Acceptable', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'RISK KEY: H=High  M=Medium  L=Low', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'ISSUES REQUIRING RESOLUTION BEFORE SIGNATURE:', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '1.', '', '', '', ''],
+      ['', '2.', '', '', '', ''],
+      ['', '3.', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'LEGAL REVIEW REQUIRED:', '[ ] YES  [ ] NO', '', '', ''],
+      ['', 'If Yes, Assigned To:', '', '', 'Due Date:', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'APPROVAL', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '[ ] APPROVED FOR SIGNATURE', '', '', '', ''],
+      ['', '[ ] APPROVED WITH CONDITIONS', '', '', '', ''],
+      ['', '[ ] NOT APPROVED - REQUIRES RENEGOTIATION', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Reviewer Signature:', '________________________', '', 'Date:', '____________'],
+      ['', 'Approver Signature:', '________________________', '', 'Date:', '____________']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:36}, {wch:6}, {wch:7}, {wch:12}, {wch:30}];
+  } else if (name.includes('Negotiation')) {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', '', ''],
+      ['', companyName, '', '', '', '', ''],
+      ['', 'PRICE NEGOTIATION TRACKER', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Item/Project:', '', '', 'RFQ #:', '', ''],
+      ['', 'Vendor:', '', '', 'Buyer:', '', ''],
+      ['', 'Start Date:', '', '', 'Target Close:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'NEGOTIATION STRATEGY', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Target Price:', '', '', 'Walk-Away Price:', '', ''],
+      ['', 'BATNA (Best Alternative):', '', '', '', '', ''],
+      ['', 'Key Leverage Points:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'NEGOTIATION ROUNDS', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Round', 'Date', 'Vendor Offer', 'Our Counter', 'Result', 'Key Points Discussed'],
+      ['', '─────', '──────────', '─────────────', '─────────────', '──────────', '─────────────────────────'],
+      ['', 1, '', '', '', '', ''],
+      ['', 2, '', '', '', '', ''],
+      ['', 3, '', '', '', '', ''],
+      ['', 4, '', '', '', '', ''],
+      ['', 5, '', '', '', '', ''],
+      ['', 6, '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'CONCESSIONS TRACKER', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'CONCESSIONS OBTAINED:', '', '', '', '', ''],
+      ['', '  [ ] Price Reduction', 'Amount:', '', '', '', ''],
+      ['', '  [ ] Extended Payment Terms', 'From/To:', '', '', '', ''],
+      ['', '  [ ] Reduced Lead Time', 'From/To:', '', '', '', ''],
+      ['', '  [ ] Extended Warranty', 'Period:', '', '', '', ''],
+      ['', '  [ ] Free Tooling/NRE', 'Value:', '', '', '', ''],
+      ['', '  [ ] Volume Discount', 'Terms:', '', '', '', ''],
+      ['', '  [ ] Free Shipping', 'Value:', '', '', '', ''],
+      ['', '  [ ] Other:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'CONCESSIONS GIVEN:', '', '', '', '', ''],
+      ['', '  [ ] Volume Commitment', 'Terms:', '', '', '', ''],
+      ['', '  [ ] Longer Contract', 'Period:', '', '', '', ''],
+      ['', '  [ ] Other:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'FINAL OUTCOME', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════════════', '', '', '', '', ''],
+      ['', 'Initial Quote:', '', '', '', '', ''],
+      ['', 'Final Agreed Price:', '', '', '', '', ''],
+      ['', 'Total Savings:', '', '', 'Savings %:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Final Agreement Date:', '', '', 'PO Number:', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', 'Notes/Lessons Learned:', '', '', '', '', ''],
+      ['', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:24}, {wch:14}, {wch:15}, {wch:15}, {wch:12}, {wch:28}];
+  } else {
+    ws = XLSX.utils.aoa_to_sheet([
+      ['', '', '', '', '', ''],
+      ['', companyName, '', '', '', ''],
+      ['', name.toUpperCase(), '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', 'Date:', today, '', 'Document #:', 'DOC-2026-001'],
+      ['', 'Prepared By:', '', '', 'Department:', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'SECTION 1', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'Item', 'Description', 'Value', 'Status', 'Notes'],
+      ['', '─────', '─────────────────────────────────', '──────────', '──────────', '─────────────────────────'],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'SECTION 2', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'Item', 'Description', 'Value', 'Status', 'Notes'],
+      ['', '─────', '─────────────────────────────────', '──────────', '──────────', '─────────────────────────'],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'NOTES / COMMENTS', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'APPROVAL', '', '', '', ''],
+      ['', '═══════════════════════════════════════════════════════════════════════════════', '', '', '', ''],
+      ['', 'Prepared By:', '________________________', '', 'Date:', '____________'],
+      ['', 'Approved By:', '________________________', '', 'Date:', '____________']
+    ]);
+    ws['!cols'] = [{wch:2}, {wch:20}, {wch:35}, {wch:12}, {wch:12}, {wch:30}];
+  }
+  
+  applyTemplateStyles(ws);
+  XLSX.utils.book_append_sheet(wb, ws, 'Template');
+  const filename = name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.xlsx';
+  XLSX.writeFile(wb, filename);
+  toast('Downloaded: ' + name);
+}
+
+function applyTemplateStyles(ws) {
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  const titleS = { font: { bold: true, sz: 18, color: { rgb: '1E3A5F' } }, alignment: { horizontal: 'center', vertical: 'center' } };
+  const docTypeS = { font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '1E3A5F' } }, alignment: { horizontal: 'center' }, border: { top:{style:'thin',color:{rgb:'1E3A5F'}}, bottom:{style:'thin',color:{rgb:'1E3A5F'}}, left:{style:'thin',color:{rgb:'1E3A5F'}}, right:{style:'thin',color:{rgb:'1E3A5F'}} } };
+  const sColors = ['065F46','581C87','1E40AF','B45309','9F1239','0E7490'];
+  function sectionStyle(idx) { return { font: { bold: true, sz: 11, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: sColors[idx % sColors.length] } }, border: { top:{style:'thin'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} } }; }
+  const headerS = { font: { bold: true, sz: 10, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '334155' } }, border: { top:{style:'thin'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} }, alignment: { horizontal: 'center' } };
+  const labelS = { font: { bold: true, sz: 10, color: { rgb: '1E3A5F' } }, fill: { fgColor: { rgb: 'DBEAFE' } }, border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+  const inputS = { font: { sz: 10 }, fill: { fgColor: { rgb: 'FFFBEB' } }, border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+  const borderS = { border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+  const approvalS = { font: { bold: true, sz: 10 }, fill: { fgColor: { rgb: 'FEF3C7' } }, border: { top:{style:'thin'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} } };
+  const sigS = { font: { sz: 10, color: { rgb: '6B7280' } }, border: { bottom:{style:'thin',color:{rgb:'9CA3AF'}} } };
+  const noteS = { font: { italic: true, sz: 9, color: { rgb: '6B7280' } } };
+  const totalsS = { font: { bold: true, sz: 11, color: { rgb: '1E3A5F' } }, fill: { fgColor: { rgb: 'D1FAE5' } }, border: { top:{style:'medium'}, bottom:{style:'medium'}, left:{style:'thin'}, right:{style:'thin'} } };
+  const subItemS = { font: { sz: 10, color: { rgb: '374151' } }, fill: { fgColor: { rgb: 'F9FAFB' } }, border: { top:{style:'thin',color:{rgb:'E5E7EB'}}, bottom:{style:'thin',color:{rgb:'E5E7EB'}}, left:{style:'thin',color:{rgb:'E5E7EB'}}, right:{style:'thin',color:{rgb:'E5E7EB'}} } };
+  const categoryS = { font: { bold: true, sz: 10, color: { rgb: '1E3A5F' } }, fill: { fgColor: { rgb: 'E0E7FF' } }, border: { top:{style:'thin'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} } };
+
+  const hasBoxChars = s => /[═╔╚┌└├│─╗╝┐┘┤]/.test(s);
+  const isNumeric = v => typeof v === 'number' || (!isNaN(parseFloat(v)) && isFinite(v));
+
+  let sectionIdx = 0;
+  const rowTypes = [];
+
+  for (let r = range.s.r; r <= range.e.r; r++) {
+    const cells = [];
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const addr = XLSX.utils.encode_cell({r, c});
+      const cell = ws[addr];
+      cells.push({ addr, cell, val: cell ? String(cell.v || '') : '', c });
+    }
+    const nonEmpty = cells.filter(x => x.val.trim().length > 0 && !hasBoxChars(x.val));
+    const firstVal = nonEmpty.length > 0 ? nonEmpty[0].val.trim() : '';
+    const allVals = nonEmpty.map(x => x.val.trim());
+
+    if (nonEmpty.length === 0 || (nonEmpty.length === 1 && hasBoxChars(firstVal))) {
+      rowTypes.push('empty');
+      continue;
+    }
+
+    if (nonEmpty.length === 1 && firstVal === 'YOUR COMPANY NAME') {
+      rowTypes.push('company');
+      nonEmpty[0].cell.s = titleS;
+      continue;
+    }
+
+    if (r <= 4 && nonEmpty.length <= 2 && firstVal.length > 5 && firstVal === firstVal.toUpperCase() && !firstVal.includes(':') && !hasBoxChars(firstVal) && !/^\d/.test(firstVal)) {
+      rowTypes.push('doctitle');
+      nonEmpty.forEach(x => x.cell.s = docTypeS);
+      continue;
+    }
+
+    const sectionWords = ['VENDOR INFORMATION','PRIMARY CONTACT','EVALUATION SCORECARD','EVALUATION SUMMARY','RECOMMENDATION','ITEMS REQUESTED','LINE ITEMS','TERMS & CONDITIONS','TERMS','SPECIAL INSTRUCTIONS','NOTES','AUTHORIZATION','APPROVAL','AUDIT SCOPE','CHECKLIST ITEMS','FINDINGS SUMMARY','CONCLUSION','PRICING ANALYSIS','TERMS COMPARISON','EVALUATION SCORES','OVERALL ANALYSIS','NEGOTIATION STRATEGY','NEGOTIATION ROUNDS','CONCESSIONS TRACKER','FINAL OUTCOME','CONTRACT REVIEW ITEMS','COMMERCIAL TERMS','QUALITY & PERFORMANCE','LEGAL & COMPLIANCE','ADMINISTRATIVE','ISSUES REQUIRING','SECTION 1','SECTION 2','NOTES / COMMENTS','SPECIAL INSTRUCTIONS / NOTES','RISK KEY','STATUS KEY','CONCESSIONS OBTAINED','CONCESSIONS GIVEN'];
+    if (nonEmpty.length <= 2 && sectionWords.some(kw => firstVal === kw || firstVal.startsWith(kw)) && !firstVal.endsWith(':')) {
+      rowTypes.push('section');
+      const st = sectionStyle(sectionIdx++);
+      nonEmpty.forEach(x => x.cell.s = st);
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({r, c});
+        if (!ws[addr]) { ws[addr] = { v: '', t: 's' }; }
+        if (!ws[addr].s) ws[addr].s = st;
+      }
+      continue;
+    }
+
+    const headerWords = ['Line #','Line','Part Number','Criteria','Score','Score (1-5)','Weight','Weighted','Weighted Score','Rating Guide','Rating','STATUS','EVIDENCE REF','EVIDENCE','FINDINGS/NOTES','FINDINGS','NOTES/ACTION','Round','Date','Vendor Offer','Our Counter','Result','Key Points','Key Points Discussed','Contract Title','OK','ISSUE','RISK LEVEL','Item','Description','Value','Status','Notes','Qty','Unit','Target Price','Lead Time','Unit Price','Extended','Rank','Vendor','Orders','Total Spend','Percentage','Count','SKU/Item','Unit Cost','Total Spend','Score'];
+    const headerHits = allVals.filter(v => headerWords.includes(v)).length;
+    if (headerHits >= 2 || (nonEmpty.length >= 3 && headerHits >= 1 && allVals.every(v => v.length < 25))) {
+      rowTypes.push('header');
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({r, c});
+        if (ws[addr] && String(ws[addr].v || '').trim()) ws[addr].s = headerS;
+        else if (ws[addr]) ws[addr].s = headerS;
+      }
+      continue;
+    }
+
+    const hasLabels = allVals.some(v => v.endsWith(':') && v.length > 2 && v.length < 30);
+    if (hasLabels) {
+      rowTypes.push('labelrow');
+      let prevWasLabel = false;
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({r, c});
+        const cell = ws[addr];
+        if (!cell) { prevWasLabel = false; continue; }
+        const v = String(cell.v || '').trim();
+        if (hasBoxChars(v)) continue;
+        if (v.endsWith(':') && v.length > 2 && v.length < 30) {
+          cell.s = labelS;
+          prevWasLabel = true;
+        } else if (prevWasLabel && v.length > 0) {
+          cell.s = inputS;
+          prevWasLabel = false;
+        } else if (prevWasLabel && v.length === 0) {
+          cell.s = inputS;
+          prevWasLabel = false;
+        } else if (v.length > 0) {
+          cell.s = borderS;
+          prevWasLabel = false;
+        }
+      }
+      continue;
+    }
+
+    if (allVals.some(v => v.includes('APPROVED') || v.includes('CONDITIONAL') || v.includes('REJECTED') || v.includes('DISAPPROVED') || v.includes('NOT APPROVED') || v.includes('LEGAL REVIEW'))) {
+      rowTypes.push('approval');
+      nonEmpty.forEach(x => { if (!hasBoxChars(x.val)) x.cell.s = approvalS; });
+      continue;
+    }
+
+    if (allVals.some(v => v.includes('________________________') || v.includes('____________') || v.includes('Signature'))) {
+      rowTypes.push('sig');
+      nonEmpty.forEach(x => {
+        const v = x.val.trim();
+        if (v.endsWith(':') && v.length < 25) x.cell.s = labelS;
+        else x.cell.s = sigS;
+      });
+      continue;
+    }
+
+    if (allVals.some(v => /^Please return|^Questions\?|^This Purchase Order/.test(v))) {
+      rowTypes.push('note');
+      nonEmpty.forEach(x => x.cell.s = noteS);
+      continue;
+    }
+
+    if (firstVal.startsWith('  ') || firstVal.startsWith('   ')) {
+      rowTypes.push('subitem');
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({r, c});
+        if (ws[addr] && !hasBoxChars(String(ws[addr].v || ''))) ws[addr].s = subItemS;
+      }
+      continue;
+    }
+
+    if (nonEmpty.length >= 1 && firstVal.length > 3 && firstVal === firstVal.toUpperCase() && !firstVal.includes(':') && !hasBoxChars(firstVal) && r > 4 && !/^\d/.test(firstVal) && nonEmpty.length <= 2) {
+      rowTypes.push('category');
+      nonEmpty.forEach(x => x.cell.s = categoryS);
+      continue;
+    }
+
+    if (firstVal === 'TOTAL:' || firstVal === 'SUBTOTAL:' || firstVal.startsWith('TOTAL ') || firstVal === 'TOTAL COST' || firstVal === 'TOTAL SCORE:' || firstVal === 'MAX POSSIBLE:') {
+      rowTypes.push('totals');
+      nonEmpty.forEach(x => x.cell.s = totalsS);
+      continue;
+    }
+
+    const prevRowType = rowTypes.length > 0 ? rowTypes[rowTypes.length - 1] : '';
+    if (prevRowType === 'header' || prevRowType === 'datarow') {
+      rowTypes.push('datarow');
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({r, c});
+        if (ws[addr] && !hasBoxChars(String(ws[addr].v || ''))) {
+          ws[addr].s = r % 2 === 0
+            ? { font: { sz: 10 }, fill: { fgColor: { rgb: 'F8FAFC' } }, border: { top:{style:'thin',color:{rgb:'E2E8F0'}}, bottom:{style:'thin',color:{rgb:'E2E8F0'}}, left:{style:'thin',color:{rgb:'E2E8F0'}}, right:{style:'thin',color:{rgb:'E2E8F0'}} } }
+            : { font: { sz: 10 }, border: { top:{style:'thin',color:{rgb:'E2E8F0'}}, bottom:{style:'thin',color:{rgb:'E2E8F0'}}, left:{style:'thin',color:{rgb:'E2E8F0'}}, right:{style:'thin',color:{rgb:'E2E8F0'}} } };
+        }
+      }
+      continue;
+    }
+
+    rowTypes.push('default');
+    nonEmpty.forEach(x => {
+      if (!hasBoxChars(x.val)) x.cell.s = borderS;
+    });
+  }
+}
+
+function generateExcelDashboard(type) {
+  toast('Generating ' + type + ' dashboard with styling...');
+  
+  const wb = XLSX.utils.book_new();
+  const today = new Date().toLocaleDateString();
+  const companyName = 'YOUR COMPANY NAME';
+  
+  const headerStyle = { font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 11 }, fill: { fgColor: { rgb: '1E3A5F' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} }, alignment: { horizontal: 'center' } };
+  const titleStyle = { font: { bold: true, color: { rgb: '1E3A5F' }, sz: 18 }, alignment: { horizontal: 'center' } };
+  const subTitleStyle = { font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 14 }, fill: { fgColor: { rgb: '065F46' } }, alignment: { horizontal: 'center' } };
+  const kpiLabelStyle = { font: { bold: true, sz: 10 }, fill: { fgColor: { rgb: 'DBEAFE' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} } };
+  const kpiValueStyle = { font: { bold: true, sz: 12, color: { rgb: '1E3A5F' } }, fill: { fgColor: { rgb: 'D1FAE5' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} }, numFmt: '$#,##0.00' };
+  const greenFill = { fill: { fgColor: { rgb: 'D1FAE5' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} } };
+  const yellowFill = { fill: { fgColor: { rgb: 'FEF3C7' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} } };
+  const redFill = { fill: { fgColor: { rgb: 'FEE2E2' } }, border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} } };
+  const borderStyle = { border: { top: {style:'thin'}, bottom: {style:'thin'}, left: {style:'thin'}, right: {style:'thin'} } };
+  
+  const vendors = ['Grainger', 'McMaster-Carr', 'Fastenal', 'MSC Industrial', 'Uline', 'Amazon Business', 'Home Depot Pro', 'Zoro'];
+  const statuses = ['Open', 'Pending', 'Shipped', 'Delivered', 'Invoiced'];
+  const items = ['Bearing Assembly', 'Hydraulic Pump', 'Control Valve', 'Filter Element', 'O-Ring Kit', 'Seal Kit', 'Motor 5HP', 'Belt Drive', 'Coupling', 'Lubricant ISO 46', 'Fastener Assortment', 'Safety Gloves', 'Hard Hat', 'Tooling Insert', 'Carbide End Mill'];
+  
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function formatDate(d) { return d.toISOString().split('T')[0]; }
+  function applyStyle(ws, cell, style) { if (ws[cell]) ws[cell].s = style; }
+  
+  if (type === 'purchasing') {
+    const dataRows = [['Date', 'Vendor', 'SKU/Item', 'Qty', 'Unit Cost', 'Total Spend', 'Status', 'Lead Time', 'Score']];
+    for (let i = 0; i < 50; i++) {
+      const d = new Date(); d.setDate(d.getDate() - randInt(0, 90));
+      const qty = randInt(1, 100);
+      const unitCost = Math.round(randInt(5, 500) * 100) / 100;
+      const total = Math.round(qty * unitCost * 100) / 100;
+      dataRows.push([formatDate(d), randChoice(vendors), randChoice(items), qty, unitCost, total, randChoice(statuses), randInt(1, 21), randInt(60, 100)]);
+    }
+    const wsData = XLSX.utils.aoa_to_sheet(dataRows);
+    wsData['!cols'] = [{wch:12}, {wch:18}, {wch:25}, {wch:8}, {wch:12}, {wch:14}, {wch:12}, {wch:10}, {wch:8}];
+    ['A1','B1','C1','D1','E1','F1','G1','H1','I1'].forEach(c => applyStyle(wsData, c, headerStyle));
+    for (let r = 2; r <= 51; r++) {
+      ['A','B','C','D','E','F','G','H','I'].forEach(c => applyStyle(wsData, c+r, borderStyle));
+      const score = dataRows[r-1] ? dataRows[r-1][8] : 0;
+      if (score >= 85) applyStyle(wsData, 'I'+r, greenFill);
+      else if (score >= 70) applyStyle(wsData, 'I'+r, yellowFill);
+      else applyStyle(wsData, 'I'+r, redFill);
+    }
+    XLSX.utils.book_append_sheet(wb, wsData, 'Data');
+    
+    const vendorSpend = {}, vendorOrders = {}, statusCount = {};
+    for (let i = 1; i < dataRows.length; i++) {
+      const r = dataRows[i];
+      vendorSpend[r[1]] = (vendorSpend[r[1]] || 0) + r[5];
+      vendorOrders[r[1]] = (vendorOrders[r[1]] || 0) + 1;
+      statusCount[r[6]] = (statusCount[r[6]] || 0) + 1;
+    }
+    const topVendors = Object.entries(vendorSpend).sort((a,b) => b[1] - a[1]).slice(0, 5);
+    const totalOrders = dataRows.length - 1;
+    
+    const dashRows = [
+      [companyName],
+      ['PURCHASING COMMAND DASHBOARD'],
+      ['Generated: ' + today],
+      [''],
+      ['KEY PERFORMANCE INDICATORS'],
+      ['Total Spend', '=SUM(Data!F:F)', '', 'Total Orders', '=COUNTA(Data!A:A)-1'],
+      ['Avg Lead Time', '=AVERAGE(Data!H:H)', '', 'Avg Score', '=AVERAGE(Data!I:I)'],
+      [''],
+      ['TOP VENDORS BY SPEND'],
+      ['Rank', 'Vendor', 'Orders', 'Total Spend', ''],
+    ];
+    topVendors.forEach((v, i) => dashRows.push([i + 1, v[0], vendorOrders[v[0]], v[1], '']));
+    dashRows.push(['']);
+    dashRows.push(['ORDER STATUS BREAKDOWN']);
+    dashRows.push(['Status', 'Count', 'Percentage', '', '']);
+    Object.entries(statusCount).forEach(([s, c]) => dashRows.push([s, c, Math.round(c / totalOrders * 100) + '%', '', '']));
+    
+    const wsDash = XLSX.utils.aoa_to_sheet(dashRows);
+    wsDash['!cols'] = [{wch:15}, {wch:20}, {wch:15}, {wch:18}, {wch:15}];
+    wsDash['!merges'] = [{s:{r:0,c:0},e:{r:0,c:4}}, {s:{r:1,c:0},e:{r:1,c:4}}];
+    applyStyle(wsDash, 'A1', titleStyle);
+    applyStyle(wsDash, 'A2', subTitleStyle);
+    applyStyle(wsDash, 'A5', {...headerStyle, fill: { fgColor: { rgb: '581C87' } }});
+    applyStyle(wsDash, 'A9', {...headerStyle, fill: { fgColor: { rgb: '065F46' } }});
+    ['A10','B10','C10','D10'].forEach(c => applyStyle(wsDash, c, headerStyle));
+    for (let r = 11; r <= 15; r++) ['A','B','C','D'].forEach(c => applyStyle(wsDash, c+r, borderStyle));
+    XLSX.utils.book_append_sheet(wb, wsDash, 'Dashboard');
+    
+    XLSX.writeFile(wb, 'purchasing_dashboard_' + Date.now() + '.xlsx');
+    toast('Downloaded: Purchasing Dashboard with ' + totalOrders + ' orders and full styling');
+    
+  } else if (type === 'vendor') {
+    const vendorData = [
+      ['Vendor', 'Total Spend', 'Orders', 'Avg Order', 'On-Time %', 'Quality Score', 'Risk Level', 'Trend'],
+      ['Grainger', 125000, 45, 2778, 92, 95, 'Low', '↑'],
+      ['McMaster-Carr', 98500, 38, 2592, 95, 98, 'Low', '↑'],
+      ['Fastenal', 76000, 52, 1462, 88, 90, 'Low', '→'],
+      ['MSC Industrial', 65000, 28, 2321, 91, 92, 'Low', '→'],
+      ['Uline', 45000, 35, 1286, 85, 88, 'Medium', '→'],
+      ['Amazon Business', 38000, 62, 613, 82, 85, 'Medium', '↓'],
+      ['Home Depot Pro', 28000, 22, 1273, 90, 87, 'Low', '↑'],
+      ['Zoro', 22000, 18, 1222, 87, 89, 'Low', '→'],
+    ];
+    const wsVendor = XLSX.utils.aoa_to_sheet(vendorData);
+    wsVendor['!cols'] = [{wch:18}, {wch:14}, {wch:10}, {wch:12}, {wch:12}, {wch:14}, {wch:12}, {wch:8}];
+    ['A1','B1','C1','D1','E1','F1','G1','H1'].forEach(c => applyStyle(wsVendor, c, headerStyle));
+    for (let r = 2; r <= 9; r++) {
+      ['A','B','C','D','E','F','G','H'].forEach(c => applyStyle(wsVendor, c+r, borderStyle));
+      const risk = vendorData[r-1] ? vendorData[r-1][6] : '';
+      if (risk === 'Low') applyStyle(wsVendor, 'G'+r, greenFill);
+      else if (risk === 'Medium') applyStyle(wsVendor, 'G'+r, yellowFill);
+      else if (risk === 'High') applyStyle(wsVendor, 'G'+r, redFill);
+    }
+    XLSX.utils.book_append_sheet(wb, wsVendor, 'Vendor Data');
+    
+    const dashRows = [
+      [companyName],
+      ['VENDOR SPEND ANALYTICS DASHBOARD'],
+      ['Generated: ' + today],
+      [''],
+      ['SUMMARY KPIs'],
+      ['Total Vendors', 8],
+      ['Total Spend', '=SUM(\'Vendor Data\'!B:B)'],
+      ['Avg Quality', '=AVERAGE(\'Vendor Data\'!F:F)'],
+      ['Low Risk Count', '=COUNTIF(\'Vendor Data\'!G:G,"Low")'],
+      [''],
+      ['RISK ANALYSIS'],
+      ['Low Risk', '=COUNTIF(\'Vendor Data\'!G:G,"Low")'],
+      ['Medium Risk', '=COUNTIF(\'Vendor Data\'!G:G,"Medium")'],
+      ['High Risk', '=COUNTIF(\'Vendor Data\'!G:G,"High")'],
+    ];
+    const wsDash = XLSX.utils.aoa_to_sheet(dashRows);
+    wsDash['!cols'] = [{wch:20}, {wch:25}];
+    wsDash['!merges'] = [{s:{r:0,c:0},e:{r:0,c:1}}, {s:{r:1,c:0},e:{r:1,c:1}}];
+    applyStyle(wsDash, 'A1', titleStyle);
+    applyStyle(wsDash, 'A2', {...subTitleStyle, fill: { fgColor: { rgb: '581C87' } }});
+    applyStyle(wsDash, 'A5', {...headerStyle, fill: { fgColor: { rgb: '065F46' } }});
+    applyStyle(wsDash, 'A11', {...headerStyle, fill: { fgColor: { rgb: 'C2410C' } }});
+    for (let r = 6; r <= 9; r++) { applyStyle(wsDash, 'A'+r, kpiLabelStyle); applyStyle(wsDash, 'B'+r, kpiValueStyle); }
+    XLSX.utils.book_append_sheet(wb, wsDash, 'Dashboard');
+    
+    XLSX.writeFile(wb, 'vendor_spend_dashboard_' + Date.now() + '.xlsx');
+    toast('Downloaded: Vendor Spend Dashboard with full styling');
+    
+  } else if (type === 'inventory') {
+    const invData = [
+      ['Item', 'On Hand', 'Min Level', 'Max Level', 'Unit Value', 'Total Value', 'Velocity', 'Status'],
+      ['Bearing 6205', 150, 50, 200, 12.50, 1875, 18, 'OK'],
+      ['Hydraulic Filter', 25, 30, 100, 45.00, 1125, 8, 'Low'],
+      ['O-Ring Kit', 500, 100, 600, 8.00, 4000, 22, 'OK'],
+      ['Motor 5HP', 8, 5, 15, 850.00, 6800, 2, 'OK'],
+      ['Belt V-Type', 75, 25, 100, 22.00, 1650, 12, 'OK'],
+      ['Seal Kit', 120, 40, 150, 35.00, 4200, 15, 'OK'],
+      ['Lubricant ISO 46', 15, 20, 80, 55.00, 825, 6, 'Low'],
+      ['Safety Gloves', 200, 100, 300, 15.00, 3000, 25, 'OK'],
+      ['Carbide End Mill', 12, 15, 50, 125.00, 1500, 4, 'Low'],
+      ['Drill Bit Set', 35, 20, 60, 85.00, 2975, 7, 'OK'],
+    ];
+    const wsInv = XLSX.utils.aoa_to_sheet(invData);
+    wsInv['!cols'] = [{wch:18}, {wch:10}, {wch:10}, {wch:10}, {wch:12}, {wch:12}, {wch:10}, {wch:10}];
+    ['A1','B1','C1','D1','E1','F1','G1','H1'].forEach(c => applyStyle(wsInv, c, headerStyle));
+    for (let r = 2; r <= 11; r++) {
+      ['A','B','C','D','E','F','G','H'].forEach(c => applyStyle(wsInv, c+r, borderStyle));
+      const status = invData[r-1] ? invData[r-1][7] : '';
+      if (status === 'OK') applyStyle(wsInv, 'H'+r, greenFill);
+      else if (status === 'Low') applyStyle(wsInv, 'H'+r, redFill);
+      else if (status === 'High') applyStyle(wsInv, 'H'+r, yellowFill);
+    }
+    XLSX.utils.book_append_sheet(wb, wsInv, 'Inventory');
+    
+    const dashRows = [
+      [companyName],
+      ['INVENTORY COMMAND DASHBOARD'],
+      ['Generated: ' + today],
+      [''],
+      ['KEY METRICS'],
+      ['Total SKUs', '=COUNTA(Inventory!A:A)-1'],
+      ['Total Value', '=SUM(Inventory!F:F)'],
+      ['Avg Velocity', '=AVERAGE(Inventory!G:G)'],
+      [''],
+      ['STOCK ALERTS'],
+      ['Low Stock Items', '=COUNTIF(Inventory!H:H,"Low")'],
+      ['OK Stock Items', '=COUNTIF(Inventory!H:H,"OK")'],
+      ['High Stock Items', '=COUNTIF(Inventory!H:H,"High")'],
+      [''],
+      ['CRITICAL ITEMS (Low Stock)'],
+    ];
+    invData.forEach((row, i) => {
+      if (i > 0 && row[7] === 'Low') {
+        dashRows.push([row[0], 'On Hand: ' + row[1], 'Min: ' + row[2]]);
+      }
+    });
+    
+    const wsDash = XLSX.utils.aoa_to_sheet(dashRows);
+    wsDash['!cols'] = [{wch:25}, {wch:20}, {wch:15}];
+    wsDash['!merges'] = [{s:{r:0,c:0},e:{r:0,c:2}}, {s:{r:1,c:0},e:{r:1,c:2}}];
+    applyStyle(wsDash, 'A1', titleStyle);
+    applyStyle(wsDash, 'A2', {...subTitleStyle, fill: { fgColor: { rgb: '065F46' } }});
+    applyStyle(wsDash, 'A5', {...headerStyle, fill: { fgColor: { rgb: '581C87' } }});
+    applyStyle(wsDash, 'A10', {...headerStyle, fill: { fgColor: { rgb: 'C2410C' } }});
+    applyStyle(wsDash, 'A15', {...headerStyle, fill: { fgColor: { rgb: 'DC2626' } }});
+    for (let r = 6; r <= 8; r++) { applyStyle(wsDash, 'A'+r, kpiLabelStyle); applyStyle(wsDash, 'B'+r, kpiValueStyle); }
+    for (let r = 11; r <= 13; r++) { applyStyle(wsDash, 'A'+r, kpiLabelStyle); applyStyle(wsDash, 'B'+r, borderStyle); }
+    XLSX.utils.book_append_sheet(wb, wsDash, 'Dashboard');
+    
+    XLSX.writeFile(wb, 'inventory_dashboard_' + Date.now() + '.xlsx');
+    toast('Downloaded: Inventory Dashboard with full styling and ' + (invData.length - 1) + ' items');
+  }
+}
+
+function previewTemplate(name) {
+  const template = templates.find(t => t.name === name);
+  if (!template) { toast('Template not found'); return; }
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:var(--bg-card);border-radius:16px;padding:30px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid var(--border-color);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="color:var(--accent-cyan);">${template.name}</h2>
+        <button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer;">&times;</button>
+      </div>
+      <p style="color:var(--text-muted);margin-bottom:16px;">${template.desc}</p>
+      <div style="display:grid;gap:12px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Version</span><span>${template.version}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Last Updated</span><span>${template.updated}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Category</span><span style="text-transform:capitalize;">${template.category}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Status</span><span style="color:var(--accent-green);">${template.status}</span>
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="downloadTemplate('${template.name}');this.closest('div').parentElement.remove();" style="width:100%;">📥 Download Template</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+function startWorkflow(name) {
+  const workflow = workflows.find(w => w.name === name);
+  if (!workflow) { toast('Workflow not found'); return; }
+  
+  const steps = {
+    'New Vendor Approval': ['Gather vendor information', 'Request W-9 and insurance certificates', 'Complete vendor questionnaire', 'Perform risk assessment', 'Quality review', 'Finance approval', 'Legal review (if needed)', 'Final approval and AVL addition'],
+    'RFQ to PO Process': ['Define requirements', 'Create RFQ document', 'Send to qualified vendors', 'Receive and compare quotes', 'Select vendor and negotiate', 'Issue purchase order'],
+    'Emergency Purchase': ['Document emergency justification', 'Get management approval', 'Contact vendor for availability', 'Issue emergency PO'],
+    'Supplier Performance Review': ['Gather performance data', 'Calculate KPI scores', 'Document issues and wins', 'Conduct review meeting', 'Create action plan'],
+    'Contract Renewal': ['Review current contract terms', 'Analyze spend and performance', 'Benchmark pricing', 'Negotiate improvements', 'Legal review', 'Approval routing', 'Execute new contract'],
+    'Quality Issue Resolution': ['Document the issue (NCR)', 'Contain affected product', 'Root cause analysis', 'Develop corrective action', 'Implement and verify', 'Close and document']
+  };
+  
+  const workflowSteps = steps[name] || ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:var(--bg-card);border-radius:16px;padding:30px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid var(--border-color);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="color:var(--accent-purple);">⚡ ${name}</h2>
+        <button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer;">&times;</button>
+      </div>
+      <p style="color:var(--text-muted);margin-bottom:20px;">${workflow.desc}</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${workflowSteps.map((step, i) => `
+          <div style="display:flex;gap:16px;align-items:flex-start;padding:16px;background:var(--bg-tertiary);border-radius:8px;">
+            <div style="width:32px;height:32px;background:var(--accent-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;">${i+1}</div>
+            <div>
+              <div style="font-weight:500;">${step}</div>
+              <label style="display:flex;gap:8px;margin-top:8px;color:var(--text-muted);font-size:0.85rem;cursor:pointer;">
+                <input type="checkbox" style="width:16px;height:16px;"> Mark complete
+              </label>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button class="btn btn-secondary" onclick="this.closest('div').parentElement.remove();" style="flex:1;">Close</button>
+        <button class="btn btn-green" onclick="toast('Workflow progress saved');this.closest('div').parentElement.remove();" style="flex:1;">Save Progress</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+function viewDocument(name) {
+  const doc = documents.find(d => d.name === name);
+  if (!doc) { toast('Document not found'); return; }
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:var(--bg-card);border-radius:16px;padding:30px;max-width:500px;width:100%;border:1px solid var(--border-color);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="color:var(--accent-cyan);">📁 ${doc.name}</h2>
+        <button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer;">&times;</button>
+      </div>
+      <div style="display:grid;gap:12px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Version</span><span>${doc.version}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Last Updated</span><span>${doc.updated}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Owner</span><span>${doc.owner}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:var(--bg-tertiary);border-radius:8px;">
+          <span style="color:var(--text-muted);">Status</span><span style="color:var(--accent-green);">${doc.status}</span>
+        </div>
+      </div>
+      <p style="color:var(--text-muted);font-size:0.85rem;text-align:center;">Document content would be displayed here in a full implementation.</p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+function exportCSV() {
+  if (csvData.length === 0) { toast('No CSV data to export'); return; }
+  const csv = [csvHeaders.join(','), ...csvData.map(row => csvHeaders.map(h => '"' + (row[h] || '') + '"').join(','))].join('\n');
+  download(csv, 'purchasing_data_' + today() + '.csv', 'text/csv');
+  toast('CSV exported');
+}
+
+function exportFilteredCSV() {
+  const search = document.getElementById('csvSearch')?.value?.toLowerCase() || '';
+  const filtered = csvData.filter(row => Object.values(row).some(v => String(v).toLowerCase().includes(search)));
+  const csv = [csvHeaders.join(','), ...filtered.map(row => csvHeaders.map(h => '"' + (row[h] || '') + '"').join(','))].join('\n');
+  download(csv, 'purchasing_filtered_' + today() + '.csv', 'text/csv');
+  toast('Filtered CSV exported');
+}
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text('Purchasing Command Center Report', 20, 20);
+  doc.setFontSize(10);
+  doc.text('Generated: ' + new Date().toLocaleDateString(), 20, 28);
+  doc.setFontSize(12);
+  doc.text('Templates: ' + templates.length, 20, 45);
+  doc.text('Workflows: ' + workflows.length, 20, 52);
+  doc.text('Documents: ' + documents.length, 20, 59);
+  doc.text('CSV Records: ' + csvData.length, 20, 66);
+  doc.save('purchasing_report_' + today() + '.pdf');
+  toast('PDF exported');
+}
+
+function exportAllTemplates() {
+  const wb = XLSX.utils.book_new();
+  
+  const indexData = [
+    ['PURCHASING COMMAND CENTER - TEMPLATE INDEX'],
+    ['Generated:', new Date().toLocaleDateString()],
+    [''],
+    ['Template Name', 'Category', 'Version', 'Description', 'Status']
+  ];
+  templates.forEach(t => {
+    indexData.push([t.name, t.category, t.version, t.desc, t.status]);
+  });
+  const indexWs = XLSX.utils.aoa_to_sheet(indexData);
+  indexWs['!cols'] = [{wch:30}, {wch:16}, {wch:10}, {wch:40}, {wch:12}];
+  const ixTitle = { font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '1E3A5F' } } };
+  const ixHdr = { font: { bold: true, sz: 10, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '334155' } }, border: { top:{style:'thin'}, bottom:{style:'thin'}, left:{style:'thin'}, right:{style:'thin'} } };
+  const ixBdr = { border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+  if (indexWs['A1']) indexWs['A1'].s = ixTitle;
+  ['A4','B4','C4','D4','E4'].forEach(c => { if (indexWs[c]) indexWs[c].s = ixHdr; });
+  for (let r = 5; r <= indexData.length; r++) ['A','B','C','D','E'].forEach(c => { if (indexWs[c+r]) indexWs[c+r].s = ixBdr; });
+  XLSX.utils.book_append_sheet(wb, indexWs, 'Index');
+  
+  templates.forEach(t => {
+    const ws = XLSX.utils.aoa_to_sheet([
+      [t.name.toUpperCase()],
+      [''],
+      ['Version:', t.version],
+      ['Category:', t.category],
+      ['Last Updated:', t.updated],
+      ['Description:', t.desc],
+      [''],
+      ['--- TEMPLATE CONTENT ---'],
+      [''],
+      ['Field 1:', ''],
+      ['Field 2:', ''],
+      ['Field 3:', ''],
+      [''],
+      ['NOTES:'],
+      ['']
+    ]);
+    ws['!cols'] = [{wch:20}, {wch:40}];
+    const tTitleS = { font: { bold: true, sz: 14, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '1E3A5F' } } };
+    const tLblS = { font: { bold: true, sz: 10, color: { rgb: '1E3A5F' } }, fill: { fgColor: { rgb: 'DBEAFE' } }, border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+    const tValS = { font: { sz: 10 }, fill: { fgColor: { rgb: 'F0F9FF' } }, border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } };
+    if (ws['A1']) ws['A1'].s = tTitleS;
+    ['A3','A4','A5','A6'].forEach(c => { if (ws[c]) ws[c].s = tLblS; });
+    ['B3','B4','B5','B6'].forEach(c => { if (ws[c]) ws[c].s = tValS; });
+    if (ws['A8']) ws['A8'].s = { font: { bold: true, sz: 11, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '065F46' } } };
+    ['A10','A11','A12'].forEach(c => { if (ws[c]) ws[c].s = tLblS; });
+    ['B10','B11','B12'].forEach(c => { if (ws[c]) ws[c].s = { font: { sz: 10 }, fill: { fgColor: { rgb: 'FFFBEB' } }, border: { top:{style:'thin',color:{rgb:'CBD5E1'}}, bottom:{style:'thin',color:{rgb:'CBD5E1'}}, left:{style:'thin',color:{rgb:'CBD5E1'}}, right:{style:'thin',color:{rgb:'CBD5E1'}} } }; });
+    if (ws['A14']) ws['A14'].s = { font: { bold: true, sz: 10, color: { rgb: '065F46' } } };
+    const sheetName = t.name.substring(0, 31).replace(/[\/\\\?\*\[\]]/g, '');
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+  
+  XLSX.writeFile(wb, 'purchasing_templates_pack_' + today() + '.xlsx');
+  toast('All templates exported');
+}
+
+function exportWorkflowGuide() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(20);
+  doc.setTextColor(16, 185, 129);
+  doc.text('Purchasing Workflow Guide', 20, 20);
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text('Generated: ' + new Date().toLocaleDateString(), 20, 28);
+  
+  let y = 45;
+  const steps = {
+    'New Vendor Approval': ['Gather vendor information', 'Request W-9 and insurance', 'Complete questionnaire', 'Risk assessment', 'Quality review', 'Finance approval', 'Legal review', 'Final approval'],
+    'RFQ to PO Process': ['Define requirements', 'Create RFQ', 'Send to vendors', 'Compare quotes', 'Negotiate', 'Issue PO'],
+    'Emergency Purchase': ['Document justification', 'Get approval', 'Contact vendor', 'Issue emergency PO'],
+    'Supplier Performance Review': ['Gather data', 'Calculate KPIs', 'Document issues', 'Review meeting', 'Action plan'],
+    'Contract Renewal': ['Review terms', 'Analyze spend', 'Benchmark', 'Negotiate', 'Legal review', 'Approval', 'Execute'],
+    'Quality Issue Resolution': ['Document NCR', 'Contain product', 'Root cause', 'Corrective action', 'Verify', 'Close']
+  };
+  
+  workflows.forEach((w, idx) => {
+    if (y > 250) { doc.addPage(); y = 20; }
+    doc.setFontSize(12);
+    doc.setTextColor(139, 92, 246);
+    doc.text((idx + 1) + '. ' + w.name, 20, y);
+    y += 6;
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text(w.desc, 25, y);
+    y += 8;
+    
+    const wSteps = steps[w.name] || [];
+    wSteps.forEach((step, i) => {
+      doc.setTextColor(60);
+      doc.text('  ' + (i + 1) + '. ' + step, 25, y);
+      y += 5;
+    });
+    y += 8;
+  });
+  
+  doc.save('purchasing_workflow_guide_' + today() + '.pdf');
+  toast('Workflow guide exported');
+}
+function copyShareLink() { navigator.clipboard.writeText(window.location.href); toast('Link copied'); }
+
+function deployNetlify() {
+  toast('Generating standalone app...');
+  
+  let html = document.documentElement.outerHTML;
+  html = html.replace(/<a href="\/" class="btn btn-secondary">← TonyOS<\/a>/g, '');
+  html = html.replace(/<title>Purchasing Command Center \| TonyOS<\/title>/, '<title>Purchasing Command Center</title>');
+  
+  if (!html.startsWith('<!DOCTYPE')) {
+    html = '<!DOCTYPE html>\n' + html;
+  }
+  
+  download(html, 'index.html', 'text/html');
+  setTimeout(() => window.open('https://app.netlify.com/drop', '_blank'), 500);
+  toast('App downloaded - drag to Netlify Drop');
+}
+
+function download(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+init();
+
+function showHowToUse() {
+  document.getElementById('howToModal').style.display = 'flex';
+}
+function closeHowToModal() {
+  document.getElementById('howToModal').style.display = 'none';
+}
+
+function saveAllData() {
+  const data = {
+    documents: documents,
+    workflows: workflows,
+    csvData: csvData,
+    savedAt: new Date().toISOString()
+  };
+  localStorage.setItem('purchasingCommandCenter', JSON.stringify(data));
+  toast('All data saved');
+  return data;
+}
+
+function loadSavedData() {
+  const saved = localStorage.getItem('purchasingCommandCenter');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.documents) { documents.length = 0; documents.push(...data.documents); }
+      if (data.workflows) { workflows.length = 0; workflows.push(...data.workflows); }
+      if (data.csvData) { csvData = data.csvData; }
+      renderDocuments();
+      renderWorkflows();
+      if (csvData && csvData.length > 0) renderCSVPreview();
+    } catch(e) { console.log('No saved data'); }
+  }
+}
+
+function clearAllData() {
+  if (!confirm('Clear all saved data? This cannot be undone.')) return;
+  documents.length = 0;
+  workflows.forEach(w => { w.steps.forEach(s => s.done = false); w.complete = false; });
+  csvData = [];
+  localStorage.removeItem('purchasingCommandCenter');
+  renderDocuments();
+  renderWorkflows();
+  document.getElementById('csvPreview').innerHTML = '<p style="color:var(--text-muted)">No data loaded</p>';
+  document.getElementById('csvInsights').innerHTML = '';
+  toast('All data cleared');
+  showSavedData();
+}
+
+function showSavedData() {
+  saveAllData();
+  const saved = localStorage.getItem('purchasingCommandCenter');
+  let content = '';
+  
+  if (saved) {
+    const data = JSON.parse(saved);
+    const savedDate = data.savedAt ? new Date(data.savedAt).toLocaleString() : 'Unknown';
+    
+    content += '<div style="margin-bottom:20px;padding:16px;background:var(--bg-tertiary);border-radius:8px;border-left:3px solid var(--accent-green);">';
+    content += '<strong style="color:var(--accent-green);">Last Saved:</strong> <span style="color:var(--text-muted);">' + savedDate + '</span>';
+    content += '</div>';
+    
+    content += '<div style="margin-bottom:20px;">';
+    content += '<h3 style="color:var(--accent-cyan);margin-bottom:12px;">📁 Documents (' + (data.documents?.length || 0) + ')</h3>';
+    if (data.documents && data.documents.length > 0) {
+      content += '<div style="background:var(--bg-tertiary);border-radius:8px;padding:12px;max-height:150px;overflow-y:auto;">';
+      data.documents.forEach(d => {
+        content += '<div style="padding:8px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;">';
+        content += '<span style="color:var(--text-primary);">' + d.name + '</span>';
+        content += '<span style="color:var(--text-muted);font-size:0.8rem;">v' + d.version + ' - ' + d.status + '</span>';
+        content += '</div>';
+      });
+      content += '</div>';
+    } else {
+      content += '<p style="color:var(--text-muted);">No documents saved</p>';
+    }
+    content += '</div>';
+    
+    content += '<div style="margin-bottom:20px;">';
+    content += '<h3 style="color:var(--accent-purple);margin-bottom:12px;">⚡ Workflows (' + (data.workflows?.length || 0) + ')</h3>';
+    if (data.workflows && data.workflows.length > 0) {
+      content += '<div style="background:var(--bg-tertiary);border-radius:8px;padding:12px;max-height:150px;overflow-y:auto;">';
+      data.workflows.forEach(w => {
+        const done = w.steps.filter(s => s.done).length;
+        const total = w.steps.length;
+        const pct = Math.round((done/total)*100);
+        content += '<div style="padding:8px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;">';
+        content += '<span style="color:var(--text-primary);">' + w.name + '</span>';
+        content += '<span style="color:' + (pct === 100 ? 'var(--accent-green)' : 'var(--accent-orange)') + ';font-size:0.8rem;">' + pct + '% complete</span>';
+        content += '</div>';
+      });
+      content += '</div>';
+    } else {
+      content += '<p style="color:var(--text-muted);">No workflows saved</p>';
+    }
+    content += '</div>';
+    
+    content += '<div style="margin-bottom:20px;">';
+    content += '<h3 style="color:var(--accent-orange);margin-bottom:12px;">📊 CSV Data</h3>';
+    if (data.csvData && data.csvData.length > 0) {
+      content += '<p style="color:var(--text-muted);">' + data.csvData.length + ' rows, ' + Object.keys(data.csvData[0]).length + ' columns</p>';
+    } else {
+      content += '<p style="color:var(--text-muted);">No CSV data loaded</p>';
+    }
+    content += '</div>';
+    
+  } else {
+    content = '<p style="color:var(--text-muted);text-align:center;padding:40px;">No saved data found. Add documents, complete workflows, or upload CSV files to see them here.</p>';
+  }
+  
+  document.getElementById('savedDataContent').innerHTML = content;
+  document.getElementById('savedDataModal').style.display = 'flex';
+}
+
+function closeSavedDataModal() {
+  document.getElementById('savedDataModal').style.display = 'none';
+}
+
+setTimeout(loadSavedData, 100);
+  </script>
+
+  <div id="howToModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center; padding:20px;">
+    <div style="background:var(--bg-card); border:1px solid var(--accent-cyan); border-radius:16px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:30px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="background:linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:1.5rem;">How to Use</h2>
+        <button onclick="closeHowToModal()" style="background:var(--bg-tertiary); border:1px solid var(--border-color); color:var(--text-primary); width:36px; height:36px; border-radius:8px; cursor:pointer; font-size:1.2rem;">×</button>
+      </div>
+      <div style="color:var(--text-primary); line-height:1.7;">
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-cyan); margin-bottom:8px;">📋 Templates</h3>
+          <p style="color:var(--text-muted);">Download ready-to-use Excel templates: RFQ, Purchase Orders, Vendor Evaluation scorecards, Quote Comparisons, Audit Checklists, and Contract Reviews. Click any template card to download instantly.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-orange); margin-bottom:8px;">📊 CSV Intelligence</h3>
+          <p style="color:var(--text-muted);">Upload any CSV file to get instant analysis. The system will show column stats, data types, sample values, and smart insights. Great for quick data review.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-purple); margin-bottom:8px;">⚡ Workflows</h3>
+          <p style="color:var(--text-muted);">Step-by-step guided processes for common purchasing tasks. Each workflow breaks complex tasks into manageable steps with status tracking.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-green); margin-bottom:8px;">📈 Dashboard & Excel Generators</h3>
+          <p style="color:var(--text-muted);">View KPIs and generate professional Excel dashboards. Three dashboard types available: Purchasing (50 orders), Vendor Spend (8 vendors), and Inventory (10 items). Each includes styled headers, formulas, and conditional formatting.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-pink); margin-bottom:8px;">📁 Document Control</h3>
+          <p style="color:var(--text-muted);">Track document versions and approvals. Add documents with version numbers, status, and approval dates. Keeps everything organized.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent-red); margin-bottom:8px;">🚀 Deploy to Netlify</h3>
+          <p style="color:var(--text-muted);">Export the entire Command Center as a standalone HTML file. Deploy to Netlify or any static host - works 100% offline with no server required.</p>
+        </div>
+        <div style="background:var(--bg-tertiary); padding:16px; border-radius:8px; border-left:3px solid var(--accent-cyan);">
+          <strong style="color:var(--accent-cyan);">Pro Tip:</strong> <span style="color:var(--text-muted);">All Excel files are generated in your browser - no data leaves your device. Perfect for sensitive procurement data.</span>
+        </div>
+      </div>
+      <button onclick="closeHowToModal()" class="btn btn-cyan" style="width:100%; margin-top:24px;">Got It</button>
+    </div>
+  </div>
+
+  <div id="savedDataModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center; padding:20px;">
+    <div style="background:var(--bg-card); border:1px solid var(--accent-purple); border-radius:16px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto; padding:30px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="background:linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:1.5rem;">📂 Saved Files</h2>
+        <button onclick="closeSavedDataModal()" style="background:var(--bg-tertiary); border:1px solid var(--border-color); color:var(--text-primary); width:36px; height:36px; border-radius:8px; cursor:pointer; font-size:1.2rem;">×</button>
+      </div>
+      <div id="savedDataContent"></div>
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <button onclick="closeSavedDataModal()" class="btn btn-cyan" style="flex:1;">Close</button>
+        <button onclick="clearAllData()" class="btn btn-red" style="flex:1;">🗑 Clear All</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

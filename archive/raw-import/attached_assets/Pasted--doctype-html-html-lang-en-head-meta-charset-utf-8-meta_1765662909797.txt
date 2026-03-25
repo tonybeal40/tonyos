@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>TonyOS</title>
+  <style>
+    :root{ --bg:#07070a; --ink:#f5f7ff; --muted:#b1b6c8; --line:#23283a; --accent:#e11d48; --r:18px; }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--ink);
+      background: radial-gradient(1100px 600px at 10% -10%, rgba(225,29,72,.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg) 0%, #04040a 100%);
+      height:100vh; display:flex; flex-direction:column;
+    }
+    header{ padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      background: rgba(7,7,10,.75); backdrop-filter: blur(10px);
+    }
+    .brand{ font-weight:900; letter-spacing:.2px }
+    nav{ display:flex; gap:8px; flex-wrap:wrap }
+    .tab{ border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.03); color:var(--muted);
+      padding:10px 12px; border-radius:999px; cursor:pointer; font-weight:800;
+    }
+    .tab.active{ border-color: rgba(225,29,72,.45); background: rgba(225,29,72,.10); color: var(--ink); }
+    main{ flex:1; max-width:1200px; width:100%; margin:0 auto; padding:14px; }
+    .panel{ border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
+      border-radius: var(--r); padding:14px; min-height: calc(100vh - 110px);
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px }
+    .btn{ border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); color:var(--ink);
+      padding:10px 12px; border-radius:14px; cursor:pointer; font-weight:900;
+    }
+    .btn.primary{ border-color: rgba(225,29,72,.45); background: linear-gradient(135deg, rgba(225,29,72,.95), rgba(255,59,106,.85)); }
+    .warn{ color:#fbbf24 }
+    .ok{ color:#22c55e }
+    iframe{ width:100%; height: calc(100vh - 190px); border:0; border-radius:14px; background: rgba(0,0,0,.25); }
+    textarea{ width:100%; min-height:80px; border-radius:14px; padding:10px 12px;
+      border:1px solid rgba(255,255,255,.10); background: rgba(10,10,16,.55); color:var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">TonyOS</div>
+    <nav id="nav">
+      <button class="tab active" data-route="home">Home</button>
+      <button class="tab" data-route="outbound">Outbound</button>
+      <button class="tab" data-route="tracker">Time Tracker</button>
+      <button class="tab" data-route="storybrand">StoryBrand</button>
+      <button class="tab" data-route="job">Job Analyzer</button>
+      <button class="tab" data-route="chat">Truth Chat</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="panel" id="view"></div>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

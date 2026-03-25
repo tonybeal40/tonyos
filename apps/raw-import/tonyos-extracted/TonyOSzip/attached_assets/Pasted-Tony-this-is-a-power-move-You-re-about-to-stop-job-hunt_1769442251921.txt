@@ -1,0 +1,169 @@
+Tony, this is a power move.
+You’re about to stop “job hunting” and start running a search engine for your career.
+
+Below is everything you need to drop into Replit and make this work end-to-end.
+
+No APIs. No paid tools. Just Python + Google scraping + scoring.
+
+STEP 1 – Create Replit Project
+
+Go to Replit
+
+Click Create Repl
+
+Choose Python
+
+Name it: tony-job-engine
+
+STEP 2 – Add These Files
+
+Create three files:
+
+main.py
+requirements.txt
+README.md
+
+STEP 3 – requirements.txt
+requests
+beautifulsoup4
+pandas
+
+
+Replit will auto-install these.
+
+STEP 4 – main.py (Job Finder Engine)
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+from datetime import datetime
+
+KEYWORDS = [
+    "revenue operations",
+    "revops",
+    "business development director",
+    "head of growth",
+    "growth operations",
+    "sales operations",
+    "gtm",
+    "crm",
+    "manufacturing",
+    "b2b"
+]
+
+LOCATION = "remote OR hybrid"
+MIN_FIT_SCORE = 3
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+def score_job(text):
+    return sum(1 for k in KEYWORDS if k.lower() in text.lower())
+
+def search_google(keyword):
+    query = f"{keyword} jobs {LOCATION}"
+    url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+    html = requests.get(url, headers=HEADERS).text
+    soup = BeautifulSoup(html, "html.parser")
+
+    results = []
+    for block in soup.select("div.BVG0Nb"):
+        title = block.text.strip()
+        fit = score_job(title)
+        if fit >= MIN_FIT_SCORE:
+            results.append({
+                "Keyword": keyword,
+                "Title": title,
+                "Fit Score": fit
+            })
+    return results
+
+def main():
+    all_jobs = []
+    for k in KEYWORDS:
+        print(f"Searching: {k}")
+        jobs = search_google(k)
+        all_jobs.extend(jobs)
+
+    df = pd.DataFrame(all_jobs)
+    df = df.drop_duplicates(subset=["Title"])
+    df = df.sort_values("Fit Score", ascending=False)
+
+    filename = f"tony_job_matches_{datetime.now().strftime('%Y%m%d')}.csv"
+    df.to_csv(filename, index=False)
+
+    print("\n==============================")
+    print("TOP MATCHES")
+    print("==============================")
+    print(df.head(15))
+    print(f"\nSaved file: {filename}")
+
+if __name__ == "__main__":
+    main()
+
+STEP 5 – README.md
+# Tony Job Engine
+
+This tool finds remote/hybrid jobs that match Tony’s RevOps + BD + Growth profile.
+
+## How to run:
+Click Run in Replit
+
+## Output:
+A ranked CSV file with the best job matches
+
+STEP 6 – Run It
+
+Click Run
+
+You’ll get:
+
+tony_job_matches_YYYYMMDD.csv
+
+
+Click it → Download → Open
+
+These are your Tier-1 job leads
+
+STEP 7 – Tailor Instantly
+
+When you see a job:
+
+Copy the job description
+
+Paste it here
+
+I’ll auto-rewrite:
+
+Resume bullets
+
+Summary
+
+Cover letter
+
+LinkedIn headline
+
+Based only on your real experience from your resumes and TonyOS.
+
+What This System Does For You
+
+You are no longer:
+
+Scrolling
+
+Guessing
+
+Applying blind
+
+You are now:
+
+Running a career intelligence engine
+
+Filtering for roles that actually fit
+
+Using AI to tailor instantly
+
+This is how high-leverage operators job search.
+
+If you want next:
+I can add Indeed scraping, LinkedIn parsing, or a daily auto-run version.

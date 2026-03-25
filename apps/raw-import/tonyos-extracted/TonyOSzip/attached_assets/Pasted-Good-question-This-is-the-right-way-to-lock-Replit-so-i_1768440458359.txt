@@ -1,0 +1,206 @@
+Good question. This is the right way to lock Replit so it only keeps true Tier 1 fits and stops drifting.
+
+Below is the authoritative Tier 1 industry list you should explicitly tell Replit to include, regardless of territory.
+If a company is not in one of these industries AND does not show compaction behavior, it should be excluded.
+
+🎯 TIER 1 INDUSTRIES (CORE NATOLI FIT)
+
+These industries directly use powder compaction, tablet pressing, pelletization, or solid-form manufacturing.
+
+You can think of these as your “always-include if manufacturing proof exists” set.
+
+1️⃣ Pharmaceutical Manufacturing
+
+Keywords / industry labels:
+
+pharmaceutical
+pharma manufacturing
+drug product manufacturing
+solid dose manufacturing
+tablet manufacturing
+capsule manufacturing
+CDMO
+CMO
+
+
+Why Tier 1
+✔ Tablet presses
+✔ Tooling wear
+✔ Scale-up
+✔ USP / regulatory relevance
+
+Natoli Fit
+→ Engineering + Scientific
+
+2️⃣ Nutraceutical & Supplement Manufacturing
+nutraceutical
+dietary supplements
+vitamin manufacturing
+mineral supplements
+solid supplements
+
+
+Why Tier 1
+✔ High tablet volumes
+✔ Tooling + formulation crossover
+
+Natoli Fit
+→ Engineering + Scientific
+
+3️⃣ Powder Metallurgy
+powder metallurgy
+PM manufacturing
+metal powder processing
+sintered components
+
+
+Why Tier 1
+✔ Die + punch tooling
+✔ High-force compaction
+
+Natoli Fit
+→ Engineering (primary)
+
+4️⃣ Advanced Ceramics & Technical Ceramics
+technical ceramics
+advanced ceramics
+ceramic compaction
+green body forming
+
+
+Why Tier 1
+✔ Uniaxial / isostatic pressing
+✔ Tooling + material behavior
+
+Natoli Fit
+→ Engineering + Scientific
+
+5️⃣ Battery & Energy Materials
+battery manufacturing
+lithium-ion
+solid-state battery
+electrode manufacturing
+cathode
+anode
+
+
+Why Tier 1
+✔ Powder densification
+✔ Emerging compaction needs
+
+Natoli Fit
+→ Scientific (lead) → Engineering
+
+6️⃣ Catalyst Manufacturing
+catalyst manufacturing
+heterogeneous catalysts
+pellet catalyst
+extrudate catalyst
+
+
+Why Tier 1
+✔ Pellet presses
+✔ Scale-up + formulation
+
+Natoli Fit
+→ Scientific + Engineering
+
+7️⃣ Automotive Safety (VERY SPECIFIC)
+
+⚠️ Automotive is Tier 1 ONLY IF this is present:
+
+airbag
+inflator
+gas generant
+pyrotechnic
+energetic materials
+
+
+Why Tier 1
+✔ Pelletized energetic compacts
+✔ Precision tooling
+
+Natoli Fit
+→ Engineering + Scientific
+
+8️⃣ Specialty Chemicals (Solid-Form Only)
+specialty chemicals
+solid chemicals
+chemical pellets
+powder chemicals
+
+
+Why Tier 1
+✔ Pelletization
+✔ Process development
+
+Natoli Fit
+→ Scientific (primary)
+
+🚫 INDUSTRIES THAT ARE NEVER TIER 1 (AUTO-EXCLUDE)
+
+Tell Replit to remove these outright, even if keywords match:
+
+clinic
+veterinary practice
+animal hospital
+dealer
+distributor
+retail
+equipment reseller
+spring manufacturing
+metal forming (wire/spring)
+machining only
+assembly only
+service provider
+
+🧠 HOW TO TELL REPLIT (LOGIC, NOT FLUFF)
+
+In plain logic:
+
+Keep companies ONLY IF:
+
+Industry ∈ Tier 1 Industry List
+AND
+
+Website shows manufacturing + material transformation
+
+Everything else → exclude.
+
+🔒 OPTIONAL: Tier 1 “Must-Have” Rule (Highly Recommended)
+
+Even within Tier 1 industries, require at least one of:
+
+tablet
+pellet
+powder
+compaction
+pressing
+sinter
+forming
+densification
+
+
+This keeps the list elite.
+
+TL;DR – Copy This Into Your Notes for Replit
+
+Tier 1 Industries
+
+Pharmaceutical manufacturing
+
+Nutraceutical manufacturing
+
+Powder metallurgy
+
+Advanced / technical ceramics
+
+Battery & energy materials
+
+Catalyst manufacturing
+
+Automotive airbag / energetic materials
+
+Solid-form specialty chemicals
+
+If it’s not one of these AND not transforming powders → out.

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tony CRM - Pipeline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    h1 { color: #00ff88; font-size: 1.6rem; }
+    .nav { display: flex; gap: 1rem; }
+    .nav a {
+      color: #888;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .nav a:hover { color: #00ff88; background: #1a1a24; }
+    .stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+    }
+    .stat-value { font-size: 1.6rem; font-weight: bold; color: #00ff88; }
+    .stat-label { font-size: 0.8rem; color: #888; margin-top: 0.3rem; }
+    .stat-value.warning { color: #ffd700; }
+    .stat-value.danger { color: #ff4444; }
+    .pipeline {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+    .stage {
+      min-width: 280px;
+      background: #12121a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .stage-header {
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stage-name { font-weight: 600; font-size: 0.95rem; }
+    .stage-count {
+      background: #333;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+    .stage-value {
+      font-size: 0.8rem;
+      color: #00ff88;
+      margin-top: 0.3rem;
+    }
+    .stage-deals {
+      padding: 0.75rem;
+      max-height: calc(100vh - 280px);
+      overflow-y: auto;
+    }
+    .deal-card {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .deal-card:hover { border-color: #00ff88; transform: translateY(-1px); }
+    .deal-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .deal-company { font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
+    .deal-meta { display: flex; justify-content: space-between; align-items: center; }
+    .deal-value { color: #00ff88; font-weight: 600; font-size: 0.85rem; }
+    .deal-prob {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #333;
+    }
+    .deal-date { font-size: 0.75rem; color: #888; margin-top: 0.4rem; }
+    .stage.prospecting .stage-header { border-left: 3px solid #6b7280; }
+    .stage.discovery .stage-header { border-left: 3px solid #3b82f6; }
+    .stage.proposal .stage-header { border-left: 3px solid #8b5cf6; }
+    .stage.negotiation .stage-header { border-left: 3px solid #f59e0b; }
+    .stage.closed-won .stage-header { border-left: 3px solid #10b981; }
+    .stage.closed-lost .stage-header { border-left: 3px solid #ef4444; }
+    .add-deal-btn {
+      width: 100%;
+      padding: 0.6rem;
+      background: transparent;
+      border: 1px dashed #444;
+      border-radius: 6px;
+      color: #666;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .add-deal-btn:hover { border-color: #00ff88; color: #00ff88; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 450px;
+    }
+    .modal h2 { color: #00ff88; margin-bottom: 1rem; font-size: 1.2rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.4rem; font-size: 0.85rem; color: #888; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      background: #12121a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #e0e0e0;
+      font-size: 0.9rem;
+    }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .form-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.9rem;
+    }
+    .btn-primary { background: #00ff88; color: #0a0a0f; }
+    .btn-primary:hover { background: #00cc6a; }
+    .btn-secondary { background: #333; color: #e0e0e0; }
+    .btn-secondary:hover { background: #444; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .empty-stage { color: #555; font-size: 0.85rem; text-align: center; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Deals Pipeline</h1>
+    <div class="nav">
+      <a href="index.html">Accounts</a>
+      <a href="pipeline.html" style="color:#00ff88;">Pipeline</a>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-box">
+      <div class="stat-value" id="total-deals">0</div>
+      <div class="stat-label">Active Deals</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="total-value">$0</div>
+      <div class="stat-label">Total Pipeline</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="weighted-value">$0</div>
+      <div class="stat-label">Weighted Value</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="won-value">$0</div>
+      <div class="stat-label">Closed Won</div>
+    </div>
+  </div>
+
+  <div class="pipeline" id="pipeline"></div>
+
+  <div class="modal-overlay" id="deal-modal">
+    <div class="modal">
+      <h2 id="modal-title">Add Deal</h2>
+      <form id="deal-form">
+        <input type="hidden" id="deal-id">
+        <div class="form-group">
+          <label>Deal Name *</label>
+          <input type="text" id="deal-name" required placeholder="e.g., Annual Tooling Package">
+        </div>
+        <div class="form-group">
+          <label>Account</label>
+          <select id="deal-account"></select>
+        </div>
+        <div class="form-group">
+          <label>Stage</label>
+          <select id="deal-stage">
+            <option value="Prospecting">Prospecting</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Negotiation">Negotiation</option>
+            <option value="Closed Won">Closed Won</option>
+            <option value="Closed Lost">Closed Lost</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Value ($)</label>
+          <input type="number" id="deal-value" placeholder="50000">
+        </div>
+        <div class="form-group">
+          <label>Probability (%)</label>
+          <input type="number" id="deal-probability" min="0" max="100" value="10">
+        </div>
+        <div class="form-group">
+          <label>Expected Close Date</label>
+          <input type="date" id="deal-close-date">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="deal-notes" placeholder="Deal details, key contacts, next steps..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" id="delete-btn" style="display:none;">Delete</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Deal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    const stages = ['Prospecting', 'Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
+    let accounts = [];
+    let allDeals = [];
+
+    async function loadAccounts() {
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts`);
+        const data = await res.json();
+        accounts = data.accounts || [];
+        
+        const select = document.getElementById('deal-account');
+        select.innerHTML = '<option value="">Select account...</option>' + 
+          accounts.map(a => `<option value="${a.id}">${a.company_name || a.domain}</option>`).join('');
+      } catch (e) {
+        console.error('Failed to load accounts:', e);
+      }
+    }
+
+    async function loadPipeline() {
+      try {
+        const [dealsRes, statsRes] = await Promise.all([
+          fetch(`${API_BASE}/api/deals`),
+          fetch(`${API_BASE}/api/deals/stats`)
+        ]);
+        
+        const dealsData = await dealsRes.json();
+        const stats = await statsRes.json();
+        allDeals = dealsData.deals || [];
+        
+        const activeDeals = allDeals.filter(d => d.stage !== 'Closed Won' && d.stage !== 'Closed Lost');
+        const totalValue = allDeals.reduce((sum, d) => sum + (d.value || 0), 0);
+        
+        document.getElementById('total-deals').textContent = activeDeals.length;
+        document.getElementById('total-value').textContent = formatCurrency(totalValue);
+        document.getElementById('weighted-value').textContent = formatCurrency(stats.weighted_pipeline || 0);
+        document.getElementById('won-value').textContent = formatCurrency(stats['Closed Won']?.total || 0);
+        
+        renderPipeline();
+      } catch (e) {
+        console.error('Failed to load pipeline:', e);
+      }
+    }
+
+    function renderPipeline() {
+      const pipeline = document.getElementById('pipeline');
+      
+      pipeline.innerHTML = stages.map(stage => {
+        const stageDeals = allDeals.filter(d => d.stage === stage);
+        const stageValue = stageDeals.reduce((sum, d) => sum + (d.value || 0), 0);
+        const stageClass = stage.toLowerCase().replace(/\s+/g, '-');
+        
+        return `
+          <div class="stage ${stageClass}">
+            <div class="stage-header">
+              <div>
+                <div class="stage-name">${stage}</div>
+                <div class="stage-value">${formatCurrency(stageValue)}</div>
+              </div>
+              <span class="stage-count">${stageDeals.length}</span>
+            </div>
+            <div class="stage-deals">
+              ${stageDeals.length > 0 ? stageDeals.map(deal => `
+                <div class="deal-card" onclick="editDeal(${deal.id})">
+                  <div class="deal-name">${deal.deal_name}</div>
+                  <div class="deal-company">${getAccountName(deal.account_id)}</div>
+                  <div class="deal-meta">
+                    <span class="deal-value">${formatCurrency(deal.value || 0)}</span>
+                    <span class="deal-prob">${deal.probability || 0}%</span>
+                  </div>
+                  ${deal.expected_close_date ? `<div class="deal-date">Close: ${formatDate(deal.expected_close_date)}</div>` : ''}
+                </div>
+              `).join('') : '<div class="empty-stage">No deals</div>'}
+              <button class="add-deal-btn" onclick="addDealToStage('${stage}')">+ Add Deal</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getAccountName(accountId) {
+      const account = accounts.find(a => a.id === accountId);
+      return account ? (account.company_name || account.domain) : 'No account';
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function addDealToStage(stage) {
+      document.getElementById('modal-title').textContent = 'Add Deal';
+      document.getElementById('deal-form').reset();
+      document.getElementById('deal-id').value = '';
+      document.getElementById('deal-stage').value = stage;
+      document.getElementById('delete-btn').style.display = 'none';
+      document.getElementById('deal-modal').classList.add('active');
+    }
+
+    function editDeal(dealId) {
+      const deal = allDeals.find(d => d.id === dealId);
+      if (!deal) return;
+      
+      document.getElementById('modal-title').textContent = 'Edit Deal';
+      document.getElementById('deal-id').value = deal.id;
+      document.getElementById('deal-name').value = deal.deal_name || '';
+      document.getElementById('deal-account').value = deal.account_id || '';
+      document.getElementById('deal-stage').value = deal.stage || 'Prospecting';
+      document.getElementById('deal-value').value = deal.value || '';
+      document.getElementById('deal-probability').value = deal.probability || 10;
+      document.getElementById('deal-close-date').value = deal.expected_close_date || '';
+      document.getElementById('deal-notes').value = deal.notes || '';
+      document.getElementById('delete-btn').style.display = 'block';
+      document.getElementById('deal-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('deal-modal').classList.remove('active');
+    }
+
+    document.getElementById('deal-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const dealId = document.getElementById('deal-id').value;
+      const data = {
+        deal_name: document.getElementById('deal-name').value,
+        account_id: document.getElementById('deal-account').value || null,
+        stage: document.getElementById('deal-stage').value,
+        value: parseFloat(document.getElementById('deal-value').value) || 0,
+        probability: parseInt(document.getElementById('deal-probability').value) || 10,
+        expected_close_date: document.getElementById('deal-close-date').value || null,
+        notes: document.getElementById('deal-notes').value
+      };
+      
+      try {
+        if (dealId) {
+          await fetch(`${API_BASE}/api/deals/${dealId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        } else {
+          await fetch(`${API_BASE}/api/deals`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        }
+        closeModal();
+        loadPipeline();
+      } catch (e) {
+        alert('Failed to save deal: ' + e.message);
+      }
+    });
+
+    document.getElementById('delete-btn').addEventListener('click', async () => {
+      const dealId = document.getElementById('deal-id').value;
+      if (!dealId || !confirm('Delete this deal?')) return;
+      
+      try {
+        await fetch(`${API_BASE}/api/deals/${dealId}`, { method: 'DELETE' });
+        closeModal();
+        loadPipeline();
+      } catch (e) {
+        alert('Failed to delete deal: ' + e.message);
+      }
+    });
+
+    document.getElementById('deal-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'deal-modal') closeModal();
+    });
+
+    loadAccounts();
+    loadPipeline();
+  </script>
+</body>
+</html>

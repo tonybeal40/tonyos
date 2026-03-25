@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>503A & 503B Compounding Intelligence | Natoli Market Intelligence</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --card: #1a1a24;
+      --border: #2a2a3a;
+      --text: #e5e5e5;
+      --muted: #9ca3af;
+      --engineering: #f97316;
+      --scientific: #8b5cf6;
+      --both: #22c55e;
+      --cyan: #06b6d4;
+      --503a: #ec4899;
+      --503b: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .header { background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(139, 92, 246, 0.15)); border-bottom: 1px solid var(--border); padding: 32px 40px; }
+    .header-content { max-width: 1400px; margin: 0 auto; }
+    .header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .header h1 span { color: var(--engineering); }
+    .header p { color: var(--muted); }
+    .badge-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+    .badge-eng { background: rgba(249, 115, 22, 0.2); color: var(--engineering); }
+    .badge-sci { background: rgba(139, 92, 246, 0.2); color: var(--scientific); }
+    .badge-both { background: rgba(34, 197, 94, 0.2); color: var(--both); }
+    .badge-total { background: rgba(6, 182, 212, 0.2); color: var(--cyan); }
+    .badge-503a { background: rgba(236, 72, 153, 0.2); color: var(--503a); }
+    .badge-503b { background: rgba(59, 130, 246, 0.2); color: var(--503b); }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 40px; }
+    .controls { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+    .search-box { flex: 1; min-width: 200px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+    .search-box:focus { outline: none; border-color: var(--cyan); }
+    .filter-btn { padding: 10px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover { border-color: var(--cyan); color: var(--text); }
+    .filter-btn.active { background: var(--cyan); border-color: var(--cyan); color: #000; }
+    .filter-btn.eng.active { background: var(--engineering); border-color: var(--engineering); }
+    .filter-btn.sci.active { background: var(--scientific); border-color: var(--scientific); }
+    .filter-btn.both.active { background: var(--both); border-color: var(--both); color: #000; }
+    .filter-group { display: flex; gap: 8px; padding: 4px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); }
+    .filter-group-label { font-size: 0.7rem; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .stats { display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; min-width: 120px; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; margin-bottom: 4px; }
+    .stat-card .label { color: var(--muted); font-size: 0.85rem; }
+    .stat-card.eng .value { color: var(--engineering); }
+    .stat-card.sci .value { color: var(--scientific); }
+    .stat-card.both .value { color: var(--both); }
+    .stat-card.type-503a .value { color: var(--503a); }
+    .stat-card.type-503b .value { color: var(--503b); }
+    .table-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { background: var(--surface); color: var(--cyan); padding: 14px 16px; text-align: left; font-weight: 600; position: sticky; top: 0; cursor: pointer; user-select: none; }
+    th:hover { background: #1e1e2a; }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .company-name { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .company-location { color: var(--muted); font-size: 0.8rem; }
+    .tag { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-right: 6px; margin-bottom: 4px; }
+    .tag-eng { background: rgba(249, 115, 22, 0.15); color: var(--engineering); border: 1px solid rgba(249, 115, 22, 0.3); }
+    .tag-sci { background: rgba(139, 92, 246, 0.15); color: var(--scientific); border: 1px solid rgba(139, 92, 246, 0.3); }
+    .tag-both { background: rgba(34, 197, 94, 0.15); color: var(--both); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .tag-503a { background: rgba(236, 72, 153, 0.15); color: var(--503a); border: 1px solid rgba(236, 72, 153, 0.3); }
+    .tag-503b { background: rgba(59, 130, 246, 0.15); color: var(--503b); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; }
+    .status-clean { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .status-warning { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .status-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+    .contact-info { font-size: 0.8rem; color: var(--muted); }
+    .contact-info a { color: var(--cyan); text-decoration: none; }
+    .contact-info a:hover { text-decoration: underline; }
+    .rationale { font-size: 0.8rem; color: var(--muted); max-width: 280px; line-height: 1.5; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 20px; }
+    .back-link:hover { color: var(--text); }
+    .scroll-wrapper { max-height: 600px; overflow-y: auto; }
+    .info-box { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; }
+    .info-box h4 { color: var(--cyan); margin-bottom: 8px; font-size: 0.95rem; }
+    .info-box p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+    .no-results { text-align: center; padding: 60px 20px; color: var(--muted); }
+    @media (max-width: 768px) { .container { padding: 20px; } th, td { padding: 10px 12px; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <a href="index.html" class="back-link">Back to Introduction System</a>
+      <h1><span>503A & 503B</span> Compounding Intelligence</h1>
+      <p>FDA-registered compounding facilities classified for Natoli Engineering and Scientific targeting</p>
+      <div class="badge-row">
+        <span class="badge badge-total" id="total-badge">0 Facilities</span>
+        <span class="badge badge-503b" id="503b-badge">0 503B</span>
+        <span class="badge badge-503a" id="503a-badge">0 503A</span>
+        <span class="badge badge-eng" id="eng-badge">0 Engineering</span>
+        <span class="badge badge-sci" id="sci-badge">0 Scientific</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="info-box">
+      <h4>Classification Criteria</h4>
+      <p><strong>503B (FDA-registered):</strong> Outsourcing facilities, bulk production, cGMP requirements, hospital/office use<br>
+      <strong>503A (State-licensed):</strong> Patient-specific, traditional compounding, USP standards<br>
+      <strong>Engineering:</strong> Sterile fill/finish, manufacturing equipment, cleanroom operations, scale-up production<br>
+      <strong>Scientific:</strong> Formulation development, stability testing, API compounding, R&D, clinical trials</p>
+    </div>
+
+    <div class="controls">
+      <input type="text" class="search-box" id="search" placeholder="Search company, state, or service...">
+      <div>
+        <div class="filter-group-label">Facility Type</div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-type="all" onclick="filterByType('all')">All</button>
+          <button class="filter-btn" data-type="503b" onclick="filterByType('503b')">503B</button>
+          <button class="filter-btn" data-type="503a" onclick="filterByType('503a')">503A</button>
+        </div>
+      </div>
+      <div>
+        <div class="filter-group-label">Division</div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all" onclick="filterTable('all')">All</button>
+          <button class="filter-btn eng" data-filter="engineering" onclick="filterTable('engineering')">Eng</button>
+          <button class="filter-btn sci" data-filter="scientific" onclick="filterTable('scientific')">Sci</button>
+          <button class="filter-btn both" data-filter="both" onclick="filterTable('both')">Both</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card type-503b">
+        <div class="value" id="stat-503b">0</div>
+        <div class="label">503B Facilities</div>
+      </div>
+      <div class="stat-card type-503a">
+        <div class="value" id="stat-503a">0</div>
+        <div class="label">503A Pharmacies</div>
+      </div>
+      <div class="stat-card eng">
+        <div class="value" id="stat-eng">0</div>
+        <div class="label">Engineering Fit</div>
+      </div>
+      <div class="stat-card sci">
+        <div class="value" id="stat-sci">0</div>
+        <div class="label">Scientific Fit</div>
+      </div>
+      <div class="stat-card both">
+        <div class="value" id="stat-both">0</div>
+        <div class="label">Both Divisions</div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="scroll-wrapper">
+        <table id="facilities-table">
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)">Company</th>
+              <th onclick="sortTable(1)">Type</th>
+              <th onclick="sortTable(2)">Division</th>
+              <th onclick="sortTable(3)">Services</th>
+              <th onclick="sortTable(4)">Status</th>
+              <th onclick="sortTable(5)">Contact</th>
+              <th>Rationale</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="no-results" id="no-results" style="display:none;">No facilities match your search criteria.</div>
+  </div>
+
+  <script>
+    const facilities = [
+      // 503B FACILITIES
+      { name: "Fagron Sterile Services", location: "Wichita, KS", type: "503b", division: "both", services: ["Sterile Fill/Finish", "Formulation", "Ophthalmics"], status: "warning", contact: "800-423-6967", rationale: "Major 503B with cGMP cleanrooms. Tablet compression for clinical batches." },
+      { name: "Fagron Sterile Services", location: "Boston, MA", type: "503b", division: "both", services: ["Sterile Manufacturing", "Dialysis"], status: "warning", contact: "800-423-6967", rationale: "East coast facility. Sterile processing equipment needs." },
+      { name: "QuVa Pharma", location: "Sugar Land, TX", type: "503b", division: "engineering", services: ["Sterile Fill/Finish", "Visual Inspection"], status: "clean", contact: "877-229-2889", rationale: "Large-scale sterile manufacturing. Filling lines and inspection systems." },
+      { name: "QuVa Pharma", location: "Bloomsbury, NJ", type: "503b", division: "engineering", services: ["Aseptic Processing", "Sterile Production"], status: "clean", contact: "877-229-2889", rationale: "East coast sterile hub. Cleanroom equipment needs." },
+      { name: "Nephron 503B Outsourcing", location: "West Columbia, SC", type: "503b", division: "engineering", services: ["Sterile Injectables", "Respiratory"], status: "clean", contact: "800-443-4313", rationale: "27+ years sterile manufacturing. High-volume production lines." },
+      { name: "Empower Pharmacy", location: "Houston, TX", type: "503b", division: "both", services: ["Sterile Compounding", "Hormone Therapy"], status: "clean", contact: "832-678-4417", rationale: "Largest 503A, growing 503B. Both formulation and equipment needs." },
+      { name: "Empower Pharmacy", location: "South Plainfield, NJ", type: "503b", division: "both", services: ["Sterile Manufacturing", "Scale-up"], status: "clean", contact: "832-678-4417", rationale: "New Jersey 503B facility expansion." },
+      { name: "AnazaoHealth Corporation", location: "Las Vegas, NV", type: "503b", division: "both", services: ["Sterile Compounding", "Custom Formulation"], status: "warning", contact: "800-995-4363", rationale: "Established 503B (2014). Equipment and formulation services." },
+      { name: "Apollo Care", location: "Columbia, MO", type: "503b", division: "scientific", services: ["Custom Compounding", "Formulation"], status: "warning", contact: "573-441-8900", rationale: "Formulation-focused. Natoli Scientific target." },
+      { name: "Apothecary Pharma, LLC", location: "Cary, NC", type: "503b", division: "scientific", services: ["API Compounding", "Clinical Support"], status: "warning", contact: "919-760-5478", rationale: "Formulation development focus." },
+      { name: "BPI Labs LLC", location: "Largo, FL", type: "503b", division: "engineering", services: ["Sterile Production", "Fill/Finish"], status: "warning", contact: "727-471-0850", rationale: "Sterile manufacturing focus." },
+      { name: "BSO LLC", location: "Golden, CO", type: "503b", division: "engineering", services: ["Sterile Compounding", "Cleanroom"], status: "clean", contact: "303-271-1310", rationale: "Colorado-based sterile manufacturer." },
+      { name: "Central Admixture Pharmacy", location: "Santa Fe Springs, CA", type: "503b", division: "engineering", services: ["Hospital IV", "Large-Scale"], status: "clean", contact: "800-441-6290", rationale: "High-volume IV production." },
+      { name: "Central Admixture Pharmacy", location: "Aurora, CO", type: "503b", division: "engineering", services: ["Sterile Admixtures"], status: "clean", contact: "800-441-6290", rationale: "Regional production facility." },
+      { name: "Curia (Biosynthesis)", location: "Lemont, IL", type: "503b", division: "both", services: ["CDMO Services", "API Manufacturing"], status: "clean", contact: "630-243-4011", rationale: "Full CDMO. Equipment and formulation." },
+      { name: "Edge Pharma", location: "Webster, MA", type: "503b", division: "engineering", services: ["Sterile Compounding", "Injectable"], status: "clean", contact: "508-461-0970", rationale: "Sterile injectable focus." },
+      { name: "Fresenius Kabi USA", location: "Wilson, NC", type: "503b", division: "engineering", services: ["Large-Scale Manufacturing", "IV Solutions"], status: "clean", contact: "888-386-1300", rationale: "Major pharmaceutical manufacturer." },
+      { name: "ImprimisRx", location: "San Diego, CA", type: "503b", division: "both", services: ["Ophthalmics", "Sterile Manufacturing"], status: "clean", contact: "858-704-4041", rationale: "Ophthalmic specialization." },
+      { name: "Leiters Inc", location: "San Jose, CA", type: "503b", division: "both", services: ["Ophthalmics", "Sterile Compounding"], status: "clean", contact: "408-432-8500", rationale: "Ophthalmic focus with formulation." },
+      { name: "PharMEDium Services", location: "Memphis, TN", type: "503b", division: "engineering", services: ["High-Volume Sterile", "Hospital"], status: "clean", contact: "800-523-7749", rationale: "Major hospital supplier." },
+      { name: "ReadyMed", location: "Houston, TX", type: "503b", division: "engineering", services: ["Sterile Production", "Ready-to-Use"], status: "clean", contact: "281-454-3000", rationale: "Ready-to-use sterile products." },
+      { name: "Recro Gainesville", location: "Gainesville, GA", type: "503b", division: "engineering", services: ["Sterile Fill/Finish", "Lyophilization"], status: "clean", contact: "770-532-0252", rationale: "Sterile fill with lyophilization." },
+      { name: "Revelation Pharma", location: "Covington, GA", type: "503b", division: "both", services: ["Sterile Manufacturing", "Formulation"], status: "clean", contact: "770-727-1600", rationale: "Full-service 503B." },
+      { name: "Sagent Pharmaceuticals", location: "Schaumburg, IL", type: "503b", division: "engineering", services: ["Injectable Manufacturing"], status: "clean", contact: "847-908-1600", rationale: "Generic injectable manufacturer." },
+      { name: "SCA Pharma", location: "Little Rock, AR", type: "503b", division: "engineering", services: ["Sterile Compounding", "Oncology"], status: "clean", contact: "855-722-7472", rationale: "Oncology and antibiotics." },
+      { name: "SCA Pharma", location: "Windsor, CT", type: "503b", division: "engineering", services: ["Sterile Production"], status: "clean", contact: "855-722-7472", rationale: "Northeast production hub." },
+      { name: "U.S. Compounding Factory", location: "Conway, AR", type: "503b", division: "both", services: ["Sterile Manufacturing", "Formulation"], status: "clean", contact: "501-328-0860", rationale: "Full-service compounding." },
+      { name: "Wells Pharma", location: "Bradenton, FL", type: "503b", division: "engineering", services: ["Sterile Production", "Emergency"], status: "clean", contact: "941-708-5540", rationale: "Emergency medications." },
+      { name: "503B Outsourcing Facility One", location: "West Palm Beach, FL", type: "503b", division: "engineering", services: ["Sterile Compounding"], status: "pending", contact: "754-265-4280", rationale: "New facility (2025)." },
+      { name: "AH Nutraceutical Compounding", location: "McQueeny, TX", type: "503b", division: "scientific", services: ["Nutraceutical"], status: "pending", contact: "312-401-7455", rationale: "Nutraceutical focus." },
+      { name: "Ajenat Pharmaceuticals", location: "Largo, FL", type: "503b", division: "engineering", services: ["Sterile Compounding"], status: "pending", contact: "727-506-1261", rationale: "New sterile facility." },
+      { name: "Annovex Pharma", location: "Lorton, VA", type: "503b", division: "engineering", services: ["Sterile Production"], status: "warning", contact: "571-642-5104", rationale: "Sterile manufacturing." },
+      { name: "Apertus Compounding", location: "Maryland Heights, MO", type: "503b", division: "scientific", services: ["Custom Compounding"], status: "pending", contact: "314-607-0432", rationale: "New facility (2025)." },
+      { name: "Apocus, Inc.", location: "San Antonio, TX", type: "503b", division: "scientific", services: ["Specialty Compounding"], status: "pending", contact: "214-797-7172", rationale: "Specialty formulations." },
+      { name: "Arc Compounding Pharmacy", location: "Waco, TX", type: "503b", division: "scientific", services: ["Custom Compounding"], status: "pending", contact: "512-665-6911", rationale: "Custom formulations." },
+      { name: "Aspire Compounding", location: "Sugar Land, TX", type: "503b", division: "scientific", services: ["Specialty Compounding"], status: "pending", contact: "281-501-0511", rationale: "Specialty formulations." },
+      { name: "Atilar Pharma", location: "Houston, TX", type: "503b", division: "engineering", services: ["Sterile Compounding"], status: "pending", contact: "713-992-3884", rationale: "New sterile facility." },
+      { name: "Aveva Drug Delivery", location: "Tamarac, FL", type: "503b", division: "both", services: ["Drug Delivery", "Transdermal"], status: "pending", contact: "954-218-1570", rationale: "Drug delivery innovation." },
+      { name: "BayCare Central Pharmacy", location: "Temple Terrace, FL", type: "503b", division: "engineering", services: ["Non-Sterile", "Hospital"], status: "warning", contact: "813-901-6339", rationale: "Hospital system compounding." },
+      { name: "Bennett Pharmaceuticals", location: "Hudson, WI", type: "503b", division: "engineering", services: ["Sterile Compounding"], status: "pending", contact: "952-381-9027", rationale: "Sterile facility." },
+      { name: "Bravado Pharmaceuticals", location: "Lutz, FL", type: "503b", division: "engineering", services: ["Sterile Production"], status: "pending", contact: "813-991-4100", rationale: "New sterile facility." },
+      { name: "Brookfield Medical/Surgical", location: "Brookfield, CT", type: "503b", division: "engineering", services: ["Medical Supply", "Sterile"], status: "warning", contact: "203-775-0862", rationale: "Medical supply with sterile." },
+      { name: "Cantrell Drug Company", location: "Little Rock, AR", type: "503b", division: "engineering", services: ["Sterile Compounding", "Hospital"], status: "clean", contact: "501-666-6677", rationale: "Hospital sterile compounding." },
+      { name: "Civica Rx", location: "Lehi, UT", type: "503b", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "801-901-2001", rationale: "Generic drug manufacturing." },
+      { name: "Genco Pharmaceutical", location: "New York, NY", type: "503b", division: "engineering", services: ["Sterile Manufacturing"], status: "clean", contact: "212-736-7100", rationale: "Sterile manufacturing in NYC." },
+      { name: "IV Specialists", location: "San Diego, CA", type: "503b", division: "engineering", services: ["IV Manufacturing"], status: "clean", contact: "858-277-4884", rationale: "IV production specialist." },
+      { name: "McGuff Compounding", location: "Santa Ana, CA", type: "503b", division: "both", services: ["Sterile Compounding", "Formulation"], status: "clean", contact: "877-444-1133", rationale: "Full-service compounding." },
+      { name: "Medisca Pharmaceuticals", location: "Plattsburgh, NY", type: "503b", division: "both", services: ["API Manufacturing", "Formulation"], status: "clean", contact: "800-932-1039", rationale: "API and formulation supplier." },
+      { name: "Pharmascience", location: "Montreal, QC", type: "503b", division: "engineering", services: ["Generic Manufacturing", "Tablets"], status: "clean", contact: "514-340-1114", rationale: "Generic tablets. Compression equipment." },
+      { name: "Strides Pharma", location: "Chestnut Ridge, NY", type: "503b", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "845-425-7100", rationale: "Generic injectables." },
+      // 503A PHARMACIES
+      { name: "Triangle Compounding", location: "Cary, NC", type: "503a", division: "scientific", services: ["Custom Formulation", "Hormone"], status: "clean", contact: "919-363-0000", rationale: "Major 503A regional player. Scientific R&D." },
+      { name: "Vertisis Custom Pharmacy", location: "Irvine, CA", type: "503a", division: "scientific", services: ["Specialized Formulations"], status: "clean", contact: "949-679-3000", rationale: "Specialized formulations. Scientific support." },
+      { name: "Wedgewood Pharmacy", location: "Swedesboro, NJ", type: "503a", division: "scientific", services: ["Veterinary Compounding"], status: "clean", contact: "800-331-8272", rationale: "Veterinary leader. Animal health formulations." },
+      { name: "Hoye's Pharmacy", location: "Richmond, VA", type: "503a", division: "scientific", services: ["Custom Compounding"], status: "clean", contact: "804-288-8361", rationale: "Regional 503A. Custom formulations." },
+      { name: "Smith Caldwell Drug Store", location: "Texarkana, TX", type: "503a", division: "scientific", services: ["Specialty Therapeutic"], status: "clean", contact: "903-793-4186", rationale: "Specialty therapeutic focus." },
+      { name: "Sixth Avenue Medical", location: "New York, NY", type: "503a", division: "scientific", services: ["Medical Compounding"], status: "clean", contact: "212-929-1630", rationale: "NYC medical compounding." },
+      { name: "Dougherty's Pharmacy", location: "Dallas, TX", type: "503a", division: "scientific", services: ["Community Compounding"], status: "clean", contact: "214-823-4664", rationale: "Community-focused compounding." },
+      { name: "Pencol Specialty", location: "Denver, CO", type: "503a", division: "scientific", services: ["Specialty Formulations"], status: "clean", contact: "303-355-7401", rationale: "Specialty formulations." },
+      { name: "Pavilion Compounding", location: "Atlanta, GA", type: "503a", division: "scientific", services: ["Full-Service Compounding"], status: "clean", contact: "404-350-5780", rationale: "Full-service compounding." },
+      { name: "Village Compounding", location: "Houston, TX", type: "503a", division: "scientific", services: ["Community Pharmacy"], status: "clean", contact: "713-527-8339", rationale: "Community pharmacy model." },
+      { name: "Strive Compounding", location: "St. Louis, MO", type: "503a", division: "both", services: ["Telehealth Expansion", "Custom"], status: "clean", contact: "314-696-1000", rationale: "50k sq ft facility. Telehealth expansion." },
+      { name: "LRockRx Compounding", location: "Little Rock, AR", type: "503a", division: "engineering", services: ["New Facility", "Sterile"], status: "clean", contact: "501-223-8700", rationale: "New 2024 facility. Creating 100 jobs." },
+      { name: "Valor Compounding", location: "San Antonio, TX", type: "503a", division: "both", services: ["Expansion", "Custom"], status: "clean", contact: "210-495-2055", rationale: "Announced expansion (2024)." },
+      { name: "VLS Pharmacy", location: "Brooklyn, NY", type: "503a", division: "engineering", services: ["UCAP-certified Sterile"], status: "clean", contact: "718-599-2700", rationale: "UCAP-certified sterile compounding." },
+      { name: "Advanced Scripts Pharmacy", location: "San Diego, CA", type: "503a", division: "both", services: ["Sterile", "Non-Sterile"], status: "clean", contact: "858-277-7070", rationale: "Sterile & non-sterile. Nationwide shipping." },
+      { name: "Olympia Pharmaceuticals", location: "Orlando, FL", type: "503a", division: "both", services: ["Wellness", "Hormone", "Weight"], status: "clean", contact: "407-673-2222", rationale: "Launched OlympiaYou.com. Consumer platform." },
+      { name: "Chiron Compounding", location: "Las Vegas, NV", type: "503a", division: "scientific", services: ["Custom Formulation", "Hormone"], status: "clean", contact: "702-450-3600", rationale: "Specialty formulation. Scientific focus." },
+      { name: "Evera Compounding", location: "Broomfield, CO", type: "503a", division: "scientific", services: ["Specialty", "Dermatology"], status: "clean", contact: "720-495-4747", rationale: "Specialty formulations. Dermatology." },
+      { name: "Harbin Pharmacy", location: "Indianapolis, IN", type: "503a", division: "scientific", services: ["Custom Compounding", "Hormone"], status: "clean", contact: "317-803-9900", rationale: "Custom formulation services." },
+      { name: "MedQuest Pharmacy", location: "Salt Lake City, UT", type: "503a", division: "scientific", services: ["Specialty", "Clinical Trials"], status: "clean", contact: "801-583-2060", rationale: "Clinical trials support." },
+      { name: "PharmaLex", location: "Albany, NY", type: "503a", division: "scientific", services: ["Regulatory", "Stability Testing"], status: "clean", contact: "518-512-3900", rationale: "Regulatory and CMC services." },
+      { name: "Precision Rx Compounding", location: "Madison, WI", type: "503a", division: "scientific", services: ["Custom", "Veterinary"], status: "clean", contact: "608-819-8400", rationale: "Custom formulation focus." },
+      { name: "Sircle Pharmaceuticals", location: "Salt Lake City, UT", type: "503a", division: "scientific", services: ["Formulation R&D"], status: "clean", contact: "801-532-2300", rationale: "Formulation-focused R&D." },
+      { name: "South Valley Compounding", location: "Draper, UT", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "801-495-6245", rationale: "Custom formulations." },
+      { name: "Spectrum Pharmacy Solutions", location: "Irvine, CA", type: "503a", division: "scientific", services: ["Specialty", "API Sourcing"], status: "clean", contact: "800-792-5279", rationale: "API expertise." },
+      { name: "Eagle Pharmaceuticals", location: "Woodcliff Lake, NJ", type: "503a", division: "scientific", services: ["Specialty Pharma"], status: "clean", contact: "201-326-5300", rationale: "Specialty pharmaceuticals." },
+      { name: "CareFirst Specialty", location: "Linthicum, MD", type: "503a", division: "scientific", services: ["Specialty Pharmacy"], status: "clean", contact: "866-249-8784", rationale: "Specialty pharmacy." },
+      { name: "Coastal Compounding", location: "Savannah, GA", type: "503a", division: "scientific", services: ["Custom", "Dermatology"], status: "clean", contact: "912-355-5188", rationale: "Custom formulations. Dermatology." },
+      { name: "Compounded Solutions", location: "Monroe, CT", type: "503a", division: "scientific", services: ["Custom", "Veterinary"], status: "clean", contact: "203-268-4964", rationale: "Custom veterinary formulations." },
+      { name: "Custom Meds Inc", location: "Lexington, KY", type: "503a", division: "scientific", services: ["Custom", "Pediatric"], status: "clean", contact: "859-231-7100", rationale: "Pediatric specialty." },
+      { name: "Delphi Specialty", location: "Los Angeles, CA", type: "503a", division: "scientific", services: ["Specialty", "Rare Disease"], status: "clean", contact: "310-473-3355", rationale: "Rare disease focus." },
+      { name: "Essential Pharmacy", location: "Kirkland, WA", type: "503a", division: "scientific", services: ["Custom", "Hormone"], status: "clean", contact: "425-827-4820", rationale: "Custom formulations." },
+      { name: "FHN Pharmacy", location: "Freeport, IL", type: "503a", division: "scientific", services: ["Hospital Compounding"], status: "clean", contact: "815-599-7770", rationale: "Hospital formulations." },
+      { name: "Guardian Pharmacy", location: "Atlanta, GA", type: "503a", division: "scientific", services: ["Long-Term Care"], status: "clean", contact: "770-953-0046", rationale: "Long-term care formulations." },
+      { name: "Hartley Medical", location: "High Point, NC", type: "503a", division: "engineering", services: ["Sterile", "Medical Devices"], status: "clean", contact: "336-885-2000", rationale: "Medical device integration." },
+      { name: "HealthDirect Pharmacy", location: "Pittsburgh, PA", type: "503a", division: "scientific", services: ["Pharmacy Services"], status: "clean", contact: "800-792-9965", rationale: "Custom formulation services." },
+      { name: "Innovative Compounding", location: "Kennesaw, GA", type: "503a", division: "scientific", services: ["Innovative Formulations"], status: "clean", contact: "770-425-0011", rationale: "Formulation innovation." },
+      { name: "Integrity Compounding", location: "Richland Hills, TX", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "817-282-7700", rationale: "Custom specialty formulations." },
+      { name: "Institutional Pharmacy Solutions", location: "Houston, TX", type: "503a", division: "engineering", services: ["Hospital Pharmacy"], status: "clean", contact: "281-847-9900", rationale: "Institutional sterile production." },
+      { name: "Koshland Pharm", location: "San Francisco, CA", type: "503a", division: "scientific", services: ["Custom", "Dermatology"], status: "clean", contact: "415-673-3456", rationale: "Dermatology specialty." },
+      { name: "Lloyd's of Kew Gardens", location: "Kew Gardens, NY", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "718-849-5000", rationale: "Custom formulations." },
+      { name: "Martin Avenue Pharmacy", location: "Naperville, IL", type: "503a", division: "scientific", services: ["Custom", "Hormone"], status: "clean", contact: "630-355-6400", rationale: "Hormone specialty." },
+      { name: "NuVision Pharmacy", location: "Tucson, AZ", type: "503a", division: "scientific", services: ["Ophthalmics", "Custom"], status: "clean", contact: "520-290-5500", rationale: "Ophthalmic specialty." },
+      { name: "PharmaCord", location: "Jeffersonville, IN", type: "503a", division: "scientific", services: ["Specialty Pharmacy"], status: "clean", contact: "855-975-2673", rationale: "Specialty pharmacy services." },
+      { name: "Pine Pharmacy", location: "Williamsville, NY", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "716-632-1250", rationale: "Custom formulations." },
+      { name: "Prescriptive Compounding", location: "Brooklyn, NY", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "718-788-1000", rationale: "Custom specialty formulations." },
+      { name: "Professional Arts Pharmacy", location: "Baltimore, MD", type: "503a", division: "scientific", services: ["Custom", "Hormone"], status: "clean", contact: "410-462-0800", rationale: "Hormone formulations." },
+      { name: "Progressive Pharmacy", location: "Smithtown, NY", type: "503a", division: "scientific", services: ["Custom", "Pain Management"], status: "clean", contact: "631-265-7100", rationale: "Pain management formulations." },
+      { name: "Rx3 Compounding", location: "San Antonio, TX", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "210-888-4773", rationale: "Custom formulations." },
+      { name: "Sterling Compounding", location: "San Diego, CA", type: "503a", division: "scientific", services: ["Custom", "Dermatology"], status: "clean", contact: "858-277-0080", rationale: "Dermatology specialty." },
+      { name: "Wellspring Compounding", location: "Beverly, MA", type: "503a", division: "scientific", services: ["Custom", "Specialty"], status: "clean", contact: "978-236-7370", rationale: "Custom formulations." },
+      { name: "Mixlab", location: "New York, NY", type: "503a", division: "scientific", services: ["Veterinary", "Pet Health"], status: "clean", contact: "888-730-4260", rationale: "Pet compounding specialist." },
+      { name: "PetMedRx", location: "Kansas City, MO", type: "503a", division: "scientific", services: ["Veterinary"], status: "clean", contact: "816-842-6637", rationale: "Veterinary compounding." },
+      { name: "Roadrunner Pharmacy", location: "Phoenix, AZ", type: "503a", division: "scientific", services: ["Veterinary"], status: "clean", contact: "877-518-4589", rationale: "Veterinary specialization." },
+      { name: "Belmar Pharma Solutions", location: "Lakewood, CO", type: "503a", division: "both", services: ["Custom", "Hormone", "Sterile"], status: "clean", contact: "800-525-9473", rationale: "Full-service with sterile capabilities." },
+      { name: "PCCA", location: "Houston, TX", type: "503a", division: "scientific", services: ["API Supply", "Training"], status: "clean", contact: "800-331-2498", rationale: "API supplier. Training programs." },
+      { name: "Letco Medical", location: "Decatur, AL", type: "503a", division: "scientific", services: ["API Supply", "Equipment"], status: "clean", contact: "800-239-5288", rationale: "API and equipment supplier." },
+      { name: "Humco", location: "Texarkana, TX", type: "503a", division: "scientific", services: ["Bulk Chemicals", "Formulation"], status: "clean", contact: "800-662-3435", rationale: "Bulk chemicals supplier." },
+      { name: "Gallipot", location: "St. Paul, MN", type: "503a", division: "scientific", services: ["Compounding Supplies"], status: "clean", contact: "800-423-6967", rationale: "Compounding supplies." },
+      { name: "MEDISCA", location: "Plattsburgh, NY", type: "503a", division: "both", services: ["API", "Formulation Support"], status: "clean", contact: "800-932-1039", rationale: "API and formulation leader." },
+      { name: "Fresenius Kabi Compounding", location: "Grand Island, NY", type: "503a", division: "engineering", services: ["IV Compounding"], status: "clean", contact: "716-775-5000", rationale: "IV compounding services." },
+      { name: "B. Braun Medical", location: "Bethlehem, PA", type: "503a", division: "engineering", services: ["IV Systems", "Sterile"], status: "clean", contact: "800-227-2862", rationale: "IV systems and sterile products." },
+      { name: "ICU Medical", location: "San Clemente, CA", type: "503a", division: "engineering", services: ["IV Systems", "Medical Devices"], status: "clean", contact: "949-366-2183", rationale: "IV systems manufacturer." },
+      { name: "Baxter International", location: "Deerfield, IL", type: "503a", division: "engineering", services: ["IV Therapy", "Sterile"], status: "clean", contact: "224-948-2000", rationale: "Major IV therapy provider." },
+      { name: "Hospira (Pfizer)", location: "Lake Forest, IL", type: "503a", division: "engineering", services: ["Injectable", "Sterile"], status: "clean", contact: "224-212-2000", rationale: "Injectable drug manufacturer." },
+      { name: "West-Ward Pharmaceuticals", location: "Eatontown, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "732-542-1191", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Lannett Company", location: "Philadelphia, PA", type: "503a", division: "engineering", services: ["Generic Tablets"], status: "clean", contact: "215-333-9000", rationale: "Generic tablets. Compression equipment." },
+      { name: "Amneal Pharmaceuticals", location: "Bridgewater, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "908-947-3120", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Lupin Pharmaceuticals", location: "Baltimore, MD", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "410-576-2000", rationale: "Generic tablet manufacturer." },
+      { name: "Zydus Pharmaceuticals", location: "Pennington, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "609-275-8500", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Sun Pharmaceutical", location: "Cranbury, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "609-409-6300", rationale: "Major generic manufacturer." },
+      { name: "Teva Pharmaceuticals", location: "Parsippany, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "888-838-2872", rationale: "World's largest generic manufacturer." },
+      { name: "Mylan (Viatris)", location: "Canonsburg, PA", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "724-514-1800", rationale: "Major generic manufacturer." },
+      { name: "Sandoz", location: "Princeton, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "609-627-8500", rationale: "Novartis generic division." },
+      { name: "Perrigo Company", location: "Allegan, MI", type: "503a", division: "engineering", services: ["OTC Manufacturing"], status: "clean", contact: "269-673-8451", rationale: "OTC and generic manufacturer." },
+      { name: "Dr. Reddy's Laboratories", location: "Princeton, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "609-375-9900", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Cipla USA", location: "Warren, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "908-769-6000", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Aurobindo Pharma", location: "East Windsor, NJ", type: "503a", division: "engineering", services: ["Generic Manufacturing"], status: "clean", contact: "609-336-8700", rationale: "Generic pharmaceutical manufacturer." },
+      { name: "Hikma Pharmaceuticals", location: "Berkeley Heights, NJ", type: "503a", division: "engineering", services: ["Generic Injectable"], status: "clean", contact: "908-753-5000", rationale: "Generic injectable manufacturer." },
+      { name: "Piramal Pharma Solutions", location: "Lexington, KY", type: "503a", division: "both", services: ["CDMO", "Sterile Manufacturing"], status: "clean", contact: "859-259-5600", rationale: "Full CDMO services." },
+      { name: "Alcami Corporation", location: "Wilmington, NC", type: "503a", division: "both", services: ["CDMO", "API Manufacturing"], status: "clean", contact: "910-254-7000", rationale: "CDMO and API services." },
+      { name: "Catalent Pharma Solutions", location: "Somerset, NJ", type: "503a", division: "both", services: ["CDMO", "Drug Delivery"], status: "clean", contact: "732-537-6200", rationale: "Major CDMO provider." },
+      { name: "Thermo Fisher Scientific", location: "Waltham, MA", type: "503a", division: "both", services: ["Pharma Services", "CDMO"], status: "clean", contact: "781-622-1000", rationale: "Pharma services and CDMO." },
+      { name: "Lonza", location: "Morristown, NJ", type: "503a", division: "both", services: ["CDMO", "Biologics"], status: "clean", contact: "201-316-9200", rationale: "Biologics and CDMO." },
+      { name: "WuXi AppTec", location: "Plainsboro, NJ", type: "503a", division: "both", services: ["CDMO", "API"], status: "clean", contact: "609-799-3800", rationale: "CDMO and API services." },
+      { name: "Recipharm", location: "Durham, NC", type: "503a", division: "engineering", services: ["Contract Manufacturing"], status: "clean", contact: "919-248-0077", rationale: "Contract manufacturing." },
+      { name: "Patheon (Thermo Fisher)", location: "Durham, NC", type: "503a", division: "both", services: ["CDMO", "Formulation"], status: "clean", contact: "919-226-3200", rationale: "CDMO and formulation." },
+      { name: "Siegfried USA", location: "Pennsville, NJ", type: "503a", division: "engineering", services: ["API Manufacturing"], status: "clean", contact: "856-678-2200", rationale: "API manufacturing." },
+      { name: "Cambrex Corporation", location: "East Rutherford, NJ", type: "503a", division: "scientific", services: ["API Development", "CMO"], status: "clean", contact: "201-804-3000", rationale: "API development services." },
+      { name: "AMRI Global", location: "Albany, NY", type: "503a", division: "both", services: ["CDMO", "API"], status: "clean", contact: "518-512-2000", rationale: "CDMO and API services." },
+      { name: "Corden Pharma", location: "Boulder, CO", type: "503a", division: "both", services: ["CDMO", "Peptides"], status: "clean", contact: "303-442-2380", rationale: "Peptide and CDMO services." },
+      { name: "Halo Pharmaceutical", location: "Whippany, NJ", type: "503a", division: "both", services: ["CDMO", "Solid Dose"], status: "clean", contact: "973-428-8800", rationale: "Solid dose CDMO." },
+      { name: "Metrics Contract Services", location: "Greenville, NC", type: "503a", division: "both", services: ["CDMO", "Formulation"], status: "clean", contact: "252-752-3800", rationale: "Full-service CDMO." },
+      { name: "Societal CDMO", location: "Gainesville, GA", type: "503a", division: "both", services: ["CDMO", "Specialty"], status: "clean", contact: "770-534-8239", rationale: "Specialty CDMO." },
+      { name: "Particle Sciences", location: "Bethlehem, PA", type: "503a", division: "scientific", services: ["Formulation R&D"], status: "clean", contact: "610-861-4701", rationale: "Formulation R&D specialist." }
+    ];
+
+    let currentFilter = 'all';
+    let currentType = 'all';
+    let sortColumn = 0;
+    let sortDirection = 1;
+
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      const search = document.getElementById('search').value.toLowerCase();
+      
+      let filtered = facilities.filter(f => {
+        const matchesFilter = currentFilter === 'all' || f.division === currentFilter;
+        const matchesType = currentType === 'all' || f.type === currentType;
+        const matchesSearch = !search || 
+          f.name.toLowerCase().includes(search) || 
+          f.location.toLowerCase().includes(search) ||
+          f.services.some(s => s.toLowerCase().includes(search)) ||
+          f.rationale.toLowerCase().includes(search);
+        return matchesFilter && matchesType && matchesSearch;
+      });
+
+      filtered.sort((a, b) => {
+        let valA, valB;
+        switch(sortColumn) {
+          case 0: valA = a.name; valB = b.name; break;
+          case 1: valA = a.type; valB = b.type; break;
+          case 2: valA = a.division; valB = b.division; break;
+          case 3: valA = a.services.join(' '); valB = b.services.join(' '); break;
+          case 4: valA = a.status; valB = b.status; break;
+          case 5: valA = a.contact; valB = b.contact; break;
+          default: valA = a.name; valB = b.name;
+        }
+        return sortDirection * valA.localeCompare(valB);
+      });
+
+      tbody.innerHTML = filtered.map(f => `
+        <tr>
+          <td>
+            <div class="company-name">${f.name}</div>
+            <div class="company-location">${f.location}</div>
+          </td>
+          <td>
+            <span class="tag tag-${f.type}">${f.type.toUpperCase()}</span>
+          </td>
+          <td>
+            <span class="tag tag-${f.division}">${f.division === 'both' ? 'Both' : f.division === 'engineering' ? 'Eng' : 'Sci'}</span>
+          </td>
+          <td>
+            ${f.services.slice(0, 2).map(s => `<span class="tag" style="background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border);">${s}</span>`).join('')}
+          </td>
+          <td>
+            <span class="status-badge status-${f.status}">${f.status === 'clean' ? 'Clean' : f.status === 'warning' ? 'Warning' : 'Pending'}</span>
+          </td>
+          <td class="contact-info">
+            <a href="tel:${f.contact}">${f.contact}</a>
+          </td>
+          <td class="rationale">${f.rationale}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('no-results').style.display = filtered.length === 0 ? 'block' : 'none';
+      updateStats();
+    }
+
+    function updateStats() {
+      const engCount = facilities.filter(f => f.division === 'engineering').length;
+      const sciCount = facilities.filter(f => f.division === 'scientific').length;
+      const bothCount = facilities.filter(f => f.division === 'both').length;
+      const count503a = facilities.filter(f => f.type === '503a').length;
+      const count503b = facilities.filter(f => f.type === '503b').length;
+
+      document.getElementById('stat-eng').textContent = engCount;
+      document.getElementById('stat-sci').textContent = sciCount;
+      document.getElementById('stat-both').textContent = bothCount;
+      document.getElementById('stat-503a').textContent = count503a;
+      document.getElementById('stat-503b').textContent = count503b;
+      document.getElementById('eng-badge').textContent = engCount + ' Engineering';
+      document.getElementById('sci-badge').textContent = sciCount + ' Scientific';
+      document.getElementById('503a-badge').textContent = count503a + ' 503A';
+      document.getElementById('503b-badge').textContent = count503b + ' 503B';
+      document.getElementById('total-badge').textContent = facilities.length + ' Facilities';
+    }
+
+    function filterTable(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+      });
+      renderTable();
+    }
+
+    function filterByType(type) {
+      currentType = type;
+      document.querySelectorAll('[data-type]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+      renderTable();
+    }
+
+    function sortTable(column) {
+      if (sortColumn === column) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = column;
+        sortDirection = 1;
+      }
+      renderTable();
+    }
+
+    document.getElementById('search').addEventListener('input', renderTable);
+    renderTable();
+  </script>
+</body>
+</html>

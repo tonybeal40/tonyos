@@ -1,0 +1,269 @@
+Here’s how to make it work, for real, with the smallest possible build.
+
+You are going to add one page (/daily) that:
+
+shows 3 text boxes
+
+sends them to your server
+
+gets back 3 outputs
+
+saves a log locally
+
+No extra junk.
+
+Step 1: Confirm your folder structure
+
+Inside your TonyOS folder, create this:
+
+app.py
+
+.env
+
+templates/
+
+daily.html
+
+logs/ (empty folder)
+
+If templates already exists, good. If app.py already exists, you’ll merge the code.
+
+Step 2: Install what you need
+
+In terminal, inside the project folder:
+
+pip install flask openai python-dotenv
+
+Step 3: Create your .env
+
+Create a file named .env in the same folder as app.py
+
+Put this inside:
+
+OPENAI_API_KEY=your_key_here
+
+Step 4: Paste this into app.py
+
+This is a complete working app you can run immediately.
+
+import os
+import json
+from datetime import datetime
+from pathlib import Path
+
+from flask import Flask, render_template, request, jsonify
+from dotenv import load_dotenv
+
+from openai import OpenAI
+
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise RuntimeError("Missing OPENAI_API_KEY in .env")
+
+client = OpenAI(api_key=api_key)
+
+app = Flask(__name__)
+
+LOG_DIR = Path("logs")
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FILE = LOG_DIR / "daily.jsonl"
+
+
+def write_log(record: dict) -> None:
+    record["timestamp"] = datetime.now().isoformat(timespec="seconds")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def build_prompt(one_win: str, pressure: str, next_step: str) -> str:
+    return f"""
+You are TonyOS, a practical daily command center.
+
+Input:
+1) Today's One Win: {one_win}
+2) Top Pressure: {pressure}
+3) Next Action: {next_step}
+
+Output EXACTLY these 3 sections, each 1 to 3 sentences max.
+No bullets unless needed.
+No emojis.
+No hype.
+
+1) One Sentence Plan:
+2) Blocker Breaker:
+3) 10 Minute Sprint:
+""".strip()
+
+
+@app.get("/daily")
+def daily_page():
+    return render_template("daily.html")
+
+
+@app.post("/api/daily")
+def daily_api():
+    data = request.get_json(force=True) or {}
+    one_win = (data.get("one_win") or "").strip()
+    pressure = (data.get("pressure") or "").strip()
+    next_step = (data.get("next_step") or "").strip()
+
+    if not one_win or not pressure or not next_step:
+        return jsonify({"error": "Fill out all 3 fields"}), 400
+
+    prompt = build_prompt(one_win, pressure, next_step)
+
+    try:
+        resp = client.responses.create(
+            model="gpt-4.1-mini",
+            input=prompt
+        )
+        text = resp.output_text.strip()
+    except Exception as e:
+        return jsonify({"error": f"OpenAI call failed: {str(e)}"}), 500
+
+    record = {
+        "one_win": one_win,
+        "pressure": pressure,
+        "next_step": next_step,
+        "result": text
+    }
+    write_log(record)
+
+    return jsonify({"result": text})
+
+
+@app.get("/")
+def home():
+    return """
+    <h2>TonyOS is running</h2>
+    <p>Go to <a href="/daily">/daily</a></p>
+    """
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000, debug=True)
+
+Step 5: Create templates/daily.html
+
+Paste this into templates/daily.html
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TonyOS Daily Command Center</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;max-width:900px;margin:30px auto;padding:0 16px;line-height:1.4}
+    .card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:12px 0}
+    label{display:block;font-weight:700;margin-top:10px}
+    textarea{width:100%;min-height:70px;padding:10px;border-radius:10px;border:1px solid #ccc}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #111;background:#111;color:#fff;cursor:pointer;margin-top:12px}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    pre{white-space:pre-wrap;background:#f7f7f7;border:1px solid #e5e5e5;border-radius:12px;padding:12px}
+    .err{color:#b00020;font-weight:700}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row .card{flex:1;min-width:260px}
+  </style>
+</head>
+<body>
+  <h1>TonyOS Daily Command Center</h1>
+
+  <div class="row">
+    <div class="card">
+      <label for="one_win">Today's One Win</label>
+      <textarea id="one_win" placeholder="If I only accomplish one thing today, it is..."></textarea>
+
+      <label for="pressure">Top Pressure</label>
+      <textarea id="pressure" placeholder="The thing stressing me most is..."></textarea>
+
+      <label for="next_step">Next Action</label>
+      <textarea id="next_step" placeholder="The next smallest step I can take is..."></textarea>
+
+      <button id="go">Generate</button>
+      <div id="status" class="err"></div>
+    </div>
+
+    <div class="card">
+      <h3>Output</h3>
+      <pre id="out">Fill the three fields and click Generate</pre>
+      <p style="font-size:12px;color:#555;">Saved locally to logs/daily.jsonl</p>
+    </div>
+  </div>
+
+  <script>
+    const goBtn = document.getElementById("go");
+    const out = document.getElementById("out");
+    const status = document.getElementById("status");
+
+    goBtn.addEventListener("click", async () => {
+      status.textContent = "";
+      out.textContent = "Working...";
+      goBtn.disabled = true;
+
+      const payload = {
+        one_win: document.getElementById("one_win").value.trim(),
+        pressure: document.getElementById("pressure").value.trim(),
+        next_step: document.getElementById("next_step").value.trim(),
+      };
+
+      try {
+        const res = await fetch("/api/daily", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          status.textContent = data.error || "Something went wrong";
+          out.textContent = "";
+        } else {
+          out.textContent = data.result;
+        }
+      } catch (e) {
+        status.textContent = "Network error: " + e.message;
+        out.textContent = "";
+      } finally {
+        goBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
+
+Step 6: Run it
+
+In terminal:
+
+python app.py
+
+
+Open in your browser:
+
+http://127.0.0.1:5000/daily
+
+Step 7: Confirm it saved
+
+After you generate once, you should see:
+
+logs/daily.jsonl
+
+Each entry is one line of JSON, like a journal log.
+
+If it still “doesn’t work”
+
+Tell me exactly which one happened:
+
+Terminal error text (copy paste it)
+
+Page loads but Generate does nothing
+
+Page loads but you get “OpenAI call failed”
+
+It generates but no logs file appears
+
+And I’ll fix it fast.

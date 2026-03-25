@@ -1,0 +1,113 @@
+STEP 1 — WHERE to add the CSS (zero risk)
+📍 Open your file and scroll to the <style> block at the top
+
+You already have a big <style> section like this:
+
+<style>
+  :root{
+    ...
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    ...
+  }
+
+  .badge{
+    ...
+  }
+</style>
+
+✅ ADD the .signal CSS ANYWHERE inside <style>
+
+Best practice: put it right after your .badge styles
+But technically it can go anywhere inside <style>
+
+✔ Safe placement example
+.badge{
+  ...
+}
+
+/* ADD BELOW THIS LINE */
+.signal{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid;
+}
+
+.signal.green{
+  background: rgba(34,197,94,0.15);
+  border-color: rgba(34,197,94,0.45);
+  color: #86EFAC;
+}
+
+.signal.yellow{
+  background: rgba(245,158,11,0.15);
+  border-color: rgba(245,158,11,0.45);
+  color: #FCD34D;
+}
+
+.signal.red{
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.45);
+  color: #FCA5A5;
+}
+
+.signal.blue{
+  background: rgba(59,130,246,0.15);
+  border-color: rgba(59,130,246,0.45);
+  color: #93C5FD;
+}
+
+
+👉 This cannot break anything
+👉 You are only defining new classes, not touching old ones
+
+STEP 2 — WHERE to add the bubbles (this is the critical part)
+📍 Find this section in your HTML
+
+Search for .hero-left.
+You will see something like this:
+
+<div class="hero-left">
+  <h1>WHX Dubai 2026 Trade Show Evaluation</h1>
+
+  <p class="sub">
+    Evaluation of WHX Dubai 2026 (formerly Arab Health) for Natoli Engineering and Natoli Scientific.
+  </p>
+
+  <div class="tags">
+    <span class="pill">HEALTHCARE EXPO</span>
+    <span class="pill">MIDDLE EAST</span>
+    <span class="pill">LOW BUYER DENSITY FOR SOLID DOSE</span>
+    <span class="pill">NETWORKING HEAVY</span>
+  </div>
+
+STEP 3 — EXACTLY where to paste the bubbles
+✅ Paste IMMEDIATELY AFTER the existing .tags block
+
+Do NOT remove anything
+Do NOT nest inside another tag
+
+✔ Correct placement (this is the answer)
+<div class="tags">
+  <span class="pill">HEALTHCARE EXPO</span>
+  <span class="pill">MIDDLE EAST</span>
+  <span class="pill">LOW BUYER DENSITY FOR SOLID DOSE</span>
+  <span class="pill">NETWORKING HEAVY</span>
+</div>
+
+<!-- ADD THIS DIRECTLY BELOW -->
+<div class="tags" style="margin-top:14px;">
+  <span class="signal yellow">Buyer Density: Low</span>
+  <span class="signal blue">Networking Value: High</span>
+  <span class="signal red">Lead Gen ROI: Weak</span>
+  <span class="signal green">Market Intelligence: Strong</span>
+</div>

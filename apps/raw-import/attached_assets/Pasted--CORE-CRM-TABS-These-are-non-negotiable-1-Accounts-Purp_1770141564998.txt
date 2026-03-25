@@ -1,0 +1,227 @@
+✅ CORE CRM TABS (These are non-negotiable)
+1️⃣ Accounts
+
+Purpose: System of record for companies
+This is the spine
+
+What lives here:
+
+Company name
+
+Status (New, Active, Lapsed)
+
+Tier (1 / 2 / 3)
+
+Natoli Fit (Engineering / Scientific / Both)
+
+Territory
+
+Owner
+
+Last meaningful touch
+
+Next action (required)
+
+Source (CSV, inbound, event, referral)
+
+👉 If it’s a company, it lives here
+👉 Nothing else is “real” unless it’s tied to an Account
+
+2️⃣ Contacts
+
+Purpose: People inside accounts
+
+What lives here:
+
+Contact name
+
+Title
+
+Role (Ops, Engineering, Quality, R&D, Exec)
+
+Email / phone / LinkedIn
+
+Associated Account
+
+Primary contact (Yes/No)
+
+Last contact date
+
+👉 One account, many contacts
+👉 No contacts floating without a company
+
+3️⃣ Activity
+
+Purpose: Proof of work and momentum
+
+What lives here:
+
+Call
+
+Email
+
+LinkedIn
+
+Meeting
+
+Event touch
+
+Key columns:
+
+Account
+
+Contact
+
+Activity type
+
+Date
+
+Notes
+
+Outcome
+
+Next action created (Yes/No)
+
+👉 This replaces “notes everywhere”
+👉 This is what leadership actually trusts
+
+4️⃣ Pipeline / Opportunities
+
+Purpose: Revenue visibility (even if informal)
+
+What lives here:
+
+Account
+
+Opportunity name
+
+Product / focus
+
+Stage (Discovery, Active, Quoting, Closed)
+
+Estimated value
+
+Probability
+
+Expected close window
+
+👉 Even early-stage conversations go here
+👉 This is how marketing + sales connect to dollars
+
+✅ SUPPORTING TABS (Still important, but controlled)
+5️⃣ New Account Intake
+
+Purpose: CSV uploads and first-touch control
+
+What lives here:
+
+Imported companies
+
+Import date
+
+Source
+
+Assigned owner
+
+Needs research (Yes)
+
+Promoted to Accounts (Yes/Date)
+
+👉 Nothing jumps straight into Accounts without passing here
+👉 Prevents junk data
+
+6️⃣ Lapsed Accounts
+
+Purpose: Re-engagement engine
+
+What lives here:
+
+Accounts with no activity in 12+ months
+
+Last order date
+
+Reason lapsed (if known)
+
+Re-engagement status
+
+Assigned rep
+
+👉 This is where easy wins live
+👉 Keeps reps from only chasing shiny new logos
+
+7️⃣ Assets & Docs
+
+Purpose: Control what gets sent externally
+
+What lives here:
+
+Asset name
+
+Type (Sales, CX, Validation, Executive)
+
+Approved for external use (Yes/No)
+
+Version
+
+Owner
+
+Link
+
+👉 Prevents rogue PDFs
+👉 Protects Natoli’s credibility
+
+❌ TABS I WOULD NOT ADD
+
+These create noise and confusion:
+
+“Dashboards” (Monday already does this)
+
+“AI Insights”
+
+“Notes”
+
+“Research”
+
+“Messaging”
+
+Those belong in:
+
+Dashboards = views
+
+Research = external workflow
+
+Messaging = templates, not CRM records
+
+🧠 THE SIMPLE MENTAL MODEL (Use this internally)
+
+Accounts = who we sell to
+
+Contacts = who we talk to
+
+Activity = proof we’re doing the work
+
+Pipeline = how money happens
+
+Intake = how new data enters safely
+
+Lapsed = how we recover value
+
+Assets = what we’re allowed to send
+
+If someone asks “where does this go” and it doesn’t fit one of those, it doesn’t belong in the CRM.
+
+Final Recommendation (Locked)
+
+If you want this clean, scalable, and founder-safe, stop at 7 tabs max.
+
+Anything more than that means the system is starting to serve itself instead of the business.
+
+If you want next, I can:
+
+map exact Monday columns per tab
+
+define required vs optional fields
+
+or show which tabs reps see vs admins only
+
+But this structure is the right backbone.

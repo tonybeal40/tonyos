@@ -1,0 +1,57 @@
+modules = ["python-3.11", "nodejs-20", "postgresql-16"]
+[nix]
+channel = "stable-25_05"
+packages = ["freetype", "glibcLocales", "unzip", "zip"]
+
+[agent]
+expertMode = true
+integrations = ["python_anthropic_ai_integrations:1.0.0", "python_gemini_ai_integrations:1.0.0"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "TonyOS"
+
+[[workflows.workflow]]
+name = "TonyOS"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd TonyOS && TONYOS_PORT=5000 python main.py"
+waitForPort = 5000
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 3001
+externalPort = 3002
+
+[[ports]]
+localPort = 3002
+externalPort = 3002
+
+[[ports]]
+localPort = 3003
+externalPort = 3003
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "cd TonyOS/apollo-server && node index.js & cd TonyOS/natoli-scanner && node index.js & cd TonyOS && gunicorn --bind=0.0.0.0:5000 --reuse-port main:app"]
+build = ["bash", "-c", "cd TonyOS/natoli-scanner && npm install"]

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contract Pharma Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #4ade80;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>Contract Pharma Media Evaluation</h1>
+        <p>
+          Evaluation of Contract Pharma as a specialist channel for outsourcing and CDMO decision makers. This page explains
+          what the print directory, corporate profile, email campaign, website display and annual conference tabletop actually
+          deliver, and how this package should be viewed beside Natoli's Tier 1 media.
+        </p>
+        <div class="chip-row">
+          <div class="chip">CDMO AND OUTSOURCING</div>
+          <div class="chip">SPECIALIST TITLE</div>
+          <div class="chip">TIER 2 COMMERCIAL</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">B</div>
+        <div class="grade-caption">
+          Strong presence in outsourcing and CDMO circles.<br />
+          Best used for key account influence and targeted lead work.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.contractpharma.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Contract Pharma
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary</h2>
+    <p class="section-intro">
+      Contract Pharma sits at the center of outsourcing, CDMO and contract manufacturing conversations. For Natoli, the
+      value is less about broad compaction reach and more about showing up in front of the people who manage external
+      manufacturing relationships. The package built in the spreadsheet combines a print directory featured listing,
+      a two page corporate profile, email campaign, website display ads and the annual Contracting and Outsourcing Conference
+      tabletop.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for planning</h3>
+      <p>
+        Treat Contract Pharma as a Tier 2 commercial and relationship channel. It is not as buyer dense as APR or Tablets
+        and Capsules, but it is one of the clearest places to meet and influence CDMO and outsourcing teams that can pull
+        Natoli into projects.
+      </p>
+      <ul>
+        <li>Print directory featured listing that keeps Natoli visible in the annual guide.</li>
+        <li>Corporate Profile two page spread in the magazine with a listed value of about 4,250.</li>
+        <li>Email campaign with 650x250 and 300x250 creative units for lead generation and awareness.</li>
+        <li>Website display advertising in a 400x1000 unit when placements are available.</li>
+        <li>Tabletop presence at the Contracting and Outsourcing Conference (24th and 25th annual events across cycles).</li>
+      </ul>
+      <p class="pill-tagline">
+        The package is powerful if Natoli uses it to hunt specific CDMOs and outsourcing accounts. It is weak if treated as
+        passive background advertising.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Key account strategy with specific CDMOs and outsourcing partners Natoli wants to win or grow.</li>
+          <li>Showcasing Natoli as a trusted equipment and tooling partner inside outsourcing programs.</li>
+          <li>Driving targeted traffic to CT imaging, troubleshooting and scale up resources that support CDMO work.</li>
+          <li>Conference follow up where tabletop meetings feed into structured outreach and engineering conversations.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>General brand awareness with no defined list of target companies or people.</li>
+          <li>Primary solid dose tooling lead generation in place of APR or Tablets and Capsules.</li>
+          <li>Passive spend with no plan to work directory, email and conference contacts through C2 or a CRM.</li>
+          <li>Any campaign where the only success metric is clicks or impressions instead of named opportunities.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis</h2>
+    <p class="section-intro">
+      Contract Pharma is not a general lab or chemistry title. Its audience clusters around outsourcing decisions, CDMO
+      leadership and project teams that manage external manufacturing relationships. When mapped into Natoli's ICP tiers,
+      the pattern is different from APR but still valuable.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 buyers:</strong> heads of outsourcing, operations leaders, technical and project roles inside CDMOs
+          and sponsoring pharma companies who influence equipment and tooling standards.
+        </li>
+        <li>
+          <strong>Tier 2 adjacent roles:</strong> business development, quality, supply chain and alliance management who
+          may not specify tablet tooling but can push Natoli into a project.
+        </li>
+        <li>
+          <strong>Tier 3 broader audience:</strong> general readership around contract services that follows the brand but
+          will never directly own tablet tooling or press performance.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: this is a strategic relationships title. Buyer density for pure compaction roles is lower than APR,
+        but the influence signal around outsourcing is strong.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The spreadsheet lines for Contract Pharma focus more on placement types than on pure CPM. For leadership, it is more
+      helpful to view the package as one combined commercial and influence asset instead of isolated spends.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Print directory featured listing keeps Natoli present whenever buyers browse the annual guide.</li>
+        <li>The two page corporate profile at about 4,250 is the main storytelling asset around Natoli's capabilities.</li>
+        <li>Email campaign and 400x1000 website display placements provide digital reach into the Contract Pharma audience.</li>
+        <li>Tabletop at the Contracting and Outsourcing Conference offers face to face contact with key outsourcing teams.</li>
+      </ul>
+      <p class="pill-tagline">
+        None of these items alone will drive ROI. The value comes when Natoli links the profile, digital touch points and
+        conference meetings into one pipeline and key account plan.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      Contract Pharma content centers on outsourcing, CDMO capacity, technology and relationship management. Solid dose and
+      tablet compression show up as part of a wider services and capability story.
+    </p>
+
+    <div class="card">
+      <h3>Typical themes</h3>
+      <ul>
+        <li>CDMO profiles, contract services and capacity expansion stories.</li>
+        <li>Features on technology, quality and regulatory topics in outsourced manufacturing.</li>
+        <li>Conference coverage around the Contracting and Outsourcing event series.</li>
+      </ul>
+      <p class="pill-tagline">
+        Result: strong environment for Natoli to show up as a partner to CDMOs. Not a place where operators search directly
+        for tablet tooling vendors, but a place where decision makers can discover Natoli.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades follow the same framework as the rest of the media scorecard. Letters blend the spreadsheet detail with the
+      strategic view above.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>B</span></div>
+        <div class="bubble">Buyer density<span>B-</span></div>
+        <div class="bubble">Scientific credibility<span>B-</span></div>
+        <div class="bubble">Engineering relevance<span>C+</span></div>
+        <div class="bubble">Natoli fit<span>B-</span></div>
+        <div class="bubble">ROI probability<span>Medium if targeted</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: solid strategic channel for CDMO and outsourcing work. Commercially useful when focused on
+        named accounts, not as a general spray and pray media buy.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 2 commercial and relationship channel.</li>
+        <li><strong>Role:</strong> support key account plays with CDMOs and outsourced manufacturing teams.</li>
+        <li>
+          <strong>Sales posture:</strong> treat every directory and conference contact as a named record to work in C2
+          or a CRM, with clear owners and next steps.
+        </li>
+        <li>
+          <strong>Budget posture:</strong> keep Contract Pharma investment deliberate and tied to specific accounts. Do not
+          fund it at the expense of core buyer dense titles like APR and Tablets and Capsules.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        If Natoli wants a flagship platform in the outsourcing space, Contract Pharma is the obvious home. It simply needs
+        a key account plan attached to it.
+      </p>
+    </div>
+
+    <!-- 8. OS section -->
+    <h2 class="section-title">8. How to reuse this framework</h2>
+    <p class="section-intro">
+      This structure stays the same across every publication in the workbook. Only the narrative, numbers and grades change.
+      That keeps media discussions clean and comparable for Dale, Dave and the wider leadership group.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> asks whether the title reaches real tablet and compaction decision makers or
+            people who can pull Natoli into projects.</li>
+        <li><strong>Buyer density</strong> looks at how much of the audience is true Tier 1 ICP instead of background readers.</li>
+        <li><strong>Scientific credibility</strong> matters for Natoli Scientific and deeper technical stories.</li>
+        <li><strong>Engineering relevance</strong> checks how much equipment, tooling and reliability content appears.</li>
+        <li><strong>Natoli fit</strong> blends engineering and scientific value into one view for leadership.</li>
+        <li><strong>ROI probability</strong> is the honest read on whether spend here is likely to come back as revenue.</li>
+      </ul>
+      <p class="pill-tagline">
+        Same rule as always. Tier 1 channels carry the sales budget. Tier 2 and Tier 3 must earn their place through clear,
+        provable outcomes and strategic fit.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2025 and 2026 planning. Summary based on the Contract Pharma
+      worksheet and Natoli ICP tier model.
+    </p>
+  </div>
+</body>
+</html>

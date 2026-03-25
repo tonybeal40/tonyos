@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume & Cover Letter Generator | Tony RevOps</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #ffffff;
+      --text-muted: #8b8b9e;
+      --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --accent-purple: #a855f7;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f97316;
+      --border-color: rgba(255,255,255,0.1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .header {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(168,85,247,0.1));
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header p { color: var(--text-muted); font-size: 0.9rem; }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin-top: 10px;
+      background: rgba(34,197,94,0.2);
+      color: #22c55e;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .tab:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+    .tab.active {
+      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(168,85,247,0.2));
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    .section h3 {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group { margin-bottom: 15px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; font-family: inherit; }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .btn-success { background: #22c55e; color: white; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .target-company {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .target-company .chip {
+      padding: 6px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .target-company .chip:hover, .target-company .chip.active {
+      background: rgba(59,130,246,0.2);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Resume & Cover Letter Generator</h1>
+      <p>Enterprise-Grade ATS-Optimized Documents | Fortune 50 Ready</p>
+      <span class="badge">ATS Keyword Dense | Enterprise Coded | AI + Digital Aligned</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showPanel('resume')">Resume Builder</div>
+      <div class="tab" onclick="showPanel('cover')">Cover Letter</div>
+      <div class="tab" onclick="showPanel('preview')">Preview Resume</div>
+      <div class="tab" onclick="showPanel('coverPreview')">Preview Cover Letter</div>
+    </div>
+
+    <!-- Import/Load Section -->
+    <div class="section" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(59,130,246,0.1));">
+      <h3 style="cursor: pointer;" onclick="toggleImportSection()">
+        <span>📥</span> Import Resume Data
+        <span id="importToggle" style="margin-left: auto; font-size: 0.8rem; color: var(--text-muted);">▼</span>
+      </h3>
+      <div id="importContent">
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Load your existing resume or paste text from Indeed, LinkedIn, or any document.</p>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+          <button class="btn btn-primary" onclick="loadTonyProfile()">👤 Load Tony's Profile</button>
+          <button class="btn btn-outline" onclick="loadFromStorage()">💾 Load Saved Resume</button>
+          <button class="btn btn-outline" onclick="clearAllFields()">🗑️ Clear All</button>
+        </div>
+        
+        <div class="form-group">
+          <label>Paste Resume Text (Indeed, LinkedIn, Word, or any format)</label>
+          <textarea id="importText" placeholder="Paste your entire resume text here... 
+
+Example formats supported:
+- Indeed resume export
+- LinkedIn profile copy
+- Word document text
+- Plain text resume
+
+The system will try to auto-detect:
+• Name, title, contact info
+• Work experience
+• Skills and competencies" style="min-height: 150px;"></textarea>
+        </div>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-success" onclick="parseImportedText()">🔄 Parse & Import</button>
+          <button class="btn btn-outline" onclick="document.getElementById('fileUpload').click()">📄 Upload File (.txt, .md)</button>
+          <input type="file" id="fileUpload" accept=".txt,.md,.text" style="display: none;" onchange="handleFileUpload(event)">
+        </div>
+        
+        <div id="importStatus" style="margin-top: 10px; font-size: 0.8rem; display: none;"></div>
+      </div>
+    </div>
+
+    <div id="resumePanel" class="panel active">
+      <div class="grid-2">
+        <div>
+          <div class="section">
+            <h3>Personal Information</h3>
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="fullName" value="Tony Beal" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="title" value="Expert Business Analyst | Digital Innovation | AI Enablement" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" id="location" value="Greater St. Louis, MO" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" value="tonybeal40@gmail.com" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="phone" value="618-292-5320" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>LinkedIn URL</label>
+              <input type="text" id="linkedin" value="linkedin.com/in/tony-beal40" onchange="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Portfolio</label>
+              <input type="text" id="portfolio" value="TonyOS" onchange="updatePreview()">
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Professional Summary</h3>
+            <div class="form-group">
+              <textarea id="summary" onchange="updatePreview()">Digital transformation and AI systems leader with 15+ years of experience translating business strategy into scalable digital platforms. Creator of TonyOS, an AI-enabled RevOps and analytics operating system used to drive persona intelligence, workflow automation, executive reporting, and data-driven decision making. Expert in stakeholder discovery, requirements translation, system architecture, data analytics, and change management.</textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Core Competencies</h3>
+            <div class="form-group">
+              <textarea id="competencies" onchange="updatePreview()">Business Analysis | Digital Transformation | AI Enablement | Stakeholder Discovery | Functional & Technical Requirements | Process Mapping & Optimization | Data Analytics | KPI Dashboards | Workflow Automation | System Integration | Business Case Development | Change Management | Cross-Functional Leadership | Agile / SDLC</textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Technology</h3>
+            <div class="form-group">
+              <textarea id="technology" onchange="updatePreview()">Python | Node.js | SQL | Excel | Google Sheets API | CRM (HubSpot, Salesforce) | Apollo.io | LinkedIn Sales Navigator | Monday.com | Netlify | AI Prompt Engineering | ETL Pipelines | PostgreSQL</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section">
+            <h3>TonyOS Platform Highlights</h3>
+            <div class="form-group">
+              <textarea id="tonyos" style="min-height: 180px;" onchange="updatePreview()">Designed and deployed modular AI-driven digital operating system integrating CRM, lead intelligence, persona scoring, and analytics
+Built data pipelines connecting Apollo exports, CRM systems, spreadsheets, and dashboards
+Created persona-tier and compaction-confidence classification models for opportunity prioritization
+Developed executive dashboards for attribution, engagement, and pipeline health
+Automated outreach generation, research, and reporting using AI workflows
+Implemented closed-loop feedback systems for sales signal capture and opportunity scoring</textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Natoli Digital Transformation</h3>
+            <div class="form-group">
+              <textarea id="natoli" style="min-height: 200px;" onchange="updatePreview()">Led discovery sessions with sales, marketing, engineering, and leadership to identify digital transformation gaps
+Translated business pain points into functional and technical system requirements
+Built persona-tiered account models mapped to tooling exposure, environment fit, and compaction confidence
+Designed AI-generated business cases, targeting strategies, and executive insight dashboards
+Built attribution systems tracking open rates, CTR, territory performance, and opportunity velocity
+Automated data workflows and CRM routing to align sales actions with enterprise strategy
+Created closed-loop reporting framework to evaluate digital ROI and operational efficiency</textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Experience</h3>
+            <div class="form-group">
+              <textarea id="experience" style="min-height: 300px;" onchange="updatePreview()">Founder | Future of Marketing | Digital Innovation & RevOps | 2023 – Present
+Designed AI-enabled digital transformation systems for B2B organizations
+Built analytics dashboards, workflow automations, and CRM integrations
+Consulted executive teams on AI and process optimization strategies
+
+Director of Business Development | ProForm Manufacturing | 2024 – 2025
+Implemented digital outreach and analytics workflows generating $6M+ pipeline
+Built CRM reporting systems to track conversion, velocity, and revenue impact
+
+Sales Manager | Wicks Aircraft & Motorsports | 2022 – 2023
+Built automated engagement workflows and performance dashboards
+Optimized eCommerce and CRM processes resulting in revenue lift
+
+Regional Sales Manager | BioGaia USA | 2011 – 2022
+Built data-driven territory strategies using historical analytics
+Designed CRM KPI dashboards and change adoption programs
+
+Account Manager | KeHE Distributors | 2005 – 2009
+Managed performance data for 100+ retail accounts
+Built category dashboards and optimization frameworks</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="showPanel('preview')">Preview Resume</button>
+        <button class="btn btn-success" onclick="printResume()">Save as PDF</button>
+        <button class="btn btn-outline" onclick="copyResumeText()">Copy Text</button>
+      </div>
+    </div>
+
+    <div id="coverPanel" class="panel">
+      <div class="section">
+        <h3>Target Company</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Select a target company or enter custom details:</p>
+        <div class="target-company">
+          <span class="chip active" onclick="selectCompany('purina')">Nestle Purina</span>
+          <span class="chip" onclick="selectCompany('nestle')">Nestle</span>
+          <span class="chip" onclick="selectCompany('pfizer')">Pfizer</span>
+          <span class="chip" onclick="selectCompany('jnj')">Johnson & Johnson</span>
+          <span class="chip" onclick="selectCompany('merck')">Merck</span>
+          <span class="chip" onclick="selectCompany('abbvie')">AbbVie</span>
+          <span class="chip" onclick="selectCompany('custom')">Custom</span>
+        </div>
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="companyName" value="Nestle Purina" onchange="updateCoverLetter()">
+        </div>
+        <div class="form-group">
+          <label>Position Title</label>
+          <input type="text" id="positionTitle" value="Expert Business Analyst - Digital Innovation" onchange="updateCoverLetter()">
+        </div>
+        <div class="form-group">
+          <label>Requisition ID (optional)</label>
+          <input type="text" id="reqId" value="382398" onchange="updateCoverLetter()">
+        </div>
+        <div class="form-group">
+          <label>Hiring Manager (optional)</label>
+          <input type="text" id="hiringManager" placeholder="e.g., Ms. Sarah Johnson" onchange="updateCoverLetter()">
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Cover Letter Content</h3>
+        <div class="form-group">
+          <label>Opening Paragraph</label>
+          <textarea id="coverOpening" onchange="updateCoverLetter()">I am writing to express my strong interest in the Expert Business Analyst - Digital Innovation position at Nestle Purina (Requisition 382398). With over 15 years of experience translating business strategy into scalable digital platforms, and as the creator of TonyOS, an AI-enabled RevOps and analytics operating system, I am excited about the opportunity to drive digital transformation initiatives at a company whose commitment to innovation and people-first culture aligns with my own values.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Value Proposition</label>
+          <textarea id="coverValue" onchange="updateCoverLetter()">My experience aligns directly with your requirements. I have led discovery sessions with business stakeholders to explore strategic objectives and operational pain points, developed and prioritized business cases for digital capabilities, and translated complex business needs into detailed functional and technical requirements. At Natoli Engineering, I managed the full lifecycle of AI solutions from discovery through deployment, built data analytics frameworks using SQL and Excel, and partnered with sales and marketing teams to drive measurable commercial outcomes. I have mentored analysts and facilitated change management during solution deployment.</textarea>
+        </div>
+        <div class="form-group">
+          <label>TonyOS Highlight</label>
+          <textarea id="coverTonyOS" onchange="updateCoverLetter()">TonyOS demonstrates my hands-on approach to digital innovation. It is a modular, AI-driven operating system that I designed and built to integrate CRM intelligence, persona scoring, executive dashboards, and workflow automation. This experience managing complex projects with cross-functional teams, leveraging AI and digital tools to solve real business problems, has prepared me to contribute immediately to Purina's digital transformation initiatives and consult across Nestle teams with deep knowledge of AI capabilities.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Closing Paragraph</label>
+          <textarea id="coverClosing" onchange="updateCoverLetter()">I am eager to bring my expertise in business analysis, AI enablement, and digital transformation to Nestle Purina. I am based in Greater St. Louis and would welcome the opportunity to discuss how my background in building scalable digital platforms and leading cross-functional teams can support your strategic objectives. Thank you for considering my application.</textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="showPanel('coverPreview')">Preview Cover Letter</button>
+        <button class="btn btn-success" onclick="printCoverLetter()">Save as PDF</button>
+        <button class="btn btn-outline" onclick="copyCoverLetterText()">Copy Text</button>
+      </div>
+    </div>
+
+    <div id="previewPanel" class="panel">
+      <div class="section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3>Resume Preview</h3>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" onclick="printResume()">Save as PDF</button>
+            <button class="btn btn-outline" onclick="showPanel('resume')">Edit</button>
+          </div>
+        </div>
+        <div id="resumePreview" style="background: white; color: #1a1a2e; padding: 50px; border-radius: 8px; min-height: 800px;"></div>
+      </div>
+    </div>
+
+    <div id="coverPreviewPanel" class="panel">
+      <div class="section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3>Cover Letter Preview</h3>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" onclick="printCoverLetter()">Save as PDF</button>
+            <button class="btn btn-outline" onclick="showPanel('cover')">Edit</button>
+          </div>
+        </div>
+        <div id="coverLetterPreview" style="background: white; color: #1a1a2e; padding: 50px; border-radius: 8px; min-height: 700px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showPanel(panel) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById(panel + 'Panel').classList.add('active');
+      const tabs = document.querySelectorAll('.tab');
+      const tabMap = { resume: 0, cover: 1, preview: 2, coverPreview: 3 };
+      tabs[tabMap[panel]].classList.add('active');
+      
+      if (panel === 'preview') updatePreview();
+      if (panel === 'coverPreview') updateCoverLetter();
+    }
+
+    function updatePreview() {
+      const name = document.getElementById('fullName').value;
+      const title = document.getElementById('title').value;
+      const location = document.getElementById('location').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const linkedin = document.getElementById('linkedin').value;
+      const portfolio = document.getElementById('portfolio').value;
+      const summary = document.getElementById('summary').value;
+      const competencies = document.getElementById('competencies').value;
+      const technology = document.getElementById('technology').value;
+      const tonyos = document.getElementById('tonyos').value.split('\n').filter(l => l.trim());
+      const natoli = document.getElementById('natoli').value.split('\n').filter(l => l.trim());
+      const experience = document.getElementById('experience').value;
+
+      let html = `
+        <div style="font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.4; color: #222;">
+          <div style="text-align: center; border-bottom: 2px solid #1e3a5f; padding-bottom: 12px; margin-bottom: 16px;">
+            <h1 style="font-size: 22pt; font-weight: 700; color: #1e3a5f; margin: 0 0 4px 0; letter-spacing: 1px;">${name.toUpperCase()}</h1>
+            <p style="font-size: 11pt; color: #444; margin: 4px 0;">${title}</p>
+            <p style="font-size: 9pt; color: #666; margin: 8px 0 0 0;">
+              ${location} | ${phone} | ${email} | ${linkedin} | Portfolio: ${portfolio}
+            </p>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Professional Summary</h2>
+            <p style="margin: 0; text-align: justify; font-size: 10pt;">${summary}</p>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Core Competencies</h2>
+            <p style="margin: 0; font-size: 10pt;">${competencies}</p>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Technology</h2>
+            <p style="margin: 0; font-size: 10pt;">${technology}</p>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Signature Digital Platform: TonyOS</h2>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10pt;">
+              ${tonyos.map(t => `<li style="margin-bottom: 3px;">${t}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Digital Transformation - Natoli Engineering</h2>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10pt;">
+              ${natoli.map(n => `<li style="margin-bottom: 3px;">${n}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div>
+            <h2 style="font-size: 11pt; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin: 0 0 8px 0;">Professional Experience</h2>
+      `;
+
+      const jobs = experience.split('\n\n');
+      jobs.forEach(job => {
+        const lines = job.split('\n').filter(l => l.trim());
+        if (lines.length > 0) {
+          const titleLine = lines[0];
+          const parts = titleLine.split('|').map(p => p.trim());
+          
+          html += `<div style="margin-bottom: 12px;">`;
+          if (parts.length >= 3) {
+            html += `<div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-weight: 700; font-size: 10pt; color: #1e3a5f;">${parts[0]}</span>
+              <span style="font-size: 9pt; color: #666;">${parts[parts.length-1]}</span>
+            </div>`;
+            if (parts.length >= 2) {
+              html += `<div style="font-size: 10pt; color: #444; font-style: italic; margin-bottom: 4px;">${parts.slice(1, -1).join(' | ')}</div>`;
+            }
+          } else {
+            html += `<div style="font-weight: 700; font-size: 10pt; color: #1e3a5f;">${titleLine}</div>`;
+          }
+          
+          if (lines.length > 1) {
+            html += `<ul style="margin: 4px 0 0 0; padding-left: 18px; font-size: 10pt;">`;
+            lines.slice(1).forEach(line => {
+              if (line.trim()) {
+                html += `<li style="margin-bottom: 2px;">${line.trim()}</li>`;
+              }
+            });
+            html += `</ul>`;
+          }
+          html += `</div>`;
+        }
+      });
+
+      html += `</div></div>`;
+
+      document.getElementById('resumePreview').innerHTML = html;
+    }
+
+    function updateCoverLetter() {
+      const name = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const location = document.getElementById('location').value;
+      const linkedin = document.getElementById('linkedin').value;
+      const company = document.getElementById('companyName').value;
+      const position = document.getElementById('positionTitle').value;
+      const hiringManager = document.getElementById('hiringManager').value || 'Hiring Manager';
+      const opening = document.getElementById('coverOpening').value;
+      const value = document.getElementById('coverValue').value;
+      const tonyosHighlight = document.getElementById('coverTonyOS').value;
+      const closing = document.getElementById('coverClosing').value;
+
+      const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      const html = `
+        <div style="font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.4; color: #222;">
+          <div style="text-align: right; margin-bottom: 16px; font-size: 10pt;">
+            <div style="font-weight: 700; color: #1e3a5f; font-size: 11pt;">${name}</div>
+            <div style="color: #444; line-height: 1.3;">
+              ${location} | ${phone}<br>
+              ${email} | ${linkedin}
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 14px; font-size: 10pt;">${today}</div>
+          
+          <div style="margin-bottom: 14px; font-size: 10pt; line-height: 1.3;">
+            ${hiringManager}<br>
+            ${company}<br>
+            <strong>RE: ${position}</strong>
+          </div>
+          
+          <p style="margin: 0 0 10px 0; font-size: 10.5pt;">Dear ${hiringManager},</p>
+          
+          <p style="margin: 0 0 10px 0; text-align: justify; font-size: 10.5pt;">${opening}</p>
+          
+          <p style="margin: 0 0 10px 0; text-align: justify; font-size: 10.5pt;">${value}</p>
+          
+          <p style="margin: 0 0 10px 0; text-align: justify; font-size: 10.5pt;">${tonyosHighlight}</p>
+          
+          <p style="margin: 0 0 16px 0; text-align: justify; font-size: 10.5pt;">${closing}</p>
+          
+          <div>
+            <p style="margin: 0 0 20px 0; font-size: 10.5pt;">Sincerely,</p>
+            <p style="margin: 0; font-weight: 700; color: #1e3a5f; font-size: 11pt;">${name}</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('coverLetterPreview').innerHTML = html;
+    }
+
+    function selectCompany(company) {
+      document.querySelectorAll('.target-company .chip').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const companies = {
+        purina: { name: 'Nestle Purina', position: 'Expert Business Analyst - Digital Innovation' },
+        nestle: { name: 'Nestle', position: 'Expert Business Analyst - Digital Innovation' },
+        pfizer: { name: 'Pfizer', position: 'Senior Business Analyst - Digital Transformation' },
+        jnj: { name: 'Johnson & Johnson', position: 'Business Analyst - Digital Innovation' },
+        merck: { name: 'Merck', position: 'Digital Transformation Analyst' },
+        abbvie: { name: 'AbbVie', position: 'Senior Business Analyst - Digital Strategy' },
+        custom: { name: '', position: '' }
+      };
+
+      const selected = companies[company];
+      document.getElementById('companyName').value = selected.name;
+      document.getElementById('positionTitle').value = selected.position;
+      
+      if (company !== 'custom') {
+        const opening = document.getElementById('coverOpening');
+        opening.value = opening.value.replace(/at [^.]+\./, `at ${selected.name}.`);
+      }
+      
+      updateCoverLetter();
+    }
+
+    function printResume() {
+      updatePreview();
+      const content = document.getElementById('resumePreview').innerHTML;
+      const win = window.open('', '_blank');
+      win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<title>Resume</title>
+<style>
+@page { size: letter; margin: 0.5in 0.75in; }
+@media print {
+  html, body { margin: 0; padding: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+* { box-sizing: border-box; }
+body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.35; color: #222; margin: 0; padding: 0; }
+h1, h2, h3 { page-break-after: avoid; }
+ul { page-break-inside: avoid; margin: 0; }
+li { margin-bottom: 2px; }
+p { margin: 0; }
+</style>
+</head>
+<body>${content}</body>
+</html>`);
+      win.document.close();
+      setTimeout(() => win.print(), 300);
+    }
+
+    function printCoverLetter() {
+      updateCoverLetter();
+      const content = document.getElementById('coverLetterPreview').innerHTML;
+      const win = window.open('', '_blank');
+      win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<title>Cover Letter</title>
+<style>
+@page { size: letter; margin: 0.75in 0.85in; }
+@media print {
+  html, body { margin: 0; padding: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+* { box-sizing: border-box; }
+body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; font-size: 10.5pt; line-height: 1.4; color: #222; margin: 0; padding: 0; }
+p { margin: 0 0 10px 0; }
+</style>
+</head>
+<body>${content}</body>
+</html>`);
+      win.document.close();
+      setTimeout(() => win.print(), 300);
+    }
+
+    function copyResumeText() {
+      updatePreview();
+      const preview = document.getElementById('resumePreview');
+      const text = preview.innerText;
+      navigator.clipboard.writeText(text).then(() => showToast('Resume copied to clipboard!'));
+    }
+
+    function copyCoverLetterText() {
+      updateCoverLetter();
+      const preview = document.getElementById('coverLetterPreview');
+      const text = preview.innerText;
+      navigator.clipboard.writeText(text).then(() => showToast('Cover letter copied to clipboard!'));
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Import Section Functions
+    let importSectionOpen = true;
+    function toggleImportSection() {
+      importSectionOpen = !importSectionOpen;
+      document.getElementById('importContent').style.display = importSectionOpen ? 'block' : 'none';
+      document.getElementById('importToggle').textContent = importSectionOpen ? '▲' : '▼';
+    }
+
+    // Tony's default profile data
+    const TONY_PROFILE = {
+      fullName: 'Tony Beal',
+      title: 'Expert Business Analyst | Digital Innovation | AI Enablement',
+      location: 'Greater St. Louis, MO',
+      email: 'tonybeal40@gmail.com',
+      phone: '618-292-5320',
+      linkedin: 'linkedin.com/in/tony-beal40',
+      portfolio: 'TonyOS',
+      summary: `Digital transformation and AI systems leader with 15+ years of experience translating business strategy into scalable digital platforms. Creator of TonyOS, an AI-enabled RevOps and analytics operating system used to drive persona intelligence, workflow automation, executive reporting, and data-driven decision making. Expert in stakeholder discovery, requirements translation, system architecture, data analytics, and change management.`,
+      competencies: `Business Analysis | Digital Transformation | AI Enablement | Stakeholder Discovery | Functional & Technical Requirements | Process Mapping & Optimization | Data Analytics | KPI Dashboards | Workflow Automation | System Integration | Business Case Development | Change Management | Cross-Functional Leadership | Agile / SDLC`,
+      technology: `Python | Node.js | SQL | Excel | Google Sheets API | CRM (HubSpot, Salesforce) | Apollo.io | LinkedIn Sales Navigator | Monday.com | Netlify | AI Prompt Engineering | ETL Pipelines | PostgreSQL`,
+      tonyos: `Designed and deployed modular AI-driven digital operating system integrating CRM, lead intelligence, persona scoring, and analytics
+Built data pipelines connecting Apollo exports, CRM systems, spreadsheets, and dashboards
+Created persona-tier and compaction-confidence classification models for opportunity prioritization
+Developed executive dashboards for attribution, engagement, and pipeline health
+Automated outreach generation, research, and reporting using AI workflows
+Implemented closed-loop feedback systems for sales signal capture and opportunity scoring`,
+      natoli: `Implemented RevOps digital framework integrating Apollo.io, HubSpot, and LinkedIn Sales Navigator
+Designed persona hierarchy and ICP targeting for pharmaceutical, nutraceutical, and advanced materials markets
+Built sales automation playbooks reducing outreach time by 40%
+Created dashboards for pipeline visibility, rep performance, and revenue attribution
+Established data hygiene protocols for CRM and marketing automation systems`,
+      experience: `Digital Transformation Lead | Natoli Engineering Company | 2021 - Present
+Led RevOps digital transformation integrating sales, marketing, and operations systems
+Built TonyOS platform for AI-driven prospecting, persona intelligence, and pipeline analytics
+Created executive dashboards and automated reporting reducing manual effort by 60%
+Established data governance and CRM hygiene protocols across sales organization
+
+Senior Business Analyst | Enterprise Systems | 2018 - 2021
+Translated complex business requirements into functional specifications for ERP implementation
+Led cross-functional stakeholder discovery sessions and requirements workshops
+Managed UAT and change management for 500+ user deployment
+
+Business Systems Analyst | Technology Consulting | 2015 - 2018
+Designed workflow automation solutions for manufacturing and distribution clients
+Built ETL pipelines and reporting dashboards for executive decision support
+Conducted process mapping and gap analysis for system modernization projects`
+    };
+
+    function loadTonyProfile() {
+      Object.keys(TONY_PROFILE).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.value = TONY_PROFILE[key];
+      });
+      saveToStorage();
+      updatePreview();
+      showImportStatus('✅ Tony\'s profile loaded successfully!', 'success');
+    }
+
+    function clearAllFields() {
+      const fields = ['fullName', 'title', 'location', 'email', 'phone', 'linkedin', 'portfolio', 'summary', 'competencies', 'technology', 'tonyos', 'natoli', 'experience'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      updatePreview();
+      showImportStatus('🗑️ All fields cleared', 'info');
+    }
+
+    function saveToStorage() {
+      const data = {};
+      const fields = ['fullName', 'title', 'location', 'email', 'phone', 'linkedin', 'portfolio', 'summary', 'competencies', 'technology', 'tonyos', 'natoli', 'experience'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      localStorage.setItem('resumeData', JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+      const saved = localStorage.getItem('resumeData');
+      if (saved) {
+        const data = JSON.parse(saved);
+        Object.keys(data).forEach(key => {
+          const el = document.getElementById(key);
+          if (el) el.value = data[key];
+        });
+        updatePreview();
+        showImportStatus('✅ Saved resume loaded!', 'success');
+      } else {
+        showImportStatus('⚠️ No saved resume found. Fill out the form and it will auto-save.', 'warning');
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('importText').value = e.target.result;
+        showImportStatus('📄 File loaded. Click "Parse & Import" to process.', 'info');
+      };
+      reader.readAsText(file);
+    }
+
+    function parseImportedText() {
+      const text = document.getElementById('importText').value.trim();
+      if (!text) {
+        showImportStatus('⚠️ Please paste some text first!', 'warning');
+        return;
+      }
+
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      let parsed = { foundFields: [] };
+
+      // Try to detect name (usually first non-empty line or has capitalized words)
+      const nameMatch = lines[0];
+      if (nameMatch && /^[A-Z][a-z]+ [A-Z][a-z]+/.test(nameMatch)) {
+        document.getElementById('fullName').value = nameMatch;
+        parsed.foundFields.push('Name');
+      }
+
+      // Email detection
+      const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w+/);
+      if (emailMatch) {
+        document.getElementById('email').value = emailMatch[0];
+        parsed.foundFields.push('Email');
+      }
+
+      // Phone detection
+      const phoneMatch = text.match(/(\+?1?[-.\s]?)?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}/);
+      if (phoneMatch) {
+        document.getElementById('phone').value = phoneMatch[0];
+        parsed.foundFields.push('Phone');
+      }
+
+      // LinkedIn detection
+      const linkedinMatch = text.match(/linkedin\.com\/in\/[\w-]+/i);
+      if (linkedinMatch) {
+        document.getElementById('linkedin').value = linkedinMatch[0];
+        parsed.foundFields.push('LinkedIn');
+      }
+
+      // Location detection (City, State pattern)
+      const locationMatch = text.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)?),?\s*([A-Z]{2})\b/);
+      if (locationMatch) {
+        document.getElementById('location').value = locationMatch[0];
+        parsed.foundFields.push('Location');
+      }
+
+      // Skills/Competencies detection
+      const skillsSection = text.match(/(?:skills|competencies|expertise)[:\s]*([^\n]+(?:\n(?![A-Z]{2,})[^\n]+)*)/i);
+      if (skillsSection) {
+        document.getElementById('competencies').value = skillsSection[1].replace(/[•\-\*]/g, '|').replace(/\s+/g, ' ').trim();
+        parsed.foundFields.push('Skills');
+      }
+
+      // Summary detection
+      const summaryMatch = text.match(/(?:summary|profile|objective|about)[:\s]*([^\n]+(?:\n(?![A-Z]{2,})[^\n]+){0,3})/i);
+      if (summaryMatch) {
+        document.getElementById('summary').value = summaryMatch[1].trim();
+        parsed.foundFields.push('Summary');
+      }
+
+      // Experience detection - look for job titles with dates
+      const expMatches = text.match(/(?:[A-Z][a-z]+ )+(?:Manager|Director|Analyst|Engineer|Lead|Developer|Specialist|Coordinator)[^\n]*(?:\d{4})/gi);
+      if (expMatches && expMatches.length > 0) {
+        parsed.foundFields.push('Experience hints');
+      }
+
+      saveToStorage();
+      updatePreview();
+
+      if (parsed.foundFields.length > 0) {
+        showImportStatus(`✅ Imported: ${parsed.foundFields.join(', ')}. Review and edit as needed.`, 'success');
+      } else {
+        showImportStatus('⚠️ Could not auto-detect fields. Text has been analyzed - please fill in manually.', 'warning');
+      }
+    }
+
+    function showImportStatus(message, type) {
+      const el = document.getElementById('importStatus');
+      el.style.display = 'block';
+      el.style.color = type === 'success' ? '#22c55e' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+      el.textContent = message;
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+
+    // Auto-save on any field change
+    document.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('change', saveToStorage);
+    });
+
+    // Try to load saved data on page load
+    const savedData = localStorage.getItem('resumeData');
+    if (savedData) {
+      try {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(key => {
+          const el = document.getElementById(key);
+          if (el && data[key]) el.value = data[key];
+        });
+      } catch(e) {}
+    }
+
+    updatePreview();
+    updateCoverLetter();
+  </script>
+</body>
+</html>

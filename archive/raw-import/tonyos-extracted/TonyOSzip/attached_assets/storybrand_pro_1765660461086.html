@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyBrand OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <header class="top-bar">
+      <div>
+        <h1 class="page-title">TonyBrand OS</h1>
+        <p class="app-subtitle">
+          Paste a website URL. I scan multiple pages and build a full brand, personas, funnel, and score.
+        </p>
+      </div>
+      <a href="{{ url_for('home') }}" class="back-link">Back</a>
+    </header>
+
+    <section class="sbpro-quick">
+      <div>
+        <label>Website URL</label>
+        <input id="sbUrl" type="text" placeholder="https://example.com">
+      </div>
+      <div>
+        <label>Extra notes (optional)</label>
+        <input id="sbNotes" type="text" placeholder="Industry, focus, or anything to keep in mind.">
+      </div>
+      <div>
+        <label>Project name</label>
+        <input id="sbProjectName" type="text" placeholder="Natoli – Pharma Global">
+      </div>
+      <div>
+        <button id="sbScanBtn" class="primary-btn" type="button">Scan site</button>
+      </div>
+      <div>
+        <button id="sbSaveProject" class="primary-btn" type="button">Save project</button>
+      </div>
+      <div>
+        <select id="sbProjectSelect">
+          <option value="">Load saved project…</option>
+        </select>
+      </div>
+      <div>
+        <button id="sbLoadProjectBtn" class="primary-btn" type="button">Load</button>
+      </div>
+      <div class="sb-hint">
+        Projects are saved on your machine in a local folder. Use this like a product.
+      </div>
+    </section>
+
+    <main class="sbpro-layout">
+      <section class="chat-shell sbpro-chat">
+        <div class="chat-window" id="sbChatWindow">
+          <div class="message-row assistant">
+            <div class="avatar avatar-assistant">TB</div>
+            <div class="bubble bubble-assistant">
+              <p>Welcome to TonyBrand OS.</p>
+              <p>Paste a website above and I will build the full brand and funnel view.</p>
+              <p>Use this feed to capture tweaks and decisions.</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="chat-input-row" id="sbChatForm">
+          <input
+            id="sbChatInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Example: 'Focus more on buyers in North America.'"
+          />
+          <button type="submit" class="primary-btn">Add note</button>
+        </form>
+      </section>
+
+      <section class="sbpro-output">
+        <h2>Narrative Intelligence</h2>
+        <p class="sbpro-tagline">
+          Everything here comes from the website text and your notes.
+        </p>
+
+        <div class="pill-row" id="sbPills"></div>
+
+        <div class="sbpro-section">
+          <h3>Story script</h3>
+          <pre id="sbScript"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>One liner</h3>
+          <pre id="sbOneLiner"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Homepage hero</h3>
+          <pre id="sbHero"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Elevator pitch</h3>
+          <pre id="sbElevator"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>LinkedIn About</h3>
+          <pre id="sbLinkedIn"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Cold email</h3>
+          <pre id="sbEmail"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Landing outline</h3>
+          <pre id="sbLanding"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Personas</h3>
+          <div id="sbPersonas"></div>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Funnel assets</h3>
+          <div id="sbFunnel"></div>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Brand score</h3>
+          <div id="sbScore"></div>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>Competitor ideas</h3>
+          <pre id="sbCompetitors"></pre>
+        </div>
+
+        <div class="sbpro-section">
+          <h3>SEO / keyword ideas</h3>
+          <pre id="sbSEO"></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const sbUrl = document.getElementById("sbUrl");
+    const sbNotes = document.getElementById("sbNotes");
+    const sbProjectName = document.getElementById("sbProjectName");
+    const sbScanBtn = document.getElementById("sbScanBtn");
+    const sbSaveProjectBtn = document.getElementById("sbSaveProject");
+    const sbProjectSelect = document.getElementById("sbProjectSelect");
+    const sbLoadProjectBtn = document.getElementById("sbLoadProjectBtn");
+
+    const sbChatWindow = document.getElementById("sbChatWindow");
+    const sbChatForm = document.getElementById("sbChatForm");
+    const sbChatInput = document.getElementById("sbChatInput");
+
+    const sbPills = document.getElementById("sbPills");
+    const sbScriptEl = document.getElementById("sbScript");
+    const sbOneLinerEl = document.getElementById("sbOneLiner");
+    const sbHeroEl = document.getElementById("sbHero");
+    const sbElevatorEl = document.getElementById("sbElevator");
+    const sbLinkedInEl = document.getElementById("sbLinkedIn");
+    const sbEmailEl = document.getElementById("sbEmail");
+    const sbLandingEl = document.getElementById("sbLanding");
+    const sbPersonasEl = document.getElementById("sbPersonas");
+    const sbFunnelEl = document.getElementById("sbFunnel");
+    const sbScoreEl = document.getElementById("sbScore");
+    const sbCompetitorsEl = document.getElementById("sbCompetitors");
+    const sbSEOEl = document.getElementById("sbSEO");
+
+    let currentProject = null;
+
+    function addSBMessage(text, role) {
+      const row = document.createElement("div");
+      row.className = "message-row " + role;
+
+      const avatar = document.createElement("div");
+      avatar.className =
+        "avatar " + (role === "assistant" ? "avatar-assistant" : "avatar-user");
+      avatar.textContent = role === "assistant" ? "TB" : "You";
+
+      const bubble = document.createElement("div");
+      bubble.className =
+        "bubble " + (role === "assistant" ? "bubble-assistant" : "bubble-user");
+
+      text.split("\n").forEach((line) => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        bubble.appendChild(p);
+      });
+
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      sbChatWindow.appendChild(row);
+      sbChatWindow.scrollTop = sbChatWindow.scrollHeight;
+    }
+
+    function asText(value) {
+      if (typeof value === "string") return value;
+      if (typeof value === "number") return value.toString();
+      if (Array.isArray(value)) return value.join("\n");
+      if (typeof value === "object" && value !== null) {
+        return JSON.stringify(value, null, 2);
+      }
+      return "";
+    }
+
+    function renderLanding(data) {
+      if (!data || typeof data !== "object") return asText(data);
+      let out = "";
+      if (data.headline) out += "Headline:\n" + data.headline + "\n\n";
+      if (data.subheadline) out += "Subheadline:\n" + data.subheadline + "\n\n";
+      if (data.problem_section) out += "Problem:\n" + data.problem_section + "\n\n";
+      if (data.solution_section) out += "Solution:\n" + data.solution_section + "\n\n";
+      if (Array.isArray(data.product_features) && data.product_features.length) {
+        out += "Features:\n- " + data.product_features.join("\n- ") + "\n\n";
+      }
+      if (data.cta) out += "CTA:\n" + data.cta;
+      return out;
+    }
+
+    function renderPersonas(list) {
+      if (!Array.isArray(list) || !list.length) return "";
+      return list
+        .map((p) => {
+          return `
+          <div class="sb-block">
+            <strong>${p.name || ""}</strong> – ${p.role || ""}<br>
+            <em>${p.description || ""}</em>
+            <br><br>
+            <strong>Pains:</strong><br>${(p.pains || []).join("<br>")}<br><br>
+            <strong>Goals:</strong><br>${(p.goals || []).join("<br>")}<br><br>
+            <strong>Objections:</strong><br>${(p.objections || []).join("<br>")}<br><br>
+            <strong>Ideal messaging:</strong><br>${p.ideal_messaging || ""}
+          </div>
+        `;
+        })
+        .join("");
+    }
+
+    function renderFunnel(f) {
+      if (!f || typeof f !== "object") return "";
+      let html = "";
+      if (f.homepage_copy) {
+        html += `<div class="sb-block"><strong>Homepage copy</strong><br>${f.homepage_copy}</div>`;
+      }
+      if (f.landing_page_copy) {
+        html += `<div class="sb-block"><strong>Landing page copy</strong><br>${f.landing_page_copy}</div>`;
+      }
+      if (Array.isArray(f.email_sequence) && f.email_sequence.length) {
+        html += `<div class="sb-block"><strong>Email sequence</strong><br>`;
+        f.email_sequence.forEach((e, i) => {
+          html += `<div style="margin-top:6px;"><strong>Email ${i + 1} – ${e.subject ||
+            ""}</strong><br>${e.body || ""}</div>`;
+        });
+        html += `</div>`;
+      }
+      if (Array.isArray(f.linkedin_posts) && f.linkedin_posts.length) {
+        html += `<div class="sb-block"><strong>LinkedIn posts</strong><br>`;
+        f.linkedin_posts.forEach((p, i) => {
+          html += `<div style="margin-top:6px;"><strong>Post ${i + 1}</strong><br>${p}</div>`;
+        });
+        html += `</div>`;
+      }
+      if (Array.isArray(f.ad_ideas) && f.ad_ideas.length) {
+        html += `<div class="sb-block"><strong>Ad ideas</strong><br>- ${f.ad_ideas.join(
+          "<br>- "
+        )}</div>`;
+      }
+      return html;
+    }
+
+    function renderScore(score) {
+      if (!score || typeof score !== "object") return "";
+      const fields = ["clarity", "relevance", "differentiation", "trust", "urgency", "ctas"];
+      let html = `<div class="sb-block"><strong>Overall:</strong> ${
+        score.overall ?? "N/A"
+      } / 100<br><br><strong>Breakdown:</strong><br>`;
+      fields.forEach((f) => {
+        if (typeof score[f] === "number") {
+          html += `${f}: ${score[f]} / 100<br>`;
+        }
+      });
+      if (Array.isArray(score.notes) && score.notes.length) {
+        html += "<br><strong>Notes:</strong><br>" + score.notes.join("<br>");
+      }
+      if (Array.isArray(score.quick_wins) && score.quick_wins.length) {
+        html += "<br><br><strong>Quick wins:</strong><br>- " + score.quick_wins.join("<br>- ");
+      }
+      html += "</div>";
+      return html;
+    }
+
+    function renderProject(data) {
+      currentProject = data || null;
+      if (!data) return;
+
+      sbPills.innerHTML = "";
+      const pillValues = [
+        data.company_name,
+        data.primary_industry,
+        data.primary_audience,
+        data.suggested_region,
+      ].filter(Boolean);
+      pillValues.forEach((v) => {
+        const span = document.createElement("span");
+        span.className = "pill";
+        span.textContent = v;
+        sbPills.appendChild(span);
+      });
+
+      sbScriptEl.textContent = asText(data.story_script);
+      sbOneLinerEl.textContent = asText(data.one_liner);
+      sbHeroEl.textContent = asText(data.homepage_hero);
+      sbElevatorEl.textContent = asText(data.elevator_pitch);
+      sbLinkedInEl.textContent = asText(data.linkedin_about);
+      sbEmailEl.textContent = asText(data.cold_email);
+
+      sbLandingEl.textContent = renderLanding(data.landing_outline);
+      sbPersonasEl.innerHTML = renderPersonas(data.personas);
+      sbFunnelEl.innerHTML = renderFunnel(data.funnel);
+      sbScoreEl.innerHTML = renderScore(data.brand_score);
+
+      sbCompetitorsEl.textContent = asText(data.competitor_ideas);
+      sbSEOEl.textContent = asText(data.seo_keywords);
+
+      if (!sbProjectName.value && data.company_name) {
+        sbProjectName.value = data.company_name;
+      }
+    }
+
+    async function refreshProjectList() {
+      try {
+        const res = await fetch("/projects");
+        const data = await res.json();
+        sbProjectSelect.innerHTML = '<option value="">Load saved project…</option>';
+        if (Array.isArray(data.projects)) {
+          data.projects.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            const label = p.name || p.company_name || p.id;
+            opt.textContent = label;
+            sbProjectSelect.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        // ignore for now
+      }
+    }
+
+    sbScanBtn.addEventListener("click", async () => {
+      const url = sbUrl.value.trim();
+      const notes = sbNotes.value.trim();
+
+      if (!url) {
+        addSBMessage("Give me a website URL first.", "assistant");
+        return;
+      }
+
+      addSBMessage("Scanning: " + url, "user");
+      addSBMessage("Pulling content from multiple pages and building the system.", "assistant");
+
+      try {
+        const res = await fetch("/analyze-site", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, notes }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          addSBMessage("Error: " + (data.error || "Something went wrong."), "assistant");
+          return;
+        }
+
+        renderProject(data);
+        addSBMessage("System generated. Review the right side and note what you want to change.", "assistant");
+      } catch (err) {
+        addSBMessage(
+          "Could not reach server. Make sure app.py is running and try again.",
+          "assistant"
+        );
+      }
+    });
+
+    sbSaveProjectBtn.addEventListener("click", async () => {
+      if (!currentProject) {
+        addSBMessage("Run a scan first before saving a project.", "assistant");
+        return;
+      }
+      const project_name =
+        sbProjectName.value.trim() ||
+        currentProject.project_name ||
+        currentProject.company_name ||
+        "Untitled";
+
+      try {
+        const res = await fetch("/save-project", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ project_name, data: currentProject }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          addSBMessage("Save error: " + (data.error || "Unknown error."), "assistant");
+          return;
+        }
+        addSBMessage("Project saved as: " + data.project_name, "assistant");
+        sbProjectName.value = data.project_name;
+        await refreshProjectList();
+      } catch (err) {
+        addSBMessage("Could not save project. Check server logs.", "assistant");
+      }
+    });
+
+    sbLoadProjectBtn.addEventListener("click", async () => {
+      const id = sbProjectSelect.value;
+      if (!id) {
+        addSBMessage("Pick a project to load.", "assistant");
+        return;
+      }
+      try {
+        const res = await fetch("/projects/" + encodeURIComponent(id));
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          addSBMessage("Load error: " + (data.error || "Unknown error."), "assistant");
+          return;
+        }
+        renderProject(data);
+        if (data.project_name) sbProjectName.value = data.project_name;
+        addSBMessage("Project loaded: " + (data.project_name || id), "assistant");
+      } catch (err) {
+        addSBMessage("Could not load project.", "assistant");
+      }
+    });
+
+    sbChatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = sbChatInput.value.trim();
+      if (!text) return;
+      sbChatInput.value = "";
+      addSBMessage(text, "user");
+      addSBMessage("Note captured. Use this feed as your thinking log.", "assistant");
+    });
+
+    // Load project list on page load
+    refreshProjectList();
+  </script>
+</body>
+</html>

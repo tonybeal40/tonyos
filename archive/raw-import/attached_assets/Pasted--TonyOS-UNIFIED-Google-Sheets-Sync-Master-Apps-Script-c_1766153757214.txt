@@ -1,0 +1,167 @@
+/**
+ * TonyOS UNIFIED Google Sheets Sync - Master Apps Script
+ */
+
+const API_KEY = "tonyos2025";
+
+const SHEET_CONFIGS = {
+  'Journal': ['date', 'mood', 'stress', 'category', 'content', 'gratitude', 'focus', 'reflection', 'tags', 'links', 'wordCount', 'updatedAt'],
+  'CRM_Contacts': ['id', 'name', 'company', 'title', 'email', 'phone', 'linkedin', 'website', 'notes', 'stage', 'customerTier', 'source', 'createdAt', 'updatedAt'],
+  'CRM_Activity': ['id', 'contactId', 'contactName', 'channel', 'type', 'outcome', 'notes', 'date'],
+  'Budget': ['id', 'type', 'category', 'description', 'amount', 'date', 'recurring'],
+  'Daily': ['date', 'oneWin', 'pressure', 'nextStep', 'result', 'timestamp'],
+  'Jobs': ['id', 'createdAt', 'updatedAt', 'company', 'title', 'link', 'status', 'contactName', 'email', 'phone', 'location', 'salaryRange', 'nextStep', 'nextStepDate', 'notes', 'source'],
+  'Contact_Submissions': ['id', 'name', 'email', 'company', 'phone', 'message', 'createdAt']
+};
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents || "{}");
+    
+    const apiKey = body.api_key || body.token || "";
+    if (String(apiKey) !== API_KEY) {
+      return json({ ok: false, error: "Unauthorized - Invalid API key" });
+    }
+    
+    const action = body.action || 'append';
+    let sheetName = body.sheet || body.app || 'Log';
+    if (sheetName && sheetName === sheetName.toLowerCase()) {
+      sheetName = sheetName.charAt(0).toUpperCase() + sheetName.slice(1);
+    }
+    const data = body.data || body.payload || {};
+    
+    const sheet = getOrCreateSheet(sheetName);
+    
+    if (action === 'append') return appendRow(sheet, sheetName, data);
+    if (action === 'update') return updateRow(sheet, sheetName, data);
+    if (action === 'delete') return deleteRow(sheet, data.id);
+    if (action === 'list') return listRows(sheet, sheetName);
+    if (action === 'create') return createRow(sheet, sheetName, data);
+    
+    return json({ ok: false, error: "Unknown action: " + action });
+  } catch (err) {
+    return json({ ok: false, error: String(err) });
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    status: 'TonyOS Unified Sync Active',
+    tabs: Object.keys(SHEET_CONFIGS),
+    timestamp: new Date().toISOString()
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function getOrCreateSheet(sheetName) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(sheetName);
+  
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    const headers = SHEET_CONFIGS[sheetName] || ['timestamp', 'data'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  
+  return sheet;
+}
+
+function appendRow(sheet, sheetName, data) {
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const row = headers.map(h => formatValue(data[h]));
+  
+  if ((sheetName === 'Journal' && data.date) || (sheetName === 'Daily' && data.date)) {
+    const existingRow = findRowByColumn(sheet, 'date', data.date);
+    if (existingRow > 0) {
+      sheet.getRange(existingRow, 1, 1, row.length).setValues([row]);
+      return json({ ok: true, action: 'updated' });
+    }
+  }
+  
+  sheet.appendRow(row);
+  return json({ ok: true, action: 'appended' });
+}
+
+function createRow(sheet, sheetName, data) {
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const now = new Date().toISOString();
+  const id = sheetName.toLowerCase() + "_" + Utilities.getUuid();
+  
+  if (!data.id) data.id = id;
+  if (!data.createdAt) data.createdAt = now;
+  if (!data.updatedAt) data.updatedAt = now;
+  
+  const row = headers.map(h => formatValue(data[h]));
+  sheet.appendRow(row);
+  return json({ ok: true, id: data.id });
+}
+
+function updateRow(sheet, sheetName, data) {
+  const searchKey = data.id ? 'id' : (data.date ? 'date' : null);
+  const searchValue = data.id || data.date;
+  
+  if (!searchKey) return appendRow(sheet, sheetName, data);
+  
+  const rowIndex = findRowByColumn(sheet, searchKey, searchValue);
+  if (rowIndex < 1) return appendRow(sheet, sheetName, data);
+  
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  data.updatedAt = new Date().toISOString();
+  const row = headers.map(h => formatValue(data[h]));
+  
+  sheet.getRange(rowIndex, 1, 1, row.length).setValues([row]);
+  return json({ ok: true, action: 'updated' });
+}
+
+function deleteRow(sheet, id) {
+  if (!id) return json({ ok: false, error: "Missing id" });
+  
+  const rowIndex = findRowByColumn(sheet, 'id', id);
+  if (rowIndex < 1) return json({ ok: false, error: "Not found: " + id });
+  
+  sheet.deleteRow(rowIndex);
+  return json({ ok: true });
+}
+
+function listRows(sheet, sheetName) {
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return json({ ok: true, rows: [] });
+  
+  const headers = values[0];
+  const rows = values.slice(1)
+    .filter(r => r[0])
+    .map(r => {
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = r[i]);
+      return obj;
+    });
+  
+  return json({ ok: true, rows });
+}
+
+function findRowByColumn(sheet, columnName, value) {
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return -1;
+  
+  const headers = values[0];
+  const colIndex = headers.indexOf(columnName);
+  if (colIndex < 0) return -1;
+  
+  for (let i = 1; i < values.length; i++) {
+    if (values[i][colIndex] === value) return i + 1;
+  }
+  return -1;
+}
+
+function formatValue(value) {
+  if (value === undefined || value === null) return '';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return value;
+}
+
+function json(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}

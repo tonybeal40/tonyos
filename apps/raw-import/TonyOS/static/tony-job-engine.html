@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tony Job Engine | Career Intelligence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .header h1 span { color: #22c55e; }
+    .header p { color: #9ca3af; font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+    .tagline {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-top: 16px;
+      display: inline-block;
+      font-size: 13px;
+      color: #22c55e;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
+    .card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 .icon { font-size: 1.3rem; }
+    .keywords-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .keyword-tag {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #22c55e;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .keyword-tag:hover {
+      background: rgba(34, 197, 94, 0.3);
+      transform: translateY(-1px);
+    }
+    .keyword-tag.active {
+      background: #22c55e;
+      color: #000;
+    }
+    .search-section { margin-top: 16px; }
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .search-input:focus { outline: none; border-color: #22c55e; }
+    .search-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .search-btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .search-btn.google { background: #4285f4; color: #fff; }
+    .search-btn.indeed { background: #2164f3; color: #fff; }
+    .search-btn.linkedin { background: #0077b5; color: #fff; }
+    .search-btn.glassdoor { background: #0caa41; color: #fff; }
+    .search-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .location-select {
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .location-select:focus { outline: none; border-color: #22c55e; }
+    .score-card { grid-column: 1 / -1; }
+    .score-card textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 16px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+    .score-card textarea:focus { outline: none; border-color: #22c55e; }
+    .score-result {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 20px;
+      display: none;
+    }
+    .score-result.visible { display: block; }
+    .score-number {
+      font-size: 3rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .score-label {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .matched-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .matched-kw {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #22c55e;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .action-btn.primary { background: #22c55e; color: #000; }
+    .action-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .action-btn:hover { transform: translateY(-2px); }
+    .saved-jobs {
+      margin-top: 24px;
+      display: none;
+    }
+    .saved-jobs.visible { display: block; }
+    .saved-jobs h4 {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+    .saved-list { display: flex; flex-direction: column; gap: 8px; }
+    .saved-item {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .saved-item .title { font-weight: 500; }
+    .saved-item .meta { font-size: 12px; color: #9ca3af; }
+    .saved-item .score { 
+      background: #22c55e; 
+      color: #000; 
+      padding: 4px 10px; 
+      border-radius: 12px; 
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .remove-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .remove-btn:hover { background: rgba(239, 68, 68, 0.4); }
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .quick-link {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s;
+    }
+    .quick-link:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+    .quick-link .title { font-weight: 500; margin-bottom: 4px; }
+    .quick-link .desc { font-size: 12px; color: #9ca3af; }
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #22c55e; }
+    .stat-label { font-size: 0.8rem; color: #9ca3af; }
+    .profile-section {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .profile-section h4 {
+      font-size: 13px;
+      color: #22c55e;
+      margin-bottom: 8px;
+    }
+    .profile-section p {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+    .clear-btn {
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .clear-btn:hover { background: rgba(239, 68, 68, 0.1); }
+    .export-btn {
+      background: #f97316;
+      color: #fff;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .export-btn:hover { opacity: 0.9; }
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1><span>Tony</span> Job Engine</h1>
+    <p>Career intelligence for RevOps, Growth, and Business Development roles</p>
+    <div class="tagline">Stop scrolling. Start targeting. Run your career like a system.</div>
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value" id="searches-count">0</div>
+        <div class="stat-label">Searches</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="scored-count">0</div>
+        <div class="stat-label">Jobs Scored</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="saved-count">0</div>
+        <div class="stat-label">Saved</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h3><span class="icon">🎯</span> Target Keywords</h3>
+        <div class="profile-section">
+          <h4>Tony's Profile Match</h4>
+          <p>RevOps leader with 20+ years in manufacturing, CRM systems, B2B growth strategy. StoryBrand certified. Challenger Sales trained.</p>
+        </div>
+        <div class="keywords-list" id="keywords-list"></div>
+        <div class="search-section">
+          <input type="text" class="search-input" id="custom-keyword" placeholder="Add custom keyword...">
+          <button class="action-btn secondary" onclick="addCustomKeyword()" style="width: 100%;">+ Add Keyword</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">🔍</span> Quick Search</h3>
+        <input type="text" class="search-input" id="search-query" placeholder="Enter job title or keyword...">
+        <select class="location-select" id="location-select" style="width: 100%;">
+          <option value="remote">Remote</option>
+          <option value="hybrid">Hybrid</option>
+          <option value="remote OR hybrid" selected>Remote or Hybrid</option>
+          <option value="Saint Louis, MO">St. Louis, MO</option>
+          <option value="Kansas City">Kansas City</option>
+          <option value="Chicago, IL">Chicago, IL</option>
+          <option value="">Any Location</option>
+        </select>
+        <div class="search-buttons">
+          <a class="search-btn google" id="google-link" href="#" target="_blank">Google Jobs</a>
+          <a class="search-btn indeed" id="indeed-link" href="#" target="_blank">Indeed</a>
+          <a class="search-btn linkedin" id="linkedin-link" href="#" target="_blank">LinkedIn</a>
+          <a class="search-btn glassdoor" id="glassdoor-link" href="#" target="_blank">Glassdoor</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">⚡</span> Quick Searches</h3>
+        <div class="quick-links">
+          <a href="#" class="quick-link" onclick="quickSearch('Director of Revenue Operations'); return false;">
+            <div class="title">Director RevOps</div>
+            <div class="desc">Remote leadership roles</div>
+          </a>
+          <a href="#" class="quick-link" onclick="quickSearch('Head of Growth B2B'); return false;">
+            <div class="title">Head of Growth</div>
+            <div class="desc">B2B growth leadership</div>
+          </a>
+          <a href="#" class="quick-link" onclick="quickSearch('VP Sales Operations manufacturing'); return false;">
+            <div class="title">VP Sales Ops</div>
+            <div class="desc">Manufacturing focus</div>
+          </a>
+          <a href="#" class="quick-link" onclick="quickSearch('Business Development Director SaaS'); return false;">
+            <div class="title">BD Director</div>
+            <div class="desc">SaaS companies</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1; border: 2px solid #8b5cf6;">
+        <h3><span class="icon">🤖</span> AI Job Recommendations <span style="background: #8b5cf6; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;">POWERED BY AI</span></h3>
+        <p style="color: #9ca3af; font-size: 13px; margin-bottom: 12px;">Get personalized job search recommendations based on your profile. AI tells you exactly what to search for and where.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+          <button class="action-btn" style="background: #8b5cf6;" onclick="getAIRecommendations('general')">🎯 Get Recommendations</button>
+          <button class="action-btn secondary" onclick="getAIRecommendations('remote')">Remote Focus</button>
+          <button class="action-btn secondary" onclick="getAIRecommendations('leadership')">Leadership Roles</button>
+          <button class="action-btn secondary" onclick="getAIRecommendations('manufacturing')">Manufacturing</button>
+          <button class="action-btn secondary" onclick="getAIRecommendations('startup')">Startups</button>
+        </div>
+        <div id="ai-recs-loading" style="display: none; text-align: center; padding: 30px; color: #8b5cf6;">
+          <div>🤖 AI is analyzing your profile and generating recommendations...</div>
+        </div>
+        <div id="ai-recs-results" style="display: none;">
+          <div id="ai-recs-strategy" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px;"></div>
+          <div id="ai-recs-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+          <div id="ai-recs-tips" style="margin-top: 16px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 16px;"></div>
+        </div>
+        <div id="ai-recs-error" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 16px; color: #ef4444;"></div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">📊</span> Job Boards</h3>
+        <div class="quick-links">
+          <a href="https://builtin.com/jobs/revenue-operations" target="_blank" class="quick-link">
+            <div class="title">Built In</div>
+            <div class="desc">RevOps at tech companies</div>
+          </a>
+          <a href="https://www.themuse.com/search?keyword=revenue%20operations" target="_blank" class="quick-link">
+            <div class="title">The Muse</div>
+            <div class="desc">Culture-focused roles</div>
+          </a>
+          <a href="https://wellfound.com/role/r/revenue-operations" target="_blank" class="quick-link">
+            <div class="title">Wellfound</div>
+            <div class="desc">Startup RevOps jobs</div>
+          </a>
+          <a href="https://remoteok.com/remote-operations-jobs" target="_blank" class="quick-link">
+            <div class="title">Remote OK</div>
+            <div class="desc">100% remote positions</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="card score-card">
+        <h3><span class="icon">🚀</span> Tailor My Application <span style="background: #f97316; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;">FIRST APPLICANT WINS</span></h3>
+        <p style="color: #9ca3af; font-size: 13px; margin-bottom: 12px;">Paste any job description. Get tailored summary, bullets, cover letter, and LinkedIn message in seconds.</p>
+        <textarea id="job-description" placeholder="Paste the full job description here... (the more detail, the better the tailoring)"></textarea>
+        <div class="btn-row">
+          <button class="action-btn" style="background: #f97316; color: #000;" onclick="tailorApplication()">✨ Tailor My Application</button>
+          <button class="action-btn" style="background: #8b5cf6;" onclick="analyzeWithAI()">🔍 Analyze Fit</button>
+          <button class="action-btn primary" onclick="scoreJob()">Score Keywords</button>
+          <button class="action-btn secondary" onclick="saveJob()">Save</button>
+          <button class="clear-btn" onclick="clearScore()">Clear</button>
+        </div>
+        
+        <div id="tailor-loading" style="display: none; text-align: center; padding: 30px; color: #f97316;">
+          <div>✨ Generating tailored application materials...</div>
+          <div style="color: #9ca3af; font-size: 12px; margin-top: 8px;">Summary, bullets, cover letter, LinkedIn message</div>
+        </div>
+        
+        <div id="tailor-results" style="display: none; margin-top: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px;">
+            <div style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="margin: 0; color: #f97316;">📋 Tailored Summary</h4>
+                <button class="action-btn secondary" style="font-size: 10px; padding: 4px 8px;" onclick="copyToClipboard('tailor-summary')">Copy</button>
+              </div>
+              <div id="tailor-summary" style="font-size: 13px; line-height: 1.6; color: #e6edf3;"></div>
+            </div>
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="margin: 0; color: #22c55e;">🎯 Tailored Bullets</h4>
+                <button class="action-btn secondary" style="font-size: 10px; padding: 4px 8px;" onclick="copyToClipboard('tailor-bullets')">Copy</button>
+              </div>
+              <ul id="tailor-bullets" style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; color: #e6edf3;"></ul>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; margin-top: 16px;">
+            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="margin: 0; color: #8b5cf6;">✉️ Cover Letter</h4>
+                <button class="action-btn secondary" style="font-size: 10px; padding: 4px 8px;" onclick="copyToClipboard('tailor-cover')">Copy</button>
+              </div>
+              <div id="tailor-cover" style="font-size: 13px; line-height: 1.7; color: #e6edf3; white-space: pre-wrap;"></div>
+            </div>
+            <div style="background: rgba(0, 119, 181, 0.1); border: 1px solid rgba(0, 119, 181, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="margin: 0; color: #0077b5;">💬 LinkedIn Message</h4>
+                <button class="action-btn secondary" style="font-size: 10px; padding: 4px 8px;" onclick="copyToClipboard('tailor-linkedin')">Copy</button>
+              </div>
+              <div id="tailor-linkedin" style="font-size: 13px; line-height: 1.6; color: #e6edf3;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="score-result" id="score-result">
+          <div class="score-number" id="score-display">0</div>
+          <div class="score-label" id="score-label">Fit Score</div>
+          <div class="matched-keywords" id="matched-keywords"></div>
+        </div>
+        <div class="ai-analysis" id="ai-analysis" style="display: none; margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="margin: 0; color: #8b5cf6;">🤖 AI Strategic Analysis</h4>
+            <button class="clear-btn" onclick="clearAIAnalysis()" style="font-size: 10px;">Hide</button>
+          </div>
+          <div id="ai-analysis-content" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 16px; line-height: 1.7; font-size: 14px; white-space: pre-wrap;"></div>
+        </div>
+        <div class="ai-loading" id="ai-loading" style="display: none; text-align: center; padding: 30px;">
+          <div style="color: #8b5cf6; font-size: 14px;">🤖 AI analyzing job description...</div>
+          <div style="color: #9ca3af; font-size: 12px; margin-top: 8px;">Evaluating fit, strengths, and positioning strategy</div>
+        </div>
+        <div class="saved-jobs" id="saved-jobs">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="margin: 0;">Saved Jobs</h4>
+            <button class="export-btn" onclick="exportSavedJobs()">Export CSV</button>
+          </div>
+          <div class="saved-list" id="saved-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const KEYWORDS = [
+  "revenue operations",
+  "revops",
+  "business development director",
+  "head of growth",
+  "growth operations",
+  "sales operations",
+  "gtm strategy",
+  "go-to-market",
+  "crm",
+  "hubspot",
+  "salesforce",
+  "manufacturing",
+  "b2b",
+  "storybrand",
+  "challenger sales",
+  "pipeline",
+  "demand generation",
+  "account executive",
+  "customer success",
+  "enablement"
+];
+
+let selectedKeywords = [...KEYWORDS];
+let savedJobs = JSON.parse(localStorage.getItem('tony_saved_jobs') || '[]');
+let searchCount = parseInt(localStorage.getItem('tony_search_count') || '0');
+let scoredCount = parseInt(localStorage.getItem('tony_scored_count') || '0');
+let lastScore = 0;
+let lastMatches = [];
+
+function init() {
+  renderKeywords();
+  updateStats();
+  renderSavedJobs();
+  
+  document.getElementById('search-query').addEventListener('input', updateSearchLinks);
+  document.getElementById('location-select').addEventListener('change', updateSearchLinks);
+  document.getElementById('search-query').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('google-link').click();
+      incrementSearchCount();
+    }
+  });
+}
+
+function renderKeywords() {
+  const container = document.getElementById('keywords-list');
+  container.innerHTML = KEYWORDS.map(kw => `
+    <span class="keyword-tag ${selectedKeywords.includes(kw) ? 'active' : ''}" 
+          onclick="toggleKeyword('${kw}')">${kw}</span>
+  `).join('');
+}
+
+function toggleKeyword(kw) {
+  if (selectedKeywords.includes(kw)) {
+    selectedKeywords = selectedKeywords.filter(k => k !== kw);
+  } else {
+    selectedKeywords.push(kw);
+  }
+  renderKeywords();
+}
+
+function addCustomKeyword() {
+  const input = document.getElementById('custom-keyword');
+  const kw = input.value.trim().toLowerCase();
+  if (kw && !KEYWORDS.includes(kw)) {
+    KEYWORDS.push(kw);
+    selectedKeywords.push(kw);
+    renderKeywords();
+    input.value = '';
+  }
+}
+
+function updateSearchLinks() {
+  const query = document.getElementById('search-query').value || 'revenue operations';
+  const location = document.getElementById('location-select').value;
+  const fullQuery = location ? `${query} ${location}` : query;
+  
+  document.getElementById('google-link').href = `https://www.google.com/search?q=${encodeURIComponent(fullQuery + ' jobs')}`;
+  document.getElementById('indeed-link').href = `https://www.indeed.com/jobs?q=${encodeURIComponent(query)}&l=${encodeURIComponent(location)}`;
+  document.getElementById('linkedin-link').href = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+  document.getElementById('glassdoor-link').href = `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${encodeURIComponent(query)}&locT=N&locKeyword=${encodeURIComponent(location)}`;
+}
+
+function quickSearch(query) {
+  document.getElementById('search-query').value = query;
+  updateSearchLinks();
+  incrementSearchCount();
+  window.open(document.getElementById('linkedin-link').href, '_blank');
+}
+
+function scoreJob() {
+  const text = document.getElementById('job-description').value.toLowerCase();
+  if (!text.trim()) return;
+  
+  const matches = selectedKeywords.filter(kw => text.includes(kw.toLowerCase()));
+  const score = matches.length;
+  lastScore = score;
+  lastMatches = matches;
+  
+  const scoreEl = document.getElementById('score-display');
+  const labelEl = document.getElementById('score-label');
+  const matchedEl = document.getElementById('matched-keywords');
+  const resultEl = document.getElementById('score-result');
+  
+  scoreEl.textContent = score;
+  
+  if (score >= 8) {
+    scoreEl.style.color = '#22c55e';
+    labelEl.textContent = 'Excellent Fit - Apply immediately!';
+  } else if (score >= 5) {
+    scoreEl.style.color = '#f59e0b';
+    labelEl.textContent = 'Good Fit - Worth tailoring resume';
+  } else if (score >= 3) {
+    scoreEl.style.color = '#f97316';
+    labelEl.textContent = 'Moderate Fit - Consider if company is strong';
+  } else {
+    scoreEl.style.color = '#ef4444';
+    labelEl.textContent = 'Low Fit - May not be ideal match';
+  }
+  
+  matchedEl.innerHTML = matches.map(m => `<span class="matched-kw">${m}</span>`).join('');
+  resultEl.classList.add('visible');
+  
+  scoredCount++;
+  localStorage.setItem('tony_scored_count', scoredCount);
+  updateStats();
+}
+
+function saveJob() {
+  const text = document.getElementById('job-description').value;
+  if (!text.trim() || lastScore === 0) {
+    alert('Please score a job first');
+    return;
+  }
+  
+  const title = prompt('Enter job title:', '');
+  if (!title) return;
+  
+  const company = prompt('Enter company name:', '');
+  
+  savedJobs.push({
+    title,
+    company: company || 'Unknown',
+    score: lastScore,
+    matches: lastMatches,
+    date: new Date().toISOString().split('T')[0]
+  });
+  
+  localStorage.setItem('tony_saved_jobs', JSON.stringify(savedJobs));
+  renderSavedJobs();
+  updateStats();
+}
+
+function renderSavedJobs() {
+  const container = document.getElementById('saved-jobs');
+  const list = document.getElementById('saved-list');
+  
+  if (savedJobs.length === 0) {
+    container.classList.remove('visible');
+    return;
+  }
+  
+  container.classList.add('visible');
+  list.innerHTML = savedJobs.map((job, i) => `
+    <div class="saved-item">
+      <div>
+        <div class="title">${escapeHtml(job.title)}</div>
+        <div class="meta">${escapeHtml(job.company)} - ${job.date}</div>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span class="score">${job.score}</span>
+        <button class="remove-btn" onclick="removeJob(${i})">Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function removeJob(index) {
+  savedJobs.splice(index, 1);
+  localStorage.setItem('tony_saved_jobs', JSON.stringify(savedJobs));
+  renderSavedJobs();
+  updateStats();
+}
+
+function exportSavedJobs() {
+  if (savedJobs.length === 0) return;
+  
+  const headers = ['Title', 'Company', 'Fit Score', 'Keywords Matched', 'Date'];
+  const rows = savedJobs.map(j => [j.title, j.company, j.score, j.matches.join('; '), j.date]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tony-job-matches-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+function clearScore() {
+  document.getElementById('job-description').value = '';
+  document.getElementById('score-result').classList.remove('visible');
+  document.getElementById('ai-analysis').style.display = 'none';
+  lastScore = 0;
+  lastMatches = [];
+}
+
+function clearAIAnalysis() {
+  document.getElementById('ai-analysis').style.display = 'none';
+}
+
+async function analyzeWithAI() {
+  const text = document.getElementById('job-description').value;
+  if (!text.trim() || text.length < 50) {
+    alert('Please paste a complete job description (at least 50 characters)');
+    return;
+  }
+  
+  const loadingEl = document.getElementById('ai-loading');
+  const analysisEl = document.getElementById('ai-analysis');
+  const contentEl = document.getElementById('ai-analysis-content');
+  
+  loadingEl.style.display = 'block';
+  analysisEl.style.display = 'none';
+  
+  try {
+    const response = await fetch('/api/job-analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: text })
+    });
+    
+    const data = await response.json();
+    
+    loadingEl.style.display = 'none';
+    
+    if (data.error) {
+      contentEl.innerHTML = `<div style="color: #ef4444;">Error: ${data.error}</div>`;
+      if (data.keyword_score !== undefined) {
+        contentEl.innerHTML += `<div style="margin-top: 12px; color: #9ca3af;">Keyword Score: ${data.keyword_score} matches</div>`;
+        if (data.matched_keywords && data.matched_keywords.length > 0) {
+          contentEl.innerHTML += `<div style="margin-top: 8px;">${data.matched_keywords.map(k => `<span style="background: rgba(34,197,94,0.2); padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-right: 4px;">${k}</span>`).join('')}</div>`;
+        }
+      }
+    } else {
+      let analysisHtml = data.analysis.replace(/\n/g, '<br>');
+      analysisHtml = analysisHtml.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #22c55e;">$1</strong>');
+      analysisHtml = analysisHtml.replace(/^(\d+\.\s)/gm, '<span style="color: #8b5cf6; font-weight: 600;">$1</span>');
+      
+      contentEl.innerHTML = analysisHtml;
+      
+      if (data.keyword_score !== undefined) {
+        contentEl.innerHTML += `<div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(139,92,246,0.3);">
+          <strong style="color: #8b5cf6;">Keyword Match:</strong> ${data.keyword_score}/${data.total_keywords} keywords detected
+        </div>`;
+      }
+    }
+    
+    analysisEl.style.display = 'block';
+    
+    scoredCount++;
+    localStorage.setItem('tony_scored_count', scoredCount);
+    updateStats();
+    
+  } catch (err) {
+    loadingEl.style.display = 'none';
+    contentEl.innerHTML = `<div style="color: #f97316;">AI analysis requires TonyOS server. For offline use, use the keyword scoring feature.</div>`;
+    analysisEl.style.display = 'block';
+  }
+}
+
+function incrementSearchCount() {
+  searchCount++;
+  localStorage.setItem('tony_search_count', searchCount);
+  updateStats();
+}
+
+async function tailorApplication() {
+  const text = document.getElementById('job-description').value;
+  if (!text.trim() || text.length < 100) {
+    alert('Please paste a complete job description (at least 100 characters)');
+    return;
+  }
+  
+  const loadingEl = document.getElementById('tailor-loading');
+  const resultsEl = document.getElementById('tailor-results');
+  const scoreResultEl = document.getElementById('score-result');
+  const aiAnalysisEl = document.getElementById('ai-analysis');
+  
+  loadingEl.style.display = 'block';
+  resultsEl.style.display = 'none';
+  scoreResultEl.classList.remove('visible');
+  aiAnalysisEl.style.display = 'none';
+  
+  try {
+    const response = await fetch('/api/job-tailor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: text })
+    });
+    
+    const data = await response.json();
+    loadingEl.style.display = 'none';
+    
+    if (data.error) {
+      alert('Error: ' + data.error);
+      return;
+    }
+    
+    if (data.raw) {
+      document.getElementById('tailor-summary').textContent = data.raw;
+      document.getElementById('tailor-bullets').innerHTML = '';
+      document.getElementById('tailor-cover').textContent = '';
+      document.getElementById('tailor-linkedin').textContent = '';
+    } else {
+      document.getElementById('tailor-summary').textContent = data.summary || '';
+      
+      const bullets = data.bullets || [];
+      document.getElementById('tailor-bullets').innerHTML = bullets.map(b => `<li style="margin-bottom: 8px;">${escapeHtml(b)}</li>`).join('');
+      
+      document.getElementById('tailor-cover').textContent = data.cover_letter || '';
+      document.getElementById('tailor-linkedin').textContent = data.linkedin_message || '';
+    }
+    
+    resultsEl.style.display = 'block';
+    resultsEl.scrollIntoView({ behavior: 'smooth' });
+    
+    scoredCount++;
+    localStorage.setItem('tony_scored_count', scoredCount);
+    updateStats();
+    
+  } catch (err) {
+    loadingEl.style.display = 'none';
+    alert('Failed to generate tailored content. Please try again.');
+  }
+}
+
+function copyToClipboard(elementId) {
+  const el = document.getElementById(elementId);
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.parentElement.querySelector('button');
+    const originalText = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+    }, 1500);
+  });
+}
+
+async function getAIRecommendations(focus = 'general') {
+  const loadingEl = document.getElementById('ai-recs-loading');
+  const resultsEl = document.getElementById('ai-recs-results');
+  const errorEl = document.getElementById('ai-recs-error');
+  const strategyEl = document.getElementById('ai-recs-strategy');
+  const listEl = document.getElementById('ai-recs-list');
+  const tipsEl = document.getElementById('ai-recs-tips');
+  
+  loadingEl.style.display = 'block';
+  resultsEl.style.display = 'none';
+  errorEl.style.display = 'none';
+  
+  try {
+    const response = await fetch('/api/job-recommendations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ focus })
+    });
+    
+    const data = await response.json();
+    loadingEl.style.display = 'none';
+    
+    if (data.error) {
+      errorEl.innerHTML = data.error;
+      errorEl.style.display = 'block';
+      return;
+    }
+    
+    if (data.raw) {
+      strategyEl.innerHTML = `<div style="white-space: pre-wrap;">${data.raw}</div>`;
+      listEl.innerHTML = '';
+      tipsEl.style.display = 'none';
+    } else {
+      strategyEl.innerHTML = `<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">🎯 Strategy</div><div style="color: #e6edf3;">${data.strategy || 'Focus on roles that leverage your RevOps and manufacturing experience.'}</div>`;
+      
+      const recs = data.recommendations || [];
+      listEl.innerHTML = recs.map(rec => {
+        const searchUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(rec.search_query || rec.title)}`;
+        const googleUrl = `https://www.google.com/search?q=${encodeURIComponent((rec.search_query || rec.title) + ' jobs')}`;
+        const indeedUrl = `https://www.indeed.com/jobs?q=${encodeURIComponent(rec.search_query || rec.title)}`;
+        
+        const priorityColor = rec.priority === 'high' ? '#22c55e' : rec.priority === 'medium' ? '#f59e0b' : '#9ca3af';
+        
+        return `
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 280px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-weight: 600; font-size: 15px; color: #22c55e;">${escapeHtml(rec.title)}</span>
+                  <span style="background: ${priorityColor}; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 10px; text-transform: uppercase;">${rec.priority || 'medium'}</span>
+                </div>
+                <div style="font-size: 13px; color: #e6edf3; margin-bottom: 8px;">💡 ${escapeHtml(rec.why_it_fits)}</div>
+                <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">🏢 ${escapeHtml(rec.target_companies)}</div>
+                <div style="font-size: 12px; color: #8b5cf6;">🔍 Search: "${escapeHtml(rec.search_query)}"</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <a href="${searchUrl}" target="_blank" class="action-btn" style="background: #0077b5; font-size: 11px; padding: 6px 12px; text-decoration: none;">LinkedIn →</a>
+                <a href="${googleUrl}" target="_blank" class="action-btn secondary" style="font-size: 11px; padding: 6px 12px; text-decoration: none;">Google →</a>
+                <a href="${indeedUrl}" target="_blank" class="action-btn secondary" style="font-size: 11px; padding: 6px 12px; text-decoration: none;">Indeed →</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      const tips = data.pro_tips || [];
+      if (tips.length > 0) {
+        tipsEl.innerHTML = `<div style="font-weight: 600; color: #22c55e; margin-bottom: 8px;">💡 Pro Tips</div><ul style="margin: 0; padding-left: 20px; color: #e6edf3;">${tips.map(t => `<li style="margin-bottom: 6px;">${escapeHtml(t)}</li>`).join('')}</ul>`;
+        tipsEl.style.display = 'block';
+      } else {
+        tipsEl.style.display = 'none';
+      }
+    }
+    
+    resultsEl.style.display = 'block';
+    incrementSearchCount();
+    
+  } catch (err) {
+    loadingEl.style.display = 'none';
+    errorEl.innerHTML = 'Failed to get recommendations. Please try again.';
+    errorEl.style.display = 'block';
+  }
+}
+
+function updateStats() {
+  document.getElementById('searches-count').textContent = searchCount;
+  document.getElementById('scored-count').textContent = scoredCount;
+  document.getElementById('saved-count').textContent = savedJobs.length;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Track clicks on search buttons
+document.querySelectorAll('.search-btn').forEach(btn => {
+  btn.addEventListener('click', incrementSearchCount);
+});
+
+init();
+updateSearchLinks();
+  </script>
+</body>
+</html>

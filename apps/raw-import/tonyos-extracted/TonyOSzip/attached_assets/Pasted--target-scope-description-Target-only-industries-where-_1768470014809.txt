@@ -1,0 +1,258 @@
+{
+  "target_scope": {
+    "description": "Target only industries where powder compaction, tablet tooling, and formulation science are operationally critical",
+    "require_all_conditions": true
+  },
+
+  "allowed_industries": {
+    "primary": [
+      "Pharmaceutical Solid Oral Dosage Manufacturing",
+      "Drug Product Manufacturing",
+      "Generic Pharmaceutical Manufacturing",
+      "Pharmaceutical R&D",
+      "Tablet Manufacturing",
+      "Contract Development and Manufacturing Organization",
+      "CDMO",
+      "CMO"
+    ],
+
+    "secondary_conditional": [
+      "Pharmaceutical Confectionery",
+      "Nutraceutical Manufacturing",
+      "OTC Drug Manufacturing",
+      "Consumer Health Manufacturing",
+      "Cannabis Manufacturing",
+      "Specialty Chemicals",
+      "Catalyst Manufacturing",
+      "Battery Materials",
+      "Energy Materials",
+      "Nuclear Materials",
+      "Critical Materials Processing"
+    ]
+  },
+
+  "enforcement_conditions": {
+    "must_have_all": {
+      "powder_compaction": true,
+      "tooling_dependency": true,
+      "formulation_dependency": true
+    }
+  },
+
+  "qualifying_keywords": {
+    "tooling_required": [
+      "tablet press",
+      "tablet tooling",
+      "punch tooling",
+      "die tooling",
+      "compression tooling",
+      "press tooling",
+      "tool wear",
+      "tool life",
+      "press performance"
+    ],
+
+    "formulation_required": [
+      "formulation development",
+      "powder formulation",
+      "solid oral dosage",
+      "granulation",
+      "blend uniformity",
+      "binder system",
+      "excipients",
+      "disintegrants",
+      "lubricants",
+      "porosity control",
+      "tablet hardness",
+      "friability",
+      "dissolution",
+      "usp",
+      "usp 1062"
+    ],
+
+    "compaction_required": [
+      "tablet compression",
+      "powder compaction",
+      "pressed tablets",
+      "pellet pressing",
+      "compression force",
+      "compaction behavior",
+      "press force profile"
+    ]
+  },
+
+  "conditional_industry_rules": {
+    "pharmaceutical_confectionery": {
+      "allowed_only_if_keywords_present": [
+        "compressed lozenge",
+        "chewable tablet",
+        "compressed confectionery",
+        "tablet press"
+      ],
+      "blocked_if_keywords_present": [
+        "gummy",
+        "gel",
+        "liquid",
+        "molded candy"
+      ]
+    },
+
+    "nutraceutical_manufacturing": {
+      "allowed_only_if_keywords_present": [
+        "tablet press",
+        "tablet compression",
+        "granulation",
+        "compressed tablet"
+      ],
+      "blocked_if_keywords_present": [
+        "gummies",
+        "softgels",
+        "capsules only",
+        "direct to consumer",
+        "dtc brand",
+        "marketing brand"
+      ]
+    },
+
+    "cannabis_manufacturing": {
+      "allowed_only_if_keywords_present": [
+        "compressed tablets",
+        "pressed tablets",
+        "dose uniformity",
+        "powder formulation"
+      ],
+      "blocked_if_keywords_present": [
+        "edibles",
+        "gummies",
+        "vape",
+        "flower",
+        "pre-roll",
+        "topicals"
+      ]
+    },
+
+    "generic_pharma": {
+      "allowed_only_if_keywords_present": [
+        "tablet compression",
+        "tooling optimization",
+        "scale-up",
+        "tech transfer"
+      ]
+    },
+
+    "otc_consumer_health": {
+      "allowed_only_if_keywords_present": [
+        "chewable tablet",
+        "compressed tablet",
+        "tablet press"
+      ],
+      "blocked_if_keywords_present": [
+        "liquid",
+        "syrup",
+        "spray"
+      ]
+    },
+
+    "battery_and_energy_materials": {
+      "allowed_only_if_keywords_present": [
+        "pressed electrodes",
+        "pellet pressing",
+        "powder formulation",
+        "pilot scale"
+      ]
+    },
+
+    "catalyst_manufacturing": {
+      "allowed_only_if_keywords_present": [
+        "catalyst tablets",
+        "pelletization",
+        "porosity control"
+      ]
+    }
+  },
+
+  "hard_excluded_industries": [
+    "Powder Metallurgy",
+    "Metal Injection Molding",
+    "Structural Ceramics",
+    "Construction Materials",
+    "Automotive Structural Parts",
+    "Aerospace Structural Components",
+    "Sintered Metal Parts",
+    "General Job Shop Manufacturing"
+  ],
+
+  "negative_keywords": [
+    "cnc machining",
+    "job shop",
+    "welding",
+    "sheet metal",
+    "casting",
+    "forging",
+    "injection molding",
+    "construction",
+    "plastics",
+    "food processing",
+    "beverage",
+    "bakery",
+    "cosmetics",
+    "personal care",
+    "packaging only",
+    "labeling",
+    "software",
+    "it services",
+    "marketing agency",
+    "advertising",
+    "consulting only"
+  ],
+
+  "scoring_logic": {
+    "tooling_keyword_match": 3,
+    "formulation_keyword_match": 3,
+    "compaction_keyword_match": 2,
+    "industry_match": 3,
+    "negative_keyword_penalty": -6
+  },
+
+  "thresholds": {
+    "tier_1_min_score": 7,
+    "tier_2_min_score": 4
+  },
+
+  "routing_rules": {
+    "natoli_engineering": {
+      "trigger_keywords": [
+        "tooling",
+        "tablet press",
+        "compression force",
+        "tool wear",
+        "die",
+        "punch"
+      ]
+    },
+    "natoli_scientific": {
+      "trigger_keywords": [
+        "formulation",
+        "characterization",
+        "analytical",
+        "usp",
+        "r&d",
+        "dissolution"
+      ]
+    }
+  },
+
+  "output_controls": {
+    "exclude_if_missing_any_required_condition": true,
+    "exclude_if_any_negative_keyword_present": true,
+    "explain_decision": true,
+    "explanation_fields": [
+      "industry_match",
+      "tooling_signals",
+      "formulation_signals",
+      "compaction_signals",
+      "conditional_rule_triggered",
+      "exclusion_reason_if_any"
+    ]
+  }
+}

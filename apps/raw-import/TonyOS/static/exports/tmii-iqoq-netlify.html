@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TM-II Validation Document Generator | IQ/OQ Protocol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-alt: #1c2128;
+      --border: #30363d;
+      --text: #f0f6fc;
+      --text-secondary: #8b949e;
+      --brand-blue: #3b82f6;
+      --brand-green: #22c55e;
+      --brand-orange: #f97316;
+      --brand-purple: #a855f7;
+      --brand-cyan: #06b6d4;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+      padding: 32px 40px;
+      border-bottom: 3px solid var(--brand-blue);
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .header h1 span { color: var(--brand-orange); }
+    .header p { color: var(--text-secondary); }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      margin-top: 24px;
+      background: var(--surface);
+      padding: 6px;
+      border-radius: 12px;
+      flex-wrap: wrap;
+      width: fit-content;
+    }
+    
+    .nav-tab {
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .nav-tab.active { background: var(--brand-blue); color: white; }
+    .nav-tab:hover:not(.active) { background: var(--surface-alt); color: var(--text); }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .card h2 {
+      color: var(--brand-blue);
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--brand-blue);
+    }
+    
+    .card h3 {
+      color: var(--brand-cyan);
+      font-size: 1.1rem;
+      margin: 20px 0 12px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-blue);
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--brand-blue); color: white; }
+    .btn-success { background: var(--brand-green); color: #000; }
+    .btn-orange { background: var(--brand-orange); color: white; }
+    .btn-purple { background: var(--brand-purple); color: white; }
+    
+    .action-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .lifecycle-flow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    
+    .lifecycle-step {
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 120px;
+      transition: all 0.3s;
+    }
+    
+    .lifecycle-step:hover {
+      border-color: var(--brand-blue);
+      transform: translateY(-3px);
+    }
+    
+    .lifecycle-step h4 { margin: 0; color: var(--brand-blue); }
+    .lifecycle-step small { color: var(--text-secondary); font-size: 0.75rem; }
+    .lifecycle-step.urs { border-color: var(--brand-blue); }
+    .lifecycle-step.sds { border-color: var(--brand-purple); }
+    .lifecycle-step.iq { border-color: var(--brand-green); }
+    .lifecycle-step.oq { border-color: var(--brand-orange); }
+    
+    .arrow { color: var(--brand-cyan); font-size: 1.5rem; }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.85rem;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--surface-alt);
+      color: var(--brand-blue);
+      font-weight: 600;
+    }
+    
+    tr:nth-child(even) { background: rgba(0,0,0,0.2); }
+    
+    .req-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .badge-direct { background: rgba(34,197,94,0.2); color: var(--brand-green); }
+    .badge-nondirect { background: rgba(148,163,184,0.2); color: var(--text-secondary); }
+    
+    .test-section {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      border-left: 4px solid var(--brand-green);
+    }
+    
+    .test-section h4 {
+      color: var(--brand-green);
+      margin-bottom: 8px;
+    }
+    
+    .test-section.oq-test { border-left-color: var(--brand-orange); }
+    .test-section.oq-test h4 { color: var(--brand-orange); }
+    
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--brand-green);
+      color: #000;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      transform: translateY(100px);
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    
+    #toast.show { transform: translateY(0); }
+    
+    @media print {
+      body { background: white; color: #1a1a1a; }
+      .header, .nav-tabs, .action-bar { display: none; }
+      .container { padding: 0; max-width: 100%; }
+      .card { box-shadow: none; border: 1px solid #ddd; background: white; }
+      th { background: #f0f0f0; color: #1a1a1a; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1><span>TM-II</span> Validation Document Generator</h1>
+      <p>IQ/OQ Protocol Generator for Tool Management II Software | cGMP Compliant</p>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+        <button class="nav-tab" onclick="showTab('company')">Company Info</button>
+        <button class="nav-tab" onclick="showTab('urs')">URS Requirements</button>
+        <button class="nav-tab" onclick="showTab('iq')">IQ Protocol</button>
+        <button class="nav-tab" onclick="showTab('oq')">OQ Protocol</button>
+        <button class="nav-tab" onclick="showTab('traceability')">Traceability Matrix</button>
+        <button class="nav-tab" onclick="showTab('export')">Export Documents</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- OVERVIEW TAB -->
+    <div id="overview" class="tab-content active">
+      <div class="card">
+        <h2>Validation Lifecycle Overview</h2>
+        <p>This tool generates complete IQ/OQ documentation for the Natoli Tool Management II (TM-II) software system. The validation lifecycle follows cGMP requirements with full traceability from User Requirements through Operational Qualification.</p>
+        
+        <div class="lifecycle-flow">
+          <div class="lifecycle-step urs">
+            <h4>URS</h4>
+            <small>User Requirements</small>
+          </div>
+          <span class="arrow">→</span>
+          <div class="lifecycle-step sds">
+            <h4>SDS</h4>
+            <small>Software Design Spec</small>
+          </div>
+          <span class="arrow">→</span>
+          <div class="lifecycle-step iq">
+            <h4>IQ</h4>
+            <small>Installation Qual.</small>
+          </div>
+          <span class="arrow">→</span>
+          <div class="lifecycle-step oq">
+            <h4>OQ</h4>
+            <small>Operational Qual.</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>System Description - Tool Management II</h2>
+        <p>Tool Management II (TM-II) is designed for tablet manufacturers. The program provides tablet manufacturers with tool control and inspection features to improve product quality and consistency, eliminate waste, and also help ensure compliance with cGMP record keeping requirements.</p>
+        
+        <h3>Core Functions</h3>
+        <ul style="margin-left: 20px; margin-top: 12px;">
+          <li>Tool storage and location tracking</li>
+          <li>Inspection and tolerance reporting</li>
+          <li>Usage monitoring and tablet count tracking</li>
+          <li>Tool drawing file management</li>
+          <li>Report generation (maintenance, usage, summary)</li>
+          <li>Purchase order creation for tooling</li>
+          <li>Integration with Natoli Laser Vision System (LVS)</li>
+        </ul>
+        
+        <h3>System Architecture</h3>
+        <div style="margin-top: 12px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+          <p><strong>Tool Directory</strong> → Main table containing entries for each tool (punches, dies)</p>
+          <p><strong>Sets Directory</strong> → Links tools to sets for production</p>
+          <p><strong>Products Directory</strong> → Contains entries for every product/tablet with default limits</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANY INFO TAB -->
+    <div id="company" class="tab-content">
+      <div class="card">
+        <h2>Company Information</h2>
+        <p>Enter your company details for the validation documents:</p>
+        
+        <div class="form-grid" style="margin-top: 20px;">
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="companyName" placeholder="e.g., ABC Pharmaceuticals Inc." oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="companyAddress" placeholder="e.g., 123 Manufacturing Way" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>City, State ZIP</label>
+            <input type="text" id="companyCityState" placeholder="e.g., Newark, DE 19702" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Protocol Number</label>
+            <input type="text" id="protocolNumber" placeholder="e.g., VAL-TMII-2025-001" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Document Date</label>
+            <input type="date" id="docDate" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Software Version</label>
+            <input type="text" id="softwareVersion" value="2025.6" oninput="saveCompanyData()">
+          </div>
+        </div>
+        
+        <h3>Approval Signatures</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Preparer Name & Title</label>
+            <input type="text" id="preparer" placeholder="e.g., Jason Crowder, Validation Lead" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>System Owner Name & Title</label>
+            <input type="text" id="systemOwner" placeholder="e.g., Reggie Smith, System Owner" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Quality Assurance Name & Title</label>
+            <input type="text" id="qaApprover" placeholder="e.g., PJ McAllister, QA Manager" oninput="saveCompanyData()">
+          </div>
+          <div class="form-group">
+            <label>Validation Manager Name & Title</label>
+            <input type="text" id="valManager" placeholder="e.g., Stephanie Sido, Project Lead" oninput="saveCompanyData()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- URS REQUIREMENTS TAB -->
+    <div id="urs" class="tab-content">
+      <div class="card">
+        <h2>User Requirements Specification (URS)</h2>
+        <p>SPEC-0169357 v1.0 | Natoli Tool System TM-II Software User Requirements Specification</p>
+        
+        <h3>5.1 Software Requirements</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>URS Ref</th>
+              <th>Requirement</th>
+              <th>Impact</th>
+              <th>IQ/OQ Ref</th>
+            </tr>
+          </thead>
+          <tbody id="ursTableBody">
+          </tbody>
+        </table>
+        
+        <h3>6.0 Hardware Requirements</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>URS Ref</th>
+              <th>Requirement</th>
+              <th>Impact</th>
+              <th>IQ Ref</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>6.1</td>
+              <td>Windows based computer running Windows 10 or newer</td>
+              <td><span class="req-badge badge-nondirect">Non-Direct</span></td>
+              <td>IQ 7.2</td>
+            </tr>
+            <tr>
+              <td>6.2</td>
+              <td>Minimum of 64MB memory</td>
+              <td><span class="req-badge badge-nondirect">Non-Direct</span></td>
+              <td>IQ 7.2</td>
+            </tr>
+            <tr>
+              <td>6.3</td>
+              <td>Minimum of 800MB available disk space</td>
+              <td><span class="req-badge badge-nondirect">Non-Direct</span></td>
+              <td>IQ 7.2</td>
+            </tr>
+            <tr>
+              <td>6.4</td>
+              <td>DVD drive and USB port</td>
+              <td><span class="req-badge badge-nondirect">Non-Direct</span></td>
+              <td>IQ 7.2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IQ PROTOCOL TAB -->
+    <div id="iq" class="tab-content">
+      <div class="card">
+        <h2>Installation Qualification (IQ) Protocol</h2>
+        <p>Document that the TM-II software system is installed correctly and meets hardware/software requirements.</p>
+        
+        <div class="test-section">
+          <h4>7.1 Software Identification and Verification</h4>
+          <p><strong>Purpose:</strong> Document the TM-II software version to be validated, document location of backup copies, and verify program code conforms to standard industry practice.</p>
+          <p><strong>Procedure:</strong> Access "About Tool Management II" dropdown menu to display application version. Access Help > About XPA to identify XPA software version. Verify MS SQL Server version via SQL Server Management Studio.</p>
+          <p><strong>Acceptance Criteria:</strong> All information recorded. Software backup copies identical to installed version. Software conforms to standard industry practices.</p>
+          
+          <table style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th>Software Title</th>
+                <th>Rev./Version</th>
+                <th>Date</th>
+                <th>Storage Media</th>
+                <th>Storage Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Application Software (TM2 XPA.ecf)</td>
+                <td><input type="text" style="width:100px;" placeholder="2025.6"></td>
+                <td><input type="date" style="width:130px;"></td>
+                <td><input type="text" style="width:100px;" placeholder="HDD"></td>
+                <td><input type="text" placeholder="C:\Program Files(x86)\Natoli\..."></td>
+              </tr>
+              <tr>
+                <td>XPA Software</td>
+                <td><input type="text" style="width:100px;" placeholder=""></td>
+                <td><input type="date" style="width:130px;"></td>
+                <td><input type="text" style="width:100px;" placeholder=""></td>
+                <td><input type="text" placeholder=""></td>
+              </tr>
+              <tr>
+                <td>MS SQL Server</td>
+                <td><input type="text" style="width:100px;" placeholder=""></td>
+                <td><input type="date" style="width:130px;"></td>
+                <td><input type="text" style="width:100px;" placeholder=""></td>
+                <td><input type="text" placeholder=""></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section">
+          <h4>7.2 Hardware Identification and Verification</h4>
+          <p><strong>Purpose:</strong> Identify hardware components of the TM-II System.</p>
+          <p><strong>Acceptance Criteria:</strong> All information is recorded.</p>
+          
+          <h5 style="margin-top: 16px; color: var(--brand-cyan);">Server Information</h5>
+          <table>
+            <thead>
+              <tr>
+                <th>Server Type</th>
+                <th>Manufacturer</th>
+                <th>Model Number</th>
+                <th>Serial Number</th>
+                <th>Disk Space</th>
+                <th>RAM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <h5 style="margin-top: 16px; color: var(--brand-cyan);">Workstation Information</h5>
+          <table>
+            <thead>
+              <tr>
+                <th>Station #</th>
+                <th>Manufacturer</th>
+                <th>Model Number</th>
+                <th>Serial Number</th>
+                <th>Disk Space</th>
+                <th>RAM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section">
+          <h4>7.3 Documentation Verification</h4>
+          <p><strong>Purpose:</strong> Verify that required documentation is available and complete.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Available (Y/N)</th>
+                <th>Location</th>
+                <th>Verified By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tool Management II User Reference Manual Version 2025</td>
+                <td><select><option>Y</option><option>N</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100px;"></td>
+              </tr>
+              <tr>
+                <td>User Requirements Specification (URS)</td>
+                <td><select><option>Y</option><option>N</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100px;"></td>
+              </tr>
+              <tr>
+                <td>Software Design Specification (SDS)</td>
+                <td><select><option>Y</option><option>N</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+                <td><input type="text" style="width:100px;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- OQ PROTOCOL TAB -->
+    <div id="oq" class="tab-content">
+      <div class="card">
+        <h2>Operational Qualification (OQ) Protocol</h2>
+        <p>Verify that TM-II software operates in accordance with system design specifications.</p>
+        
+        <div class="test-section oq-test">
+          <h4>8.1 System Security Verification</h4>
+          <p><strong>Purpose:</strong> Verify that system security controls function as designed.</p>
+          <p><strong>Procedure:</strong> Test user login, password requirements, access levels, and audit trail functionality.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Expected Result</th>
+                <th>Pass/Fail</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>User login with valid credentials</td>
+                <td>User successfully logs in</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>User login with invalid credentials</td>
+                <td>Access denied, error message displayed</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>Password complexity requirements</td>
+                <td>System enforces password rules</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>Role-based access control</td>
+                <td>Users can only access authorized functions</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.2 User Interface Tests</h4>
+          <p><strong>Purpose:</strong> Verify that user interface elements function correctly for Tool Directory, Sets, and Products management.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>URS Ref</th>
+                <th>Test Description</th>
+                <th>Expected Result</th>
+                <th>Pass/Fail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>5.1.1</td>
+                <td>Tool Directory management - Add new tool</td>
+                <td>New tool entry created with all required fields</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.1</td>
+                <td>Tool Directory management - Edit existing tool</td>
+                <td>Tool entry updated successfully</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.2</td>
+                <td>Set Directory management - Create new set</td>
+                <td>New set created with linked tools</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.3</td>
+                <td>Link Tools to Tool Sets</td>
+                <td>Tools successfully linked to sets</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.4</td>
+                <td>Product/Tablet Directory management</td>
+                <td>Product entries with default limits created</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.6</td>
+                <td>Interface with Natoli Laser Vision System</td>
+                <td>LVS data successfully imported/exported</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.12</td>
+                <td>Tool inspection functionality</td>
+                <td>Inspection performed and results recorded</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.3 Report Verification</h4>
+          <p><strong>Purpose:</strong> Verify that all required reports generate correctly with accurate data.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>URS Ref</th>
+                <th>Report Type</th>
+                <th>Expected Content</th>
+                <th>Pass/Fail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>5.1.8</td>
+                <td>Maintenance Report</td>
+                <td>Complete maintenance history for each tool</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.9</td>
+                <td>Usage Report</td>
+                <td>Usage statistics including tablet counts</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.10</td>
+                <td>Tool Summary Report</td>
+                <td>High-level overview of tool/set activity</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+              <tr>
+                <td>5.1.13</td>
+                <td>Inspection Results Report</td>
+                <td>Complete inspection data and tolerances</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.4 Electronic Audit Verification</h4>
+          <p><strong>Purpose:</strong> Verify 21 CFR Part 11 compliance for electronic records and signatures.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Expected Result</th>
+                <th>Pass/Fail</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Audit trail captures all changes</td>
+                <td>All data modifications logged with user, date, time</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>Audit trail is immutable</td>
+                <td>Audit records cannot be modified or deleted</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+              <tr>
+                <td>Electronic signatures require user authentication</td>
+                <td>Signature requires username and password</td>
+                <td><select><option>Pass</option><option>Fail</option></select></td>
+                <td><input type="text" style="width:100%;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.5 Error Testing</h4>
+          <p><strong>Purpose:</strong> Verify system handles error conditions appropriately.</p>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.6 Power Loss Test</h4>
+          <p><strong>Purpose:</strong> Verify data integrity is maintained during unexpected power loss.</p>
+        </div>
+        
+        <div class="test-section oq-test">
+          <h4>8.7 Backup and Recovery</h4>
+          <p><strong>Purpose:</strong> Verify backup and recovery procedures function correctly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACEABILITY MATRIX TAB -->
+    <div id="traceability" class="tab-content">
+      <div class="card">
+        <h2>Requirements Traceability Matrix</h2>
+        <p>Complete traceability from User Requirements through Operational Qualification testing.</p>
+        
+        <div class="action-bar">
+          <button class="btn btn-primary" onclick="downloadTraceabilityCSV()">Download CSV</button>
+          <button class="btn btn-success" onclick="printTraceability()">Print Matrix</button>
+          <button class="btn btn-orange" onclick="downloadTraceabilityWord()">Download Word</button>
+        </div>
+        
+        <table id="traceabilityTable">
+          <thead>
+            <tr>
+              <th>URS Ref</th>
+              <th>Requirement Description</th>
+              <th>Impact</th>
+              <th>SDS Ref</th>
+              <th>IQ Ref</th>
+              <th>OQ Ref</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="traceabilityBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EXPORT DOCUMENTS TAB -->
+    <div id="export" class="tab-content">
+      <div class="card">
+        <h2>Export Validation Documents</h2>
+        <p>Generate complete document packages for your validation project.</p>
+        
+        <div class="form-grid" style="margin-top: 20px;">
+          <div style="background: rgba(0,0,0,0.2); padding: 24px; border-radius: 12px; border-left: 4px solid var(--brand-blue);">
+            <h3 style="color: var(--brand-blue); margin-bottom: 12px;">IQ/OQ Protocol</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">Complete Installation and Operational Qualification protocol document with all test functions.</p>
+            <button class="btn btn-primary" onclick="downloadIQOQWord()">Download Word</button>
+            <button class="btn btn-success" onclick="printIQOQ()">Print/PDF</button>
+          </div>
+          
+          <div style="background: rgba(0,0,0,0.2); padding: 24px; border-radius: 12px; border-left: 4px solid var(--brand-purple);">
+            <h3 style="color: var(--brand-purple); margin-bottom: 12px;">User Requirements Spec (URS)</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">Complete URS document with all software, hardware, and compliance requirements.</p>
+            <button class="btn btn-purple" onclick="downloadURSWord()">Download Word</button>
+            <button class="btn btn-success" onclick="printURS()">Print/PDF</button>
+          </div>
+          
+          <div style="background: rgba(0,0,0,0.2); padding: 24px; border-radius: 12px; border-left: 4px solid var(--brand-green);">
+            <h3 style="color: var(--brand-green); margin-bottom: 12px;">Traceability Matrix</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">URS → SDS → IQ → OQ requirements traceability matrix.</p>
+            <button class="btn btn-success" onclick="downloadTraceabilityWord()">Download Word</button>
+            <button class="btn btn-primary" onclick="downloadTraceabilityCSV()">Download CSV</button>
+          </div>
+          
+          <div style="background: rgba(0,0,0,0.2); padding: 24px; border-radius: 12px; border-left: 4px solid var(--brand-orange);">
+            <h3 style="color: var(--brand-orange); margin-bottom: 12px;">Complete Package</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">Download all documents in a single ZIP file.</p>
+            <button class="btn btn-orange" onclick="downloadCompletePackage()">Download All</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+const ursRequirements = [
+  { ref: '5.1.1', desc: 'The system shall be able to manage a tool directory that contains entries for punches and dies used in production.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.1.1', desc: 'The tool directory shall contain: Identifier information, Supplier information, Tooling Material information, Tool Drawings, Tool Tolerance information, Overall Tool status.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.1.2', desc: 'The system shall have the ability to add, edit, or remove new tools to the tool directory.', impact: 'Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.1.3', desc: 'The system shall permit tool data to be imported directly into the Tooling Directory.', impact: 'Non-Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.1.4', desc: 'The system shall have the capability to search the tool directory list by text query.', impact: 'Non-Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.2', desc: 'The system shall be able to manage a set directory which contains an entry of all tools contained in each set.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.2.1', desc: 'The system shall have the ability to add, edit, or remove Sets.', impact: 'Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.3', desc: 'The system shall be able to link Tools from the Tool Directory to Tool Sets in the Tool Sets Directory.', impact: 'Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.4', desc: 'The system shall be able to manage a Product/Tablet Directory that contains an entry for every product or tablet.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.4.1', desc: 'The Product directory shall contain: Product overview information, Recommended default limits, Product tolerances as related to tool wear.', impact: 'Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.5', desc: 'The system shall be able to link Tool Sets from the Set Directory to Products in the Product/Tablet Directory.', impact: 'Non-Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.6', desc: 'The system must be able to interface with the Natoli Laser Vision System.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.7', desc: 'The system shall have the ability to maintain a history of tool usage which includes at a minimum the total number of tablets produced per tool.', impact: 'Non-Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.8', desc: 'The system shall be able to generate a maintenance report for each Tool.', impact: 'Direct', iqRef: '-', oqRef: '8.3' },
+  { ref: '5.1.9', desc: 'The system shall be able to generate a usage report for each tool.', impact: 'Direct', iqRef: '-', oqRef: '8.3' },
+  { ref: '5.1.10', desc: 'The system shall be able to generate a Tool Summary report which includes at a minimum a high level overview of the activity for each Tool or Tool Set.', impact: 'Direct', iqRef: '-', oqRef: '8.3' },
+  { ref: '5.1.11', desc: 'The system shall have the ability to quarantine Tools and Tool Sets as needed.', impact: 'Non-Direct', iqRef: '-', oqRef: '8.2' },
+  { ref: '5.1.12', desc: 'The system shall have the ability to perform tool inspections in conjunction with a validated tooling measurement system.', impact: 'Direct', iqRef: '7.1', oqRef: '8.2' },
+  { ref: '5.1.13', desc: 'The system shall be able to display results from completed tool inspections.', impact: 'Direct', iqRef: '-', oqRef: '8.3' }
+];
+
+function renderURSTable() {
+  const tbody = document.getElementById('ursTableBody');
+  tbody.innerHTML = ursRequirements.map(req => `
+    <tr>
+      <td>${req.ref}</td>
+      <td>${req.desc}</td>
+      <td><span class="req-badge ${req.impact === 'Direct' ? 'badge-direct' : 'badge-nondirect'}">${req.impact}</span></td>
+      <td>${req.oqRef}</td>
+    </tr>
+  `).join('');
+}
+
+function renderTraceabilityTable() {
+  const tbody = document.getElementById('traceabilityBody');
+  tbody.innerHTML = ursRequirements.map(req => `
+    <tr>
+      <td>${req.ref}</td>
+      <td>${req.desc.substring(0, 80)}...</td>
+      <td><span class="req-badge ${req.impact === 'Direct' ? 'badge-direct' : 'badge-nondirect'}">${req.impact}</span></td>
+      <td>SDS ${req.ref}</td>
+      <td>${req.iqRef}</td>
+      <td>${req.oqRef}</td>
+      <td><span class="req-badge badge-direct">Verified</span></td>
+    </tr>
+  `).join('');
+}
+
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function saveCompanyData() {
+  const data = {
+    companyName: document.getElementById('companyName').value,
+    companyAddress: document.getElementById('companyAddress').value,
+    companyCityState: document.getElementById('companyCityState').value,
+    protocolNumber: document.getElementById('protocolNumber').value,
+    docDate: document.getElementById('docDate').value,
+    softwareVersion: document.getElementById('softwareVersion').value,
+    preparer: document.getElementById('preparer').value,
+    systemOwner: document.getElementById('systemOwner').value,
+    qaApprover: document.getElementById('qaApprover').value,
+    valManager: document.getElementById('valManager').value
+  };
+  localStorage.setItem('tmii_company_data', JSON.stringify(data));
+}
+
+function loadCompanyData() {
+  const saved = localStorage.getItem('tmii_company_data');
+  if (saved) {
+    const data = JSON.parse(saved);
+    Object.keys(data).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) el.value = data[key] || '';
+    });
+  }
+}
+
+function getCompanyData() {
+  return {
+    companyName: document.getElementById('companyName').value || '[Company Name]',
+    companyAddress: document.getElementById('companyAddress').value || '[Address]',
+    companyCityState: document.getElementById('companyCityState').value || '[City, State ZIP]',
+    protocolNumber: document.getElementById('protocolNumber').value || '[Protocol #]',
+    docDate: document.getElementById('docDate').value || new Date().toLocaleDateString(),
+    softwareVersion: document.getElementById('softwareVersion').value || '2025.6',
+    preparer: document.getElementById('preparer').value || '[Preparer]',
+    systemOwner: document.getElementById('systemOwner').value || '[System Owner]',
+    qaApprover: document.getElementById('qaApprover').value || '[QA]',
+    valManager: document.getElementById('valManager').value || '[Validation Manager]'
+  };
+}
+
+function downloadIQOQWord() {
+  const company = getCompanyData();
+  const html = generateIQOQDocument(company);
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TMII_IQOQ_${company.softwareVersion}.doc`;
+  a.click();
+  toast('IQ/OQ Protocol downloaded!');
+}
+
+function generateIQOQDocument(company) {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>TM-II IQ/OQ Protocol</title><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;margin:1in;}h1{font-size:18pt;color:#1e3a5f;text-align:center;margin-bottom:20px;}h2{font-size:14pt;color:#1e3a5f;border-bottom:2px solid #1e3a5f;padding-bottom:5px;margin-top:30px;}h3{font-size:12pt;color:#333;margin-top:20px;}table{width:100%;border-collapse:collapse;margin:15px 0;}th,td{border:1px solid #333;padding:8px;text-align:left;}th{background:#f0f0f0;font-weight:bold;}.title-page{text-align:center;page-break-after:always;}.sig-line{border-bottom:1px solid #333;min-width:200px;display:inline-block;margin:10px 0;}</style></head><body>
+  <div class="title-page">
+    <h1>Tool Management II<br>IQ/OQ Protocol</h1>
+    <p style="font-size:14pt;margin-top:40px;">${company.companyName}<br>${company.companyAddress}<br>${company.companyCityState}</p>
+    <p style="margin-top:40px;"><strong>Protocol Number:</strong> ${company.protocolNumber}<br><strong>Filename:</strong> TMII_IQOQ_${company.softwareVersion}.docx<br><strong>Date:</strong> ${company.docDate}</p>
+    <div style="margin-top:60px;text-align:left;">
+      <p><strong>PREPARED BY:</strong><br><span class="sig-line"></span><br>${company.preparer}<br>(Date)</p>
+      <p><strong>APPROVED BY:</strong><br><span class="sig-line"></span><br>${company.systemOwner}<br>(Date)</p>
+      <p><span class="sig-line"></span><br>${company.qaApprover}<br>(Date)</p>
+      <p><span class="sig-line"></span><br>${company.valManager}<br>(Date)</p>
+    </div>
+  </div>
+  <h2>1. Purpose</h2>
+  <p>The purpose of this protocol is to provide documented evidence that the Tool Management II software system operates in accordance with the system design specifications and ${company.companyName} requirements.</p>
+  <h2>2. Scope</h2>
+  <p>This protocol covers the Tool Management II software program and all associated modules. The Tool Management II application was written and configured using Magic Software XPA which is an off-the-shelf program with a large installed base. No structural testing is therefore included in this protocol.</p>
+  <h2>3. System Description</h2>
+  <p>Tool Management II (TM-II) is designed for tablet manufacturers. The program provides tablet manufacturers with tool control and inspection features to improve product quality and consistency, eliminate waste, and also help ensure compliance with cGMP record keeping requirements.</p>
+  <h2>7. IQ Test Functions</h2>
+  <h3>7.1 Software Identification and Verification</h3>
+  <p><strong>Purpose:</strong> Document the TM-II software version, backup locations, and verify conformance to standard industry practice.</p>
+  <table><thead><tr><th>Software Title</th><th>Rev./Version</th><th>Date</th><th>Storage Media</th><th>Storage Location</th></tr></thead><tbody><tr><td>Application Software</td><td></td><td></td><td></td><td></td></tr><tr><td>XPA Software</td><td></td><td></td><td></td><td></td></tr><tr><td>MS SQL Server</td><td></td><td></td><td></td><td></td></tr></tbody></table>
+  <h3>7.2 Hardware Identification and Verification</h3>
+  <table><thead><tr><th>Server Type</th><th>Manufacturer</th><th>Model</th><th>Serial #</th><th>Disk Space</th><th>RAM</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+  <h2>8. OQ Test Functions</h2>
+  <h3>8.1 System Security Verification</h3>
+  <h3>8.2 User Interface Tests</h3>
+  <h3>8.3 Report Verification</h3>
+  <h3>8.4 Electronic Audit Verification</h3>
+  <h3>8.5 Error Testing</h3>
+  <h3>8.6 Power Loss Test</h3>
+  <h3>8.7 Backup and Recovery</h3>
+  </body></html>`;
+}
+
+function downloadTraceabilityCSV() {
+  let csv = 'URS Ref,Requirement Description,Impact,SDS Ref,IQ Ref,OQ Ref,Status\n';
+  ursRequirements.forEach(req => {
+    csv += `"${req.ref}","${req.desc}","${req.impact}","SDS ${req.ref}","${req.iqRef}","${req.oqRef}","Verified"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'TMII_Traceability_Matrix.csv';
+  a.click();
+  toast('Traceability CSV downloaded!');
+}
+
+function downloadTraceabilityWord() {
+  const company = getCompanyData();
+  let tableRows = ursRequirements.map(req => 
+    `<tr><td>${req.ref}</td><td>${req.desc.substring(0,60)}...</td><td>${req.impact}</td><td>SDS ${req.ref}</td><td>${req.iqRef}</td><td>${req.oqRef}</td><td>Verified</td></tr>`
+  ).join('');
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>TM-II Traceability Matrix</title><style>body{font-family:Calibri,Arial,sans-serif;font-size:10pt;margin:0.75in;}h1{font-size:16pt;color:#1e3a5f;text-align:center;}table{width:100%;border-collapse:collapse;font-size:9pt;}th,td{border:1px solid #333;padding:6px;}th{background:#1e3a5f;color:white;}</style></head><body><h1>TM-II Requirements Traceability Matrix</h1><p style="text-align:center;">${company.companyName} | ${company.docDate}</p><table><thead><tr><th>URS Ref</th><th>Requirement</th><th>Impact</th><th>SDS Ref</th><th>IQ Ref</th><th>OQ Ref</th><th>Status</th></tr></thead><tbody>${tableRows}</tbody></table></body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'TMII_Traceability_Matrix.doc';
+  a.click();
+  toast('Traceability Matrix downloaded!');
+}
+
+function downloadURSWord() {
+  const company = getCompanyData();
+  let tableRows = ursRequirements.map(req => 
+    `<tr><td>${req.ref}</td><td>${req.desc}</td><td>${req.impact}</td></tr>`
+  ).join('');
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>TM-II User Requirements Specification</title><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:1in;}h1{font-size:18pt;color:#1e3a5f;text-align:center;}h2{font-size:14pt;color:#1e3a5f;border-bottom:2px solid #1e3a5f;padding-bottom:5px;margin-top:30px;}table{width:100%;border-collapse:collapse;margin:15px 0;}th,td{border:1px solid #333;padding:8px;}th{background:#1e3a5f;color:white;}</style></head><body><h1>Natoli Tool System TM-II<br>User Requirements Specification</h1><p style="text-align:center;">SPEC-0169357 v1.0 | ${company.companyName} | ${company.docDate}</p><h2>5. User Requirements: Software</h2><table><thead><tr><th>URS Ref</th><th>Requirement</th><th>Impact</th></tr></thead><tbody>${tableRows}</tbody></table></body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'TMII_URS.doc';
+  a.click();
+  toast('URS downloaded!');
+}
+
+function printIQOQ() {
+  const company = getCompanyData();
+  const html = generateIQOQDocument(company);
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+  toast('Print dialog opened!');
+}
+
+function printURS() {
+  downloadURSWord();
+}
+
+function printTraceability() {
+  downloadTraceabilityWord();
+}
+
+function downloadCompletePackage() {
+  toast('Downloading individual documents...');
+  downloadIQOQWord();
+  setTimeout(() => downloadURSWord(), 500);
+  setTimeout(() => downloadTraceabilityWord(), 1000);
+  setTimeout(() => downloadTraceabilityCSV(), 1500);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderURSTable();
+  renderTraceabilityTable();
+  loadCompanyData();
+  document.getElementById('docDate').valueAsDate = new Date();
+});
+  </script>
+</body>
+</html>

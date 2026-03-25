@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Discovery: Ayala Water & Ecology | Tony Beal Consulting</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #0ea5e9;
+      --accent-green: #10b981;
+      --text: #334155;
+      --text-light: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .consultant-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .header .subtitle {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+    
+    .company-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .company-card h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .company-card h2 .icon {
+      font-size: 1.2rem;
+    }
+    
+    .company-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 600px) {
+      .company-info { grid-template-columns: 1fr; }
+    }
+    
+    .info-item label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .info-item span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .section h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .current-messaging {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+    }
+    
+    .current-messaging h4 {
+      color: #92400e;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    
+    .current-messaging p {
+      color: #78350f;
+      font-size: 0.95rem;
+    }
+    
+    .opportunity {
+      background: #ecfdf5;
+      border-left: 4px solid var(--accent-green);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .opportunity h4 {
+      color: #065f46;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    
+    .opportunity p {
+      color: #064e3b;
+      font-size: 0.95rem;
+    }
+    
+    .findings-list {
+      list-style: none;
+    }
+    
+    .findings-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .findings-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .finding-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+    }
+    
+    .finding-icon.strength {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    
+    .finding-icon.gap {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    
+    .finding-content strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+    
+    .finding-content span {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+    
+    .service-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .service-item h4 {
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    
+    .service-item p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e3a5f 100%);
+      color: white;
+      text-align: center;
+      padding: 40px;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+    
+    .cta-section h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    
+    .cta-section p {
+      opacity: 0.9;
+      margin-bottom: 24px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+    
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    .tag {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    
+    .score-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #10b981);
+      border-radius: 4px;
+    }
+    
+    .quote-block {
+      font-style: italic;
+      color: var(--text-light);
+      padding: 16px 20px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="consultant-badge">Website Discovery Report</div>
+      <h1>Ayala Water & Ecology</h1>
+      <p class="subtitle">Messaging Analysis & Opportunity Assessment by Tony Beal</p>
+    </div>
+    
+    <div class="company-card">
+      <h2><span class="icon">🌊</span> Company Overview</h2>
+      <div class="company-info">
+        <div class="info-item">
+          <label>Industry</label>
+          <span>Water Treatment & Environmental Technology</span>
+        </div>
+        <div class="info-item">
+          <label>Primary Offering</label>
+          <span>Nature-Based Biological Water Systems</span>
+        </div>
+        <div class="info-item">
+          <label>Target Markets</label>
+          <span>Municipal, Industrial, Remote Communities</span>
+        </div>
+        <div class="info-item">
+          <label>Differentiation</label>
+          <span>Zero-energy, chemical-free treatment</span>
+        </div>
+      </div>
+      <div>
+        <span class="tag">Sustainability</span>
+        <span class="tag">Infrastructure</span>
+        <span class="tag">Government</span>
+        <span class="tag">B2B</span>
+        <span class="tag">Environmental</span>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>Current Website Messaging</h3>
+      <div class="current-messaging">
+        <h4>What They Say</h4>
+        <p>"Clean Water Without Energy, Chemicals, or Heavy Infrastructure. Nature-based systems that reduce operating cost, regulatory risk, and carbon footprint."</p>
+      </div>
+      <div class="opportunity">
+        <h4>The Opportunity</h4>
+        <p>The messaging focuses on features (nature-based, no chemicals) rather than the buyer's internal problem. Decision-makers in municipal and industrial water management are under pressure from regulators, budgets, and stakeholders. The website could connect more directly to those pain points before introducing the solution.</p>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>Website Strengths</h3>
+      <ul class="findings-list">
+        <li>
+          <div class="finding-icon strength">+</div>
+          <div class="finding-content">
+            <strong>Clear Value Proposition</strong>
+            <span>Immediately communicates the core benefit: water treatment without energy or chemicals.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon strength">+</div>
+          <div class="finding-content">
+            <strong>Strong Industry Segmentation</strong>
+            <span>Municipal, Industrial, Remote Communities, Developers - each addressed with specific pain points.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon strength">+</div>
+          <div class="finding-content">
+            <strong>Low-Friction CTA</strong>
+            <span>"Request Technical Review" is non-threatening and appropriate for the sales cycle.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon strength">+</div>
+          <div class="finding-content">
+            <strong>Environmental Positioning</strong>
+            <span>Carbon reduction and sustainability messaging aligns with buyer priorities.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h3>Messaging Gaps Identified</h3>
+      <ul class="findings-list">
+        <li>
+          <div class="finding-icon gap">!</div>
+          <div class="finding-content">
+            <strong>Missing the Internal Villain</strong>
+            <span>What keeps the water manager up at night? Regulatory pressure, budget scrutiny, public trust? These emotions are absent.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon gap">!</div>
+          <div class="finding-content">
+            <strong>No Guide Positioning</strong>
+            <span>Ayala doesn't position itself as the expert partner who has solved this before. Where's the authority?</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon gap">!</div>
+          <div class="finding-content">
+            <strong>Failure Stakes Undefined</strong>
+            <span>What happens if they do nothing? Regulatory fines? Service disruptions? Political fallout? The cost of inaction is unclear.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon gap">!</div>
+          <div class="finding-content">
+            <strong>Success Vision Weak</strong>
+            <span>The "after" state is vague. Paint the picture: compliance confidence, budget surplus, community praise.</span>
+          </div>
+        </li>
+        <li>
+          <div class="finding-icon gap">!</div>
+          <div class="finding-content">
+            <strong>No Case Studies or Proof Points</strong>
+            <span>Claims without evidence. Buyers need to see real implementations, real results, real names.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h3>Messaging Clarity Score</h3>
+      <p style="margin-bottom: 12px;">Based on seven-part clarity framework analysis:</p>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 600; color: var(--primary);">Current Score</span>
+        <span style="font-weight: 700; font-size: 1.2rem; color: #f59e0b;">58/100</span>
+      </div>
+      <div class="score-bar">
+        <div class="score-fill" style="width: 58%;"></div>
+      </div>
+      <p style="margin-top: 12px; font-size: 0.9rem; color: var(--text-light);">Strong foundation with clear gaps in emotional resonance and authority positioning.</p>
+    </div>
+    
+    <div class="section">
+      <h3>What I Can Help With</h3>
+      <div class="services-grid">
+        <div class="service-item">
+          <h4>Messaging Clarity Framework</h4>
+          <p>Rebuild the core narrative around buyer pain, guide authority, and transformation vision.</p>
+        </div>
+        <div class="service-item">
+          <h4>Homepage Rewrite</h4>
+          <p>New hero copy, problem-solution flow, and CTAs that convert technical buyers.</p>
+        </div>
+        <div class="service-item">
+          <h4>Case Study Development</h4>
+          <p>Extract and structure proof points from existing implementations.</p>
+        </div>
+        <div class="service-item">
+          <h4>Sales Enablement Assets</h4>
+          <p>One-pagers, pitch decks, and email sequences aligned to the new messaging.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>Sample Messaging Revision</h3>
+      <div class="current-messaging">
+        <h4>Before</h4>
+        <p>"Nature-based systems that reduce operating cost, regulatory risk, and carbon footprint."</p>
+      </div>
+      <div class="opportunity">
+        <h4>After</h4>
+        <p>"You're under pressure to deliver clean water on a shrinking budget while regulators add new requirements every year. We've helped municipalities and industrial operators solve this problem with biological systems that eliminate energy costs and chemical dependencies - without adding complexity to your operations."</p>
+      </div>
+    </div>
+    
+    <div class="cta-section">
+      <h3>Ready to Clarify Your Message?</h3>
+      <p>A 30-minute discovery call can identify the gaps between what you say and what your buyers need to hear.</p>
+      <a href="mailto:tony@example.com?subject=Messaging Review Request - Ayala Analysis" class="cta-button">Schedule a Conversation</a>
+    </div>
+    
+    <div class="footer">
+      <p>Prepared by <strong>Tony Beal</strong> | Messaging & Revenue Strategy Consultant</p>
+      <p style="margin-top: 8px;">This analysis was conducted as a demonstration of discovery methodology.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli Time Tracker – Weekly Hours</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --warn: #fbbf24;
+      --bad: #f97373;
+      --border-subtle: #1f2937;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 24px 60px rgba(0,0,0,0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #0b1220 0, #020617 40%, #000 80%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 32px 40px 40px;
+      color-scheme: dark;
+    }
+
+    .top-link {
+      position: fixed;
+      top: 16px;
+      left: 20px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      font-size: 12px;
+      text-decoration: none;
+      z-index: 50;
+    }
+
+    .top-link:hover {
+      background: rgba(15,23,42,1);
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header h1 {
+      font-size: 30px;
+      letter-spacing: 0.02em;
+      margin: 0 0 6px;
+    }
+
+    .page-header p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 760px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 22px 0 8px;
+    }
+
+    .pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.96);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill span {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, #1b2336, #070b16);
+      border: 1px solid rgba(148,163,184,0.12);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 22px 18px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .timer-display {
+      font-size: 32px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.06em;
+      margin: 10px 0 4px;
+    }
+
+    .timer-label-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .select-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 10px;
+    }
+
+    select, input[type="text"] {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--text-main);
+      font-size: 13px;
+      padding: 6px 10px;
+      min-width: 140px;
+      outline: none;
+    }
+
+    select:focus,
+    input[type="text"]:focus {
+      border-color: var(--accent-strong);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.5);
+    }
+
+    .note-input {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 13px;
+      padding: 7px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 82px;
+      transition: all 0.15s ease-out;
+    }
+
+    .btn.primary {
+      background: radial-gradient(circle at top left, var(--accent-strong), var(--accent-soft));
+      border-color: rgba(56,189,248,0.8);
+    }
+
+    .btn.danger {
+      border-color: rgba(248,113,113,0.8);
+      color: #fecaca;
+    }
+
+    .btn.secondary {
+      border-color: rgba(148,163,184,0.6);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.8);
+    }
+
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .summary-tag {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      font-size: 12px;
+      display: inline-flex;
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .summary-tag strong {
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .log-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .log-subtitle {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .week-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    thead {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(30,41,59,0.9);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--text-soft);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    td {
+      color: #e5e7eb;
+    }
+
+    td.notes {
+      white-space: normal;
+      max-width: 260px;
+      color: var(--text-soft);
+    }
+
+    .duration-cell {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .small-pill {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 10px;
+      color: var(--text-soft);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .empty-state {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 8px 2px 2px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .footer-note span {
+      color: #e5e7eb;
+    }
+
+    .link-subtle {
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .link-subtle:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1080px) {
+      body {
+        padding: 20px 16px 24px;
+      }
+      .top-link {
+        position: static;
+        margin-bottom: 12px;
+      }
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" class="top-link">← Back to main dashboard</a>
+
+<div class="page">
+  <header class="page-header">
+    <h1>Weekly Time Tracker</h1>
+    <p>
+      Log what you are doing in real time so you can show exactly how many hours went into lead generation,
+      list management, social media, and other work from Monday to Friday.
+    </p>
+  </header>
+
+  <div class="pill-row">
+    <div class="pill"><span>Live timer</span> Start and pause as you work</div>
+    <div class="pill"><span>Task labels</span> Lead gen, lists, social, admin</div>
+    <div class="pill"><span>Weekly view</span> Hours you can show leadership</div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: TIMER AND INPUT -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Live Work Session</div>
+        <div class="card-subtitle" id="today-label"></div>
+      </div>
+
+      <div class="timer-display" id="timer-display">00:00:00</div>
+
+      <div class="timer-label-row">
+        <span>Track one block of focused work at a time.</span>
+      </div>
+
+      <div class="select-row">
+        <select id="task-type">
+          <option value="">Select activity type</option>
+          <option value="Lead generation">Lead generation</option>
+          <option value="List management / data cleanup">List management / data cleanup</option>
+          <option value="Follow up and email">Follow up and email</option>
+          <option value="Social media / content">Social media / content</option>
+          <option value="Internal coordination / meetings">Internal coordination / meetings</option>
+          <option value="Planning / strategy / reporting">Planning / strategy / reporting</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <input
+          type="text"
+          id="task-note"
+          class="note-input"
+          placeholder="Short note (example: APR list cleanup, Apollo export, LinkedIn Tier 1 scan)">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="start-btn">Start</button>
+        <button class="btn secondary" id="pause-btn">Pause</button>
+        <button class="btn secondary" id="reset-btn">Reset</button>
+        <button class="btn" id="save-btn">Save to log</button>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-tag">
+          <span>Current status:</span>
+          <strong id="status-label">Idle</strong>
+        </div>
+        <div class="summary-tag">
+          <span>This week total:</span>
+          <strong id="week-total">0h 00m</strong>
+        </div>
+        <div class="summary-tag">
+          <span>Today:</span>
+          <strong id="today-total">0h 00m</strong>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        Tip: Use this during focused work only. Short sprints with clear labels give you a clean story for
+        how you spent your hours.
+      </p>
+    </section>
+
+    <!-- RIGHT: LOG TABLE -->
+    <section class="card">
+      <div class="log-header">
+        <div>
+          <div class="log-title">Weekly Work Log</div>
+          <div class="log-subtitle">All tracked sessions, grouped by this calendar week.</div>
+        </div>
+        <div class="week-label" id="week-label"></div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Activity</th>
+              <th>Duration</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="log-body">
+            <!-- Rows injected by script -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer-note">
+        Sessions are stored in your browser. If you clear site data they will reset.
+        <br>
+        <span>Need a clean export for a meeting?</span>
+        You can sort and copy rows straight into Excel.
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  // State
+  let timerInterval = null;
+  let startTime = null;
+  let elapsedMs = 0;
+  let isRunning = false;
+
+  const STORAGE_KEY = "natoliTimeEntries";
+
+  // Elements
+  const timerDisplay = document.getElementById("timer-display");
+  const statusLabel = document.getElementById("status-label");
+  const weekTotalEl = document.getElementById("week-total");
+  const todayTotalEl = document.getElementById("today-total");
+  const weekLabelEl = document.getElementById("week-label");
+  const todayLabelEl = document.getElementById("today-label");
+  const taskTypeEl = document.getElementById("task-type");
+  const taskNoteEl = document.getElementById("task-note");
+  const logBody = document.getElementById("log-body");
+
+  const startBtn = document.getElementById("start-btn");
+  const pauseBtn = document.getElementById("pause-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const saveBtn = document.getElementById("save-btn");
+
+  function loadEntries() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveEntries(entries) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+
+  function formatClock(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    const hh = String(h).padStart(2, "0");
+    const mm = String(m).padStart(2, "0");
+    const ss = String(s).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  function formatDurationShort(ms) {
+    const totalMin = Math.floor(ms / 60000);
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    const hh = `${h}h`;
+    const mm = String(m).padStart(2, "0") + "m";
+    return `${hh} ${mm}`;
+  }
+
+  function getStartOfWeek(date) {
+    const d = new Date(date);
+    const day = d.getDay(); // 0 Sunday, 1 Monday
+    const diff = (day === 0 ? -6 : 1) - day; // move to Monday
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function isSameWeek(dateA, dateB) {
+    const startA = getStartOfWeek(dateA);
+    const startB = getStartOfWeek(dateB);
+    return startA.getTime() === startB.getTime();
+  }
+
+  function renderTodayLabel() {
+    const now = new Date();
+    todayLabelEl.textContent = now.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+  }
+
+  function renderWeekLabel() {
+    const now = new Date();
+    const start = getStartOfWeek(now);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 4); // Monday to Friday range
+
+    const startStr = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const endStr = end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    weekLabelEl.textContent = `Week: ${startStr} – ${endStr}`;
+  }
+
+  function renderLog() {
+    const entries = loadEntries();
+    const now = new Date();
+    const thisWeek = entries.filter(e => isSameWeek(new Date(e.date), now));
+
+    logBody.innerHTML = "";
+
+    if (!thisWeek.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 5;
+      td.className = "empty-state";
+      td.textContent = "No sessions tracked for this week yet. Start the timer and save your first block.";
+      tr.appendChild(td);
+      logBody.appendChild(tr);
+    } else {
+      thisWeek
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .forEach(entry => {
+          const d = new Date(entry.date);
+          const tr = document.createElement("tr");
+
+          const dateTd = document.createElement("td");
+          dateTd.textContent = d.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric"
+          });
+
+          const dayTd = document.createElement("td");
+          dayTd.textContent = d.toLocaleDateString("en-US", { weekday: "short" });
+
+          const activityTd = document.createElement("td");
+          activityTd.innerHTML = `<span class="small-pill">${entry.task}</span>`;
+
+          const durationTd = document.createElement("td");
+          durationTd.className = "duration-cell";
+          durationTd.textContent = formatDurationShort(entry.durationMs);
+
+          const notesTd = document.createElement("td");
+          notesTd.className = "notes";
+          notesTd.textContent = entry.note || "";
+
+          tr.appendChild(dateTd);
+          tr.appendChild(dayTd);
+          tr.appendChild(activityTd);
+          tr.appendChild(durationTd);
+          tr.appendChild(notesTd);
+
+          logBody.appendChild(tr);
+        });
+    }
+
+    // Totals
+    let weekMs = 0;
+    let todayMs = 0;
+    const todayStr = now.toDateString();
+
+    thisWeek.forEach(entry => {
+      weekMs += entry.durationMs;
+      if (new Date(entry.date).toDateString() === todayStr) {
+        todayMs += entry.durationMs;
+      }
+    });
+
+    weekTotalEl.textContent = formatDurationShort(weekMs);
+    todayTotalEl.textContent = formatDurationShort(todayMs);
+  }
+
+  function updateTimerDisplay() {
+    timerDisplay.textContent = formatClock(elapsedMs);
+  }
+
+  function startTimer() {
+    if (isRunning) return;
+    isRunning = true;
+    const now = Date.now();
+    startTime = now - elapsedMs;
+    statusLabel.textContent = "Running";
+    statusLabel.style.color = "#4ade80";
+
+    timerInterval = setInterval(() => {
+      elapsedMs = Date.now() - startTime;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    if (!isRunning) return;
+    isRunning = false;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    statusLabel.textContent = "Paused";
+    statusLabel.style.color = "#facc15";
+  }
+
+  function resetTimer() {
+    isRunning = false;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    elapsedMs = 0;
+    startTime = null;
+    updateTimerDisplay();
+    statusLabel.textContent = "Idle";
+    statusLabel.style.color = "#cbd5f5";
+  }
+
+  function saveCurrentSession() {
+    if (isRunning) {
+      alert("Pause the timer before saving the session.");
+      return;
+    }
+
+    if (elapsedMs < 60000) {
+      alert("Session is under 1 minute. Let it run a bit longer before saving or reset.");
+      return;
+    }
+
+    const task = taskTypeEl.value;
+    const note = taskNoteEl.value.trim();
+
+    if (!task) {
+      alert("Select an activity type before saving.");
+      return;
+    }
+
+    const now = new Date();
+
+    const entry = {
+      id: Date.now(),
+      date: now.toISOString(),
+      task,
+      note,
+      durationMs: elapsedMs
+    };
+
+    const entries = loadEntries();
+    entries.push(entry);
+    saveEntries(entries);
+
+    resetTimer();
+    taskTypeEl.value = "";
+    taskNoteEl.value = "";
+    renderLog();
+  }
+
+  // Event listeners
+  startBtn.addEventListener("click", startTimer);
+  pauseBtn.addEventListener("click", pauseTimer);
+  resetBtn.addEventListener("click", resetTimer);
+  saveBtn.addEventListener("click", saveCurrentSession);
+
+  // Init
+  renderTodayLabel();
+  renderWeekLabel();
+  renderLog();
+  updateTimerDisplay();
+</script>
+
+</body>
+</html>

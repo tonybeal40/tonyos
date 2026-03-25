@@ -1,0 +1,134 @@
+import express from "express";
+import cors from "cors";
+import fs from "fs-extra";
+import path from "path";
+import { WebSocketServer } from "ws";
+import pty from "node-pty";
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+
+const WORKSPACE = process.env.WORKSPACE
+  ? path.resolve(process.env.WORKSPACE)
+  : path.resolve(process.cwd(), "workspace");
+
+await fs.ensureDir(WORKSPACE);
+
+function safePath(rel) {
+  const full = path.resolve(WORKSPACE, rel || "");
+  if (!full.startsWith(WORKSPACE)) throw new Error("Invalid path");
+  return full;
+}
+
+async function buildTree(dir, rel = "") {
+  const entries = await fs.readdir(dir);
+  const out = [];
+  for (const name of entries) {
+    if (name === "node_modules" || name === ".git") continue;
+    const full = path.join(dir, name);
+    const stat = await fs.stat(full);
+    const childRel = path.join(rel, name);
+    if (stat.isDirectory()) {
+      out.push({ type: "dir", name, path: childRel, children: await buildTree(full, childRel) });
+    } else {
+      out.push({ type: "file", name, path: childRel });
+    }
+  }
+  out.sort((a, b) => {
+    if (a.type !== b.type) return a.type === "dir" ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+  return out;
+}
+
+// File APIs
+app.get("/api/tree", async (req, res) => {
+  try {
+    const tree = await buildTree(safePath(""));
+    res.json({ workspace: WORKSPACE, tree });
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+app.get("/api/file", async (req, res) => {
+  try {
+    const fp = safePath(req.query.path);
+    const content = await fs.readFile(fp, "utf8");
+    res.json({ content });
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+app.post("/api/file", async (req, res) => {
+  try {
+    const fp = safePath(req.body.path);
+    await fs.ensureFile(fp);
+    await fs.writeFile(fp, req.body.content ?? "", "utf8");
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+app.post("/api/mkdir", async (req, res) => {
+  try {
+    const dp = safePath(req.body.path);
+    await fs.ensureDir(dp);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+app.post("/api/newfile", async (req, res) => {
+  try {
+    const fp = safePath(req.body.path);
+    await fs.ensureFile(fp);
+    if (!(await fs.pathExists(fp))) await fs.writeFile(fp, "", "utf8");
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+const server = app.listen(5050, () => {
+  console.log("CodeBench backend running on http://localhost:5050");
+  console.log("Workspace:", WORKSPACE);
+});
+
+// Terminal via WebSocket
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws) => {
+  const shell = process.platform === "win32" ? "powershell.exe" : "bash";
+
+  const term = pty.spawn(shell, [], {
+    name: "xterm-color",
+    cwd: WORKSPACE,
+    env: process.env,
+    cols: 120,
+    rows: 30
+  });
+
+  term.onData((data) => {
+    ws.send(JSON.stringify({ type: "data", data }));
+  });
+
+  ws.on("message", (msg) => {
+    try {
+      const m = JSON.parse(msg.toString());
+      if (m.type === "input") term.write(m.data);
+      if (m.type === "resize") term.resize(m.cols, m.rows);
+      if (m.type === "run") term.write((m.command || "") + "\r");
+    } catch {
+      // ignore
+    }
+  });
+
+  ws.on("close", () => {
+    try { term.kill(); } catch {}
+  });
+});

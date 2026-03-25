@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natoli Message Generator</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e5e5e5;
+      --text-muted: #9ca3af;
+      --accent-green: #22c55e;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f97316;
+      --border-color: #2a2a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(168, 85, 247, 0.1));
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .header p { color: var(--text-muted); }
+    .badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--accent-orange);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 15px;
+    }
+    .section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .section h3 {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .form-group { margin-bottom: 15px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-orange);
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-orange { background: var(--accent-orange); color: white; }
+    .btn-cyan { background: var(--accent-cyan); color: white; }
+    .btn-purple { background: var(--accent-purple); color: white; }
+    .btn-green { background: var(--accent-green); color: white; }
+    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .result-box {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .result-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .result-label.subject { color: var(--accent-cyan); }
+    .result-label.body { color: var(--accent-green); }
+    .result-content {
+      background: var(--bg-primary);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--accent-orange);
+    }
+    .loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-orange);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .tone-rules {
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .tone-rules h4 { color: var(--accent-orange); margin-bottom: 10px; }
+    .tone-rules ul { margin-left: 20px; font-size: 0.85rem; color: var(--text-muted); }
+    .tone-rules li { margin-bottom: 5px; }
+    .api-key-section {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .api-key-section h4 { color: #ef4444; margin-bottom: 10px; }
+    .api-key-section p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    .history-item {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .history-company { font-weight: 600; color: var(--accent-orange); }
+    .history-meta { font-size: 0.8rem; color: var(--text-muted); }
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-indicator.connected { background: var(--accent-green); }
+    .status-indicator.disconnected { background: #ef4444; }
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.5rem; }
+      .section { padding: 15px; }
+      .btn { padding: 10px 16px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✉️ Natoli Message Generator</h1>
+      <p>AI-Powered Personalized Outreach for Manufacturing Professionals</p>
+      <div class="badge">Powered by OpenAI • Natoli Tone Standards</div>
+    </div>
+
+    <div class="section">
+      <div class="api-key-section">
+        <h4>🔑 OpenAI API Key</h4>
+        <p>Your API key is stored locally in your browser and never sent to any server except OpenAI.</p>
+        <div class="form-group" style="margin-bottom: 0;">
+          <input type="password" id="apiKey" placeholder="sk-..." style="font-family: monospace;">
+        </div>
+        <div style="margin-top: 10px; font-size: 0.8rem;">
+          <span class="status-indicator disconnected" id="apiStatus"></span>
+          <span id="apiStatusText">Not connected</span>
+        </div>
+      </div>
+
+      <div class="tone-rules">
+        <h4>Natoli Messaging Standards</h4>
+        <ul>
+          <li>Calm, credible, manufacturing-first language</li>
+          <li>No marketing hype or buzzwords</li>
+          <li>No pressure or hard selling</li>
+          <li>Soft CTAs only (e.g., "happy to discuss")</li>
+          <li>Written for experienced manufacturing professionals</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>📝 Company Information</h3>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" id="companyName" placeholder="e.g., Catalent Pharma Solutions">
+        </div>
+        <div class="form-group">
+          <label>Industry</label>
+          <select id="industry">
+            <option value="pharmaceutical tablet manufacturing">Pharmaceutical Tablets</option>
+            <option value="generic drug manufacturing">Generic Drug Manufacturing</option>
+            <option value="nutraceutical manufacturing">Nutraceutical / Supplements</option>
+            <option value="503B outsourcing facility">503B Outsourcing Facility</option>
+            <option value="CDMO tablet manufacturing">CDMO</option>
+            <option value="veterinary pharmaceutical">Veterinary Pharmaceutical</option>
+            <option value="chemical tablet manufacturing">Chemical / Industrial Tablets</option>
+            <option value="water treatment tablets">Water Treatment</option>
+            <option value="pool chlorine tablets">Pool / Spa Chemicals</option>
+            <option value="battery manufacturing">Battery Manufacturing</option>
+            <option value="catalyst manufacturing">Catalyst Manufacturing</option>
+            <option value="nuclear fuel pellets">Nuclear Fuel / SMR</option>
+            <option value="ceramics manufacturing">Advanced Ceramics</option>
+            <option value="cosmetics pressed powders">Cosmetics / Pressed Powders</option>
+            <option value="animal feed supplements">Animal Feed / Agriculture</option>
+            <option value="formulation development">Formulation R&D</option>
+            <option value="compaction research">Compaction Research Lab</option>
+            <option value="other manufacturing">Other Manufacturing</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>State / Location</label>
+          <input type="text" id="state" placeholder="e.g., NJ or New Jersey">
+        </div>
+        <div class="form-group">
+          <label>Natoli Fit</label>
+          <select id="fit">
+            <option value="Engineering">Engineering (Tablet Manufacturing)</option>
+            <option value="Scientific">Scientific (Formulation / R&D)</option>
+            <option value="Both">Both (Manufacturing + R&D)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Relationship Type</label>
+          <select id="relationship">
+            <option value="new">New Customer - First Outreach</option>
+            <option value="existing">Existing Customer - Expand Relationship</option>
+            <option value="lapsed">Lapsed Customer - Re-engagement (12+ months)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Contact Name (Optional)</label>
+          <input type="text" id="contactName" placeholder="e.g., John Smith">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Why They May Need Natoli (Optional Context)</label>
+        <textarea id="reason" placeholder="e.g., Large CDMO with tablet manufacturing operations, likely needs tooling and parts..."></textarea>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-orange" onclick="generateMessage()" id="genBtn">
+          🚀 Generate Message
+        </button>
+        <button class="btn btn-secondary" onclick="clearForm()">
+          🔄 Clear Form
+        </button>
+      </div>
+    </div>
+
+    <div id="loadingSection" class="section" style="display: none;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div>Generating personalized message...</div>
+      </div>
+    </div>
+
+    <div id="resultSection" class="section" style="display: none;">
+      <h3>📧 Generated Message</h3>
+      
+      <div class="result-box">
+        <span class="result-label subject">Subject Line</span>
+        <div class="result-content" id="resultSubject"></div>
+      </div>
+
+      <div class="result-box">
+        <span class="result-label body">Email Body</span>
+        <div class="result-content" id="resultBody"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-cyan" onclick="copyMessage()">📋 Copy to Clipboard</button>
+        <button class="btn btn-purple" onclick="saveToHistory()">💾 Save to History</button>
+        <button class="btn btn-orange" onclick="generateMessage()">🔄 Regenerate</button>
+      </div>
+    </div>
+
+    <div id="historySection" class="section" style="display: none;">
+      <h3>📚 Message History</h3>
+      <div id="historyList"></div>
+      <div class="controls">
+        <button class="btn btn-cyan" onclick="exportHistory()">📥 Export All Messages (CSV)</button>
+        <button class="btn btn-secondary" onclick="clearHistory()">🗑️ Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let currentMessage = { subject: '', body: '', company: '' };
+    let messageHistory = JSON.parse(localStorage.getItem('natoliMessageHistory') || '[]');
+
+    function init() {
+      const savedKey = localStorage.getItem('openai_api_key');
+      if (savedKey) {
+        document.getElementById('apiKey').value = savedKey;
+        updateApiStatus(true);
+      }
+      document.getElementById('apiKey').addEventListener('change', function() {
+        localStorage.setItem('openai_api_key', this.value);
+        updateApiStatus(!!this.value);
+      });
+      updateHistoryDisplay();
+    }
+
+    function updateApiStatus(connected) {
+      const indicator = document.getElementById('apiStatus');
+      const text = document.getElementById('apiStatusText');
+      if (connected) {
+        indicator.className = 'status-indicator connected';
+        text.textContent = 'API key saved';
+      } else {
+        indicator.className = 'status-indicator disconnected';
+        text.textContent = 'Not connected';
+      }
+    }
+
+    async function generateMessage() {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      if (!apiKey) {
+        showToast('Please enter your OpenAI API key', true);
+        return;
+      }
+
+      const company = document.getElementById('companyName').value.trim();
+      if (!company) {
+        showToast('Please enter a company name', true);
+        return;
+      }
+
+      const data = {
+        company: company,
+        industry: document.getElementById('industry').value,
+        state: document.getElementById('state').value.trim(),
+        fit: document.getElementById('fit').value,
+        relationship: document.getElementById('relationship').value,
+        reason: document.getElementById('reason').value.trim(),
+        contactName: document.getElementById('contactName').value.trim()
+      };
+
+      document.getElementById('loadingSection').style.display = 'block';
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('genBtn').disabled = true;
+
+      try {
+        const relationshipContext = {
+          'new': 'This is a first-time outreach to a prospective customer who has never worked with Natoli.',
+          'existing': 'This is an existing customer. The goal is to deepen the relationship and explore additional needs.',
+          'lapsed': 'This customer has not ordered in 12+ months. The goal is re-engagement without pressure.'
+        };
+
+        const prompt = `You are a professional sales copywriter for Natoli Engineering Company, the world leader in tablet compression tooling and equipment for pharmaceutical, nutraceutical, and industrial tablet manufacturing.
+
+COMPANY CONTEXT:
+- Company: ${data.company}
+- Industry: ${data.industry}
+- Location: ${data.state || 'USA'}
+- Natoli Fit: ${data.fit}
+${data.reason ? `- Why they need Natoli: ${data.reason}` : ''}
+${data.contactName ? `- Contact Name: ${data.contactName}` : ''}
+
+RELATIONSHIP: ${relationshipContext[data.relationship]}
+
+NATOLI TONE STANDARDS (MANDATORY):
+1. Calm, credible, manufacturing-first language
+2. NO marketing hype, buzzwords, or excitement
+3. NO pressure tactics or urgency
+4. Soft CTAs only ("happy to discuss", "worth a conversation")
+5. Written for experienced manufacturing professionals who hate being sold to
+6. Subject lines should be boring/professional, not clickbait
+
+Generate a personalized outreach email. The email should:
+- Be 90-130 words
+- Reference their specific industry context
+- Mention relevant Natoli capabilities (tooling, tablet presses, formulation support, etc.)
+- Feel like it was written by someone who understands their world
+- End with a soft, no-pressure CTA
+
+Respond in this exact JSON format:
+{
+  "subject": "Professional subject line here",
+  "body": "Email body here"
+}`;
+
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 500
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error?.message || 'API request failed');
+        }
+
+        const result = await response.json();
+        const content = result.choices[0].message.content;
+        
+        let parsed;
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          throw new Error('Failed to parse response');
+        }
+
+        currentMessage = {
+          subject: parsed.subject || '',
+          body: parsed.body || '',
+          company: company,
+          industry: data.industry,
+          fit: data.fit,
+          relationship: data.relationship,
+          timestamp: new Date().toISOString()
+        };
+
+        document.getElementById('resultSubject').textContent = currentMessage.subject;
+        document.getElementById('resultBody').textContent = currentMessage.body;
+        document.getElementById('resultSection').style.display = 'block';
+
+        localStorage.setItem('openai_api_key', apiKey);
+        updateApiStatus(true);
+
+      } catch (err) {
+        console.error('Error:', err);
+        showToast(err.message || 'Failed to generate message', true);
+      }
+
+      document.getElementById('loadingSection').style.display = 'none';
+      document.getElementById('genBtn').disabled = false;
+    }
+
+    function copyMessage() {
+      const text = `Subject: ${currentMessage.subject}\n\n${currentMessage.body}`;
+      navigator.clipboard.writeText(text);
+      showToast('Copied to clipboard!');
+    }
+
+    function saveToHistory() {
+      if (!currentMessage.subject) return;
+      messageHistory.unshift({...currentMessage});
+      localStorage.setItem('natoliMessageHistory', JSON.stringify(messageHistory.slice(0, 100)));
+      updateHistoryDisplay();
+      showToast('Saved to history');
+    }
+
+    function updateHistoryDisplay() {
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+
+      if (messageHistory.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      list.innerHTML = messageHistory.map((m, i) => `
+        <div class="history-item">
+          <div class="history-header">
+            <span class="history-company">${escapeHtml(m.company)}</span>
+            <span class="history-meta">${m.fit} • ${m.relationship} • ${formatDate(m.timestamp)}</span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--accent-cyan); margin-bottom: 5px;">
+            Subject: ${escapeHtml(m.subject)}
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); white-space: pre-wrap; max-height: 100px; overflow: hidden;">
+            ${escapeHtml(m.body)}
+          </div>
+          <div style="margin-top: 10px; display: flex; gap: 8px;">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="copyHistoryItem(${i})">Copy</button>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="loadHistoryItem(${i})">Load</button>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; color: #ef4444;" onclick="deleteHistoryItem(${i})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function formatDate(ts) {
+      if (!ts) return '';
+      const d = new Date(ts);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function copyHistoryItem(index) {
+      const m = messageHistory[index];
+      const text = `Subject: ${m.subject}\n\n${m.body}`;
+      navigator.clipboard.writeText(text);
+      showToast('Copied!');
+    }
+
+    function loadHistoryItem(index) {
+      const m = messageHistory[index];
+      currentMessage = {...m};
+      document.getElementById('resultSubject').textContent = m.subject;
+      document.getElementById('resultBody').textContent = m.body;
+      document.getElementById('resultSection').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('resultSection').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    function deleteHistoryItem(index) {
+      messageHistory.splice(index, 1);
+      localStorage.setItem('natoliMessageHistory', JSON.stringify(messageHistory));
+      updateHistoryDisplay();
+      showToast('Deleted');
+    }
+
+    function exportHistory() {
+      if (messageHistory.length === 0) return showToast('No messages to export', true);
+
+      const headers = ['Company', 'Industry', 'Fit', 'Relationship', 'Subject', 'Body', 'Timestamp'];
+      const rows = messageHistory.map(m => [m.company, m.industry, m.fit, m.relationship, m.subject, m.body, m.timestamp]);
+
+      let csv = headers.join(',') + '\n';
+      rows.forEach(r => {
+        csv += r.map(v => `"${String(v || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`).join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'natoli_messages_' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+      showToast('Messages exported!');
+    }
+
+    function clearHistory() {
+      if (!confirm('Clear all saved messages?')) return;
+      messageHistory = [];
+      localStorage.removeItem('natoliMessageHistory');
+      updateHistoryDisplay();
+      showToast('History cleared');
+    }
+
+    function clearForm() {
+      document.getElementById('companyName').value = '';
+      document.getElementById('state').value = '';
+      document.getElementById('reason').value = '';
+      document.getElementById('contactName').value = '';
+      document.getElementById('resultSection').style.display = 'none';
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? '#ef4444' : 'var(--accent-green)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    init();
+  </script>
+</body>
+</html>

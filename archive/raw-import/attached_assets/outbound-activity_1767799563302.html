@@ -1,0 +1,98 @@
+<!-- =========================
+OVERVIEW: Outbound Source-of-Truth Panel
+Reads localStorage key natoliOutboundContactsV2
+========================= -->
+<section class="nb-card" id="overviewOutboundPanel">
+  <div class="nb-card-head">
+    <div>
+      <h2 class="nb-title">Outbound Performance</h2>
+      <p class="nb-sub">Live from your Outbound Activity page data (createdAt and sentDate)</p>
+    </div>
+    <span class="nb-badge">Source of Truth</span>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="nb-kpi-grid">
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Total contacts</div>
+      <div class="nb-kpi-value" id="nb_total">0</div>
+      <div class="nb-kpi-foot">All contacts stored</div>
+    </div>
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Sent total</div>
+      <div class="nb-kpi-value" id="nb_sent">0</div>
+      <div class="nb-kpi-foot" id="nb_sent_rate">0% send rate</div>
+    </div>
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Added today</div>
+      <div class="nb-kpi-value" id="nb_added_today">0</div>
+      <div class="nb-kpi-foot">New records</div>
+    </div>
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Added this week</div>
+      <div class="nb-kpi-value" id="nb_added_week">0</div>
+      <div class="nb-kpi-foot" id="nb_week_range">Week range</div>
+    </div>
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Sent today</div>
+      <div class="nb-kpi-value" id="nb_sent_today">0</div>
+      <div class="nb-kpi-foot">Marked sent</div>
+    </div>
+    <div class="nb-kpi">
+      <div class="nb-kpi-label">Sent this week</div>
+      <div class="nb-kpi-value" id="nb_sent_week">0</div>
+      <div class="nb-kpi-foot" id="nb_week_pace">Weekly pace</div>
+    </div>
+  </div>
+
+  <!-- Fortune-50 horizontal bars -->
+  <div class="nb-bars">
+    <div class="nb-bars-head">
+      <div>
+        <div class="nb-bars-title">KPI Bar Board</div>
+        <div class="nb-bars-sub">This is the “executive glance” view</div>
+      </div>
+      <button class="nb-btn" type="button" id="nb_refresh">Refresh</button>
+    </div>
+
+    <div class="nb-bar-row">
+      <div class="nb-bar-label">Send rate</div>
+      <div class="nb-bar-track">
+        <div class="nb-bar-fill" id="nb_bar_sendrate" style="width:0%"></div>
+      </div>
+      <div class="nb-bar-metric" id="nb_bar_sendrate_txt">0%</div>
+    </div>
+
+    <div class="nb-bar-row">
+      <div class="nb-bar-label">Sent this week vs added this week</div>
+      <div class="nb-bar-track">
+        <div class="nb-bar-fill" id="nb_bar_week_eff" style="width:0%"></div>
+      </div>
+      <div class="nb-bar-metric" id="nb_bar_week_eff_txt">0%</div>
+    </div>
+
+    <div class="nb-bar-row">
+      <div class="nb-bar-label">Today: sent vs added</div>
+      <div class="nb-bar-track">
+        <div class="nb-bar-fill" id="nb_bar_day_eff" style="width:0%"></div>
+      </div>
+      <div class="nb-bar-metric" id="nb_bar_day_eff_txt">0%</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="nb-chart">
+    <div class="nb-chart-head">
+      <div>
+        <div class="nb-chart-title">Last 8 Weeks Activity</div>
+        <div class="nb-chart-sub">Added vs Sent, computed from createdAt and sentDate</div>
+      </div>
+      <div class="nb-legend">
+        <span class="nb-leg"><span class="nb-dot nb-dot-red"></span>Added</span>
+        <span class="nb-leg"><span class="nb-dot nb-dot-green"></span>Sent</span>
+      </div>
+    </div>
+
+    <canvas id="nb_canvas" width="1100" height="280"></canvas>
+  </div>
+</section>

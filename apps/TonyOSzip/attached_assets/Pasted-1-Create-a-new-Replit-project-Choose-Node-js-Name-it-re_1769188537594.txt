@@ -1,0 +1,151 @@
+1️⃣ Create a new Replit project
+
+Choose: Node.js
+
+Name it:
+
+revops-dashboard
+
+2️⃣ package.json
+{
+  "name": "revops-dashboard",
+  "version": "1.0.0",
+  "description": "Revenue Operations Command Center",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
+
+
+Run:
+
+npm install
+
+3️⃣ server.js
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+let deals = [
+  { company: "PharmaCo", stage: "Qualified", value: 120000, probability: 0.3 },
+  { company: "NutraLabs", stage: "Proposal", value: 250000, probability: 0.6 },
+  { company: "AeroParts", stage: "Negotiation", value: 400000, probability: 0.8 }
+];
+
+app.get("/api/deals", (req, res) => {
+  res.json(deals);
+});
+
+app.post("/api/deals", (req, res) => {
+  deals.push(req.body);
+  res.json({ success: true });
+});
+
+app.listen(3000, () =>
+  console.log("RevOps Command Center running on port 3000")
+);
+
+4️⃣ public/index.html
+
+Create a folder called public
+Inside it create index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Revenue Command Center</title>
+  <style>
+    body { font-family: Arial; background:#111; color:#fff; padding:20px }
+    table { width:100%; border-collapse: collapse; margin-top:20px }
+    th, td { padding:10px; border-bottom:1px solid #444 }
+    th { background:#222 }
+    input, button { padding:8px; margin:5px }
+  </style>
+</head>
+<body>
+  <h1>Revenue Pipeline Command Center</h1>
+  <h3 id="forecast"></h3>
+
+  <table id="table">
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Stage</th>
+        <th>Deal Value</th>
+        <th>Probability</th>
+        <th>Weighted</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>Add Deal</h3>
+  <input id="company" placeholder="Company">
+  <input id="stage" placeholder="Stage">
+  <input id="value" type="number" placeholder="Value">
+  <input id="prob" type="number" step="0.1" placeholder="Probability">
+  <button onclick="addDeal()">Add</button>
+
+<script>
+async function load() {
+  const res = await fetch("/api/deals");
+  const deals = await res.json();
+  let total = 0;
+  const body = document.querySelector("tbody");
+  body.innerHTML = "";
+  deals.forEach(d => {
+    const weighted = d.value * d.probability;
+    total += weighted;
+    body.innerHTML += `<tr>
+      <td>${d.company}</td>
+      <td>${d.stage}</td>
+      <td>$${d.value.toLocaleString()}</td>
+      <td>${d.probability}</td>
+      <td>$${weighted.toLocaleString()}</td>
+    </tr>`;
+  });
+  document.getElementById("forecast").innerText =
+    "Weighted Forecast: $" + total.toLocaleString();
+}
+
+async function addDeal() {
+  await fetch("/api/deals", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      company: company.value,
+      stage: stage.value,
+      value: Number(value.value),
+      probability: Number(prob.value)
+    })
+  });
+  load();
+}
+
+load();
+</script>
+</body>
+</html>
+
+5️⃣ Run
+npm start
+
+
+Click Open in Browser
+
+You now have:
+• Deal list
+• Weighted forecast
+• Exec-ready numbers

@@ -1,0 +1,303 @@
+Alright. I’m going to give you the full system, end to end, in a way you can drop straight into Replit and grow over time without rebuilding it later.
+
+This is Tony CRM v1, designed exactly around:
+• Natoli Engineering
+• Natoli Scientific
+• Persona-first logic
+• Apollo enrichment
+• CEO-grade clarity
+
+No fluff. No missing pieces.
+
+🔧 TECH STACK (LOCK THIS IN)
+
+Platform: Replit
+Backend: Node.js + Express
+Data source: Apollo.io API
+Storage: In-memory (v1) → DB later
+Frontend: Simple fetch calls (can add UI later)
+
+📁 PROJECT STRUCTURE (CREATE THIS IN REPLIT)
+/server
+  ├── index.js
+  ├── apollo.js
+  ├── personas.js
+  ├── industries.js
+  ├── scoring.js
+  ├── routing.js
+  ├── pains.js
+  └── cache.js
+.env (via Replit Secrets)
+
+🔑 STEP 1: SET SECRETS IN REPLIT
+
+In Replit → Secrets, add:
+
+APOLLO_API_KEY=your_real_key
+
+
+Never hardcode keys.
+
+🔌 STEP 2: APOLLO CONNECTION
+/server/apollo.js
+import fetch from "node-fetch";
+
+const APOLLO_API_KEY = process.env.APOLLO_API_KEY;
+
+export async function enrichCompany(domain) {
+  const res = await fetch("https://api.apollo.io/v1/companies/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Api-Key": APOLLO_API_KEY
+    },
+    body: JSON.stringify({
+      q: domain,
+      page: 1,
+      per_page: 1
+    })
+  });
+
+  const data = await res.json();
+  return data.companies?.[0] || null;
+}
+
+export async function getPersonas(companyId, titles) {
+  const res = await fetch("https://api.apollo.io/v1/people/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Api-Key": APOLLO_API_KEY
+    },
+    body: JSON.stringify({
+      organization_ids: [companyId],
+      person_titles: titles,
+      page: 1,
+      per_page: 25
+    })
+  });
+
+  const data = await res.json();
+  return data.people || [];
+}
+
+🧠 STEP 3: DEFINE YOUR TOP PERSONAS
+/server/personas.js
+export const TOP_PERSONAS = {
+  "Director of R&D": 5,
+  "Director of MS&T": 5,
+  "Head of Manufacturing": 4,
+  "Process Engineering Manager": 4,
+  "Technical Operations Director": 4,
+  "Manufacturing Engineering Manager": 3,
+  "Quality Director": 3
+};
+
+
+These weights drive Tier A/B/C.
+
+🏭 STEP 4: INDUSTRY + NAICS MAP
+/server/industries.js
+export const INDUSTRIES = {
+  pharmaceutical: {
+    naics: ["325412"],
+    division: ["scientific", "engineering"]
+  },
+  nutraceutical: {
+    naics: ["311919"],
+    division: ["engineering"]
+  },
+  veterinary: {
+    naics: ["325414"],
+    division: ["scientific"]
+  },
+  cannabis: {
+    naics: ["325411"],
+    division: ["scientific"]
+  },
+  confectionery: {
+    naics: ["311340"],
+    division: ["engineering"]
+  },
+  nuclear: {
+    naics: ["541713"],
+    division: ["scientific"]
+  },
+  catalyst: {
+    naics: ["325199"],
+    division: ["scientific"]
+  }
+};
+
+⚖️ STEP 5: PERSONA SCORING ENGINE
+/server/scoring.js
+import { TOP_PERSONAS } from "./personas.js";
+
+export function scorePersonas(people) {
+  let score = 0;
+  let matched = [];
+
+  people.forEach(p => {
+    const title = p.title;
+    if (TOP_PERSONAS[title]) {
+      score += TOP_PERSONAS[title];
+      matched.push(title);
+    }
+  });
+
+  return { score, matched };
+}
+
+export function assignTier(score) {
+  if (score >= 10) return "A";
+  if (score >= 6) return "B";
+  return "C";
+}
+
+🔀 STEP 6: NATOLI ROUTING LOGIC
+/server/routing.js
+import { INDUSTRIES } from "./industries.js";
+
+export function routeNatoli(naicsCodes) {
+  let eng = false;
+  let sci = false;
+
+  Object.values(INDUSTRIES).forEach(i => {
+    if (i.naics.some(code => naicsCodes?.includes(code))) {
+      if (i.division.includes("engineering")) eng = true;
+      if (i.division.includes("scientific")) sci = true;
+    }
+  });
+
+  if (eng && sci) return "BOTH";
+  if (eng) return "Natoli Engineering";
+  if (sci) return "Natoli Scientific";
+  return "UNQUALIFIED";
+}
+
+🎯 STEP 7: PAIN POINT ENGINE
+/server/pains.js
+export function painPoints(industry, division) {
+  const base = {
+    scientific: [
+      "Scale-up risk",
+      "Analytical data gaps",
+      "Method transfer uncertainty"
+    ],
+    engineering: [
+      "Tooling wear",
+      "Downtime",
+      "Inconsistent compression"
+    ]
+  };
+
+  if (division === "BOTH") {
+    return [...base.scientific, ...base.engineering];
+  }
+
+  return base[division.toLowerCase()] || [];
+}
+
+🧠 STEP 8: CACHE (DON’T HIT APOLLO TWICE)
+/server/cache.js
+const cache = {};
+
+export function getCached(domain) {
+  return cache[domain];
+}
+
+export function setCache(domain, data) {
+  cache[domain] = data;
+}
+
+🚀 STEP 9: MAIN SERVER
+/server/index.js
+import express from "express";
+import { enrichCompany, getPersonas } from "./apollo.js";
+import { scorePersonas, assignTier } from "./scoring.js";
+import { routeNatoli } from "./routing.js";
+import { painPoints } from "./pains.js";
+import { getCached, setCache } from "./cache.js";
+import { TOP_PERSONAS } from "./personas.js";
+
+const app = express();
+app.use(express.json());
+
+app.post("/analyze", async (req, res) => {
+  const { domain } = req.body;
+
+  if (getCached(domain)) {
+    return res.json(getCached(domain));
+  }
+
+  const company = await enrichCompany(domain);
+  if (!company) return res.status(404).json({ error: "Company not found" });
+
+  const people = await getPersonas(
+    company.id,
+    Object.keys(TOP_PERSONAS)
+  );
+
+  const personaData = scorePersonas(people);
+  const tier = assignTier(personaData.score);
+  const division = routeNatoli(company.naics_codes || []);
+  const pains = painPoints(company.industry, division);
+
+  const output = {
+    company: company.name,
+    website: company.website_url,
+    linkedin: company.linkedin_url,
+    employees: company.estimated_num_employees,
+    revenue: company.annual_revenue,
+    naics: company.naics_codes,
+    sic: company.sic_codes,
+    industry: company.industry,
+    division_fit: division,
+    persona_score: personaData.score,
+    matched_personas: personaData.matched,
+    tier,
+    pain_points: pains,
+    why_natoli: division === "Natoli Scientific"
+      ? "Analytical rigor and scale-up confidence"
+      : division === "Natoli Engineering"
+      ? "Precision tooling and production reliability"
+      : "End-to-end compaction support"
+  };
+
+  setCache(domain, output);
+  res.json(output);
+});
+
+app.listen(3000, () => console.log("Tony CRM running"));
+
+📊 WHAT THE CEO WILL SEE
+
+For one domain, this system outputs:
+• Industry
+• NAICS / SIC
+• LinkedIn link
+• Natoli vs Scientific vs BOTH
+• Persona score
+• Tier (A/B/C)
+• Pain points
+• Why Natoli matters
+
+That is executive-ready intelligence, not noise.
+
+🧭 WHAT WE’D ADD NEXT (OPTIONAL)
+
+Database (Supabase)
+
+Dashboard UI
+
+Export to CSV
+
+Outreach draft generator
+
+Competitive detection
+
+Cost-to-serve modeling
+
+Final truth
+
+You now have:

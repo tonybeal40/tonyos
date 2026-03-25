@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS - Outbound Activity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <style>
+    :root {
+      --bg: #07070a;
+      --card: #0f1118;
+      --ink: #f5f7ff;
+      --muted: #b1b6c8;
+      --muted2: #8b91a8;
+      --line: #222638;
+      --accent: #e11d48;
+      --accent2: #ff3b6a;
+      --good: #22c55e;
+      --warn: #fbbf24;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 0%, rgba(225,29,72,.12) 0, transparent 45%),
+                  linear-gradient(180deg, #0a0a0f 0%, #050508 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .shell { max-width: 1400px; margin: 0 auto; }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .back-link {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .back-link:hover { background: rgba(15,23,42,1); }
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-badge.connected {
+      background: rgba(34,197,94,.15);
+      border: 1px solid rgba(34,197,94,.5);
+      color: #a7f3d0;
+    }
+    .status-badge.local {
+      background: rgba(251,191,36,.15);
+      border: 1px solid rgba(251,191,36,.5);
+      color: #fef3c7;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: rgba(15,17,24,.95);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .panel-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+    .btn-accent:hover { filter: brightness(1.1); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent2);
+    }
+    .btn-outline:hover { background: rgba(225,29,72,.1); }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .form-input, .form-select, .form-textarea {
+      background: rgba(7,7,10,.8);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--muted2);
+    }
+    .form-select { cursor: pointer; }
+    .form-select option { background: var(--card); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .target-box {
+      background: rgba(225,29,72,.08);
+      border: 1px solid rgba(225,29,72,.25);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .target-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.8rem;
+    }
+    .target-title { font-weight: 600; font-size: 14px; }
+    .target-week { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .target-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .target-label { font-size: 12px; color: var(--muted); }
+    .target-input {
+      width: 80px;
+      background: rgba(7,7,10,.9);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+    }
+    .target-input:focus { border-color: var(--accent); outline: none; }
+    .btn-save {
+      background: var(--good);
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--good), #4ade80);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+    .progress-text {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .activity-section { margin-top: 1.5rem; }
+    .activity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .activity-title { font-weight: 600; font-size: 14px; }
+    .legend {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+    .legend-dot.added { background: var(--accent); }
+    .legend-dot.sent { background: var(--good); }
+    .chart-container {
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .chart-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .chart-bars {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 80px;
+    }
+    .chart-bar {
+      width: 12px;
+      border-radius: 4px 4px 0 0;
+      min-height: 2px;
+    }
+    .chart-bar.added { background: var(--accent); }
+    .chart-bar.sent { background: var(--good); }
+    .chart-label {
+      font-size: 10px;
+      color: var(--muted2);
+    }
+    .chart-axis {
+      font-size: 10px;
+      color: var(--muted2);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .recent-section { margin-top: 1.5rem; }
+    .recent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .recent-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .recent-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      font-size: 13px;
+    }
+    .recent-name { font-weight: 600; }
+    .recent-company { color: var(--muted); font-size: 12px; }
+    .recent-stage {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .stage-new { background: rgba(59,130,246,.2); color: #93c5fd; }
+    .stage-sent { background: rgba(34,197,94,.2); color: #86efac; }
+    .stage-replied { background: rgba(168,85,247,.2); color: #d8b4fe; }
+    .stage-meeting { background: rgba(251,191,36,.2); color: #fde68a; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--good); color: #000; }
+    .toast.error { background: var(--accent); color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="top-bar">
+      <a href="/crm" class="back-link">Back to CRM</a>
+      <div id="connection-status" class="status-badge local">Local Mode</div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Add Contact</div>
+            <div class="panel-sub">Clean capture, stage, notes, next step, and Sheets sync</div>
+          </div>
+          <button class="btn btn-outline" onclick="clearForm()">Clean Data</button>
+        </div>
+
+        <form id="contact-form" class="form-grid">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="firstName" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="lastName" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" id="title" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company Name</label>
+            <input type="text" id="company" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="email" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" id="phone" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Industry</label>
+            <input type="text" id="industry" class="form-input" placeholder="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Person LinkedIn URL</label>
+            <input type="url" id="linkedin" class="form-input" placeholder="https://linkedin.com/in/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stage</label>
+            <select id="stage" class="form-select">
+              <option value="New">New</option>
+              <option value="Researched">Researched</option>
+              <option value="Sent">Sent</option>
+              <option value="Replied">Replied</option>
+              <option value="Meeting">Meeting</option>
+              <option value="Won">Won</option>
+              <option value="Lost">Lost</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Next Step</label>
+            <input type="text" id="nextStep" class="form-input" placeholder="Example: Follow up Friday">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Notes</label>
+            <textarea id="notes" class="form-textarea" placeholder="Pain point, angle, context"></textarea>
+          </div>
+        </form>
+
+        <div class="form-actions">
+          <button class="btn btn-accent" onclick="saveContact()">Save Contact</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Outbound Command View</div>
+            <div class="panel-sub">Weekly output, visibility, and account control</div>
+          </div>
+          <button class="btn btn-outline" onclick="window.location.href='/crm'">Revenue Cadence</button>
+        </div>
+
+        <div class="target-box">
+          <div class="target-header">
+            <div>
+              <div class="target-title">Weekly send target</div>
+              <div class="target-week" id="weekLabel">Week: Loading...</div>
+            </div>
+            <div class="target-input-row">
+              <span class="target-label">TARGET</span>
+              <input type="number" id="weeklyTarget" class="target-input" value="0" min="0">
+              <button class="btn-save" onclick="saveTarget()">Save</button>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">0 sent this week. Set a target to track pace</div>
+        </div>
+
+        <div class="activity-section">
+          <div class="activity-header">
+            <div class="activity-title">Weekly activity</div>
+            <div class="legend">
+              <span><span class="legend-dot added"></span> Added</span>
+              <span><span class="legend-dot sent"></span> Sent</span>
+            </div>
+          </div>
+          <div class="panel-sub" style="margin-bottom: 10px;">Added vs Sent for the last 8 weeks</div>
+          <div class="chart-container" id="activityChart"></div>
+          <div class="chart-axis">Updates automatically using createdAt and sentDate</div>
+        </div>
+
+        <div class="recent-section">
+          <div class="recent-header">
+            <div class="activity-title">Recent Contacts</div>
+            <span class="panel-sub" id="contactCount">0 contacts</span>
+          </div>
+          <div class="recent-list" id="recentList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const SETTINGS_KEY = "tonyos_outbound_settings";
+  const CONTACTS_KEY = "tonyos_outbound_contacts";
+  const SHEET_ID_KEY = "tonyos_outbound_sheet_id";
+  
+  let sheetsConnected = false;
+  let sheetId = localStorage.getItem(SHEET_ID_KEY) || "";
+  let contacts = [];
+  let settings = { weeklyTarget: 10 };
+
+  function loadSettings() {
+    try { settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { weeklyTarget: 10 }; }
+    catch { settings = { weeklyTarget: 10 }; }
+    return settings;
+  }
+  function saveSettings() {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+  function loadContacts() {
+    try { contacts = JSON.parse(localStorage.getItem(CONTACTS_KEY)) || []; }
+    catch { contacts = []; }
+    return contacts;
+  }
+  function saveContacts() {
+    localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts));
+  }
+
+  function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.className = "toast " + type + " show";
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  function getWeekLabel() {
+    const now = new Date();
+    const start = new Date(now);
+    start.setDate(now.getDate() - now.getDay());
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    const fmt = d => d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+    return `Week: ${fmt(start)} to ${fmt(end)}`;
+  }
+
+  function getWeekStart(date) {
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay());
+    d.setHours(0,0,0,0);
+    return d.getTime();
+  }
+
+  async function checkSheetsConnection() {
+    try {
+      const res = await fetch("/api/sheets/status");
+      const data = await res.json();
+      sheetsConnected = data.connected === true;
+      updateConnectionStatus();
+      return sheetsConnected;
+    } catch {
+      sheetsConnected = false;
+      updateConnectionStatus();
+      return false;
+    }
+  }
+
+  function updateConnectionStatus() {
+    const badge = document.getElementById("connection-status");
+    if (sheetsConnected && sheetId) {
+      badge.className = "status-badge connected";
+      badge.textContent = "Google Sheets Connected";
+    } else {
+      badge.className = "status-badge local";
+      badge.textContent = "Local Mode";
+    }
+  }
+
+  async function createSheet() {
+    try {
+      const res = await fetch("/api/sheets/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "TonyOS Outbound Contacts" })
+      });
+      const data = await res.json();
+      if (data.ok && data.sheet_id) {
+        sheetId = data.sheet_id;
+        localStorage.setItem(SHEET_ID_KEY, sheetId);
+        
+        await fetch("/api/sheets/append", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sheet_id: sheetId,
+            range: "Transactions!A1:L1",
+            values: ["Created", "First Name", "Last Name", "Title", "Company", "Email", "Phone", "Industry", "LinkedIn", "Stage", "Next Step", "Notes"]
+          })
+        });
+        
+        showToast("Google Sheet created!");
+        updateConnectionStatus();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  function clearForm() {
+    document.getElementById("contact-form").reset();
+    showToast("Form cleared");
+  }
+
+  async function saveContact() {
+    const contact = {
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      title: document.getElementById("title").value.trim(),
+      company: document.getElementById("company").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      industry: document.getElementById("industry").value.trim(),
+      linkedin: document.getElementById("linkedin").value.trim(),
+      stage: document.getElementById("stage").value,
+      nextStep: document.getElementById("nextStep").value.trim(),
+      notes: document.getElementById("notes").value.trim(),
+      sentDate: null
+    };
+
+    if (!contact.firstName && !contact.company) {
+      showToast("Enter at least a name or company", "error");
+      return;
+    }
+
+    contacts.unshift(contact);
+    saveContacts();
+
+    if (sheetsConnected && sheetId) {
+      try {
+        await fetch("/api/sheets/append", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sheet_id: sheetId,
+            range: "Transactions!A:L",
+            values: [
+              new Date(contact.createdAt).toLocaleString(),
+              contact.firstName,
+              contact.lastName,
+              contact.title,
+              contact.company,
+              contact.email,
+              contact.phone,
+              contact.industry,
+              contact.linkedin,
+              contact.stage,
+              contact.nextStep,
+              contact.notes
+            ]
+          })
+        });
+      } catch {}
+    }
+
+    showToast("Contact saved!");
+    clearForm();
+    render();
+  }
+
+  function saveTarget() {
+    settings.weeklyTarget = parseInt(document.getElementById("weeklyTarget").value) || 0;
+    saveSettings();
+    render();
+    showToast("Target saved");
+  }
+
+  function render() {
+    document.getElementById("weekLabel").textContent = getWeekLabel();
+    document.getElementById("weeklyTarget").value = settings.weeklyTarget;
+
+    const now = new Date();
+    const weekStart = getWeekStart(now);
+    const thisWeekSent = contacts.filter(c => {
+      if (!c.sentDate) return c.stage === "Sent" && getWeekStart(c.createdAt) === weekStart;
+      return getWeekStart(c.sentDate) === weekStart;
+    }).length;
+
+    const target = settings.weeklyTarget || 1;
+    const pct = Math.min(100, (thisWeekSent / target) * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressText").textContent = 
+      thisWeekSent + " sent this week. " + (target > 0 ? Math.round(pct) + "% of target" : "Set a target to track pace");
+
+    renderChart();
+    renderRecent();
+    document.getElementById("contactCount").textContent = contacts.length + " contacts";
+  }
+
+  function renderChart() {
+    const chart = document.getElementById("activityChart");
+    chart.innerHTML = "";
+
+    const weeks = [];
+    for (let i = 7; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - (i * 7));
+      const weekStart = getWeekStart(d);
+      const weekEnd = weekStart + 7 * 24 * 60 * 60 * 1000;
+      
+      const added = contacts.filter(c => {
+        const t = new Date(c.createdAt).getTime();
+        return t >= weekStart && t < weekEnd;
+      }).length;
+      
+      const sent = contacts.filter(c => {
+        if (c.stage !== "Sent" && !c.sentDate) return false;
+        const t = c.sentDate ? new Date(c.sentDate).getTime() : new Date(c.createdAt).getTime();
+        return t >= weekStart && t < weekEnd;
+      }).length;
+
+      const label = new Date(weekStart).toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+      weeks.push({ label, added, sent });
+    }
+
+    const maxVal = Math.max(1, ...weeks.map(w => Math.max(w.added, w.sent)));
+
+    weeks.forEach(w => {
+      const group = document.createElement("div");
+      group.className = "chart-bar-group";
+      
+      const bars = document.createElement("div");
+      bars.className = "chart-bars";
+      
+      const addedBar = document.createElement("div");
+      addedBar.className = "chart-bar added";
+      addedBar.style.height = (w.added / maxVal * 70) + "px";
+      
+      const sentBar = document.createElement("div");
+      sentBar.className = "chart-bar sent";
+      sentBar.style.height = (w.sent / maxVal * 70) + "px";
+      
+      bars.appendChild(addedBar);
+      bars.appendChild(sentBar);
+      
+      const label = document.createElement("div");
+      label.className = "chart-label";
+      label.textContent = w.label;
+      
+      group.appendChild(bars);
+      group.appendChild(label);
+      chart.appendChild(group);
+    });
+  }
+
+  function renderRecent() {
+    const list = document.getElementById("recentList");
+    list.innerHTML = "";
+
+    contacts.slice(0, 10).forEach(c => {
+      const item = document.createElement("div");
+      item.className = "recent-item";
+      
+      const stageClass = {
+        "New": "stage-new",
+        "Sent": "stage-sent",
+        "Replied": "stage-replied",
+        "Meeting": "stage-meeting"
+      }[c.stage] || "stage-new";
+
+      item.innerHTML = `
+        <div>
+          <div class="recent-name">${c.firstName} ${c.lastName}</div>
+          <div class="recent-company">${c.company || c.title || ""}</div>
+        </div>
+        <span class="recent-stage ${stageClass}">${c.stage}</span>
+      `;
+      list.appendChild(item);
+    });
+
+    if (contacts.length === 0) {
+      list.innerHTML = '<div class="panel-sub" style="padding: 20px 0; text-align: center;">No contacts yet. Add your first one!</div>';
+    }
+  }
+
+  async function init() {
+    loadSettings();
+    loadContacts();
+    await checkSheetsConnection();
+    
+    if (sheetsConnected && !sheetId) {
+      if (confirm("Google Sheets is connected. Create a new sheet for contacts?")) {
+        await createSheet();
+      }
+    }
+    
+    render();
+  }
+
+  init();
+</script>
+</body>
+</html>

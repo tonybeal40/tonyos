@@ -1,0 +1,67 @@
+function qs(sel, root = document) { return root.querySelector(sel); }
+function qsa(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+
+export async function brain({ message, mode = "default", userId = "tony", conversationId = null, context = "" }) {
+  const r = await fetch("/api/brain", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, mode, userId, conversationId, context })
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data?.error || `Brain failed: ${r.status}`);
+  return data; // {reply, conversationId}
+}
+
+export function wireToolCards({ selector = ".toolCard", to = "/chat.html", param = "mode" } = {}) {
+  qsa(selector).forEach(card => {
+    const mode = card.dataset.mode || card.getAttribute("data-mode");
+    const href = card.dataset.href || card.getAttribute("data-href");
+    const dest = href || (mode ? `${to}?${param}=${encodeURIComponent(mode)}` : null);
+    if (!dest) return;
+
+    card.style.cursor = "pointer";
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+
+    const go = () => (window.location.href = dest);
+    card.addEventListener("click", go);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+  });
+}
+
+// Universal wiring: tool tiles + any form that has data-tonyos-form
+export function wireTonyOS() {
+  wireToolCards();
+
+  // Any form can become an AI tool by adding: data-tonyos-form + data-mode
+  qsa("form[data-tonyos-form]").forEach(form => {
+    const inputSel = form.getAttribute("data-input") || "input,textarea";
+    const outSel = form.getAttribute("data-output") || "[data-tonyos-output]";
+    const mode = form.getAttribute("data-mode") || "default";
+
+    const inputEl = qs(inputSel, form);
+    const outEl = qs(outSel) || qs(outSel, form);
+
+    let conversationId = localStorage.getItem(`tonyos_convo_${mode}`) || null;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = (inputEl?.value || "").trim();
+      if (!msg) return;
+
+      if (outEl) outEl.textContent = "Thinking...";
+
+      try {
+        const pageContext = document.body?.innerText?.slice(0, 2000) || "";
+        const data = await brain({ message: msg, mode, conversationId, context: pageContext });
+        conversationId = data.conversationId;
+        localStorage.setItem(`tonyos_convo_${mode}`, conversationId);
+        if (outEl) outEl.textContent = data.reply;
+      } catch (err) {
+        if (outEl) outEl.textContent = `Error: ${String(err.message || err)}`;
+      }
+    });
+  });
+}

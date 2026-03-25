@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .settings-shell {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .settings-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+    .settings-subtitle {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.1);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .home-btn:hover {
+      background: rgba(255,255,255,0.1);
+      text-decoration: none;
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h3 {
+      color: #e11d48;
+      margin: 0 0 1rem 0;
+      font-size: 1.2rem;
+    }
+    .card p {
+      color: #94a3b8;
+      line-height: 1.6;
+      margin: 0 0 1rem 0;
+    }
+    .code-block {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: pre;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #e11d48, #be185d);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: #94a3b8;
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #e11d48, #be185d);
+      color: #fff;
+      border-color: transparent;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .info-box {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .info-box p {
+      color: #86efac;
+      margin: 0;
+    }
+    ol {
+      color: #94a3b8;
+      line-height: 2;
+      padding-left: 1.2rem;
+    }
+    ol li {
+      margin-bottom: 0.25rem;
+    }
+    code {
+      background: #1e293b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-shell">
+    <header class="settings-header">
+      <div>
+        <h1 class="settings-title">Settings</h1>
+        <p class="settings-subtitle">Google Sheets sync, code reference, and configuration</p>
+      </div>
+      <a href="/" class="home-btn">← Back to Home</a>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="setup">Setup Guide</button>
+      <button class="tab-btn" data-tab="apps-script">Apps Script Code</button>
+      <button class="tab-btn" data-tab="sync-config">Sync Config</button>
+      <button class="tab-btn" data-tab="data-export">Data Export</button>
+    </div>
+
+    <div id="setup" class="tab-content active">
+      <div class="card">
+        <h3>Connect Google Sheets</h3>
+        <div class="info-box">
+          <p>Your data automatically syncs to Google Sheets whenever you save in any app. Follow these steps to set it up.</p>
+        </div>
+        <ol>
+          <li>Create a new Google Sheet</li>
+          <li>Go to <strong>Extensions → Apps Script</strong></li>
+          <li>Delete any existing code and paste the code from the "Apps Script Code" tab</li>
+          <li>Click <strong>Deploy → New deployment</strong></li>
+          <li>Select <strong>Web app</strong> as the type</li>
+          <li>Set "Execute as" to <strong>Me</strong></li>
+          <li>Set "Who has access" to <strong>Anyone</strong></li>
+          <li>Click <strong>Deploy</strong> and copy the Web App URL</li>
+          <li>Click the sync indicator (bottom-right of any page) and paste your URL + API key</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>What Gets Synced</h3>
+        <p>Each app syncs to its own tab (worksheet) in your master Google Sheet:</p>
+        <ul style="color: #94a3b8; line-height: 2;">
+          <li><strong style="color:#fff;">Journal</strong> - Date, mood, content, gratitude, focus, reflection, tags</li>
+          <li><strong style="color:#fff;">CRM_Contacts</strong> - Name, company, title, email, phone, LinkedIn, stage</li>
+          <li><strong style="color:#fff;">CRM_Activity</strong> - Contact, channel, type, outcome, notes, date</li>
+          <li><strong style="color:#fff;">Budget</strong> - Type, category, description, amount, date</li>
+          <li><strong style="color:#fff;">Daily</strong> - One win, pressure, next step, result</li>
+          <li><strong style="color:#fff;">Jobs</strong> - Company, title, status, applied date, notes, URL</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="apps-script" class="tab-content">
+      <div class="card">
+        <h3>Google Apps Script Code</h3>
+        <p>Copy this entire code and paste it into your Google Apps Script editor. Change the API_TOKEN to your own secret.</p>
+        <button class="copy-btn" onclick="copyAppsScript()">Copy Code</button>
+        <div class="code-block" id="apps-script-code">// TonyOS Master Sync - Google Apps Script
+// Paste this in Extensions > Apps Script
+
+const API_TOKEN = "your-secret-token-here";  // CHANGE THIS!
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents || "{}");
+    
+    if (body.token !== API_TOKEN) {
+      return jsonOut({ ok: false, error: "Unauthorized" });
+    }
+    
+    const app = String(body.app || "").toLowerCase();
+    const payload = body.payload || {};
+    
+    const sheetNames = {
+      journal: "Journal",
+      crm_contacts: "CRM_Contacts", 
+      crm_activity: "CRM_Activity",
+      budget: "Budget",
+      daily: "Daily",
+      jobs: "Jobs"
+    };
+    
+    const sheetName = sheetNames[app];
+    if (!sheetName) {
+      return jsonOut({ ok: false, error: "Unknown app: " + app });
+    }
+    
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(sheetName);
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      const headers = getHeadersForApp(app);
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+    }
+    
+    const row = getRowForApp(app, payload);
+    sheet.appendRow(row);
+    
+    return jsonOut({ ok: true });
+  } catch (err) {
+    return jsonOut({ ok: false, error: String(err.message || err) });
+  }
+}
+
+function doGet(e) {
+  const p = e.parameter || {};
+  if (p.token !== API_TOKEN) {
+    return jsonOut({ ok: false, error: "Unauthorized" });
+  }
+  return jsonOut({ ok: true, message: "TonyOS Sync is ready" });
+}
+
+function jsonOut(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getHeadersForApp(app) {
+  const headers = {
+    journal: ["Timestamp", "Date", "Mood", "Stress", "Category", "Content", "Gratitude", "Focus", "Reflection", "Tags", "Links", "WordCount", "UpdatedAt"],
+    crm_contacts: ["Timestamp", "ID", "Name", "Company", "Title", "Email", "Phone", "LinkedIn", "Website", "Notes", "Stage", "Source", "CreatedAt", "UpdatedAt"],
+    crm_activity: ["Timestamp", "ID", "ContactID", "ContactName", "Channel", "Type", "Outcome", "Notes", "Date"],
+    budget: ["Timestamp", "ID", "Type", "Category", "Description", "Amount", "Date", "Recurring"],
+    daily: ["Timestamp", "Date", "OneWin", "Pressure", "NextStep", "Result"],
+    jobs: ["Timestamp", "ID", "Company", "Title", "Status", "Applied", "Notes", "URL", "UpdatedAt"]
+  };
+  return headers[app] || ["Timestamp", "Data"];
+}
+
+function getRowForApp(app, p) {
+  const ts = new Date().toISOString();
+  const rows = {
+    journal: [ts, p.date, p.mood, p.stress, p.category, p.content, p.gratitude, p.focus, p.reflection, p.tags, p.links, p.wordCount, p.updatedAt],
+    crm_contacts: [ts, p.id, p.name, p.company, p.title, p.email, p.phone, p.linkedin, p.website, p.notes, p.stage, p.source, p.createdAt, p.updatedAt],
+    crm_activity: [ts, p.id, p.contactId, p.contactName, p.channel, p.type, p.outcome, p.notes, p.date],
+    budget: [ts, p.id, p.type, p.category, p.description, p.amount, p.date, p.recurring],
+    daily: [ts, p.date, p.oneWin, p.pressure, p.nextStep, p.result],
+    jobs: [ts, p.id, p.company, p.title, p.status, p.applied, p.notes, p.url, p.updatedAt]
+  };
+  return rows[app] || [ts, JSON.stringify(p)];
+}</div>
+      </div>
+    </div>
+
+    <div id="sync-config" class="tab-content">
+      <div class="card">
+        <h3>Current Sync Configuration</h3>
+        <p>Your sync settings are stored in your browser's local storage. Click the sync indicator on any page to update.</p>
+        <div id="current-config" style="margin-top: 1rem;">
+          <p style="color: #64748b;">Loading configuration...</p>
+        </div>
+        <button class="copy-btn" style="margin-top: 1rem;" onclick="openSyncModal()">Configure Sync</button>
+      </div>
+    </div>
+
+    <div id="data-export" class="tab-content">
+      <div class="card">
+        <h3>Export All Data</h3>
+        <p>Download all your data from TonyOS as a JSON file. This includes:</p>
+        <ul style="color: #94a3b8; line-height: 2; margin-bottom: 1.5rem;">
+          <li><strong style="color:#fff;">CRM Contacts</strong> - All your saved connections</li>
+          <li><strong style="color:#fff;">CRM Activities</strong> - Activity log entries</li>
+          <li><strong style="color:#fff;">Journal Entries</strong> - All journal entries with mood, gratitude, reflections</li>
+          <li><strong style="color:#fff;">Contact Submissions</strong> - Form submissions received</li>
+        </ul>
+        <button class="copy-btn" id="export-btn" onclick="exportAllData()">Export All Data</button>
+        <p id="export-status" style="margin-top: 1rem; display: none;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function copyAppsScript() {
+      const code = document.getElementById('apps-script-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = original, 2000);
+      });
+    }
+
+    function openSyncModal() {
+      if (window.SheetsSync) {
+        window.SheetsSync.showConfigModal();
+      }
+    }
+
+    function loadConfig() {
+      const configDiv = document.getElementById('current-config');
+      if (window.SheetsSync) {
+        const config = window.SheetsSync.getConfig();
+        if (config.enabled && config.webAppUrl) {
+          configDiv.innerHTML = `
+            <p style="color: #22c55e;">✓ Sync is enabled</p>
+            <p style="color: #94a3b8; font-size: 0.9rem;">URL: ${config.webAppUrl.substring(0, 50)}...</p>
+          `;
+        } else {
+          configDiv.innerHTML = `<p style="color: #fbbf24;">⚠ Sync is not configured</p>`;
+        }
+      }
+    }
+
+    setTimeout(loadConfig, 100);
+
+    async function exportAllData() {
+      const btn = document.getElementById('export-btn');
+      const status = document.getElementById('export-status');
+      const originalText = btn.textContent;
+      
+      btn.textContent = 'Exporting...';
+      btn.disabled = true;
+      status.style.display = 'block';
+      status.style.color = '#94a3b8';
+      status.textContent = 'Fetching your data...';
+      
+      try {
+        const response = await fetch('/api/export');
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'Export failed');
+        }
+        
+        const data = await response.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tonyos_export_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        const total = (data.crm_contacts?.length || 0) + 
+                      (data.crm_activities?.length || 0) + 
+                      (data.journal_entries?.length || 0) + 
+                      (data.contact_submissions?.length || 0);
+        status.style.color = '#22c55e';
+        status.textContent = `Downloaded ${total} records successfully.`;
+      } catch (err) {
+        status.style.color = '#ef4444';
+        status.textContent = 'Error: ' + err.message;
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "industries": {
+    "tier_1": [
+      "Pharmaceutical Manufacturing",
+      "Pharmaceutical R&D",
+      "Solid Oral Dose Manufacturing",
+      "Drug Product Manufacturing",
+      "Tablet Manufacturing",
+      "Capsule Manufacturing",
+      "Powder Processing",
+      "Powder Metallurgy",
+      "Advanced Materials Manufacturing",
+      "Specialty Chemicals",
+      "Fine Chemicals",
+      "Battery Materials",
+      "Energy Materials",
+      "Catalyst Manufacturing",
+      "Nuclear Materials",
+      "Critical Minerals Processing",
+      "Ceramics Manufacturing",
+      "Technical Ceramics",
+      "Industrial R&D Labs",
+      "Contract Development and Manufacturing",
+      "CDMO",
+      "CMO"
+    ]
+  },
+
+  "company_types": {
+    "tier_1": [
+      "Pharmaceutical Manufacturer",
+      "CDMO",
+      "CMO",
+      "R&D Laboratory",
+      "Materials Science Company",
+      "Powder Processing Company",
+      "Advanced Manufacturing Facility",
+      "Pilot Plant Facility",
+      "Process Development Lab",
+      "Scale-Up Facility"
+    ]
+  },
+
+  "keywords": {
+    "tier_1": [
+      "tablet press",
+      "tablet tooling",
+      "powder compaction",
+      "powder characterization",
+      "solid dose",
+      "solid oral dosage",
+      "usp 1062",
+      "tablet hardness",
+      "tablet compression",
+      "formulation development",
+      "process development",
+      "scale-up",
+      "tech transfer",
+      "powder flow",
+      "granulation",
+      "die tooling",
+      "punch tooling",
+      "analytical testing",
+      "pilot scale",
+      "bench scale",
+      "compaction science",
+      "materials characterization"
+    ]
+  },
+
+  "negative_keywords": [
+    "food processing",
+    "beverage",
+    "bakery",
+    "cosmetics",
+    "personal care",
+    "nutraceutical marketing",
+    "supplement brand",
+    "direct to consumer",
+    "packaging only",
+    "labeling",
+    "printing",
+    "plastics injection molding",
+    "cnc job shop",
+    "sheet metal",
+    "welding",
+    "automotive body",
+    "aerospace machining",
+    "construction",
+    "software",
+    "it services",
+    "digital marketing",
+    "advertising",
+    "staffing",
+    "recruiting",
+    "consulting only"
+  ],
+
+  "scoring": {
+    "industry_match": 3,
+    "company_type_match": 2,
+    "keyword_match": 2,
+    "core_term_bonus": {
+      "tablet": 2,
+      "powder": 2,
+      "compaction": 2
+    },
+    "negative_keyword_penalty": -5
+  },
+
+  "thresholds": {
+    "tier_1": 5,
+    "tier_2": 3
+  },
+
+  "routing": {
+    "natoli_engineering": [
+      "tablet",
+      "tooling",
+      "compression"
+    ],
+    "natoli_scientific": [
+      "characterization",
+      "analytical",
+      "usp",
+      "r&d"
+    ]
+  },
+
+  "output_rules": {
+    "exclude_below_tier_2": true,
+    "require_no_negative_keywords": true,
+    "explain_confidence": true
+  }
+}

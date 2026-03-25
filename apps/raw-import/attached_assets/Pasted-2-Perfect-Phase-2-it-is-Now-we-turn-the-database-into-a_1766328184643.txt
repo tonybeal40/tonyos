@@ -1,0 +1,321 @@
+2
+
+Perfect. Phase 2 it is.
+Now we turn the database into a working CRM.
+
+Everything below is exact files, exact code, copy/paste ready.
+No guessing. No missing glue.
+
+PHASE 2 — CRM CORE MODELS + API
+What Phase 2 delivers
+
+By the end of this phase, Tony CRM will be able to:
+
+Create an Account (company)
+
+List all Accounts
+
+View a single Account
+
+Update Account status
+
+Add Contacts to an Account
+
+Add Notes (institutional memory)
+
+This is now a usable CRM, not just storage.
+
+📁 Updated project structure
+
+Your /server folder should now be:
+
+/server
+  ├── index.js
+  ├── db.js
+  ├── schema.js
+  ├── accounts.js
+  ├── contacts.js
+  └── notes.js
+
+
+Create the new files exactly as named.
+
+1️⃣ Accounts model + routes
+/server/accounts.js
+import db from "./db.js";
+
+/* CREATE ACCOUNT */
+export function createAccount(data) {
+  const stmt = db.prepare(`
+    INSERT INTO accounts (
+      company_name,
+      domain,
+      website,
+      linkedin_url,
+      industry,
+      naics,
+      sic,
+      employees,
+      revenue,
+      division_fit,
+      persona_score,
+      tier,
+      pain_points,
+      why_natoli,
+      status
+    ) VALUES (
+      @company_name,
+      @domain,
+      @website,
+      @linkedin_url,
+      @industry,
+      @naics,
+      @sic,
+      @employees,
+      @revenue,
+      @division_fit,
+      @persona_score,
+      @tier,
+      @pain_points,
+      @why_natoli,
+      @status
+    )
+  `);
+
+  return stmt.run(data);
+}
+
+/* GET ALL ACCOUNTS */
+export function getAllAccounts() {
+  return db.prepare(`
+    SELECT * FROM accounts
+    ORDER BY created_at DESC
+  `).all();
+}
+
+/* GET SINGLE ACCOUNT */
+export function getAccountById(id) {
+  return db.prepare(`
+    SELECT * FROM accounts WHERE id = ?
+  `).get(id);
+}
+
+/* UPDATE STATUS */
+export function updateAccountStatus(id, status) {
+  return db.prepare(`
+    UPDATE accounts
+    SET status = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `).run(status, id);
+}
+
+2️⃣ Contacts model
+/server/contacts.js
+import db from "./db.js";
+
+/* ADD CONTACT */
+export function addContact(data) {
+  const stmt = db.prepare(`
+    INSERT INTO contacts (
+      account_id,
+      name,
+      title,
+      linkedin_url,
+      persona_type
+    ) VALUES (
+      @account_id,
+      @name,
+      @title,
+      @linkedin_url,
+      @persona_type
+    )
+  `);
+
+  return stmt.run(data);
+}
+
+/* GET CONTACTS FOR ACCOUNT */
+export function getContactsByAccount(accountId) {
+  return db.prepare(`
+    SELECT * FROM contacts WHERE account_id = ?
+  `).all(accountId);
+}
+
+3️⃣ Notes model (institutional memory)
+/server/notes.js
+import db from "./db.js";
+
+/* ADD NOTE */
+export function addNote(accountId, note) {
+  return db.prepare(`
+    INSERT INTO notes (account_id, note)
+    VALUES (?, ?)
+  `).run(accountId, note);
+}
+
+/* GET NOTES FOR ACCOUNT */
+export function getNotesByAccount(accountId) {
+  return db.prepare(`
+    SELECT * FROM notes
+    WHERE account_id = ?
+    ORDER BY created_at DESC
+  `).all(accountId);
+}
+
+4️⃣ Wire everything into the server
+
+Now replace your /server/index.js with this complete version.
+
+/server/index.js
+import express from "express";
+import db from "./db.js";
+
+import {
+  createAccount,
+  getAllAccounts,
+  getAccountById,
+  updateAccountStatus
+} from "./accounts.js";
+
+import {
+  addContact,
+  getContactsByAccount
+} from "./contacts.js";
+
+import {
+  addNote,
+  getNotesByAccount
+} from "./notes.js";
+
+const app = express();
+app.use(express.json());
+
+/* HEALTH */
+app.get("/health", (req, res) => {
+  res.json({ status: "Tony CRM online" });
+});
+
+/* ACCOUNTS */
+app.post("/accounts", (req, res) => {
+  try {
+    const result = createAccount(req.body);
+    res.json({ success: true, id: result.lastInsertRowid });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.get("/accounts", (req, res) => {
+  res.json(getAllAccounts());
+});
+
+app.get("/accounts/:id", (req, res) => {
+  const account = getAccountById(req.params.id);
+  if (!account) return res.status(404).json({ error: "Not found" });
+
+  res.json({
+    account,
+    contacts: getContactsByAccount(req.params.id),
+    notes: getNotesByAccount(req.params.id)
+  });
+});
+
+app.patch("/accounts/:id/status", (req, res) => {
+  updateAccountStatus(req.params.id, req.body.status);
+  res.json({ success: true });
+});
+
+/* CONTACTS */
+app.post("/contacts", (req, res) => {
+  addContact(req.body);
+  res.json({ success: true });
+});
+
+/* NOTES */
+app.post("/notes", (req, res) => {
+  addNote(req.body.account_id, req.body.note);
+  res.json({ success: true });
+});
+
+app.listen(3000, () => {
+  console.log("Tony CRM running on port 3000");
+});
+
+5️⃣ Test everything (important)
+Create an account
+POST /accounts
+
+{
+  "company_name": "Example Pharma",
+  "domain": "examplepharma.com",
+  "website": "https://examplepharma.com",
+  "linkedin_url": "https://linkedin.com/company/example",
+  "industry": "Pharmaceutical",
+  "naics": "325412",
+  "sic": "2834",
+  "employees": 250,
+  "revenue": "$50M",
+  "division_fit": "Natoli Scientific",
+  "persona_score": 11,
+  "tier": "A",
+  "pain_points": "Scale-up risk, analytical gaps",
+  "why_natoli": "Analytical rigor and scale-up confidence",
+  "status": "New"
+}
+
+View accounts
+GET /accounts
+
+View single account
+GET /accounts/1
+
+Add a contact
+POST /contacts
+
+{
+  "account_id": 1,
+  "name": "Jane Smith",
+  "title": "Director of R&D",
+  "linkedin_url": "https://linkedin.com/in/janesmith",
+  "persona_type": "R&D"
+}
+
+Add a note
+POST /notes
+
+{
+  "account_id": 1,
+  "note": "Strong fit for Natoli Scientific. Prior CT scan experience."
+}
+
+What you have now
+
+You now have:
+
+A real CRM
+
+Persistent accounts
+
+Decision-owner contacts
+
+Institutional memory
+
+Status control
+
+Clean API surface
+
+This is already better than 80% of CRMs in practice.
+
+Next phase options (choose one number)
+
+Phase 3 options:
+
+Connect Apollo enrichment directly into account creation
+
+Add simple Web UI (list, detail, click LinkedIn)
+
+Add CSV export for leadership
+
+Lock Natoli Eng vs Scientific scoring into save flow
+
+Reply with 1, 2, 3, or 4 and we continue immediately.

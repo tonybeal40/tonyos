@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TonyOS AI Chat Console</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --panel:#0c0d12;
+      --panel2:#0f1118;
+      --line:rgba(255,255,255,.10);
+      --text:#e9e9f1;
+      --muted:rgba(233,233,241,.65);
+      --hot:#ff2d55;
+      --good:#20e3a2;
+      --warn:#ffcc00;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius:16px;
+      --radius2:22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 800px at 25% 0%, rgba(255,45,85,.18), transparent 60%),
+                  radial-gradient(1000px 700px at 85% 30%, rgba(32,227,162,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .shell{
+      width:min(1200px, 100%);
+      display:grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap:16px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .hdr{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      background: rgba(0,0,0,.12);
+    }
+    .dot{
+      width:8px;height:8px;border-radius:99px;
+      background: var(--warn);
+      box-shadow:0 0 0 4px rgba(255,204,0,.15);
+    }
+    .dot.on{
+      background: var(--good);
+      box-shadow:0 0 0 4px rgba(32,227,162,.15);
+    }
+    .dot.off{
+      background: var(--hot);
+      box-shadow:0 0 0 4px rgba(255,45,85,.15);
+    }
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.16);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:700;
+      font-size:13px;
+    }
+    .btn:hover{border-color: rgba(255,255,255,.22)}
+    .btn.hot{
+      background: rgba(255,45,85,.16);
+      border-color: rgba(255,45,85,.35);
+    }
+    .btn.good{
+      background: rgba(32,227,162,.14);
+      border-color: rgba(32,227,162,.32);
+    }
+    .body{
+      padding:16px;
+    }
+
+    /* Chat */
+    .chatWrap{
+      display:flex;
+      flex-direction:column;
+      height: calc(100vh - 120px);
+      min-height: 560px;
+    }
+    .chatTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .log{
+      flex:1;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.18);
+      padding:14px;
+    }
+    .msg{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding:12px 12px;
+      margin-bottom:10px;
+    }
+    .msg.user{
+      border-color: rgba(255,45,85,.35);
+      background: rgba(255,45,85,.08);
+    }
+    .msg.ai{
+      border-color: rgba(255,255,255,.12);
+    }
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .mono{font-family:var(--mono)}
+    .content{
+      white-space:pre-wrap;
+      line-height:1.35;
+      font-size:14px;
+    }
+    .smallBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .tiny{
+      padding:6px 8px;
+      border-radius:10px;
+      font-size:12px;
+    }
+
+    .composer{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      align-items:end;
+    }
+    textarea{
+      width:100%;
+      min-height:70px;
+      max-height:180px;
+      resize:vertical;
+      padding:12px 12px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    textarea:focus{border-color: rgba(255,255,255,.22)}
+    .rightCol{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    /* Settings panel */
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+    label{
+      font-size:12px;
+      color:var(--muted);
+      display:block;
+      margin-bottom:6px;
+    }
+    select, input[type="text"]{
+      width:100%;
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.14);
+      border-radius: 14px;
+      padding:10px 10px;
+      gap:10px;
+    }
+    .toggle span{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .switch{
+      position:relative;
+      width:46px;height:26px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+    .knob{
+      position:absolute;top:3px;left:3px;
+      width:20px;height:20px;border-radius:99px;
+      background: rgba(255,255,255,.8);
+      transition: all .18s ease;
+    }
+    .switch.on{
+      background: rgba(32,227,162,.18);
+      border-color: rgba(32,227,162,.35);
+    }
+    .switch.on .knob{ left: 23px; background: rgba(32,227,162,.95); }
+
+    .help{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .divider{
+      height:1px;background: var(--line);
+      margin:4px 0;
+    }
+    .badges{
+      display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .badge{
+      font-size:12px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background: rgba(0,0,0,.12);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <!-- LEFT: Chat -->
+    <section class="card chatWrap">
+      <div class="hdr">
+        <div class="brand">
+          <div style="width:10px;height:10px;border-radius:99px;background:var(--hot);box-shadow:0 0 0 6px rgba(255,45,85,.12)"></div>
+          <div>TONYOS <span class="pill"><span id="onlineDot" class="dot"></span><span id="onlineTxt">checking</span></span></div>
+        </div>
+        <div class="smallBtns">
+          <button class="btn tiny" id="btnClear">Clear</button>
+          <button class="btn tiny" id="btnExport">Export</button>
+        </div>
+      </div>
+
+      <div class="body" style="display:flex;flex-direction:column;gap:12px;height:100%;">
+        <div class="chatTop">
+          <div>
+            <div style="font-weight:900;font-size:16px">AI Chat</div>
+            <div class="sub">Truth-first strategist. Uses memory + legal research when enabled.</div>
+          </div>
+          <div class="badges" id="activeBadges">
+            <span class="badge">mode: <b id="badgeMode">truth</b></span>
+            <span class="badge">mood: <b id="badgeMood">neutral</b></span>
+            <span class="badge">session: <b id="badgeSession">default</b></span>
+          </div>
+        </div>
+
+        <div class="log" id="log"></div>
+
+        <div class="composer">
+          <textarea id="msg" placeholder="Type your message here"></textarea>
+          <div class="rightCol">
+            <button class="btn hot" id="btnSend">Send</button>
+            <button class="btn" id="btnSendResearch">Send + Research</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Controls -->
+    <section class="card">
+      <div class="hdr">
+        <div style="font-weight:900">Console Controls</div>
+        <button class="btn good tiny" id="btnPing">Ping</button>
+      </div>
+
+      <div class="body">
+        <div class="grid">
+
+          <div class="row2">
+            <div>
+              <label>Server URL</label>
+              <input id="serverUrl" type="text" value="http://127.0.0.1:8787" />
+            </div>
+            <div>
+              <label>Session ID</label>
+              <input id="sessionId" type="text" value="default" />
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label>Mode</label>
+              <select id="mode">
+                <option value="truth" selected>Truth (no sources, no claims)</option>
+                <option value="deep">Deep (strong reasoning)</option>
+                <option value="fast">Fast (quick answers)</option>
+                <option value="code">Code (debug + build)</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Mood</label>
+              <select id="mood">
+                <option value="neutral" selected>Neutral</option>
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="mad">Mad</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toggle">
+            <div>
+              <div style="font-weight:800">Truth Mode Lock</div>
+              <span>When ON, assistant must cite sources for factual claims or say “I don’t know yet”</span>
+            </div>
+            <div class="switch on" id="truthLock"><div class="knob"></div></div>
+          </div>
+
+          <div>
+            <label>Research URLs (optional)</label>
+            <input id="urls" type="text" placeholder="Comma separated URLs to fetch legally, e.g. https://site.com/a, https://site.com/b" />
+            <div class="help" style="margin-top:6px">
+              Research respects robots.txt and rate limits. If a site blocks bots, it will be skipped.
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div style="font-weight:900;margin-bottom:6px">Memory</div>
+            <div class="help">
+              Short term memory is the current session log<br>
+              Long term memory is stored locally and can be synced to Google Sheets if enabled in your backend
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div style="font-weight:900;margin-bottom:6px">Smartest Setup Checklist</div>
+            <div class="help">
+              1) Run local server on 127.0.0.1:8787<br>
+              2) Keep Truth Lock ON for facts<br>
+              3) Use Send + Research when you need citations<br>
+              4) Add URLs for sources you trust<br>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // -------------------------
+    // State + helpers
+    // -------------------------
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      truthLock: true,
+      history: []
+    };
+
+    function nowTime(){
+      const d = new Date();
+      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function setOnline(ok){
+      const dot = $("onlineDot");
+      const txt = $("onlineTxt");
+      dot.classList.remove("on","off");
+      if(ok){
+        dot.classList.add("on");
+        txt.textContent = "online";
+      } else {
+        dot.classList.add("off");
+        txt.textContent = "offline";
+      }
+    }
+
+    function updateBadges(){
+      $("badgeMode").textContent = $("mode").value;
+      $("badgeMood").textContent = $("mood").value;
+      $("badgeSession").textContent = $("sessionId").value || "default";
+    }
+
+    function addMsg(role, text, meta={}){
+      const wrap = document.createElement("div");
+      wrap.className = "msg " + (role === "user" ? "user" : "ai");
+
+      const top = document.createElement("div");
+      top.className = "metaRow";
+
+      const left = document.createElement("div");
+      left.textContent = `${role === "user" ? "You" : "TonyOS"} · ${nowTime()}`;
+
+      const right = document.createElement("div");
+      right.className = "smallBtns";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "btn tiny";
+      copyBtn.textContent = "Copy";
+      copyBtn.onclick = async () => {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copied";
+        setTimeout(()=>copyBtn.textContent="Copy", 900);
+      };
+
+      right.appendChild(copyBtn);
+      top.appendChild(left);
+      top.appendChild(right);
+
+      const content = document.createElement("div");
+      content.className = "content";
+      content.textContent = text;
+
+      wrap.appendChild(top);
+      wrap.appendChild(content);
+
+      if(meta && Object.keys(meta).length){
+        const metaDiv = document.createElement("div");
+        metaDiv.className = "help mono";
+        metaDiv.style.marginTop = "8px";
+        metaDiv.textContent = JSON.stringify(meta, null, 2);
+        wrap.appendChild(metaDiv);
+      }
+
+      $("log").appendChild(wrap);
+      $("log").scrollTop = $("log").scrollHeight;
+
+      state.history.push({role, text, meta, ts: Date.now()});
+    }
+
+    async function ping(){
+      const base = ($("serverUrl").value || "").trim().replace(/\/+$/, "");
+      if(!base) return setOnline(false);
+
+      try{
+        const r = await fetch(base + "/health", { method:"GET" });
+        setOnline(r.ok);
+      } catch(e){
+        setOnline(false);
+      }
+    }
+
+    function parseUrls(){
+      const raw = $("urls").value.trim();
+      if(!raw) return null;
+      return raw.split(",").map(s => s.trim()).filter(Boolean);
+    }
+
+    async function sendMessage(withResearch){
+      updateBadges();
+
+      const base = ($("serverUrl").value || "").trim().replace(/\/+$/, "");
+      const session_id = ($("sessionId").value || "default").trim();
+      let mode = $("mode").value;
+      const mood = $("mood").value;
+
+      // Truth lock forces mode = truth for claims
+      if(state.truthLock && mode !== "truth"){
+        // Don’t silently override when user chose code lane. Only override if not code.
+        if(mode !== "code") mode = "truth";
+      }
+
+      const message = $("msg").value.trim();
+      if(!message) return;
+
+      addMsg("user", message, {mode, mood});
+
+      $("msg").value = "";
+      await ping();
+
+      const payload = {
+        message,
+        mode,
+        mood,
+        session_id,
+        research_urls: withResearch ? (parseUrls() || []) : null
+      };
+
+      try{
+        const r = await fetch(base + "/chat", {
+          method:"POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+
+        if(!r.ok){
+          const t = await r.text();
+          addMsg("ai", "Server error: " + t);
+          return;
+        }
+
+        const data = await r.json();
+        const answer = data.answer || "(no answer)";
+        const citations = data.citations || [];
+        addMsg("ai", answer, {citations_count: citations.length});
+
+      } catch(e){
+        addMsg("ai", "Offline. Start your local server first. Error: " + e.message);
+        setOnline(false);
+      }
+    }
+
+    // -------------------------
+    // Events
+    // -------------------------
+    $("btnPing").onclick = ping;
+    $("btnSend").onclick = () => sendMessage(false);
+    $("btnSendResearch").onclick = () => sendMessage(true);
+
+    $("btnClear").onclick = () => {
+      $("log").innerHTML = "";
+      state.history = [];
+    };
+
+    $("btnExport").onclick = () => {
+      const blob = new Blob([JSON.stringify(state.history, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "tonyos_ai_chat_export.json";
+      a.click();
+    };
+
+    $("truthLock").onclick = () => {
+      state.truthLock = !state.truthLock;
+      $("truthLock").classList.toggle("on", state.truthLock);
+    };
+
+    ["mode","mood","sessionId"].forEach(id => $(id).addEventListener("change", updateBadges));
+    updateBadges();
+    ping();
+    setInterval(ping, 8000);
+
+    // Enter to send (Ctrl+Enter)
+    $("msg").addEventListener("keydown", (e) => {
+      if(e.key === "Enter" && (e.ctrlKey || e.metaKey)){
+        e.preventDefault();
+        sendMessage(false);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+What This App Will Do (Locked and Simple)
+
+App name: tonyrevops-internal-downloads
+
+Purpose:
+A neutral internal page with:
+
+Two sections
+
+Downloads
+
+Internal
+
+Perfect spacing
+
+Centered layout
+
+Upload once, forget forever
+
+Supports PDF or DOCX download
+
+No analytics
+No branding
+No selling
+No job-seeking signal
+
+Layout (Final, Don’t Change Later)
+
+Centered card with three fixed slots (this is important so it never looks empty or crowded):
+
+LinkedIn Background PDF
+
+Resume / One-Pager
+
+Internal Notes or Reference Doc
+
+You can swap the files later without touching layout or code structure.
+
+Folder Structure (Replit)
+tonyrevops-downloads/
+│
+├── index.html
+├── style.css
+├── app.js
+└── files/
+    ├── linkedin-background.pdf
+    ├── resume.pdf
+    └── internal-notes.pdf
+
+
+You only replace files inside /files/.
+
+✅ index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyRevOps Internal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="container">
+    <h1>TonyRevOps</h1>
+    <p class="subtitle">Internal downloads and reference materials</p>
+
+    <section class="card">
+      <a href="files/linkedin-background.pdf" download>
+        LinkedIn Background
+      </a>
+
+      <a href="files/resume.pdf" download>
+        Resume / One-Pager
+      </a>
+
+      <a href="files/internal-notes.pdf" download>
+        Internal Reference
+      </a>
+    </section>
+  </main>
+
+</body>
+</html>
+
+✅ style.css (Fortune-50 Clean)
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f6f6f6;
+  color: #111;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+  width: 420px;
+}
+
+h1 {
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.card a {
+  text-decoration: none;
+  color: #111;
+  font-size: 14px;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid #e4e4e4;
+  transition: background 0.2s ease;
+}
+
+.card a:hover {
+  background: #f2f2f2;
+}
+
+✅ app.js (Optional, Keeps Door Open)
+
+You don’t need JS now, but this keeps it extensible.
+
+// Reserved for future internal logic
+// Intentionally empty to keep app stable and quiet
+
+How You Use This (Important)
+
+Upload PDFs or DOCX files into /files/
+
+Replace filenames only
+
+Never touch layout again
+
+This is set-and-forget infrastructure.
+
+Why This Works (Straight Talk)
+
+Looks internal, not public
+
+Reads neutral, not promotional
+
+Signals organization without explanation
+
+No “I’m selling” energy
+
+No “I’m desperate” energy
+
+No company disassociation signal
+
+It quietly says:
+
+“I keep my house in order.”
+
+That’s it.
+
+Next (Optional)
+
+If you want, I can:
+
+Add a password gate
+
+Add a version tag under each file
+
+Convert this into a Netlify deploy
+
+Generate the PDF shell for the LinkedIn background itself
+
+But this version is already exactly where you want to stop.
+
+Say the word if you want the PDF template next.

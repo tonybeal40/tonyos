@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RevOps Lead Engine</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:30px}
+.box{background:#fff;padding:25px;max-width:1100px;margin:auto;border-radius:8px}
+h1,h2{margin:0 0 10px 0}
+label{font-weight:bold;margin-top:12px;display:block}
+input,select,textarea{width:100%;padding:8px;margin-top:4px}
+button{margin-top:20px;padding:12px 18px;background:#000;color:#fff;border:none;cursor:pointer}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.output{background:#111;color:#0f0;padding:20px;margin-top:25px;white-space:pre-wrap;font-family:monospace}
+.badge{display:inline-block;padding:6px 10px;background:#222;color:#fff;margin-right:8px;border-radius:4px}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h1>Enterprise RevOps Lead Engine</h1>
+<p>Company classification + Natoli fit + messaging + strategy</p>
+
+<div class="grid">
+
+<div>
+<label>First Name</label>
+<input id="first" value="Kuntal">
+
+<label>Last Name</label>
+<input id="last" value="Parikh">
+
+<label>Company</label>
+<input id="company" value="Thermo Fisher Scientific">
+
+<label>Job Title</label>
+<input id="title" value="Manager, Development">
+
+<label>Manufacturing Stage</label>
+<select id="stage">
+<option>Research and Development</option>
+<option>Scale-Up</option>
+<option>Commercial</option>
+</select>
+
+<label>Tablet Press</label>
+<select id="press">
+<option>Rotary</option>
+<option>Single Station</option>
+</select>
+</div>
+
+<div>
+<label>Primary Environment</label>
+<select id="environment">
+<option>Pharma / CDMO</option>
+<option>Nutraceutical</option>
+<option>Advanced Materials</option>
+<option>Chemicals</option>
+</select>
+
+<label>Primary Risk</label>
+<select id="risk">
+<option>Scale-up failure</option>
+<option>Tooling variability</option>
+<option>Regulatory risk</option>
+<option>Downtime</option>
+</select>
+
+<label>Business Goal</label>
+<select id="goal">
+<option>Faster development</option>
+<option>Lower cost</option>
+<option>Predictable transfer</option>
+<option>Higher throughput</option>
+</select>
+
+<label>Natoli Division Fit</label>
+<select id="division">
+<option>Auto</option>
+<option>Natoli Engineering</option>
+<option>Natoli Scientific</option>
+<option>Both</option>
+</select>
+</div>
+
+</div>
+
+<button onclick="runEngine()">Generate Company Strategy</button>
+
+<div class="output" id="out"></div>
+
+</div>
+
+<script>
+function runEngine(){
+const f=first.value,l=last.value,c=company.value,t=title.value,
+s=stage.value,p=press.value,e=environment.value,r=risk.value,
+g=goal.value,d=division.value;
+
+let fit="";
+if(d==="Auto"){
+ if(s==="Research and Development") fit="Natoli Scientific";
+ else if(s==="Commercial") fit="Natoli Engineering";
+ else fit="Both";
+}else fit=d;
+
+const text = `
+COMPANY BREAKDOWN
+Company: ${c}
+Environment: ${e}
+Manufacturing Stage: ${s}
+Tablet Press: ${p}
+
+NATOLI FIT
+${fit}
+
+WHY
+${c} operates in an environment where ${r} and development inefficiency create hidden cost and delay.
+
+WHAT
+We provide tooling intelligence, compression insight, and process reliability that reduce uncertainty before production.
+
+HOW
+Engineering: precision tooling, cams, process reliability.
+Scientific: analytical testing, scale-up support, data validation.
+
+RESULT
+Faster development cycles
+Lower scrap and rework
+Predictable scale-up
+Operational confidence
+
+PRIMARY PERSONA
+${t}
+
+BUYING GROUP TO TARGET
+Director of MS&T
+Director of Pharmaceutical Development
+Head of Tech Transfer
+Process Engineering Manager
+Manufacturing Director
+
+STRATEGY
+Land with R&D
+Expand into MS&T
+Standardize across tech transfer
+Embed tooling + analytical workflow
+
+OUTREACH TALK TRACK
+"${f}, teams at ${c} are under pressure to move faster without risking scale-up surprises. 
+We help groups like yours validate tooling and compression behavior early so production is predictable."
+
+CTA
+Validate one live product design
+Schedule technical review
+`;
+
+document.getElementById("out").textContent=text;
+}
+</script>
+</body>
+</html>

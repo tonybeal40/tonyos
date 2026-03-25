@@ -1,0 +1,742 @@
+// app.js
+(() => {
+  const KEY = "storybrand_os_v1";
+
+  const $ = (s) => document.querySelector(s);
+  const view = $("#view");
+  const projectName = $("#projectName");
+  const projectNameText = $("#projectNameText");
+  const saveProjectBtn = $("#saveProjectBtn");
+  const exportBtn = $("#exportBtn");
+  const importFile = $("#importFile");
+  const resetBtn = $("#resetBtn");
+  const search = $("#search");
+
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+
+  const DEFAULT = () => ({
+    version: 1,
+    activeId: null,
+    projects: []
+  });
+
+  let STATE = load();
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return DEFAULT();
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULT(), ...parsed, projects: Array.isArray(parsed.projects) ? parsed.projects : [] };
+    } catch {
+      return DEFAULT();
+    }
+  }
+
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify(STATE));
+  }
+
+  function uid(){
+    return Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
+
+  function nowISO(){
+    return new Date().toISOString();
+  }
+
+  function activeProject(){
+    const p = STATE.projects.find(x => x.id === STATE.activeId);
+    return p || null;
+  }
+
+  function setActive(id){
+    STATE.activeId = id;
+    save();
+    render();
+  }
+
+  function setTab(tab){
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+    view.dataset.tab = tab;
+    render();
+  }
+
+  function esc(s){
+    return String(s || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function splitTags(s){
+    return (s || "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12);
+  }
+
+  function sbTemplate(p){
+    const brand = p.brand || {};
+    const hero = brand.hero || {};
+    const problem = brand.problem || {};
+    const guide = brand.guide || {};
+    const plan = brand.plan || {};
+    const cta = brand.cta || {};
+    const avoid = brand.avoid || {};
+    const success = brand.success || {};
+
+    return [
+      `${hero.who || "A customer"} wants ${hero.want || "a clear outcome"}.`,
+      `But they struggle with ${problem.external || "a frustrating problem"}, which causes ${problem.internal || "stress and doubt"}.`,
+      `They fear ${problem.philosophical || "wasting time and money"}.`,
+      ``,
+      `You are the guide who has ${guide.empathy || "been there"} and ${guide.authority || "a proven method"}.`,
+      `You give them a plan:`,
+      `1) ${plan.step1 || "Step one"}`,
+      `2) ${plan.step2 || "Step two"}`,
+      `3) ${plan.step3 || "Step three"}`,
+      ``,
+      `You call them to action: ${cta.primary || "Book a call"}.`,
+      `If they do nothing, they risk ${avoid.failure || "staying stuck"}.`,
+      `If they act, they will achieve ${success.win || "a better future"}.`
+    ].join("\n");
+  }
+
+  function landingCopy(p){
+    const b = p.brand || {};
+    const hero = b.hero || {};
+    const problem = b.problem || {};
+    const success = b.success || {};
+    const cta = b.cta || {};
+    const oneLiner = `${hero.who || "Teams"} get ${hero.want || "a clear outcome"} without ${problem.external || "the usual pain"}.`;
+
+    const headline = hero.want
+      ? `Get ${hero.want} without ${problem.external || "the headache"}`
+      : `Clarity that turns into action`;
+
+    const sub = [
+      `If you're ${hero.who || "the customer"} trying to ${hero.want || "get the outcome"},`,
+      `we help you avoid ${problem.external || "the pain"} so you can ${success.win || "win faster"}.`
+    ].join(" ");
+
+    const bullets = [
+      `Stop ${problem.internal || "second guessing"}`,
+      `Avoid ${problem.external || "wasted effort"}`,
+      `Get ${success.win || "measurable results"}`
+    ];
+
+    return { oneLiner, headline, sub, bullets, primary: cta.primary || "Get started", secondary: cta.secondary || "See how it works" };
+  }
+
+  function emailDraft(p){
+    const b = p.brand || {};
+    const hero = b.hero || {};
+    const problem = b.problem || {};
+    const plan = b.plan || {};
+    const success = b.success || {};
+    const cta = b.cta || {};
+
+    const subject = hero.want
+      ? `Quick way to ${hero.want}`
+      : `Quick question`;
+
+    const body = [
+      `Hi [Name],`,
+      ``,
+      `If you're trying to ${hero.want || "hit your goal"} but ${problem.external || "things keep getting messy"}, you're not alone.`,
+      `Most teams feel ${problem.internal || "frustrated"} because the path isn't clear.`,
+      ``,
+      `Here’s the simple plan we use:`,
+      `1) ${plan.step1 || "Clarify the goal"}`,
+      `2) ${plan.step2 || "Remove the blockers"}`,
+      `3) ${plan.step3 || "Execute with tracking"}`,
+      ``,
+      `Result: ${success.win || "a clear win you can measure"}.`,
+      ``,
+      `If it’s useful, ${cta.primary || "want me to share a quick outline"}?`,
+      ``,
+      `Best,`,
+      `[Your Name]`
+    ].join("\n");
+
+    return { subject, body };
+  }
+
+  function makeProject(){
+    return {
+      id: uid(),
+      name: "Untitled",
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+      notes: "",
+      brand: {
+        hero: {
+          who: "",
+          want: ""
+        },
+        problem: {
+          external: "",
+          internal: "",
+          philosophical: ""
+        },
+        guide: {
+          empathy: "",
+          authority: ""
+        },
+        plan: {
+          step1: "",
+          step2: "",
+          step3: ""
+        },
+        cta: {
+          primary: "",
+          secondary: ""
+        },
+        avoid: {
+          failure: ""
+        },
+        success: {
+          win: ""
+        }
+      }
+    };
+  }
+
+  function ensureActive(){
+    if(STATE.projects.length === 0){
+      const p = makeProject();
+      STATE.projects.push(p);
+      STATE.activeId = p.id;
+      save();
+    }
+    if(!STATE.activeId){
+      STATE.activeId = STATE.projects[0].id;
+      save();
+    }
+  }
+
+  function updateActive(mutator){
+    const p = activeProject();
+    if(!p) return;
+    mutator(p);
+    p.updatedAt = nowISO();
+    save();
+    render(false);
+  }
+
+  function currentTab(){
+    const t = tabs.find(x => x.classList.contains("active"));
+    return t ? t.dataset.tab : "builder";
+  }
+
+  function render(repaint = true){
+    ensureActive();
+    const p = activeProject();
+
+    projectName.value = p.name || "";
+    projectNameText.textContent = p.name || "Untitled";
+
+    const tab = currentTab();
+
+    if(tab === "builder") view.innerHTML = builderHTML(p);
+    if(tab === "outputs") view.innerHTML = outputsHTML(p);
+    if(tab === "vault") view.innerHTML = vaultHTML();
+    if(tab === "prompts") view.innerHTML = promptsHTML(p);
+
+    if(repaint) wire(p);
+  }
+
+  function builderHTML(p){
+    const b = p.brand;
+    return `
+      <div class="grid">
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">StoryBrand Builder</div>
+              <div class="h2">Fill the inputs. Get clean outputs. No guessing.</div>
+            </div>
+            <div class="badge">7 Part Framework</div>
+          </div>
+          <div class="body">
+            ${sectionField("Hero", "Who is the customer", "brand.hero.who", b.hero.who, "Example: Plant managers, founders, directors of ops")}
+            ${sectionField("Hero", "What do they want", "brand.hero.want", b.hero.want, "Example: reduce downtime, generate pipeline, ship faster")}
+            ${sectionField("Problem", "External problem", "brand.problem.external", b.problem.external, "Example: tooling wears out early, leads are unqualified")}
+            ${sectionField("Problem", "Internal problem", "brand.problem.internal", b.problem.internal, "Example: they feel stressed, behind, uncertain")}
+            ${sectionField("Problem", "Philosophical problem", "brand.problem.philosophical", b.problem.philosophical, "Example: they should not have to gamble on quality")}
+            ${sectionField("Guide", "Empathy line", "brand.guide.empathy", b.guide.empathy, "Example: We have seen this in high-precision environments")}
+            ${sectionField("Guide", "Authority proof", "brand.guide.authority", b.guide.authority, "Example: 20+ years, proven process, measurable wins")}
+            ${sectionField("Plan", "Step 1", "brand.plan.step1", b.plan.step1, "Example: assess the current state")}
+            ${sectionField("Plan", "Step 2", "brand.plan.step2", b.plan.step2, "Example: recommend the fix")}
+            ${sectionField("Plan", "Step 3", "brand.plan.step3", b.plan.step3, "Example: implement and track")}
+            ${sectionField("CTA", "Primary call to action", "brand.cta.primary", b.cta.primary, "Example: book a call, request a quote")}
+            ${sectionField("CTA", "Secondary call to action", "brand.cta.secondary", b.cta.secondary, "Example: download the guide, see case study")}
+            ${sectionField("Failure", "If they do nothing", "brand.avoid.failure", b.avoid.failure, "Example: downtime continues, budget wasted")}
+            ${sectionField("Success", "If they act", "brand.success.win", b.success.win, "Example: consistent output, confidence, measurable results")}
+
+            <div class="row" style="margin-top:12px">
+              <button class="btn primary" id="toOutputs">Generate Outputs</button>
+              <button class="btn ghost" id="quickFill">Quick Fill Example</button>
+              <div class="muted">Tip: keep sentences short. One idea per field.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">Project Notes</div>
+              <div class="h2">Context you want to remember later</div>
+            </div>
+            <div class="badge">Optional</div>
+          </div>
+          <div class="body">
+            <div class="field">
+              <span class="label">Notes</span>
+              <textarea class="textarea" data-bind="notes" placeholder="What is the offer, niche, audience, proof, constraints">${esc(p.notes || "")}</textarea>
+            </div>
+            <div class="out">
+              <pre>${esc(sbTemplate(p))}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function sectionField(group, label, path, value, placeholder){
+    return `
+      <div class="field">
+        <span class="label">${esc(group)} | ${esc(label)}</span>
+        <textarea class="textarea" data-bind="${esc(path)}" placeholder="${esc(placeholder)}">${esc(value || "")}</textarea>
+      </div>
+    `;
+  }
+
+  function outputsHTML(p){
+    const sb = sbTemplate(p);
+    const land = landingCopy(p);
+    const email = emailDraft(p);
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">Outputs</div>
+              <div class="h2">Use these for homepage, pitch, emails, and ads</div>
+            </div>
+            <div class="row" style="gap:8px">
+              <button class="btn ghost" data-copy="sb">Copy Story</button>
+              <button class="btn ghost" data-copy="landing">Copy Landing</button>
+              <button class="btn ghost" data-copy="email">Copy Email</button>
+            </div>
+          </div>
+          <div class="body">
+            <div class="out">
+              <pre id="sbOut">${esc(sb)}</pre>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="out">
+              <pre id="landingOut">${esc(
+`ONE LINER
+${land.oneLiner}
+
+H1
+${land.headline}
+
+SUBHEAD
+${land.sub}
+
+BULLETS
+- ${land.bullets[0]}
+- ${land.bullets[1]}
+- ${land.bullets[2]}
+
+CTA
+Primary: ${land.primary}
+Secondary: ${land.secondary}`
+              )}</pre>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="out">
+              <pre id="emailOut">${esc(
+`SUBJECT
+${email.subject}
+
+EMAIL
+${email.body}`
+              )}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">Clarity Checker</div>
+              <div class="h2">Score your inputs. Fix the weak spots.</div>
+            </div>
+            <div class="badge">No fluff</div>
+          </div>
+          <div class="body">
+            ${scoreHTML(p)}
+            <div class="muted" style="margin-top:10px">Goal: 12/14 or higher. If below, tighten the Hero Want, Plan Steps, and Success.</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function scoreHTML(p){
+    const b = p.brand;
+    const fields = [
+      ["Customer", b.hero.who],
+      ["Want", b.hero.want],
+      ["External", b.problem.external],
+      ["Internal", b.problem.internal],
+      ["Philosophical", b.problem.philosophical],
+      ["Empathy", b.guide.empathy],
+      ["Authority", b.guide.authority],
+      ["Plan 1", b.plan.step1],
+      ["Plan 2", b.plan.step2],
+      ["Plan 3", b.plan.step3],
+      ["CTA Primary", b.cta.primary],
+      ["CTA Secondary", b.cta.secondary],
+      ["Failure", b.avoid.failure],
+      ["Success", b.success.win]
+    ];
+
+    let score = 0;
+    const rows = fields.map(([name, val]) => {
+      const ok = (val || "").trim().length >= 10;
+      if(ok) score += 1;
+      return `<div class="row"><div>${esc(name)}</div><div class="badge" style="border-color:${ok ? "rgba(34,197,94,.35)" : "rgba(249,115,115,.35)"}; background:${ok ? "rgba(34,197,94,.12)" : "rgba(249,115,115,.12)"}">${ok ? "OK" : "Weak"}</div></div>`;
+    }).join(`<div style="height:8px"></div>`);
+
+    return `
+      <div class="row">
+        <div class="badge">Score</div>
+        <div style="font-weight:900; font-size:22px">${score} / 14</div>
+      </div>
+      <div style="height:12px"></div>
+      ${rows}
+    `;
+  }
+
+  function vaultHTML(){
+    const q = (search.value || "").toLowerCase().trim();
+    const list = STATE.projects
+      .filter(p => !q || (p.name || "").toLowerCase().includes(q))
+      .sort((a,b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    if(list.length === 0){
+      return `
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">Vault</div>
+              <div class="h2">Saved projects live here</div>
+            </div>
+          </div>
+          <div class="body">
+            <div class="muted">No saved projects match your search.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="card">
+        <div class="head">
+          <div>
+            <div class="h1">Vault</div>
+            <div class="h2">${list.length} projects</div>
+          </div>
+          <div class="badge">Local storage</div>
+        </div>
+        <div class="body">
+          <div class="list">
+            ${list.map(p => `
+              <div class="item">
+                <div class="name">${esc(p.name || "Untitled")}</div>
+                <div class="meta">Updated: ${esc(new Date(p.updatedAt).toLocaleString())}</div>
+                <div class="actions">
+                  <button class="btn ghost" data-open="${esc(p.id)}">Open</button>
+                  <button class="btn ghost danger" data-del="${esc(p.id)}">Delete</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function promptsHTML(p){
+    const blocks = [
+      {
+        name: "Website One Liner",
+        text:
+`You are a StoryBrand editor
+Rewrite this one-liner in 5 options
+Keep it simple and specific
+Customer: ${p.brand.hero.who || "[customer]"}
+Want: ${p.brand.hero.want || "[want]"}
+Problem: ${p.brand.problem.external || "[problem]"}
+Success: ${p.brand.success.win || "[success]"}`
+      },
+      {
+        name: "Homepage H1 + Subhead",
+        text:
+`Write 10 H1 options and 10 subheads using StoryBrand
+No hype, no buzzwords
+Use 6th grade clarity
+Offer should be measurable
+Inputs
+Customer: ${p.brand.hero.who || "[customer]"}
+Want: ${p.brand.hero.want || "[want]"}
+Problem: ${p.brand.problem.external || "[problem]"}
+Plan: ${p.brand.plan.step1 || "[step1]"}, ${p.brand.plan.step2 || "[step2]"}, ${p.brand.plan.step3 || "[step3]"}
+CTA: ${p.brand.cta.primary || "[cta]"}`
+      },
+      {
+        name: "Cold Email",
+        text:
+`Write a short cold email in a calm, confident tone
+No pressure, no buzzwords
+Use StoryBrand structure
+Inputs
+Customer: ${p.brand.hero.who || "[customer]"}
+Want: ${p.brand.hero.want || "[want]"}
+Problem: ${p.brand.problem.external || "[problem]"}
+Proof: ${p.brand.guide.authority || "[proof]"}
+Plan: ${p.brand.plan.step1 || "[step1]"} then ${p.brand.plan.step2 || "[step2]"} then ${p.brand.plan.step3 || "[step3]"}
+CTA: ${p.brand.cta.secondary || p.brand.cta.primary || "[cta]"}`
+      }
+    ];
+
+    return `
+      <div class="card">
+        <div class="head">
+          <div>
+            <div class="h1">Prompt Pack</div>
+            <div class="h2">Copy into ChatGPT or Playground to sharpen messaging</div>
+          </div>
+          <div class="badge">Reusable</div>
+        </div>
+        <div class="body">
+          <div class="list">
+            ${blocks.map((b, i) => `
+              <div class="item">
+                <div class="name">${esc(b.name)}</div>
+                <div class="actions">
+                  <button class="btn ghost" data-copyblock="${i}">Copy</button>
+                </div>
+                <div class="out"><pre id="block_${i}">${esc(b.text)}</pre></div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function wire(p){
+    // project name
+    projectName.addEventListener("input", () => {
+      projectNameText.textContent = projectName.value.trim() || "Untitled";
+    });
+
+    // save
+    saveProjectBtn.onclick = () => {
+      const name = projectName.value.trim() || "Untitled";
+      updateActive(x => { x.name = name; });
+      toast("Saved");
+    };
+
+    // builder bindings
+    view.querySelectorAll("[data-bind]").forEach(el => {
+      el.addEventListener("input", () => {
+        const path = el.getAttribute("data-bind");
+        const value = el.value;
+        updateActive(proj => setByPath(proj, path, value));
+      });
+    });
+
+    // builder buttons
+    const toOutputs = $("#toOutputs");
+    if(toOutputs) toOutputs.onclick = () => setTab("outputs");
+
+    const quickFill = $("#quickFill");
+    if(quickFill) quickFill.onclick = () => {
+      updateActive(proj => {
+        proj.name = proj.name && proj.name !== "Untitled" ? proj.name : "Example Offer";
+        proj.brand.hero.who = "Operations leaders";
+        proj.brand.hero.want = "a reliable process that hits targets";
+        proj.brand.problem.external = "inconsistent results and wasted effort";
+        proj.brand.problem.internal = "stress and uncertainty";
+        proj.brand.problem.philosophical = "work should not feel like gambling";
+        proj.brand.guide.empathy = "We have been in the messy middle";
+        proj.brand.guide.authority = "We use a proven system with tracking";
+        proj.brand.plan.step1 = "Assess the current state";
+        proj.brand.plan.step2 = "Create a clear plan";
+        proj.brand.plan.step3 = "Execute and track weekly";
+        proj.brand.cta.primary = "Book a quick call";
+        proj.brand.cta.secondary = "See a short overview";
+        proj.brand.avoid.failure = "staying stuck and burning budget";
+        proj.brand.success.win = "predictable output and confidence";
+      });
+      toast("Filled example");
+    };
+
+    // outputs copy buttons
+    view.querySelectorAll("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const type = btn.getAttribute("data-copy");
+        const id = type === "sb" ? "sbOut" : type === "landing" ? "landingOut" : "emailOut";
+        const text = $("#" + id).innerText;
+        await copy(text);
+        toast("Copied");
+      });
+    });
+
+    // vault actions
+    view.querySelectorAll("[data-open]").forEach(btn => {
+      btn.addEventListener("click", () => setActive(btn.getAttribute("data-open")));
+    });
+    view.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-del");
+        const ok = confirm("Delete this project?");
+        if(!ok) return;
+        STATE.projects = STATE.projects.filter(x => x.id !== id);
+        if(STATE.activeId === id){
+          STATE.activeId = STATE.projects[0]?.id || null;
+        }
+        save();
+        render();
+      });
+    });
+
+    // prompt blocks
+    view.querySelectorAll("[data-copyblock]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const i = btn.getAttribute("data-copyblock");
+        const text = $("#block_" + i).innerText;
+        await copy(text);
+        toast("Copied");
+      });
+    });
+  }
+
+  function setByPath(obj, path, value){
+    const parts = path.split(".");
+    let cur = obj;
+    for(let i = 0; i < parts.length - 1; i++){
+      cur[parts[i]] = cur[parts[i]] || {};
+      cur = cur[parts[i]];
+    }
+    cur[parts[parts.length - 1]] = value;
+  }
+
+  async function copy(text){
+    try{
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+  }
+
+  function exportJSON(){
+    const blob = new Blob([JSON.stringify(STATE, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `storybrand_os_backup_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importJSON(file){
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const parsed = JSON.parse(String(r.result || ""));
+        if(!parsed || typeof parsed !== "object") throw new Error("bad");
+        STATE = { ...DEFAULT(), ...parsed, projects: Array.isArray(parsed.projects) ? parsed.projects : [] };
+        if(!STATE.activeId && STATE.projects[0]) STATE.activeId = STATE.projects[0].id;
+        save();
+        toast("Imported");
+        render();
+      } catch {
+        alert("Import failed. That file is not a valid backup.");
+      }
+    };
+    r.readAsText(file);
+  }
+
+  function resetAll(){
+    const ok = confirm("Reset everything? This clears local data. Export first if you care.");
+    if(!ok) return;
+    STATE = DEFAULT();
+    save();
+    render();
+  }
+
+  function toast(msg){
+    const t = document.createElement("div");
+    t.textContent = msg;
+    t.style.position = "fixed";
+    t.style.left = "50%";
+    t.style.bottom = "18px";
+    t.style.transform = "translateX(-50%)";
+    t.style.padding = "10px 12px";
+    t.style.borderRadius = "999px";
+    t.style.border = "1px solid rgba(255,255,255,.10)";
+    t.style.background = "rgba(0,0,0,.55)";
+    t.style.color = "white";
+    t.style.fontWeight = "800";
+    t.style.zIndex = "9999";
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 900);
+  }
+
+  // global topbar actions
+  exportBtn.onclick = exportJSON;
+  importFile.onchange = () => {
+    const f = importFile.files && importFile.files[0];
+    importFile.value = "";
+    if(f) importJSON(f);
+  };
+  resetBtn.onclick = resetAll;
+
+  search.oninput = () => {
+    if(currentTab() === "vault") render();
+  };
+
+  // tabs
+  tabs.forEach(t => t.addEventListener("click", () => setTab(t.dataset.tab)));
+
+  // initial project
+  if(STATE.projects.length === 0){
+    const p = makeProject();
+    STATE.projects.push(p);
+    STATE.activeId = p.id;
+    save();
+  }
+
+  // set initial tab
+  setTab("builder");
+})();

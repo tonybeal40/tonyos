@@ -1,0 +1,81 @@
+{
+  "truths": [
+    {
+      "id": "uses_powder_compaction",
+      "description": "Company compacts powders using mechanical force",
+      "required_keywords": ["tablet compression", "powder compaction", "pressed tablet", "pellet pressing"],
+      "rejection_sentence": "Company does not appear to perform powder compaction using a tablet press or equivalent equipment."
+    },
+    {
+      "id": "produces_pressed_solid",
+      "description": "Primary product is a tablet, pellet, or pressed solid",
+      "required_keywords": ["tablet", "pellet", "compressed"],
+      "rejection_sentence": "Pressed solid dosage forms are not a primary product."
+    },
+    {
+      "id": "tooling_impacts_outcome",
+      "description": "Tooling affects quality, yield, or consistency",
+      "required_keywords": ["tablet tooling", "punch", "die", "tool wear", "tool life"],
+      "rejection_sentence": "Tooling performance does not appear to materially affect product quality or yield."
+    },
+    {
+      "id": "formulation_impacts_compaction",
+      "description": "Formulation affects compaction behavior",
+      "required_keywords": ["formulation", "granulation", "excipients", "binder", "lubricant"],
+      "rejection_sentence": "Formulation variables do not appear to influence compaction behavior."
+    },
+    {
+      "id": "scale_up_matters",
+      "description": "Scale-up affects compaction or tooling behavior",
+      "required_keywords": ["scale-up", "tech transfer", "pilot scale"],
+      "rejection_sentence": "Scale-up considerations are not evident in compaction or tooling processes."
+    },
+    {
+      "id": "process_is_press_based",
+      "description": "Process is press-based, not molded or liquid",
+      "blocked_keywords": ["gummy", "liquid", "spray", "molded"],
+      "rejection_sentence": "Manufacturing process appears to be molded or liquid rather than press-based."
+    },
+    {
+      "id": "manufacturing_or_rnd_internal",
+      "description": "Manufacturing or R&D is performed internally",
+      "required_keywords": ["manufacturing", "r&d", "process development"],
+      "rejection_sentence": "Manufacturing or process R&D does not appear to be handled internally."
+    },
+    {
+      "id": "performance_specs_exist",
+      "description": "Performance or regulatory specifications matter",
+      "required_keywords": ["usp", "dissolution", "friability", "hardness"],
+      "rejection_sentence": "Performance or regulatory specifications do not appear to drive process decisions."
+    }
+  ],
+
+  "global_blocked_keywords": [
+    "powder metallurgy",
+    "metal injection molding",
+    "structural ceramics",
+    "job shop",
+    "cnc machining",
+    "automotive structural",
+    "aerospace structural"
+  ],
+
+  "routing_rules": {
+    "natoli_engineering": [
+      "tooling",
+      "tablet press",
+      "punch",
+      "die",
+      "compression force",
+      "tool wear"
+    ],
+    "natoli_scientific": [
+      "formulation",
+      "characterization",
+      "analytical",
+      "usp",
+      "dissolution",
+      "r&d"
+    ]
+  }
+}

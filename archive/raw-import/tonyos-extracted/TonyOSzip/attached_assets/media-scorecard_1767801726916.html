@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli Media Scorecard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 24px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+    }
+
+    .back-link span.arrow {
+      font-size: 16px;
+    }
+
+    h1 {
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      font-size: 14px;
+      max-width: 860px;
+      margin-bottom: 18px;
+    }
+
+    .tier-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .tier-filter {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      padding: 8px 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease,
+        transform 0.06s ease, box-shadow 0.18s ease;
+    }
+
+    .tier-filter:hover {
+      background: #111827;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .tier-filter.active {
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 14px 30px rgba(15, 118, 255, 0.42);
+    }
+
+    h2.section-title {
+      font-size: 20px;
+      margin: 20px 0 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+      max-width: 820px;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .media-card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 60%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .media-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .media-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .grade-wrap {
+      text-align: right;
+      min-width: 64px; /* forces same width so letters line up */
+    }
+
+    .grade-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #ffffff, #3bb3ff 40%, #0b1020);
+      color: #020617;
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55);
+      margin-bottom: 4px;
+    }
+
+    .grade-note {
+      font-size: 11px;
+      color: var(--text-soft);
+      max-width: 120px;
+      margin-left: auto;
+    }
+
+    .grade-note span {
+      opacity: 0.9;
+    }
+
+    .pill-row {
+      margin-top: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      background: rgba(8, 12, 24, 0.9);
+    }
+
+    .pill.tier {
+      border-color: #22c55e;
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.08);
+    }
+
+    .pill.region {
+      border-color: #38bdf8;
+      color: #bae6fd;
+    }
+
+    .pill.topic {
+      border-color: #f97316;
+      color: #ffedd5;
+    }
+
+    .media-body {
+      font-size: 12px;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      border: none;
+      color: #f9fafb;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+      transition: transform 0.06s ease, box-shadow 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .link-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(15, 118, 255, 0.6);
+      text-decoration: none;
+    }
+
+    .how-to {
+      margin-top: 26px;
+      padding: 14px 16px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent-soft);
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .how-to ul {
+      margin-left: 20px;
+      margin-top: 6px;
+    }
+
+    .how-to li {
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 10px 40px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      .media-header {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <a class="back-link" href="index.html">
+      <span class="arrow">&larr;</span>
+      <span>Back to main dashboard</span>
+    </a>
+
+    <h1>Natoli Media Scorecard</h1>
+    <p class="subtitle">
+      Tiles view for 2026 media planning. Each publication shows its current tier, grade,
+      one line verdict and direct links to the live site and the full McKinsey style evaluation page.
+    </p>
+
+    <div class="tier-filter-row">
+      <button class="tier-filter active" onclick="scrollToTier('tier1')">Tier 1 media</button>
+      <button class="tier-filter" onclick="scrollToTier('tier2')">Tier 2 media</button>
+      <button class="tier-filter" onclick="scrollToTier('tier3')">Tier 3 and 4 media</button>
+    </div>
+
+    <!-- TIER 1 -->
+    <h2 class="section-title" id="tier1">Tier 1 media</h2>
+    <p class="section-intro">
+      High value commercial engines where real tooling and MS&T buyers live.
+    </p>
+
+    <div class="media-grid">
+      <!-- APR -->
+      <article class="media-card" id="apr">
+        <div class="media-header">
+          <div>
+            <div class="media-name">American Pharmaceutical Review (APR)</div>
+            <div class="media-meta">Flagship solid dose and analytical channel with deep penetration into formulation, MS&T and process development teams.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">A</div>
+            <div class="grade-note"><span>(Top tier commercial engine)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 1</span>
+          <span class="pill topic">Pharma</span>
+          <span class="pill topic">MS&T</span>
+          <span class="pill region">Global</span>
+        </div>
+
+        <div class="media-body">
+          Strong audience concentration in formulation and process roles, frequent Natoli visibility and proven buyer activity.
+          Recommended for anchor campaigns and ongoing brand presence.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.americanpharmaceuticalreview.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="apr.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Pharmaceutical Online / Outsourced Pharma -->
+      <article class="media-card" id="pharma-online">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Pharmaceutical Online / Outsourced Pharma</div>
+            <div class="media-meta">CDMO and outsourcing focus with higher mixed buyer density.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">A</div>
+            <div class="grade-note"><span>(CDMO and outsourcing hub)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 1</span>
+          <span class="pill topic">CDMO</span>
+          <span class="pill topic">Outsourcing</span>
+          <span class="pill region">Global</span>
+        </div>
+
+        <div class="media-body">
+          Strong concentration of CDMO, outsourcing and technical decision makers.
+          High intent audiences for compaction, tooling and technology vendor work.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.pharmaceuticalonline.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="pharma-online.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Contract Pharma -->
+      <article class="media-card" id="contract-pharma">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Contract Pharma</div>
+            <div class="media-meta">Deep CDMO and outsourcing focus with high buyer density.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">A</div>
+            <div class="grade-note"><span>(CDMO decision channel)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 1</span>
+          <span class="pill topic">CDMO</span>
+          <span class="pill topic">Leadership</span>
+          <span class="pill region">Global</span>
+        </div>
+
+        <div class="media-body">
+          Deep coverage of contract development and manufacturing topics.
+          Strong environment for tooling, loading and development content that speaks to commercial leaders and technical decision makers.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.contractpharma.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="contract-pharma.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- TIER 2 -->
+    <h2 class="section-title" id="tier2">Tier 2 media</h2>
+    <p class="section-intro">
+      Medium value channels used for selective campaigns, brand reinforcement and scientific credibility.
+    </p>
+
+    <div class="media-grid">
+      <!-- IPT -->
+      <article class="media-card" id="ipt">
+        <div class="media-header">
+          <div>
+            <div class="media-name">IPT – Innovations in Pharmaceutical Technology</div>
+            <div class="media-meta">Technology and science focused editorial that reaches formulation and development teams.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">B</div>
+            <div class="grade-note"><span>(Good science reach)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 2</span>
+          <span class="pill topic">Science</span>
+          <span class="pill topic">R&amp;D</span>
+          <span class="pill region">Global</span>
+        </div>
+
+        <div class="media-body">
+          Credible platform for Natoli Scientific themes and technical storytelling,
+          with some spillover to tooling and engineering audiences.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.iptonline.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="ipt.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- EPM -->
+      <article class="media-card" id="epm">
+        <div class="media-header">
+          <div>
+            <div class="media-name">EPM – European Pharmaceutical Manufacturer</div>
+            <div class="media-meta">European manufacturing coverage with strong engineering and production content.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">B</div>
+            <div class="grade-note"><span>(Good European coverage)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 2</span>
+          <span class="pill topic">Manufacturing</span>
+          <span class="pill region">Europe</span>
+        </div>
+
+        <div class="media-body">
+          Good for presence and occasional campaigns, with buyer density weaker than the top tier engines.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.epmmagazine.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="epm.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Manufacturing Chemist -->
+      <article class="media-card" id="manufacturing-chemist">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Manufacturing Chemist</div>
+            <div class="media-meta">Process and plant level coverage that speaks to engineers and technical managers.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">B</div>
+            <div class="grade-note"><span>(Process and plant fit)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 2</span>
+          <span class="pill topic">Process</span>
+          <span class="pill topic">Engineering</span>
+        </div>
+
+        <div class="media-body">
+          Useful for reinforcing Natoli brand and technical leadership with a mix of engineering and operations readers.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.manufacturingchemist.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="manufacturing-chemist.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- EPR -->
+      <article class="media-card" id="epr">
+        <div class="media-header">
+          <div>
+            <div class="media-name">EPR – European Pharmaceutical Review</div>
+            <div class="media-meta">Scientific and technical coverage with solid academic and R&amp;D readership.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">B</div>
+            <div class="grade-note"><span>(Strong science channel)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 2</span>
+          <span class="pill topic">Science</span>
+          <span class="pill region">Europe</span>
+        </div>
+
+        <div class="media-body">
+          Strong for Natoli Scientific visibility and white paper work, with limited pure tooling buyer volume.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.europeanpharmaceuticalreview.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="epr.html">
+           View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Tablets and Capsules -->
+      <article class="media-card" id="tablets-capsules">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Tablets and Capsules</div>
+            <div class="media-meta">Niche application focused content with solid dose topics.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">B</div>
+            <div class="grade-note"><span>(Niche but clearly useful)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 2</span>
+          <span class="pill topic">Solid dose</span>
+          <span class="pill topic">Niche</span>
+        </div>
+
+        <div class="media-body">
+          Aligns well with Natoli tools and process work but has smaller reach compared to top engines.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://tabletscapsules.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="tablets-capsules.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- TIER 3 AND 4 -->
+    <h2 class="section-title" id="tier3">Tier 3 and Tier 4 media</h2>
+    <p class="section-intro">
+      Niche or low value channels. Good to know, but not where 2026 commercial budget should live.
+    </p>
+
+    <div class="media-grid">
+      <!-- PMT -->
+      <article class="media-card" id="pmt">
+        <div class="media-header">
+          <div>
+            <div class="media-name">PMT – Pharma Machines and Technology</div>
+            <div class="media-meta">Machines and technology coverage with mixed buyer and vendor presence.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">C</div>
+            <div class="grade-note"><span>(Interesting but scattered)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 3</span>
+          <span class="pill topic">Machinery</span>
+        </div>
+
+        <div class="media-body">
+          Editorial mix is useful to read, but buyer density and clear Natoli fit are weaker.
+          Not a priority for commercial budget.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.pharmamachines.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="pmt.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Labmate -->
+      <article class="media-card" id="labmate">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Labmate / Labmate Online</div>
+            <div class="media-meta">Lab and instrumentation focus with wide topic coverage.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">C</div>
+            <div class="grade-note"><span>(Lab heavy, light on buyers)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 3</span>
+          <span class="pill topic">Lab</span>
+          <span class="pill topic">Instrumentation</span>
+        </div>
+
+        <div class="media-body">
+          Good science and instrumentation coverage, but not concentrated in tablet press and tooling buyers.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.labmate-online.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="labmate.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+
+      <!-- Scientist Live -->
+      <article class="media-card" id="scientist-live">
+        <div class="media-header">
+          <div>
+            <div class="media-name">Scientist Live / Eurolab</div>
+            <div class="media-meta">Science portal with wide topic coverage and limited targeted tooling buyers.</div>
+          </div>
+          <div class="grade-wrap">
+            <div class="grade-badge">C</div>
+            <div class="grade-note"><span>(Low buyer proof)</span></div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill tier">Tier 4</span>
+          <span class="pill topic">Science portal</span>
+        </div>
+
+        <div class="media-body">
+          Awareness play only. Light compaction buyer presence and weak direct commercial proof.
+          Use for occasional thought leadership if budget allows, not for core campaigns.
+        </div>
+
+        <div class="button-row">
+          <a class="link-button" href="https://www.scientistlive.com/" target="_blank" rel="noopener">
+            Visit site
+          </a>
+          <a class="link-button" href="scientist-live.html">
+            View full evaluation
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div class="how-to">
+      <strong>How to read this scorecard</strong>
+      <ul>
+        <li>The grade bubble shows the current recommended grade for 2026 budgets.</li>
+        <li>The note under each grade gives the one line verdict in plain language.</li>
+        <li>Tier 1 is where real commercial budget should live. Tier 2 is selective use. Tier 3 and 4 are optional or awareness only.</li>
+        <li>Each tile links to a full evaluation page that explains the scoring, audience fit and ROI logic in more detail.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function scrollToTier(id) {
+      const section = document.getElementById(id);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      const buttons = document.querySelectorAll(".tier-filter");
+      buttons.forEach(b => b.classList.remove("active"));
+
+      if (id === "tier1") {
+        buttons[0].classList.add("active");
+      } else if (id === "tier2") {
+        buttons[1].classList.add("active");
+      } else if (id === "tier3") {
+        buttons[2].classList.add("active");
+      }
+    }
+  </script>
+</body>
+</html>

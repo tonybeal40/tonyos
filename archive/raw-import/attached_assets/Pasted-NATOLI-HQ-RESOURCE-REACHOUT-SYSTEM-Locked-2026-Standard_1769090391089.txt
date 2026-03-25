@@ -1,0 +1,156 @@
+NATOLI HQ RESOURCE REACHOUT SYSTEM
+
+Locked 2026 Standard
+
+ACTIVATION PHRASE
+
+Use my Natoli HQ Resource Reachout System. No sales tone.
+
+When you say this, the system must output ALL sections below.
+Nothing skipped. Ever.
+
+1. LEAD PROFILE
+
+Name
+
+Title
+
+Company
+
+Location
+
+Industry
+
+Product Type (solid dose, catalysts, nutraceutical, etc.)
+
+Likely Equipment Environment
+
+Tooling Exposure (High / Medium / Low)
+
+Compaction Confidence (Confirmed / Likely / Unclear)
+
+2. TIER CLASSIFICATION
+
+Tier-1 = Production scale + tooling or press exposure
+Tier-2 = R&D or pilot scale
+Tier-3 = Not compaction relevant
+
+Must include:
+Tier: X
+Why:
+
+3. WHY FIT
+
+Short bullets. Reality based.
+Press environment, uptime risk, scale pressure, regulatory burden.
+
+4. HOW THEY CAN HELP
+
+What access, insight, or signal they represent.
+
+5. NATOLI VALUE (Split by Division)
+Natoli Engineering
+
+When production scale, tooling, uptime, performance matter.
+
+Core angle:
+Precision tooling and process reliability from lab to line.
+
+Natoli Scientific
+
+When R&D, validation, scale-up, or analytical data is relevant.
+
+Core angle:
+Analytical testing and scale-up support bridging R&D to production.
+
+6. WHY THIS WOULD BE A GREAT FIT
+
+Mutual value. No selling. No CTA.
+
+7. C2 NOTES (CRM)
+
+Short internal notes for routing, signal, and follow-up.
+
+8. CHALLENGER-STYLE EMAIL
+
+Rules
+
+No em dashes
+
+No CTA
+
+No “Introduction” subject for existing customers
+
+Short spaced lines
+
+Human ops-to-ops tone
+
+Always positioned as HQ resource
+
+TEMPLATE
+
+Subject: [Contextual or neutral subject]
+
+Hi [Name],
+
+I am with Natoli Engineering at our headquarters where I help teams connect with our engineers and scientific experts on tooling and process optimization.
+
+[Personalized observation about their role, company, or environment.]
+
+We often support manufacturing teams working in similar high-precision environments to improve consistency, reduce formulation risk, and extend tool life.
+
+If insight into analytical testing, compaction behavior, or process reliability would ever be useful, I can connect you with the appropriate experts on our team.
+
+Best regards,
+Tony Beal
+Natoli Engineering
+Phone: [if available]
+Address: [if available]
+
+9. LINKEDIN CONNECTION REQUEST
+
+Rules
+
+Short
+
+Human
+
+No CTA
+
+Persona aware
+
+HQ resource positioning
+
+TEMPLATE
+
+Hi [Name], I work with Natoli Engineering at our headquarters supporting teams with tooling and compaction performance. Your work in [focus area] stood out and I would enjoy connecting.
+
+10. RUN NATOLI LINKEDIN CONNECT CONTEXT
+
+Every contact must include:
+
+Name
+
+Title
+
+Company
+
+Focus Area
+
+Persona Angle
+
+This feeds the connection message and email personalization.
+
+11. COMPANY FIT LOGIC
+Division	When to Use	Core Message
+Natoli Engineering	Production scale, tooling, press performance	Precision tooling and process reliability from lab to line
+Natoli Scientific	R&D, validation, analytical, scale-up	Analytical testing and scale-up support bridging R&D to production
+12. CTA ROUTING LOGIC
+
+Route sideways or upward only.
+Never procurement. Never junior.
+
+MS&T → Tech Ops
+Engineering → Ops or Engineering leadership
+R&D → Tech Transfer or MS&T
+Process → MS&T or Process Engineering leadership

@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Natoli CRM Demo | Monday-Style Simulator</title>
+  <style>
+:root{
+  --bg:#0b0f16;
+  --card:#111826;
+  --card2:#0f1624;
+  --line:#1e2a3d;
+  --text:#e6eefc;
+  --muted:#97a6c0;
+  --accent:#ff2a2a;
+  --warn:#f6c453;
+  --good:#3ddc97;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  gap:16px;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  background:rgba(11,15,22,.92);
+  backdrop-filter: blur(8px);
+  flex-wrap:wrap;
+}
+
+.brand{display:flex; gap:12px; align-items:center}
+.logo{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),#ff6a6a);
+  display:grid;place-items:center;
+  font-weight:800;
+  font-size:18px;
+}
+.title{font-weight:800; letter-spacing:.2px}
+.subtitle{font-size:12px;color:var(--muted)}
+
+.tabs{display:flex; gap:6px; flex-wrap:wrap}
+.tab{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--muted);
+  padding:8px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:650;
+  font-size:13px;
+}
+.tab.active{
+  border-color:rgba(255,42,42,.45);
+  color:var(--text);
+  background:rgba(255,42,42,.08);
+}
+
+.actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.btn{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:9px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+}
+.btn:hover{background:rgba(255,255,255,.05)}
+.btn.primary{
+  border-color:rgba(255,42,42,.6);
+  background:rgba(255,42,42,.12);
+}
+.btn.green{border-color:rgba(61,220,151,.6);background:rgba(61,220,151,.12)}
+
+.wrap{padding:16px; max-width:1400px; margin:0 auto}
+.view{display:block}
+.view.hidden{display:none}
+
+.grid2{display:grid; gap:14px; grid-template-columns: 1fr 1fr}
+@media (max-width: 980px){
+  .grid2{grid-template-columns:1fr}
+}
+
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+.card.inner{padding:12px}
+
+.card-h h2{margin:0 0 6px 0}
+.hint{color:var(--muted); font-size:13px; line-height:1.35}
+
+.form{margin-top:10px}
+.row{display:grid; grid-template-columns: 160px 1fr; gap:10px; align-items:center; margin:8px 0}
+.row.full{grid-template-columns: 1fr}
+label{color:var(--muted); font-size:13px; font-weight:650}
+
+select, input[type="text"]{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#0b1322;
+  color:var(--text);
+  outline:none;
+  font-size:14px;
+}
+select:focus, input:focus{border-color:var(--accent)}
+
+.sep{
+  border:none;
+  border-top:1px solid var(--line);
+  margin:12px 0;
+}
+
+.kpis{
+  display:grid;
+  gap:10px;
+  grid-template-columns: repeat(3, 1fr);
+  margin:12px 0;
+}
+@media (max-width: 980px){
+  .kpis{grid-template-columns:1fr 1fr}
+}
+.kpi{
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+}
+.kpi .k{color:var(--muted); font-size:12px; font-weight:700}
+.kpi .v{font-size:20px; font-weight:900; margin-top:4px}
+.kpi.warn{border-color:rgba(246,196,83,.45)}
+.kpi.good{border-color:rgba(61,220,151,.45)}
+
+.tableWrap{margin-top:12px; overflow:auto; border-radius:12px; border:1px solid var(--line)}
+.table{width:100%; border-collapse:collapse; min-width:760px; background:#0b1322}
+.table th, .table td{
+  text-align:left;
+  padding:10px 10px;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+}
+.table th{color:var(--muted); font-weight:800}
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  border:1px solid var(--line);
+}
+.badge.warn{border-color:rgba(246,196,83,.55); color:var(--warn)}
+.badge.good{border-color:rgba(61,220,151,.55); color:var(--good)}
+.badge.bad{border-color:rgba(255,42,42,.55); color:var(--accent)}
+
+.note{
+  margin-top:12px;
+  font-size:13px;
+  color:var(--muted);
+  border-left:3px solid rgba(255,42,42,.55);
+  padding-left:10px;
+}
+
+.pill{
+  display:inline-block;
+  border:1px solid var(--line);
+  padding:8px 10px;
+  border-radius:999px;
+  color:var(--muted);
+  font-weight:750;
+  font-size:12px;
+}
+
+.bars{margin-top:10px; display:flex; flex-direction:column; gap:8px}
+.bar{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  background:rgba(255,255,255,.02);
+}
+.barTop{display:flex; justify-content:space-between; gap:10px; align-items:center}
+.barName{font-weight:850}
+.barVal{color:var(--muted); font-weight:800}
+.meter{
+  margin-top:8px;
+  height:10px;
+  border-radius:999px;
+  background:#0b1322;
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.fill{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),#ff6a6a)}
+
+.risk{margin:10px 0 0 0; padding-left:18px; color:var(--text)}
+.risk li{margin:6px 0; color:var(--muted); font-size:13px}
+.risk b{color:var(--text)}
+
+.paper{
+  background:#ffffff;
+  color:#111;
+  border-radius:14px;
+  padding:24px;
+  border:1px solid #d9d9d9;
+}
+.paper h2{margin:0 0 6px 0; color:#111}
+.paper h3{color:#333; margin-top:20px}
+.paper-sub{margin:0 0 16px 0; color:#666}
+.paper-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+@media (max-width:980px){ .paper-grid{grid-template-columns:1fr} }
+.paper ul{margin:8px 0 0 18px; color:#444}
+.paper li{margin:4px 0}
+.cols2{columns:2; column-gap:18px}
+@media (max-width:980px){ .cols2{columns:1} }
+.steps{padding-left:18px}
+.steps li{margin:8px 0}
+.paper-foot{margin-top:14px; padding-top:10px; border-top:1px solid #e5e5e5; color:#666; font-size:13px}
+
+.footer{
+  padding:14px 16px;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  text-align:center;
+}
+
+.small{font-size:12px}
+.mini{margin-top:8px}
+
+@media print{
+  body{background:white; color:black}
+  .no-print{display:none !important}
+  .wrap{max-width:none; padding:0}
+  .card{break-inside:avoid; border:1px solid #ccc}
+  .table{min-width:auto}
+  .paper{border:none; box-shadow:none}
+  .kpi{border:1px solid #ccc}
+}
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:linear-gradient(135deg,var(--good),#2ecc71);
+  color:#fff;
+  padding:12px 20px;
+  border-radius:10px;
+  font-weight:700;
+  z-index:9999;
+  animation:slideIn .3s ease;
+}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+  </style>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div>
+        <div class="title">Natoli CRM Demo</div>
+        <div class="subtitle">Monday-style | Rep workflow + CEO dashboard | Print-ready</div>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab active" data-view="rep">Sales Rep</button>
+      <button class="tab" data-view="boards">Boards</button>
+      <button class="tab" data-view="ceo">CEO Dashboard</button>
+      <button class="tab" data-view="roi">ROI 1-Pager</button>
+      <button class="tab" data-view="steps">Step-By-Step</button>
+      <button class="tab" data-view="apps">Sales Applications</button>
+    </nav>
+
+    <div class="actions">
+      <button class="btn green" id="btnLoadSamples">Load Examples</button>
+      <button class="btn" id="btnReset">Reset</button>
+      <button class="btn primary" id="btnPrint">Print / Save as PDF</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- SALES REP VIEW -->
+    <section class="view" id="view-rep">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-h">
+            <h2>Sales Rep Entry (fast, dropdown-first)</h2>
+            <div class="hint">Goal: Tier + Fit + Owner + Stage + Next Action. Everything else is optional but available</div>
+          </div>
+
+          <form id="repForm" class="form">
+            <div class="row">
+              <label>Account</label>
+              <select id="accountSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Territory</label>
+              <select id="territorySelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Assigned Rep</label>
+              <select id="repSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Tier</label>
+              <select id="tierSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Natoli Fit</label>
+              <select id="fitSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Industry</label>
+              <select id="industrySelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Press OEM</label>
+              <select id="oemSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Confidence</label>
+              <select id="confidenceSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Status</label>
+              <select id="statusSelect"></select>
+            </div>
+
+            <hr class="sep" />
+
+            <div class="row">
+              <label>Opportunity Stage</label>
+              <select id="stageSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Product Line</label>
+              <select id="productLineSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Estimated Value</label>
+              <select id="valueSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Probability</label>
+              <select id="probSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Target Close Date</label>
+              <select id="closeDateSelect"></select>
+            </div>
+
+            <hr class="sep" />
+
+            <div class="row">
+              <label>Next Action</label>
+              <select id="nextActionSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Next Action Due</label>
+              <select id="dueDateSelect" required></select>
+            </div>
+
+            <div class="row">
+              <label>Last Touch</label>
+              <select id="lastTouchSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Touch Type</label>
+              <select id="touchTypeSelect"></select>
+            </div>
+
+            <div class="row">
+              <label>Notes (short)</label>
+              <select id="notesSelect"></select>
+            </div>
+
+            <div class="row full">
+              <button class="btn primary" type="submit" style="width:100%;padding:14px">Save Update (adds activity + updates boards)</button>
+              <div class="mini">
+                <div class="pill" id="repGuardrail">Guardrail: Missing Tier/Fit/Next Action will block "Complete"</div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <h2>Rep Snapshot</h2>
+            <div class="hint">This is why reps use it: clear next steps, no guessing, no chasing</div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="k">My Pipeline (90d)</div><div class="v" id="kpiMyPipeline">$0</div></div>
+            <div class="kpi"><div class="k">My Accounts</div><div class="v" id="kpiMyAccounts">0</div></div>
+            <div class="kpi"><div class="k">My Next Actions</div><div class="v" id="kpiMyNext">0</div></div>
+            <div class="kpi warn"><div class="k">My Stale (30d)</div><div class="v" id="kpiMyStale">0</div></div>
+          </div>
+
+          <div class="tableWrap">
+            <table class="table" id="tableMyWork">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Stage</th>
+                  <th>Next Action</th>
+                  <th>Due</th>
+                  <th>Last Touch</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="note">
+            Rep rule: If there's no Next Action, it's not real. This removes "pipeline theater."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOARDS VIEW -->
+    <section class="view hidden" id="view-boards">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-h">
+            <h2>Accounts Board (Master)</h2>
+            <div class="hint">Ownership + Tier + Fit + Next Action is the spine</div>
+          </div>
+          <div class="tableWrap">
+            <table class="table" id="tableAccounts">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Tier</th>
+                  <th>Fit</th>
+                  <th>Rep</th>
+                  <th>Stage</th>
+                  <th>Next Action</th>
+                  <th>Due</th>
+                  <th>Last Touch</th>
+                  <th>Stale?</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <h2>Opportunities Board (Pipeline)</h2>
+            <div class="hint">This is what Dale cares about: stage, value, age, forecast</div>
+          </div>
+          <div class="tableWrap">
+            <table class="table" id="tableOpps">
+              <thead>
+                <tr>
+                  <th>Opportunity</th>
+                  <th>Account</th>
+                  <th>Owner</th>
+                  <th>Stage</th>
+                  <th>Value</th>
+                  <th>Prob</th>
+                  <th>Weighted</th>
+                  <th>Close</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="note">
+            Print tip: Use Landscape for boards if you want wider columns visible
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CEO DASHBOARD -->
+    <section class="view hidden" id="view-ceo">
+      <div class="card">
+        <div class="card-h">
+          <h2>CEO Dashboard (shareholder truth)</h2>
+          <div class="hint">Answers one question: "Is sales motion healthy and is revenue likely?"</div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="k">Pipeline (90d)</div><div class="v" id="kpiPipeline">$0</div></div>
+          <div class="kpi"><div class="k">Forecast (Weighted)</div><div class="v" id="kpiForecast">$0</div></div>
+          <div class="kpi"><div class="k">Win Rate (mock)</div><div class="v" id="kpiWinRate">24%</div></div>
+          <div class="kpi warn"><div class="k">Stale Accounts (30d)</div><div class="v" id="kpiStale">0</div></div>
+          <div class="kpi"><div class="k">Tier 1 Coverage</div><div class="v" id="kpiCoverage">0%</div></div>
+          <div class="kpi"><div class="k">Weekly Touches</div><div class="v" id="kpiTouches">0</div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card inner">
+            <h3>Pipeline by Stage</h3>
+            <div class="bars" id="stageBars"></div>
+          </div>
+
+          <div class="card inner">
+            <h3>Pipeline by Rep</h3>
+            <div class="bars" id="repBars"></div>
+          </div>
+        </div>
+
+        <div class="grid2" style="margin-top:14px">
+          <div class="card inner">
+            <h3>Activity by Rep (week)</h3>
+            <div class="bars" id="activityBars"></div>
+          </div>
+
+          <div class="card inner">
+            <h3>Top Risks</h3>
+            <ul class="risk" id="riskList"></ul>
+            <div class="note">
+              These "risk flags" are what makes the CRM worth paying for: early warning, not late surprises
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:16px">
+          CEO rule: If it isn't logged, it isn't forecastable. This is how we stop "trust me" pipeline.
+        </div>
+      </div>
+    </section>
+
+    <!-- ROI 1-PAGER -->
+    <section class="view hidden" id="view-roi">
+      <article class="paper">
+        <h2>Natoli CRM ROI Summary (1 page)</h2>
+        <p class="paper-sub">Purpose: justify monday.com cost with revenue predictability, accountability, and time recovery</p>
+
+        <div class="paper-grid">
+          <div>
+            <h3>What we're buying</h3>
+            <ul>
+              <li>One source of truth for accounts, contacts, and opportunities</li>
+              <li>Standard stages show what is real and what is not</li>
+              <li>Next Action enforcement prevents stalled pipeline</li>
+              <li>Dashboards show pipeline, risk, and rep execution</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>How ROI shows up</h3>
+            <ul>
+              <li><b>Time recovery:</b> fewer lost follow-ups, less searching, fewer duplicate updates</li>
+              <li><b>Opportunity retention:</b> stalled deals get flagged early</li>
+              <li><b>Forecast credibility:</b> stages and next steps reduce "storytelling"</li>
+              <li><b>Rep accountability:</b> touches tied to stage movement, not activity theater</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Executive truth metrics (what we will report weekly)</h3>
+        <ul class="cols2">
+          <li>Total pipeline and weighted forecast</li>
+          <li>Pipeline by stage and aging risk</li>
+          <li>Tier 1 coverage with active next steps</li>
+          <li>Touches by rep and by week</li>
+          <li>Stale accounts and stalled opportunities</li>
+          <li>Stage conversion trend and win rate trend</li>
+        </ul>
+
+        <h3>Phase 1 success criteria (first 30 days)</h3>
+        <ul>
+          <li>80%+ reps update Next Action and Last Touch weekly</li>
+          <li>100% of accounts have Tier + Fit + Owner</li>
+          <li>CEO dashboard shows pipeline, risk, and coverage by rep</li>
+        </ul>
+
+        <div class="paper-foot">
+          Print this page as PDF to share internally or with leadership
+        </div>
+      </article>
+    </section>
+
+    <!-- STEP-BY-STEP -->
+    <section class="view hidden" id="view-steps">
+      <article class="paper">
+        <h2>Natoli Monday CRM (Starter) - Step-By-Step</h2>
+        <p class="paper-sub">Keep it simple first. Enforce ownership, tiering, next action, and stage. Everything else is phase 2.</p>
+
+        <ol class="steps">
+          <li><b>Lock rules:</b> Accounts board is the spine. No orphan contacts. No orphan opportunities.</li>
+          <li><b>Build 3 boards:</b> Accounts, Contacts, Opportunities. Do not add extra boards day one.</li>
+          <li><b>Require fields:</b> Tier, Fit, Assigned Rep, Stage, Next Action, Due Date.</li>
+          <li><b>Automations:</b> Stale flag at 30 days. Require due date when next action set.</li>
+          <li><b>Dashboards:</b> Pipeline value, weighted forecast, stage breakdown, rep breakdown, Tier 1 coverage.</li>
+          <li><b>Weekly cadence:</b> 15 minutes: update next actions and last touch before forecast review.</li>
+        </ol>
+
+        <h3>What reps do (30 seconds)</h3>
+        <ul>
+          <li>Select account</li>
+          <li>Confirm Tier + Fit</li>
+          <li>Set stage and value</li>
+          <li>Choose next action + due date</li>
+          <li>Log last touch type</li>
+        </ul>
+
+        <h3>What leadership gets (10 seconds)</h3>
+        <ul>
+          <li>Pipeline and forecast confidence</li>
+          <li>Which reps are moving deals</li>
+          <li>Which accounts are stale</li>
+          <li>Tier 1 coverage</li>
+        </ul>
+
+        <div class="paper-foot">
+          Print this as PDF. It is intentionally short to drive adoption.
+        </div>
+      </article>
+    </section>
+
+    <!-- SALES APPLICATIONS -->
+    <section class="view hidden" id="view-apps">
+      <article class="paper">
+        <h2>Fortune 50 Sales Applications (What this CRM enables)</h2>
+        <p class="paper-sub">This is how "big companies" operationalize revenue: consistent stages, clean accountability, and board-ready reporting.</p>
+
+        <div class="paper-grid">
+          <div>
+            <h3>Pipeline Control</h3>
+            <ul>
+              <li>Standard stage definitions</li>
+              <li>Deal aging alerts</li>
+              <li>Forecast rollups by rep, territory, segment</li>
+              <li>Win/loss reasons trend</li>
+            </ul>
+
+            <h3>Execution Discipline</h3>
+            <ul>
+              <li>Mandatory next steps and dates</li>
+              <li>Stale account flags</li>
+              <li>Weekly rep cadence reporting</li>
+              <li>Account ownership enforcement</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>Account Strategy</h3>
+            <ul>
+              <li>Tier 1 coverage reporting</li>
+              <li>OEM segmentation and targeting</li>
+              <li>Territory visibility and handoffs</li>
+              <li>Account status: new, active, dormant, strategic</li>
+            </ul>
+
+            <h3>Activity Intelligence</h3>
+            <ul>
+              <li>Touches by rep and by week</li>
+              <li>Touches linked to stage movement</li>
+              <li>Response signals: meetings booked</li>
+              <li>Balanced scorecard: activity + outcomes</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>CEO dashboard outputs</h3>
+        <ul class="cols2">
+          <li>Total pipeline + weighted forecast</li>
+          <li>Pipeline by stage</li>
+          <li>Pipeline by rep and territory</li>
+          <li>Tier 1 coverage</li>
+          <li>Stale and stalled risks</li>
+          <li>Weekly execution signals</li>
+        </ul>
+
+        <div class="paper-foot">
+          This page exists to translate "CRM work" into "executive value."
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer no-print">
+    <div class="small">
+      Tip: For boards, print in Landscape. For ROI/Steps, print in Portrait. | <a href="/" style="color:var(--accent)">Back to TonyOS</a>
+    </div>
+  </footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const VIEWS = ["rep","boards","ceo","roi","steps","apps"];
+
+const STORE = {
+  accounts: [],
+  opportunities: [],
+  activity: []
+};
+
+const OPTIONS = {
+  reps: ["Northeast","Southeast","Midwest","West"],
+  territories: ["Northeast Territory","Southeast Territory","Midwest Territory","West Territory"],
+  tiers: ["Tier 1","Tier 2","Tier 3"],
+  fit: ["Engineering","Scientific","Both"],
+  industry: [
+    "Pharma OSD","Nutraceutical","Contract Manufacturing (CDMO)","Biotech",
+    "Chemical / Catalysts","Battery Materials","Powder Metallurgy","Medical Devices",
+    "Energy / Nuclear","Defense","Compounding Pharmacy","Other"
+  ],
+  oem: ["Fette","Korsch","IMA","Elizabeth","Stokes","Manesty","Unknown"],
+  confidence: ["Strong","Medium","Needs Research"],
+  status: ["New","Active","Dormant","Strategic"],
+  stages: ["Identified","Engaged","Technical","Quote","Closed Won","Closed Lost"],
+  productLine: ["Tooling","Press","Scientific","Tooling + Press","Tooling + Scientific","All"],
+  value: ["$10k","$25k","$50k","$100k","$250k","$500k","$1M","$2M+"],
+  probability: ["10%","25%","40%","55%","70%","85%","95%"],
+  closeDates: ["Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Q3 2026","Q4 2026"],
+  nextActions: [
+    "Call scheduled","Email follow-up","LinkedIn connect","Send resources / case study",
+    "Book meeting","Quote in progress","Waiting on customer","Needs research","Route to owner"
+  ],
+  dueDates: ["Today","Tomorrow","This week","Next week","2 weeks","30 days"],
+  lastTouch: ["Today","Yesterday","This week","Last week","30+ days"],
+  touchType: ["Call","Email","Meeting","LinkedIn","Text","Onsite visit"],
+  notes: [
+    "Confirmed OEM, asked for tooling lead time",
+    "Operations wants cost reduction and uptime",
+    "R&D evaluating new formulation risk",
+    "Waiting on drawings/specs",
+    "Needs intro to decision owner",
+    "Sent resources, follow-up scheduled",
+    "Stalled, no response, escalate"
+  ]
+};
+
+function moneyFromValue(val){
+  const map = {"$10k":10000,"$25k":25000,"$50k":50000,"$100k":100000,"$250k":250000,"$500k":500000,"$1M":1000000,"$2M+":2000000};
+  return map[val] ?? 0;
+}
+
+function probToNum(p){ return parseInt(String(p).replace("%",""),10) / 100; }
+
+function weekKey(){
+  const d = new Date();
+  const firstJan = new Date(d.getFullYear(),0,1);
+  const days = Math.floor((d - firstJan) / 86400000);
+  const week = Math.ceil((days + firstJan.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${week}`;
+}
+
+function fillSelect(selectEl, items){
+  selectEl.innerHTML = "";
+  items.forEach(v=>{
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    selectEl.appendChild(opt);
+  });
+}
+
+function initDropdowns(){
+  fillSelect($("repSelect"), OPTIONS.reps);
+  fillSelect($("territorySelect"), OPTIONS.territories);
+  fillSelect($("tierSelect"), OPTIONS.tiers);
+  fillSelect($("fitSelect"), OPTIONS.fit);
+  fillSelect($("industrySelect"), OPTIONS.industry);
+  fillSelect($("oemSelect"), OPTIONS.oem);
+  fillSelect($("confidenceSelect"), OPTIONS.confidence);
+  fillSelect($("statusSelect"), OPTIONS.status);
+  fillSelect($("stageSelect"), OPTIONS.stages);
+  fillSelect($("productLineSelect"), OPTIONS.productLine);
+  fillSelect($("valueSelect"), OPTIONS.value);
+  fillSelect($("probSelect"), OPTIONS.probability);
+  fillSelect($("closeDateSelect"), OPTIONS.closeDates);
+  fillSelect($("nextActionSelect"), OPTIONS.nextActions);
+  fillSelect($("dueDateSelect"), OPTIONS.dueDates);
+  fillSelect($("lastTouchSelect"), OPTIONS.lastTouch);
+  fillSelect($("touchTypeSelect"), OPTIONS.touchType);
+  fillSelect($("notesSelect"), OPTIONS.notes);
+}
+
+function setView(view){
+  VIEWS.forEach(v=>{
+    const el = $("view-"+v);
+    if(!el) return;
+    el.classList.toggle("hidden", v !== view);
+  });
+  document.querySelectorAll(".tab").forEach(b=>{
+    b.classList.toggle("active", b.dataset.view === view);
+  });
+  renderAll();
+}
+
+function seedSamples(){
+  STORE.accounts = [
+    {id:"A-001", account:"Global Nuclear Fuel - Americas", tier:"Tier 1", fit:"Engineering", rep:"Northeast", stage:"Technical", nextAction:"Book meeting", due:"Next week", lastTouch:"This week", stale:false, industry:"Energy / Nuclear", oem:"Unknown", confidence:"Strong", status:"Active"},
+    {id:"A-002", account:"BWX Technologies", tier:"Tier 1", fit:"Engineering", rep:"Southeast", stage:"Engaged", nextAction:"Send resources / case study", due:"This week", lastTouch:"Last week", stale:false, industry:"Defense", oem:"Unknown", confidence:"Medium", status:"Active"},
+    {id:"A-003", account:"Acme Nutraceutical Labs", tier:"Tier 2", fit:"Both", rep:"Midwest", stage:"Identified", nextAction:"Needs research", due:"This week", lastTouch:"This week", stale:false, industry:"Nutraceutical", oem:"Fette", confidence:"Medium", status:"New"},
+    {id:"A-004", account:"Example Compounding Pharmacy", tier:"Tier 3", fit:"Scientific", rep:"West", stage:"Identified", nextAction:"LinkedIn connect", due:"30 days", lastTouch:"30+ days", stale:true, industry:"Compounding Pharmacy", oem:"Unknown", confidence:"Needs Research", status:"Dormant"},
+    {id:"A-005", account:"PharmaCorp International", tier:"Tier 1", fit:"Both", rep:"Northeast", stage:"Quote", nextAction:"Quote in progress", due:"This week", lastTouch:"Today", stale:false, industry:"Pharma OSD", oem:"Korsch", confidence:"Strong", status:"Strategic"},
+    {id:"A-006", account:"BioTech Solutions Inc", tier:"Tier 2", fit:"Scientific", rep:"Southeast", stage:"Technical", nextAction:"Call scheduled", due:"Tomorrow", lastTouch:"Yesterday", stale:false, industry:"Biotech", oem:"IMA", confidence:"Strong", status:"Active"}
+  ];
+
+  STORE.opportunities = [
+    {opp:"GNF - Tooling Reliability Upgrade", account:"Global Nuclear Fuel - Americas", owner:"Northeast", stage:"Technical", value:"$250k", prob:"55%", close:"Mar 2026"},
+    {opp:"BWX - Press Parts + Tooling", account:"BWX Technologies", owner:"Southeast", stage:"Engaged", value:"$100k", prob:"40%", close:"Apr 2026"},
+    {opp:"Acme - Compaction Study + Tooling", account:"Acme Nutraceutical Labs", owner:"Midwest", stage:"Identified", value:"$50k", prob:"25%", close:"May 2026"},
+    {opp:"PharmaCorp - Full Line Tooling", account:"PharmaCorp International", owner:"Northeast", stage:"Quote", value:"$500k", prob:"70%", close:"Feb 2026"},
+    {opp:"BioTech - Scientific Assessment", account:"BioTech Solutions Inc", owner:"Southeast", stage:"Technical", value:"$100k", prob:"55%", close:"Apr 2026"}
+  ];
+
+  const wk = weekKey();
+  STORE.activity = [
+    {rep:"Northeast", account:"Global Nuclear Fuel - Americas", touchType:"Meeting", lastTouch:"This week", weekKey:wk},
+    {rep:"Northeast", account:"Global Nuclear Fuel - Americas", touchType:"Email", lastTouch:"This week", weekKey:wk},
+    {rep:"Northeast", account:"PharmaCorp International", touchType:"Call", lastTouch:"Today", weekKey:wk},
+    {rep:"Southeast", account:"BWX Technologies", touchType:"Call", lastTouch:"This week", weekKey:wk},
+    {rep:"Southeast", account:"BWX Technologies", touchType:"Email", lastTouch:"This week", weekKey:wk},
+    {rep:"Southeast", account:"BioTech Solutions Inc", touchType:"Meeting", lastTouch:"Yesterday", weekKey:wk},
+    {rep:"Midwest", account:"Acme Nutraceutical Labs", touchType:"LinkedIn", lastTouch:"This week", weekKey:wk}
+  ];
+
+  refreshAccountSelect();
+  renderAll();
+  toast("Sample data loaded!");
+}
+
+function resetAll(){
+  if(!confirm("Reset all data?")) return;
+  STORE.accounts = [];
+  STORE.opportunities = [];
+  STORE.activity = [];
+  refreshAccountSelect();
+  renderAll();
+  toast("Data cleared");
+}
+
+function refreshAccountSelect(){
+  const s = $("accountSelect");
+  s.innerHTML = "";
+  const base = STORE.accounts.length ? STORE.accounts : [{account:"(Load examples first)", id:"X"}];
+  base.forEach(a=>{
+    const opt = document.createElement("option");
+    opt.value = a.account;
+    opt.textContent = a.account;
+    s.appendChild(opt);
+  });
+}
+
+function upsertAccountFromForm(payload){
+  let a = STORE.accounts.find(x=>x.account === payload.account);
+  if(!a){
+    const nextId = `A-${String(100 + STORE.accounts.length + 1).slice(-3)}`;
+    a = { id: nextId, account: payload.account };
+    STORE.accounts.push(a);
+  }
+  Object.assign(a, payload);
+  a.stale = (payload.lastTouch === "30+ days");
+}
+
+function addOrUpdateOpportunityFromForm(payload){
+  const oppName = `${payload.account} - ${payload.productLine} Opportunity`;
+  let o = STORE.opportunities.find(x=>x.account === payload.account);
+  if(!o){
+    o = { opp: oppName, account: payload.account };
+    STORE.opportunities.push(o);
+  }
+  o.owner = payload.rep;
+  o.stage = payload.stage;
+  o.value = payload.value;
+  o.prob = payload.prob;
+  o.close = payload.close;
+}
+
+function logActivity(payload){
+  STORE.activity.push({
+    rep: payload.rep,
+    account: payload.account,
+    touchType: payload.touchType,
+    lastTouch: payload.lastTouch,
+    weekKey: weekKey()
+  });
+}
+
+function guardrailsOk(payload){
+  return Boolean(payload.tier && payload.fit && payload.rep && payload.stage && payload.nextAction && payload.due);
+}
+
+function renderAccountsTable(){
+  const tb = $("tableAccounts").querySelector("tbody");
+  tb.innerHTML = "";
+  STORE.accounts.forEach(a=>{
+    const staleBadge = a.stale ? `<span class="badge warn">STALE</span>` : `<span class="badge good">OK</span>`;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${a.account}</b><div class="small" style="color:#97a6c0">${a.industry ?? ""} | ${a.oem ?? ""}</div></td>
+      <td>${a.tier ?? ""}</td>
+      <td>${a.fit ?? ""}</td>
+      <td>${a.rep ?? ""}</td>
+      <td>${a.stage ?? ""}</td>
+      <td>${a.nextAction ?? ""}</td>
+      <td>${a.due ?? ""}</td>
+      <td>${a.lastTouch ?? ""}</td>
+      <td>${staleBadge}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function renderOppsTable(){
+  const tb = $("tableOpps").querySelector("tbody");
+  tb.innerHTML = "";
+  STORE.opportunities.forEach(o=>{
+    const v = moneyFromValue(o.value);
+    const w = Math.round(v * probToNum(o.prob));
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${o.opp}</b></td>
+      <td>${o.account}</td>
+      <td>${o.owner}</td>
+      <td>${o.stage}</td>
+      <td>$${v.toLocaleString()}</td>
+      <td>${o.prob}</td>
+      <td>$${w.toLocaleString()}</td>
+      <td>${o.close}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function repWorkSnapshot(){
+  const rep = $("repSelect").value;
+  const myOpps = STORE.opportunities.filter(o=>o.owner === rep);
+  const myPipeline = myOpps.reduce((sum,o)=>sum + moneyFromValue(o.value), 0);
+  const myAccounts = STORE.accounts.filter(a=>a.rep === rep);
+  const myNext = myAccounts.filter(a=>a.nextAction && a.due).length;
+  const myStale = myAccounts.filter(a=>a.stale).length;
+
+  $("kpiMyPipeline").textContent = `$${myPipeline.toLocaleString()}`;
+  $("kpiMyAccounts").textContent = String(myAccounts.length);
+  $("kpiMyNext").textContent = String(myNext);
+  $("kpiMyStale").textContent = String(myStale);
+
+  const tb = $("tableMyWork").querySelector("tbody");
+  tb.innerHTML = "";
+  myAccounts.sort((a,b)=> (b.stale?1:0) - (a.stale?1:0)).slice(0,10).forEach(a=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${a.account}</b></td>
+      <td>${a.stage ?? ""}</td>
+      <td>${a.nextAction ?? ""}</td>
+      <td>${a.due ?? ""}</td>
+      <td>${a.lastTouch ?? ""}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function computeDashboard(){
+  const pipeline = STORE.opportunities.reduce((sum,o)=>sum + moneyFromValue(o.value), 0);
+  const forecast = STORE.opportunities.reduce((sum,o)=>sum + moneyFromValue(o.value)*probToNum(o.prob), 0);
+  const staleCount = STORE.accounts.filter(a=>a.stale).length;
+  const tier1 = STORE.accounts.filter(a=>a.tier === "Tier 1");
+  const tier1Covered = tier1.filter(a=>a.nextAction && a.due).length;
+  const coverage = tier1.length ? Math.round((tier1Covered / tier1.length) * 100) : 0;
+  const wk = weekKey();
+  const touches = STORE.activity.filter(a=>a.weekKey === wk).length;
+
+  $("kpiPipeline").textContent = `$${Math.round(pipeline).toLocaleString()}`;
+  $("kpiForecast").textContent = `$${Math.round(forecast).toLocaleString()}`;
+  $("kpiStale").textContent = String(staleCount);
+  $("kpiCoverage").textContent = `${coverage}%`;
+  $("kpiTouches").textContent = String(touches);
+
+  const stageTotals = {};
+  OPTIONS.stages.forEach(s=>stageTotals[s]=0);
+  STORE.opportunities.forEach(o=>{ stageTotals[o.stage] = (stageTotals[o.stage] ?? 0) + moneyFromValue(o.value); });
+
+  const repTotals = {};
+  OPTIONS.reps.forEach(r=>repTotals[r]=0);
+  STORE.opportunities.forEach(o=>{ repTotals[o.owner] = (repTotals[o.owner] ?? 0) + moneyFromValue(o.value); });
+
+  const actTotals = {};
+  OPTIONS.reps.forEach(r=>actTotals[r]=0);
+  STORE.activity.filter(a=>a.weekKey === wk).forEach(a=>{ actTotals[a.rep] = (actTotals[a.rep] ?? 0) + 1; });
+
+  renderBars("stageBars", stageTotals, pipeline || 1, true);
+  renderBars("repBars", repTotals, pipeline || 1, true);
+  renderBars("activityBars", actTotals, Math.max(...Object.values(actTotals), 1), false);
+  renderRisks(stageTotals, repTotals, staleCount, coverage);
+}
+
+function renderBars(containerId, totals, maxBase, moneyMode){
+  const el = $(containerId);
+  el.innerHTML = "";
+  const entries = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  entries.forEach(([name,val])=>{
+    const pct = Math.round((val / maxBase) * 100);
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.innerHTML = `
+      <div class="barTop">
+        <div class="barName">${name}</div>
+        <div class="barVal">${moneyMode ? "$"+Math.round(val).toLocaleString() : val}</div>
+      </div>
+      <div class="meter"><div class="fill" style="width:${Math.min(pct,100)}%"></div></div>
+    `;
+    el.appendChild(bar);
+  });
+}
+
+function renderRisks(stageTotals, repTotals, staleCount, coverage){
+  const list = $("riskList");
+  list.innerHTML = "";
+  const quoteVal = stageTotals["Quote"] ?? 0;
+  const technicalVal = stageTotals["Technical"] ?? 0;
+  const engagedVal = stageTotals["Engaged"] ?? 0;
+  const topRep = Object.entries(repTotals).sort((a,b)=>b[1]-a[1])[0];
+  const topRepName = topRep ? topRep[0] : "N/A";
+  const topRepVal = topRep ? topRep[1] : 0;
+
+  const risks = [];
+  if(staleCount > 0) risks.push({t:`${staleCount} stale accounts`, d:"Accounts with 30+ days since last touch are at risk of silent loss"});
+  if(coverage < 70) risks.push({t:`Tier 1 coverage at ${coverage}%`, d:"Tier 1 accounts without next steps are invisible risk"});
+  if(quoteVal > 0 && technicalVal === 0 && engagedVal === 0) risks.push({t:"Pipeline is late-stage heavy", d:"Good for forecast, risky if top deals slip"});
+  if(topRepVal > 0) risks.push({t:`Concentration: ${topRepName} holds $${Math.round(topRepVal).toLocaleString()}`, d:"If one territory slips, forecast shifts materially"});
+  if(risks.length === 0) risks.push({t:"No major red flags detected", d:"Keep weekly updates consistent so the dashboard stays truthful"});
+
+  risks.forEach(r=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<b>${r.t}</b> - ${r.d}`;
+    list.appendChild(li);
+  });
+}
+
+function renderAll(){
+  renderAccountsTable();
+  renderOppsTable();
+  repWorkSnapshot();
+  computeDashboard();
+}
+
+function setupTabs(){
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click", ()=> setView(btn.dataset.view));
+  });
+}
+
+function bindActions(){
+  $("btnLoadSamples").addEventListener("click", seedSamples);
+  $("btnReset").addEventListener("click", resetAll);
+  $("btnPrint").addEventListener("click", ()=> window.print());
+  $("repSelect").addEventListener("change", renderAll);
+
+  $("repForm").addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const payload = {
+      account: $("accountSelect").value,
+      territory: $("territorySelect").value,
+      rep: $("repSelect").value,
+      tier: $("tierSelect").value,
+      fit: $("fitSelect").value,
+      industry: $("industrySelect").value,
+      oem: $("oemSelect").value,
+      confidence: $("confidenceSelect").value,
+      status: $("statusSelect").value,
+      stage: $("stageSelect").value,
+      productLine: $("productLineSelect").value,
+      value: $("valueSelect").value,
+      prob: $("probSelect").value,
+      close: $("closeDateSelect").value,
+      nextAction: $("nextActionSelect").value,
+      due: $("dueDateSelect").value,
+      lastTouch: $("lastTouchSelect").value,
+      touchType: $("touchTypeSelect").value,
+      notes: $("notesSelect").value
+    };
+
+    const ok = guardrailsOk(payload);
+    const guard = $("repGuardrail");
+    if(!ok){
+      guard.textContent = "Blocked: Tier, Fit, Rep, Stage, Next Action, Due Date are required";
+      guard.style.color = "#f6c453";
+      return;
+    }
+
+    guard.textContent = "Saved: Boards updated + activity logged";
+    guard.style.color = "#3ddc97";
+
+    upsertAccountFromForm({
+      account: payload.account, tier: payload.tier, fit: payload.fit, rep: payload.rep,
+      stage: payload.stage, nextAction: payload.nextAction, due: payload.due, lastTouch: payload.lastTouch,
+      industry: payload.industry, oem: payload.oem, confidence: payload.confidence, status: payload.status
+    });
+
+    addOrUpdateOpportunityFromForm(payload);
+    logActivity(payload);
+    refreshAccountSelect();
+    renderAll();
+    toast("Update saved!");
+  });
+}
+
+function toast(msg){
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+function init(){
+  initDropdowns();
+  setupTabs();
+  bindActions();
+  refreshAccountSelect();
+  renderAll();
+}
+
+init();
+</script>
+</body>
+</html>

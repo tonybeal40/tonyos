@@ -1,0 +1,49 @@
+TonyOS Recovery Note
+====================
+
+MASTER GOOGLE SHEET URL:
+<PASTE YOUR GOOGLE SHEET URL HERE>
+
+APPS SCRIPT WEB APP URL:
+<PASTE YOUR DEPLOYED WEB APP URL HERE>
+(Starts with: https://script.google.com/macros/s/...)
+
+APPS SCRIPT DEPLOYMENT SETTINGS:
+- Execute as: Me
+- Access: Anyone with the link
+
+LOCAL PROJECT FOLDER:
+<EXAMPLE: C:\Users\Tony\TonyOS or ~/Documents/TonyOS>
+
+OPENAI API KEY LOCATION:
+Stored in .env file in TonyOS folder
+
+---
+
+SETUP CHECKLIST:
+
+[ ] 1. Downloaded TonyOS zip from Replit
+[ ] 2. Extracted to local folder
+[ ] 3. Created .env file with OPENAI_API_KEY
+[ ] 4. Installed Python dependencies (pip install -r requirements.txt)
+[ ] 5. Created Google Sheet for master data
+[ ] 6. Added Apps Script code (from docs/apps-script-endpoint.js)
+[ ] 7. Deployed Apps Script as Web App
+[ ] 8. Pasted Web App URL into TonyOS (click Live indicator)
+[ ] 9. Tested sync by saving a journal entry
+[ ] 10. (Optional) Set up desktop app (cd electron && npm install && npm start)
+
+---
+
+TABS THAT AUTO-CREATE IN YOUR SHEET:
+
+- Journal (entries, mood, gratitude, reflections)
+- CRM_Contacts (your connections)
+- CRM_Activity (outreach and follow-ups)
+- Budget (income and expenses)
+- Daily (daily command center)
+- Jobs (job search tracking)
+
+---
+
+NOTES:

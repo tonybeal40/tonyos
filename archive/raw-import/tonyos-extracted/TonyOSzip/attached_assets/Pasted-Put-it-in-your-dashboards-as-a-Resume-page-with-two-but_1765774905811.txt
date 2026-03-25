@@ -1,0 +1,258 @@
+Put it in your dashboards as a Resume page with two buttons:
+
+Print / Save as PDF (uses the browser’s built-in print dialog)
+
+Download PDF (optional later if you want server-side PDF generation)
+
+Since you’re running local at file:///.../cuban/index.html, the fastest and most reliable is Print to PDF.
+
+Where to put it
+
+Create this file:
+
+C:\Users\Tony Beal\Desktop\cuban\resume.html
+
+Then add a nav link in your index.html dashboard to open it.
+
+1) Resume page code
+
+Copy paste this into resume.html
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tony Beal Resume</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0c0d12;
+      --line:rgba(255,255,255,.10);
+      --text:#e9e9f1;
+      --muted:rgba(233,233,241,.68);
+      --hot:#ff2d55;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --radius:18px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1100px 700px at 20% 0%, rgba(255,45,85,.16), transparent 60%),
+                  radial-gradient(900px 600px at 85% 25%, rgba(32,227,162,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      padding:24px;
+    }
+    .wrap{max-width:920px;margin:0 auto}
+    .top{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      margin-bottom:14px;
+    }
+    .name{font-size:28px;font-weight:900;letter-spacing:.2px;margin:0}
+    .title{margin:6px 0 0;color:var(--muted);font-size:14px}
+    .btns{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:13px;
+    }
+    .btn.hot{background:rgba(255,45,85,.16);border-color:rgba(255,45,85,.35)}
+    .btn:hover{border-color:rgba(255,255,255,.22)}
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.25px;
+      text-transform:uppercase;
+      color:rgba(233,233,241,.85);
+    }
+    p{margin:0 0 12px; line-height:1.45; color:rgba(233,233,241,.92)}
+    .muted{color:var(--muted)}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chip{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.14);
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .role{font-weight:900;margin:0 0 6px}
+    ul{margin:8px 0 0 18px; padding:0}
+    li{margin:6px 0; color:rgba(233,233,241,.92); line-height:1.38}
+    .footer{margin-top:10px;color:var(--muted);font-size:12px}
+    .mono{font-family:var(--mono)}
+    /* Print styles */
+    @media print{
+      body{background:white;color:black;padding:0}
+      .btns, .backlink{display:none !important}
+      .card{box-shadow:none;border:none;border-radius:0}
+      .chip{border:1px solid #ddd;color:#222;background:#fff}
+      p, li, h2{color:#111}
+      .muted{color:#333}
+      .wrap{max-width:none;margin:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="top">
+      <div>
+        <h1 class="name">Tony Beal</h1>
+        <div class="title">Revenue Systems Builder | GTM Operator | AI-Driven RevOps Leader</div>
+        <div class="title muted">I design, build, and optimize revenue engines that combine traditional sales discipline with modern AI and automation. I turn chaos into clarity, activity into signal, and effort into outcomes.</div>
+      </div>
+
+      <div class="btns">
+        <button class="btn" onclick="history.back()">Back</button>
+        <button class="btn hot" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn" id="btnCopy">Copy Text</button>
+      </div>
+    </div>
+
+    <div class="card" id="resumeText">
+
+      <h2>Executive Summary</h2>
+      <p>Revenue operator with hands-on experience building end-to-end outbound and go-to-market systems for B2B companies. Known for designing scalable sales infrastructure, AI-assisted prospecting workflows, and executive dashboards that drive faster decisions.</p>
+      <p><b>I don’t chase tactics. I build systems that survive pressure, scrutiny, and scale.</b></p>
+
+      <div class="divider"></div>
+
+      <h2>Core Strengths</h2>
+      <div class="chips">
+        <span class="chip">Revenue Infrastructure</span>
+        <span class="chip">GTM Systems</span>
+        <span class="chip">AI-Assisted Outbound</span>
+        <span class="chip">Sales Navigator</span>
+        <span class="chip">Apollo.io</span>
+        <span class="chip">CRM & Dashboards</span>
+        <span class="chip">Challenger Sales</span>
+        <span class="chip">Executive Messaging</span>
+        <span class="chip">KPI & Signal Analysis</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Professional Experience</h2>
+
+      <p class="role">Revenue & RevOps Operator <span class="muted">| B2B Manufacturing & Services | Multiple Verticals</span></p>
+      <ul>
+        <li>Designed AI-powered outbound systems integrating LinkedIn Sales Navigator, Apollo.io, CRM workflows, and custom dashboards</li>
+        <li>Built structured prospecting engines targeting C-suite and senior decision-makers</li>
+        <li>Created revenue scorecards tracking activity, conversion, signal quality, and ROI</li>
+        <li>Applied first-principles analysis to eliminate low-signal activity</li>
+        <li>Aligned sales, marketing, and operations into a single measurable system</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <p class="role">Business Development & Revenue Leadership <span class="muted">| Manufacturing, Distribution & B2B Services</span></p>
+      <ul>
+        <li>Led outbound strategy focused on high-value accounts and decision-level access</li>
+        <li>Applied Challenger methodology to reframe buyer conversations</li>
+        <li>Translated complex offerings into simple executive value</li>
+        <li>Maintained disciplined pipeline hygiene and forecasting</li>
+        <li>Operated independently with ownership-level accountability</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <p class="role">AI & Systems Building</p>
+      <ul>
+        <li>Built a personal AI operating system to support research, outreach, and decision-making</li>
+        <li>Designed internal tools for activity tracking and performance visibility</li>
+        <li>Used AI as a force multiplier, not a replacement for fundamentals</li>
+        <li>Focused on reliability, repeatability, and human-in-the-loop execution</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2>Measurable Signals</h2>
+      <ul>
+        <li>Top 1% LinkedIn Social Selling Index performance</li>
+        <li>Proven ability to generate executive-level conversations</li>
+        <li>Track record of building systems leadership can trust</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2>Operating Philosophy</h2>
+      <ul>
+        <li>Build the system first, then scale people</li>
+        <li>If it doesn’t produce signal, remove it</li>
+        <li>Clarity beats complexity</li>
+        <li>Fundamentals still matter, even with AI</li>
+        <li>Execution wins under pressure</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2>Closing</h2>
+      <p>I operate best where outcomes matter, ownership is real, and execution is expected. If you need someone to build revenue infrastructure, not talk about it, I bring clarity, discipline, and leverage.</p>
+
+      <div class="footer">© Tony Beal | Revenue Systems & GTM Execution</div>
+    </div>
+
+    <div class="footer muted mono" style="margin-top:12px">
+      Tip: Click “Print / Save PDF” → choose “Microsoft Print to PDF” or “Save as PDF”
+    </div>
+  </div>
+
+  <script>
+    // Copy resume text to clipboard (clean text)
+    document.getElementById("btnCopy").addEventListener("click", async () => {
+      const el = document.getElementById("resumeText");
+      const text = el.innerText.replace(/\n{3,}/g, "\n\n").trim();
+      await navigator.clipboard.writeText(text);
+      const btn = document.getElementById("btnCopy");
+      btn.textContent = "Copied";
+      setTimeout(() => btn.textContent = "Copy Text", 900);
+    });
+  </script>
+</body>
+</html>
+
+2) Add it to your dashboard index.html
+
+Wherever your dashboard nav buttons/links are, add one:
+
+<a href="./resume.html" class="nav-link">Resume</a>
+
+
+If you use buttons:
+
+<button onclick="location.href='./resume.html'">Resume</button>
+
+3) How you print or send as PDF
+
+Open resume.html → click Print / Save PDF → choose:
+
+Microsoft Print to PDF (Windows)
+
+or Save as PDF in Chrome
+
+That produces a clean PDF you can email.
+
+If you want it inside the dashboard page (not separate)
+
+Tell me what your index.html nav looks like and I’ll embed it as a modal or a “Resume” tab inside the same page.
+
+If you paste the top section of your index.html where your menu is, I’ll tell you exactly where to drop the link.

@@ -1,0 +1,85 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: "2mb" }));
+
+const SYSTEM_PROMPT = `
+You are TonyOS Agent.
+Rules:
+- Be factual and practical.
+- If the user text is vague, ask ONE clarifying question.
+- No hype, no emojis.
+- Output in the required JSON format only.
+Required JSON keys:
+summary, patterns, next_actions, one_question
+patterns is an array of 3 short bullets
+next_actions is an array of 3 short bullets
+one_question is a single clarifying question or empty string
+`.trim();
+
+app.post("/agent/journal-insight", async (req, res) => {
+  try {
+    const { entry_text = "", title = "", category = "" } = req.body || {};
+    if (!entry_text.trim()) {
+      return res.json({ ok: false, message: "entry_text required" });
+    }
+
+    const prompt = `
+Title: ${title}
+Category: ${category}
+Journal entry:
+${entry_text}
+`.trim();
+
+    const out = await callOpenAI(prompt);
+    return res.json({ ok: true, ...out });
+  } catch (e) {
+    return res.status(500).json({ ok: false, message: String(e?.message || e) });
+  }
+});
+
+async function callOpenAI(userText) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("Missing OPENAI_API_KEY in .env");
+
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userText }
+      ],
+      response_format: { type: "json_object" }
+    })
+  });
+
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`OpenAI error: ${r.status} ${txt}`);
+  }
+
+  const data = await r.json();
+  const text = data.choices?.[0]?.message?.content || "{}";
+  let obj;
+  try { obj = JSON.parse(text); } catch { obj = { summary: text, patterns: [], next_actions: [], one_question: "" }; }
+
+  obj.patterns = Array.isArray(obj.patterns) ? obj.patterns.slice(0,3) : [];
+  obj.next_actions = Array.isArray(obj.next_actions) ? obj.next_actions.slice(0,3) : [];
+  obj.one_question = typeof obj.one_question === "string" ? obj.one_question : "";
+  obj.summary = typeof obj.summary === "string" ? obj.summary : "";
+
+  return obj;
+}
+
+const PORT = process.env.PORT || 6000;
+app.listen(PORT, () => {
+  console.log(`TonyOS Agent Server running on http://localhost:${PORT}`);
+});

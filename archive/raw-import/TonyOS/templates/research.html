@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS – Website Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-input: rgba(7,7,10,0.6);
+      --border: rgba(255,255,255,0.08);
+      --text-primary: #f5f7ff;
+      --text-muted: #8b91a8;
+      --accent: #e11d48;
+      --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --accent-orange: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-cyan: #06b6d4;
+    }
+    body { font-family: 'Inter', -apple-system, sans-serif; }
+    .analyzer-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: linear-gradient(145deg, rgba(15,17,24,0.96), rgba(10,10,16,0.98));
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(0,0,0,.55);
+      padding: 32px;
+      min-height: calc(100vh - 48px);
+    }
+    .analyzer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .analyzer-header h1 { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+    .analyzer-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    .back-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); border-radius: 999px;
+      color: #b1b6c8; font-size: 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
+    .mode-tabs {
+      display: flex; gap: 10px; margin-bottom: 24px;
+    }
+    .mode-tab {
+      padding: 12px 24px; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text-muted); cursor: pointer;
+      font-size: 14px; font-weight: 600; transition: all 0.2s;
+    }
+    .mode-tab:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+    .mode-tab.active { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+    .mode-content { display: none; }
+    .mode-content.active { display: block; }
+    .scanner-layout { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+    @media (max-width: 900px) { .scanner-layout { grid-template-columns: 1fr; } }
+    .input-panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+    }
+    .input-panel h2 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: block; font-size: 12px; font-weight: 600; color: var(--text-muted);
+      margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .input-group input, .input-group textarea {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px; color: var(--text-primary);
+      font-size: 14px; font-family: inherit;
+    }
+    .input-group input:focus, .input-group textarea:focus { outline: none; border-color: var(--accent-blue); }
+    .input-group textarea { min-height: 80px; resize: vertical; }
+    .scan-btn {
+      width: 100%; padding: 14px 24px; border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff;
+      font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+      transition: all 0.2s; box-shadow: 0 8px 24px rgba(59,130,246,0.25);
+    }
+    .scan-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(59,130,246,0.35); }
+    .scan-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .results-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; overflow-y: auto; max-height: calc(100vh - 200px); }
+    .results-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .results-empty .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    .scan-result { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .result-section { margin-bottom: 24px; background: rgba(255,255,255,0.02); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+    .result-section h3 {
+      font-size: 14px; font-weight: 700; color: var(--accent-blue);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .result-item { background: var(--bg-input); border-radius: 8px; padding: 12px; }
+    .result-item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .result-item .value { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+    .persona-card { background: var(--bg-input); border-radius: 10px; padding: 16px; }
+    .persona-card h4 { font-size: 13px; font-weight: 600; color: var(--accent-purple); margin-bottom: 12px; }
+    .persona-card .field { margin-bottom: 8px; }
+    .persona-card .field-label { font-size: 11px; color: var(--text-muted); }
+    .persona-card .field-value { font-size: 13px; color: var(--text-primary); }
+    .signal-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+    }
+    .signal-high { background: rgba(34,197,94,0.15); color: var(--accent-green); }
+    .signal-medium { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+    .signal-low { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .strategy-box { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(168,85,247,0.1)); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 20px; }
+    .strategy-box h4 { font-size: 14px; font-weight: 700; color: var(--accent-blue); margin-bottom: 12px; }
+    .strategy-box .first-move { font-size: 15px; color: var(--text-primary); line-height: 1.6; margin-top: 12px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; }
+    .cta-box { background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(6,182,212,0.1)); border: 1px solid rgba(34,197,94,0.3); border-radius: 12px; padding: 20px; margin-top: 16px; }
+    .cta-language { font-size: 16px; color: var(--text-primary); font-weight: 500; font-style: italic; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-top: 8px; }
+    .betting-box { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1)); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 20px; }
+    .betting-decision { font-size: 18px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+    .betting-decision.double_down { color: var(--accent-green); }
+    .betting-decision.adjust { color: var(--accent-orange); }
+    .betting-decision.stop { color: #ef4444; }
+    .competitors-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .competitor-tag { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 13px; color: var(--text-primary); }
+    .loading-state { text-align: center; padding: 60px; }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .export-btn { padding: 10px 20px; background: var(--accent-green); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-right: 10px; }
+    .export-btn:hover { opacity: 0.9; }
+    .history-list { margin-top: 20px; }
+    .history-item { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .history-item:hover { border-color: var(--accent-blue); }
+    .history-item .company { font-weight: 600; color: var(--text-primary); }
+    .history-item .date { font-size: 12px; color: var(--text-muted); }
+    .old-analyzer { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+    @media (max-width: 850px) { .old-analyzer { grid-template-columns: 1fr; } }
+    .run-btn { width: 100%; padding: 14px 24px; border-radius: 12px; background: linear-gradient(135deg, #e11d48, #ff3b6a); color: #fff; font-weight: 700; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(225,29,72,0.25); margin-top: 8px; }
+    .run-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(225,29,72,0.35); }
+    .run-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .output-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .output-content { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 20px; min-height: 300px; font-size: 14px; line-height: 1.7; color: #d1d5e4; }
+    .output-content h3 { color: var(--accent); font-size: 14px; font-weight: 700; margin: 16px 0 8px 0; text-transform: uppercase; }
+    .copy-btn { padding: 6px 14px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 8px; color: #b1b6c8; font-size: 12px; cursor: pointer; }
+    .tips-section { margin-top: 20px; padding: 16px; background: rgba(225,29,72,0.08); border: 1px solid rgba(225,29,72,0.15); border-radius: 12px; }
+    .tips-section h3 { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+    .tips-section ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="analyzer-shell">
+    <header class="analyzer-header">
+      <div>
+        <h1>Website Analyzer</h1>
+        <p>Business intelligence scanner for any company worldwide</p>
+      </div>
+      <a href="/" class="back-btn"><span>←</span><span>Back to TonyOS</span></a>
+    </header>
+
+    <div class="mode-tabs">
+      <div class="mode-tab active" onclick="switchMode('scanner')">🔍 Business Scanner</div>
+      <div class="mode-tab" onclick="switchMode('research')">📚 Research Mode</div>
+    </div>
+
+    <!-- SCANNER MODE -->
+    <div id="scannerMode" class="mode-content active">
+      <div class="scanner-layout">
+        <div class="input-panel">
+          <h2>🔍 Scan Any Website</h2>
+          <div class="input-group">
+            <label>Website URL</label>
+            <input type="text" id="scan-url" placeholder="https://example.com">
+          </div>
+          <button id="scan-btn" class="scan-btn" onclick="runScan()">Run Business Scan</button>
+          
+          <div class="history-list" id="scanHistory">
+            <h3 style="font-size: 13px; color: var(--text-muted); margin: 20px 0 10px;">Recent Scans</h3>
+          </div>
+        </div>
+
+        <div class="results-panel" id="scanResults">
+          <div class="results-empty">
+            <div class="icon">🎯</div>
+            <p>Enter a URL and click "Run Business Scan" to get decision-ready intelligence.</p>
+            <p style="margin-top: 12px; font-size: 13px;">Analyzes: StoryBrand, Personas, Competition, Buying Signals, Sales Strategy, ROI Logic</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESEARCH MODE (original) -->
+    <div id="researchMode" class="mode-content">
+      <div class="old-analyzer">
+        <div class="input-panel">
+          <div class="input-group">
+            <label>Topic or Question</label>
+            <textarea id="research-topic" rows="4" placeholder="Example: Compare HubSpot vs lower-cost CRMs for a 3-person outbound team using AI."></textarea>
+          </div>
+          <div class="input-group">
+            <label>Source URLs (optional)</label>
+            <textarea id="research-urls" rows="4" placeholder="Paste 1 URL per line:&#10;https://example.com/article-1"></textarea>
+          </div>
+          <button id="run-btn" class="run-btn">Run Analysis</button>
+          <div class="tips-section">
+            <h3>Tips for better results</h3>
+            <ul>
+              <li>Be specific about what you want to learn</li>
+              <li>Add source URLs for more accurate analysis</li>
+              <li>Ask about competitors, pricing, or use cases</li>
+            </ul>
+          </div>
+        </div>
+        <div class="output-panel">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+            <h2 style="font-size: 16px; font-weight: 700;">Research Briefing</h2>
+            <button id="copy-btn" class="copy-btn" style="display: none;">Copy to clipboard</button>
+          </div>
+          <div id="output" class="output-content">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+              <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+              <p>Enter a topic and click "Run Analysis"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentScan = null;
+    let scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+
+    function switchMode(mode) {
+      document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`[onclick="switchMode('${mode}')"]`).classList.add('active');
+      document.getElementById(mode + 'Mode').classList.add('active');
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('scanHistory');
+      if (scanHistory.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No previous scans</p>';
+        return;
+      }
+      container.innerHTML = '<h3 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Recent Scans</h3>' +
+        scanHistory.slice(0, 5).map((s, i) => `
+          <div class="history-item" onclick="loadScan(${i})">
+            <span class="company">${s.company?.name || 'Unknown'}</span>
+            <span class="date">${new Date(s._meta?.scanned_at).toLocaleDateString()}</span>
+          </div>
+        `).join('');
+    }
+
+    function loadScan(idx) {
+      currentScan = scanHistory[idx];
+      renderScanResults(currentScan);
+    }
+
+    async function runScan() {
+      const url = document.getElementById('scan-url').value.trim();
+      if (!url) {
+        alert('Please enter a URL');
+        return;
+      }
+
+      const btn = document.getElementById('scan-btn');
+      const resultsPanel = document.getElementById('scanResults');
+      
+      btn.disabled = true;
+      btn.textContent = 'Scanning...';
+      resultsPanel.innerHTML = '<div class="loading-state"><div class="spinner"></div><p style="color: var(--text-muted);">Analyzing website...</p><p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">This may take 15-30 seconds</p></div>';
+
+      try {
+        const res = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await res.json();
+        
+        if (data.error) {
+          resultsPanel.innerHTML = `<div class="results-empty"><div class="icon">⚠️</div><p style="color: #ef4444;">${data.error}</p></div>`;
+          return;
+        }
+
+        currentScan = data;
+        scanHistory.unshift(data);
+        scanHistory = scanHistory.slice(0, 10);
+        localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
+        renderHistory();
+        renderScanResults(data);
+
+      } catch (err) {
+        resultsPanel.innerHTML = `<div class="results-empty"><div class="icon">❌</div><p style="color: #ef4444;">Scan failed: ${err.message}</p></div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Run Business Scan';
+      }
+    }
+
+    function getSignalClass(level) {
+      return 'signal-' + (level || 'medium').toLowerCase();
+    }
+
+    function renderScanResults(scan) {
+      const panel = document.getElementById('scanResults');
+      
+      panel.innerHTML = `
+        <div class="scan-result">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">${scan.company?.name || 'Company'}</h2>
+              <p style="color: var(--text-muted);">${scan.company?.industry || ''} • ${scan.company?.size_estimate || ''}</p>
+            </div>
+            <button class="export-btn" onclick="exportScan()">📥 Export JSON</button>
+          </div>
+
+          <!-- Executive Summary -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(59,130,246,0.08)); border: 2px solid rgba(34,197,94,0.4);">
+            <h3 style="color: #22c55e; font-size: 16px;">📋 EXECUTIVE SUMMARY</h3>
+            <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">${scan.executive_summary?.one_liner || 'Analysis pending'}</div>
+            <div style="color: var(--text-primary); line-height: 1.7; margin-bottom: 16px;">${scan.executive_summary?.strategic_position || ''}</div>
+            <div class="result-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="result-item" style="border-left: 4px solid #22c55e;">
+                <div class="label">Key Insight</div>
+                <div class="value" style="font-size: 14px;">${scan.executive_summary?.key_insight || 'unclear'}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Recommendation</div>
+                <span class="signal-badge ${scan.executive_summary?.recommendation === 'engage' ? 'signal-high' : scan.executive_summary?.recommendation === 'avoid' ? 'signal-low' : 'signal-medium'}" style="font-size: 14px; padding: 8px 16px;">${(scan.executive_summary?.recommendation || 'UNCLEAR').toUpperCase()}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Company Profile -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.08)); border-color: rgba(59,130,246,0.3);">
+            <h3 style="color: #3b82f6;">🏢 Company Profile</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="result-item"><div class="label">Size</div><div class="value">${scan.company?.size_estimate || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Revenue Range</div><div class="value">${scan.company?.revenue_range || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Employees</div><div class="value">${scan.company?.employee_count || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Founded</div><div class="value">${scan.company?.founding_year || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Headquarters</div><div class="value">${scan.company?.headquarters || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Industry</div><div class="value">${scan.company?.industry || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Growth Stage</div><div class="value" style="text-transform: uppercase;">${scan.company?.growth_stage || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Business Model</div><div class="value" style="text-transform: uppercase;">${scan.company?.business_model || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Porter's Five Forces -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(236,72,153,0.08)); border-color: rgba(168,85,247,0.3);">
+            <h3 style="color: #a855f7;">📊 Porter's Five Forces</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(5, 1fr);">
+              <div class="result-item" style="text-align: center;">
+                <div class="label">New Entrants</div>
+                <span class="signal-badge ${getSignalClass(scan.porters_five_forces?.threat_of_new_entrants)}">${scan.porters_five_forces?.threat_of_new_entrants || '?'}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Substitutes</div>
+                <span class="signal-badge ${getSignalClass(scan.porters_five_forces?.threat_of_substitutes)}">${scan.porters_five_forces?.threat_of_substitutes || '?'}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Supplier Power</div>
+                <span class="signal-badge ${getSignalClass(scan.porters_five_forces?.supplier_power)}">${scan.porters_five_forces?.supplier_power || '?'}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Buyer Power</div>
+                <span class="signal-badge ${getSignalClass(scan.porters_five_forces?.buyer_power)}">${scan.porters_five_forces?.buyer_power || '?'}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Rivalry</div>
+                <span class="signal-badge ${getSignalClass(scan.porters_five_forces?.competitive_rivalry)}">${scan.porters_five_forces?.competitive_rivalry || '?'}</span>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 16px;">
+              <span class="label" style="margin-right: 8px;">Industry Attractiveness:</span>
+              <span class="signal-badge ${scan.porters_five_forces?.industry_attractiveness === 'attractive' ? 'signal-high' : scan.porters_five_forces?.industry_attractiveness === 'unattractive' ? 'signal-low' : 'signal-medium'}" style="font-size: 14px;">${(scan.porters_five_forces?.industry_attractiveness || 'UNKNOWN').toUpperCase()}</span>
+            </div>
+          </div>
+
+          <!-- SWOT Analysis -->
+          <div class="result-section">
+            <h3>📈 SWOT Analysis</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="result-item" style="border-left: 4px solid #22c55e;">
+                <div class="label" style="color: #22c55e;">Strengths</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.swot?.strengths || []).map(s => '<li style="margin-bottom: 4px;">' + s + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+              <div class="result-item" style="border-left: 4px solid #ef4444;">
+                <div class="label" style="color: #ef4444;">Weaknesses</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.swot?.weaknesses || []).map(w => '<li style="margin-bottom: 4px;">' + w + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+              <div class="result-item" style="border-left: 4px solid #3b82f6;">
+                <div class="label" style="color: #3b82f6;">Opportunities</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.swot?.opportunities || []).map(o => '<li style="margin-bottom: 4px;">' + o + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+              <div class="result-item" style="border-left: 4px solid #f59e0b;">
+                <div class="label" style="color: #f59e0b;">Threats</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.swot?.threats || []).map(t => '<li style="margin-bottom: 4px;">' + t + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Market Analysis -->
+          <div class="result-section">
+            <h3>🌍 Market Analysis</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="result-item"><div class="label">Total Addressable Market</div><div class="value">${scan.market_analysis?.total_addressable_market || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Serviceable Market</div><div class="value">${scan.market_analysis?.serviceable_market || 'unclear'}</div></div>
+              <div class="result-item">
+                <div class="label">Market Growth</div>
+                <span class="signal-badge ${scan.market_analysis?.market_growth === 'growing' ? 'signal-high' : scan.market_analysis?.market_growth === 'declining' ? 'signal-low' : 'signal-medium'}">${scan.market_analysis?.market_growth || 'unclear'}</span>
+              </div>
+              <div class="result-item"><div class="label">Market Maturity</div><div class="value" style="text-transform: uppercase;">${scan.market_analysis?.market_maturity || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Regulatory Environment</div><div class="value" style="text-transform: uppercase;">${scan.market_analysis?.regulatory_environment || 'unclear'}</div></div>
+              <div class="result-item">
+                <div class="label">Market Trends</div>
+                <div class="competitors-list">${(scan.market_analysis?.market_trends || []).map(t => '<span class="competitor-tag">' + t + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Value Chain -->
+          <div class="result-section">
+            <h3>🔗 Value Chain Analysis</h3>
+            <div class="result-grid">
+              <div class="result-item"><div class="label">Primary Value Creation</div><div class="value">${scan.value_chain?.primary_value_creation || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Value Capture Method</div><div class="value">${scan.value_chain?.value_capture_method || 'unclear'}</div></div>
+              <div class="result-item">
+                <div class="label">Key Activities</div>
+                <div class="competitors-list">${(scan.value_chain?.key_activities || []).map(a => '<span class="competitor-tag">' + a + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Key Resources</div>
+                <div class="competitors-list">${(scan.value_chain?.key_resources || []).map(r => '<span class="competitor-tag">' + r + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+              <div class="result-item" style="grid-column: span 2;">
+                <div class="label">Key Partnerships</div>
+                <div class="competitors-list">${(scan.value_chain?.key_partnerships || []).map(p => '<span class="competitor-tag">' + p + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Assessment -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.08)); border-color: rgba(239,68,68,0.3);">
+            <h3 style="color: #ef4444;">⚠️ Risk Assessment</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="result-item">
+                <div class="label">Business Risks</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 12px; color: var(--text-primary);">
+                  ${(scan.risk_assessment?.business_risks || []).map(r => '<li style="margin-bottom: 4px;">' + r + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+              <div class="result-item">
+                <div class="label">Market Risks</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 12px; color: var(--text-primary);">
+                  ${(scan.risk_assessment?.market_risks || []).map(r => '<li style="margin-bottom: 4px;">' + r + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+              <div class="result-item">
+                <div class="label">Execution Risks</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 12px; color: var(--text-primary);">
+                  ${(scan.risk_assessment?.execution_risks || []).map(r => '<li style="margin-bottom: 4px;">' + r + '</li>').join('') || '<li>None identified</li>'}
+                </ul>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 16px;">
+              <span class="label" style="margin-right: 8px;">Overall Risk Level:</span>
+              <span class="signal-badge ${getSignalClass(scan.risk_assessment?.overall_risk_level)}" style="font-size: 14px;">${(scan.risk_assessment?.overall_risk_level || 'UNKNOWN').toUpperCase()}</span>
+            </div>
+          </div>
+
+          <!-- StoryBrand -->
+          <div class="result-section">
+            <h3>📖 StoryBrand Framework</h3>
+            <div class="result-grid">
+              <div class="result-item"><div class="label">Customer</div><div class="value">${scan.storybrand?.customer || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Problem</div><div class="value">${scan.storybrand?.problem || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Desire</div><div class="value">${scan.storybrand?.desire || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Blockers</div><div class="value">${scan.storybrand?.blockers || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 2;"><div class="label">Success Definition</div><div class="value">${scan.storybrand?.success_definition || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Personas -->
+          <div class="result-section">
+            <h3>👥 Buying Committee</h3>
+            <div class="result-grid">
+              <div class="persona-card">
+                <h4>🎯 Decision Maker</h4>
+                <div class="field"><div class="field-label">Role</div><div class="field-value">${scan.personas?.decision_maker?.role || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Cares About</div><div class="field-value">${scan.personas?.decision_maker?.cares_about || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Fears</div><div class="field-value">${scan.personas?.decision_maker?.fears || 'unclear'}</div></div>
+              </div>
+              <div class="persona-card">
+                <h4>⭐ Champion</h4>
+                <div class="field"><div class="field-label">Role</div><div class="field-value">${scan.personas?.champion?.role || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Cares About</div><div class="field-value">${scan.personas?.champion?.cares_about || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Fears</div><div class="field-value">${scan.personas?.champion?.fears || 'unclear'}</div></div>
+              </div>
+              <div class="persona-card">
+                <h4>🚫 Blocker</h4>
+                <div class="field"><div class="field-label">Role</div><div class="field-value">${scan.personas?.blocker?.role || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Cares About</div><div class="field-value">${scan.personas?.blocker?.cares_about || 'unclear'}</div></div>
+                <div class="field"><div class="field-label">Fears</div><div class="field-value">${scan.personas?.blocker?.fears || 'unclear'}</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tech Stack & Hiring -->
+          <div class="result-section">
+            <h3>🔧 Tech Stack & Growth Signals</h3>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Platforms Detected</div>
+                <div class="competitors-list">${(scan.tech_stack?.platforms_detected || []).map(p => '<span class="competitor-tag">' + p + '</span>').join('') || '<span class="value">None detected</span>'}</div>
+              </div>
+              <div class="result-item"><div class="label">Infrastructure</div><div class="value">${scan.tech_stack?.infrastructure_hints || 'unclear'}</div></div>
+              <div class="result-item">
+                <div class="label">Growing?</div>
+                <span class="signal-badge ${scan.hiring_signals?.is_growing === 'yes' ? 'signal-high' : scan.hiring_signals?.is_growing === 'no' ? 'signal-low' : 'signal-medium'}">${scan.hiring_signals?.is_growing || 'unclear'}</span>
+              </div>
+              <div class="result-item"><div class="label">Growth Indicators</div><div class="value">${scan.hiring_signals?.growth_indicators || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 2;">
+                <div class="label">Open Roles</div>
+                <div class="competitors-list">${(scan.hiring_signals?.open_roles || []).map(r => '<span class="competitor-tag">' + r + '</span>').join('') || '<span class="value">None visible</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proof Points -->
+          <div class="result-section">
+            <h3>📜 Proof Points</h3>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Customer Logos</div>
+                <div class="competitors-list">${(scan.proof_points?.customer_logos || []).map(c => '<span class="competitor-tag">' + c + '</span>').join('') || '<span class="value">None visible</span>'}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Case Studies</div>
+                <span class="signal-badge ${scan.proof_points?.case_studies === 'yes' ? 'signal-high' : 'signal-low'}">${scan.proof_points?.case_studies || 'no'}</span>
+              </div>
+              <div class="result-item">
+                <div class="label">Testimonials</div>
+                <span class="signal-badge ${scan.proof_points?.testimonials === 'yes' ? 'signal-high' : 'signal-low'}">${scan.proof_points?.testimonials || 'no'}</span>
+              </div>
+              <div class="result-item" style="grid-column: span 2;">
+                <div class="label">Metrics Claimed</div>
+                <div class="competitors-list">${(scan.proof_points?.metrics_claimed || []).map(m => '<span class="competitor-tag">' + m + '</span>').join('') || '<span class="value">None claimed</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing & Budget -->
+          <div class="result-section">
+            <h3>💵 Pricing & Budget Signals</h3>
+            <div class="result-grid">
+              <div class="result-item"><div class="label">Pricing Type</div><div class="value" style="text-transform: uppercase;">${scan.pricing_model?.pricing_type || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Price Transparency</div><div class="value" style="text-transform: uppercase;">${scan.pricing_model?.price_transparency || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Target Budget</div><div class="value">${scan.pricing_model?.target_budget || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Target Segment</div><div class="value" style="text-transform: uppercase;">${scan.budget_signals?.target_segment || 'unclear'}</div></div>
+              <div class="result-item">
+                <div class="label">Price Sensitivity</div>
+                <span class="signal-badge ${getSignalClass(scan.budget_signals?.price_sensitivity)}">${scan.budget_signals?.price_sensitivity || 'unclear'}</span>
+              </div>
+              <div class="result-item"><div class="label">Investment Capacity</div><div class="value">${scan.budget_signals?.investment_capacity || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Differentiation -->
+          <div class="result-section">
+            <h3>⚡ Differentiation</h3>
+            <div class="result-grid">
+              <div class="result-item" style="grid-column: span 2;"><div class="label">Stated Positioning</div><div class="value">${scan.differentiation?.stated_positioning || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Category They Own</div><div class="value">${scan.differentiation?.category_they_own || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 3;">
+                <div class="label">Unique Claims</div>
+                <div class="competitors-list">${(scan.differentiation?.unique_claims || []).map(c => '<span class="competitor-tag">' + c + '</span>').join('') || '<span class="value">None stated</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Competition -->
+          <div class="result-section">
+            <h3>⚔️ Competition</h3>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Explicit Competitors</div>
+                <div class="competitors-list">${(scan.competition?.explicit_competitors || []).map(c => '<span class="competitor-tag">' + c + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Implicit Competitors</div>
+                <div class="competitors-list">${(scan.competition?.implicit_competitors || []).map(c => '<span class="competitor-tag">' + c + '</span>').join('') || '<span class="value">None identified</span>'}</div>
+              </div>
+              <div class="result-item"><div class="label">Competitive Posture</div><div class="value">${scan.competition?.competitive_posture || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Exploit Angle</div><div class="value">${scan.competition?.exploit_angle || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Urgency -->
+          <div class="result-section">
+            <h3>⏰ Urgency Indicators</h3>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Urgency Level</div>
+                <span class="signal-badge ${getSignalClass(scan.urgency_indicators?.urgency_level)}">${scan.urgency_indicators?.urgency_level || 'none'}</span>
+              </div>
+              <div class="result-item"><div class="label">Trigger Event</div><div class="value">${scan.urgency_indicators?.trigger_event || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 2;">
+                <div class="label">Time-Sensitive Triggers</div>
+                <div class="competitors-list">${(scan.urgency_indicators?.time_sensitive_triggers || []).map(t => '<span class="competitor-tag">' + t + '</span>').join('') || '<span class="value">None detected</span>'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Strategy -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(236,72,153,0.08)); border-color: rgba(168,85,247,0.3);">
+            <h3 style="color: #a855f7;">📞 Contact Strategy</h3>
+            <div class="result-grid">
+              <div class="result-item"><div class="label">Best Entry Point</div><div class="value">${scan.contact_strategy?.best_entry_point || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Gatekeepers</div><div class="value">${scan.contact_strategy?.gatekeepers || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 2;"><div class="label">Warm Path</div><div class="value">${scan.contact_strategy?.warm_path || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Objection Prediction -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.08)); border-color: rgba(239,68,68,0.3);">
+            <h3 style="color: #ef4444;">🛡️ Objection Prediction</h3>
+            <div class="result-grid">
+              <div class="result-item" style="grid-column: span 2;">
+                <div class="label">Likely Objections</div>
+                <div class="competitors-list">${(scan.objection_prediction?.likely_objections || []).map(o => '<span class="competitor-tag" style="border-color: rgba(239,68,68,0.3);">' + o + '</span>').join('') || '<span class="value">None predicted</span>'}</div>
+              </div>
+              <div class="result-item"><div class="label">Hidden Concerns</div><div class="value">${scan.objection_prediction?.hidden_concerns || 'unclear'}</div></div>
+              <div class="result-item" style="grid-column: span 3;"><div class="label">Preemptive Response</div><div class="value" style="color: #22c55e;">${scan.objection_prediction?.preemptive_response || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Buying Signals -->
+          <div class="result-section">
+            <h3>📊 Buying Signals</h3>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Readiness</div>
+                <span class="signal-badge ${getSignalClass(scan.buying_signals?.readiness)}">${scan.buying_signals?.readiness || 'unknown'}</span>
+              </div>
+              <div class="result-item">
+                <div class="label">Decision Friction</div>
+                <span class="signal-badge ${getSignalClass(scan.buying_signals?.decision_friction)}">${scan.buying_signals?.decision_friction || 'unknown'}</span>
+              </div>
+              <div class="result-item">
+                <div class="label">Silence Risk</div>
+                <span class="signal-badge ${getSignalClass(scan.buying_signals?.silence_risk)}">${scan.buying_signals?.silence_risk || 'unknown'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROI Logic -->
+          <div class="result-section">
+            <h3>💰 ROI Logic</h3>
+            <div class="result-grid">
+              <div class="result-item"><div class="label">Current Cost</div><div class="value">${scan.roi_logic?.current_cost || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Delay Cost</div><div class="value">${scan.roi_logic?.delay_cost || 'unclear'}</div></div>
+              <div class="result-item"><div class="label">Upside If Fixed</div><div class="value">${scan.roi_logic?.upside_if_fixed || 'unclear'}</div></div>
+            </div>
+          </div>
+
+          <!-- Sales Strategy -->
+          <div class="result-section">
+            <h3>🎯 Sales Strategy</h3>
+            <div class="strategy-box">
+              <div class="result-grid" style="margin-bottom: 16px;">
+                <div class="result-item"><div class="label">Primary Angle</div><div class="value" style="text-transform: uppercase;">${scan.sales_strategy?.primary_angle || 'unclear'}</div></div>
+                <div class="result-item"><div class="label">Recommended Channel</div><div class="value" style="text-transform: uppercase;">${scan.sales_strategy?.recommended_channel || 'unclear'}</div></div>
+              </div>
+              <h4>First Move</h4>
+              <div class="first-move">${scan.sales_strategy?.first_move || 'No specific recommendation'}</div>
+            </div>
+
+            <div class="cta-box">
+              <div class="result-item" style="background: transparent; padding: 0;">
+                <div class="label">CTA Type</div>
+                <div class="value" style="text-transform: uppercase; margin-bottom: 8px;">${scan.cta_strategy?.cta_type || 'unclear'}</div>
+              </div>
+              <div class="label">Suggested CTA Language</div>
+              <div class="cta-language">"${scan.cta_strategy?.cta_language || 'No suggestion'}"</div>
+            </div>
+          </div>
+
+          <!-- Strategic Recommendations -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(6,182,212,0.08)); border: 2px solid rgba(34,197,94,0.5);">
+            <h3 style="color: #22c55e; font-size: 16px;">🎯 STRATEGIC RECOMMENDATIONS</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Should Engage</div>
+                <span class="signal-badge ${scan.strategic_recommendations?.should_engage === 'yes' ? 'signal-high' : scan.strategic_recommendations?.should_engage === 'no' ? 'signal-low' : 'signal-medium'}" style="font-size: 14px;">${(scan.strategic_recommendations?.should_engage || 'UNCLEAR').toUpperCase()}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Priority Level</div>
+                <span class="signal-badge ${getSignalClass(scan.strategic_recommendations?.priority_level)}" style="font-size: 14px;">${(scan.strategic_recommendations?.priority_level || 'UNKNOWN').toUpperCase()}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Success Probability</div>
+                <span class="signal-badge ${getSignalClass(scan.strategic_recommendations?.success_probability)}" style="font-size: 14px;">${(scan.strategic_recommendations?.success_probability || 'UNKNOWN').toUpperCase()}</span>
+              </div>
+              <div class="result-item" style="text-align: center;">
+                <div class="label">Effort to Win</div>
+                <span class="signal-badge ${scan.strategic_recommendations?.effort_to_win === 'low' ? 'signal-high' : scan.strategic_recommendations?.effort_to_win === 'high' ? 'signal-low' : 'signal-medium'}" style="font-size: 14px;">${(scan.strategic_recommendations?.effort_to_win || 'UNKNOWN').toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="result-item" style="margin-bottom: 16px;">
+              <div class="label">Engagement Rationale</div>
+              <div class="value" style="font-size: 14px; line-height: 1.6;">${scan.strategic_recommendations?.engagement_rationale || 'unclear'}</div>
+            </div>
+            <div class="result-item">
+              <div class="label" style="color: #22c55e;">Recommended Actions (Priority Order)</div>
+              <ol style="margin: 8px 0 0; padding-left: 20px; font-size: 14px; color: var(--text-primary);">
+                ${(scan.strategic_recommendations?.recommended_actions || []).map(a => '<li style="margin-bottom: 8px;">' + a + '</li>').join('') || '<li>None specified</li>'}
+              </ol>
+            </div>
+          </div>
+
+          <!-- Betting Questions -->
+          <div class="result-section">
+            <h3>🎲 Decision Summary</h3>
+            <div class="betting-box">
+              <div class="betting-decision ${scan.betting_questions?.next_decision || ''}">${scan.betting_questions?.next_decision?.replace('_', ' ') || 'UNKNOWN'}</div>
+              <div class="result-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 12px;">
+                <div class="result-item" style="background: transparent; padding: 0;">
+                  <div class="label">Perfect Outcome Unlocks</div>
+                  <div class="value">${scan.betting_questions?.perfect_outcome_unlocks?.replace('_', ' ') || 'unclear'}</div>
+                </div>
+                <div class="result-item" style="background: transparent; padding: 0;">
+                  <div class="label">Confidence Level</div>
+                  <span class="signal-badge ${getSignalClass(scan.betting_questions?.confidence_level)}">${(scan.betting_questions?.confidence_level || 'unknown').toUpperCase()}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Post-Discovery Actions -->
+          <div class="result-section" style="background: linear-gradient(135deg, rgba(225,29,72,0.08), rgba(168,85,247,0.08)); border-color: rgba(225,29,72,0.3);">
+            <h3 style="color: #e11d48;">🎯 Post-Discovery Actions</h3>
+            <div class="result-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="result-item">
+                <div class="label" style="color: #22c55e;">✓ Must Change</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.post_discovery_actions?.must_change || []).map(item => '<li style="margin-bottom: 6px;">' + item + '</li>').join('')}
+                </ul>
+              </div>
+              <div class="result-item">
+                <div class="label" style="color: #3b82f6;">⚡ Must Build</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.post_discovery_actions?.must_build || []).map(item => '<li style="margin-bottom: 6px;">' + item + '</li>').join('')}
+                </ul>
+              </div>
+              <div class="result-item">
+                <div class="label" style="color: #ef4444;">✕ Must Stop</div>
+                <ul style="margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--text-primary);">
+                  ${(scan.post_discovery_actions?.must_stop || []).map(item => '<li style="margin-bottom: 6px;">' + item + '</li>').join('')}
+                </ul>
+              </div>
+            </div>
+            
+            <h4 style="font-size: 13px; color: var(--text-primary); margin: 20px 0 12px; font-weight: 600;">Execution Paths</h4>
+            <div class="result-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="result-item" style="border-left: 3px solid #22c55e;">
+                <div class="label" style="color: #22c55e;">Internal</div>
+                <div style="font-size: 12px; margin-top: 8px;">
+                  <div style="color: var(--text-muted);">Requires:</div>
+                  <div style="color: var(--text-primary); margin-bottom: 6px;">${scan.post_discovery_actions?.execution_paths?.internal?.what_it_requires || ''}</div>
+                  <div style="color: var(--text-muted);">Risk if done poorly:</div>
+                  <div style="color: #ef4444;">${scan.post_discovery_actions?.execution_paths?.internal?.risk_if_done_poorly || ''}</div>
+                </div>
+              </div>
+              <div class="result-item" style="border-left: 3px solid #3b82f6;">
+                <div class="label" style="color: #3b82f6;">Assisted</div>
+                <div style="font-size: 12px; margin-top: 8px;">
+                  <div style="color: var(--text-muted);">Where help accelerates:</div>
+                  <div style="color: var(--text-primary); margin-bottom: 6px;">${scan.post_discovery_actions?.execution_paths?.assisted?.where_help_accelerates || ''}</div>
+                  <div style="color: var(--text-muted);">Time to impact:</div>
+                  <div style="color: #22c55e;">${scan.post_discovery_actions?.execution_paths?.assisted?.time_to_impact || ''}</div>
+                </div>
+              </div>
+              <div class="result-item" style="border-left: 3px solid #6b7280;">
+                <div class="label" style="color: #6b7280;">Do Nothing</div>
+                <div style="font-size: 12px; margin-top: 8px;">
+                  <div style="color: var(--text-muted);">What stays broken:</div>
+                  <div style="color: var(--text-primary); margin-bottom: 6px;">${scan.post_discovery_actions?.execution_paths?.do_nothing?.what_stays_broken || ''}</div>
+                  <div style="color: var(--text-muted);">Compounding risk:</div>
+                  <div style="color: #ef4444;">${scan.post_discovery_actions?.execution_paths?.do_nothing?.compounding_risk || ''}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+            Scanned: ${scan._meta?.scanned_url} at ${new Date(scan._meta?.scanned_at).toLocaleString()}
+          </div>
+        </div>
+      `;
+    }
+
+    function exportScan() {
+      if (!currentScan) return;
+      const blob = new Blob([JSON.stringify(currentScan, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `scan-${currentScan.company?.name || 'unknown'}-${Date.now()}.json`;
+      a.click();
+    }
+
+    // Original research mode functions
+    const topicEl = document.getElementById('research-topic');
+    const urlsEl = document.getElementById('research-urls');
+    const outputEl = document.getElementById('output');
+    const runBtn = document.getElementById('run-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    let lastResult = '';
+
+    async function runAnalysis() {
+      const topic = topicEl.value.trim();
+      const urlsRaw = urlsEl.value.trim();
+      if (!topic) {
+        outputEl.innerHTML = '<p style="color:#f97373;">Please enter a topic or question.</p>';
+        return;
+      }
+      let urls = urlsRaw ? urlsRaw.split(/\n+/).map(u => u.trim()).filter(Boolean) : [];
+      outputEl.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner"></div><span style="color:var(--text-muted);">Analyzing...</span></div>';
+      runBtn.disabled = true;
+      runBtn.textContent = 'Analyzing...';
+      try {
+        const res = await fetch('/smart_research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: topic, urls })
+        });
+        const data = await res.json();
+        if (data.error) {
+          outputEl.innerHTML = `<p style="color:#f97373;">${data.error}</p>`;
+          copyBtn.style.display = 'none';
+          return;
+        }
+        lastResult = data.summary;
+        let html = formatBriefing(data.summary);
+        if (data.sources && data.sources.length) {
+          html += '<h3>Sources</h3><ul>' + data.sources.map(u => `<li><a href="${u}" target="_blank">${u}</a></li>`).join('') + '</ul>';
+        }
+        outputEl.innerHTML = html;
+        copyBtn.style.display = 'block';
+      } catch (err) {
+        outputEl.innerHTML = '<p style="color:#f97373;">Analysis failed.</p>';
+        copyBtn.style.display = 'none';
+      } finally {
+        runBtn.disabled = false;
+        runBtn.textContent = 'Run Analysis';
+      }
+    }
+
+    function formatBriefing(text) {
+      let escaped = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return '<p>' + escaped
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>') + '</p>';
+    }
+
+    runBtn.addEventListener('click', runAnalysis);
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(lastResult).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy to clipboard', 2000);
+      });
+    });
+
+    document.getElementById('scan-url').addEventListener('keydown', e => {
+      if (e.key === 'Enter') runScan();
+    });
+
+    renderHistory();
+  </script>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+</body>
+</html>

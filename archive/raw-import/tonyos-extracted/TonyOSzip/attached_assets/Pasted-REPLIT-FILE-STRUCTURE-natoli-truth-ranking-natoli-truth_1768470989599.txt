@@ -1,0 +1,184 @@
+REPLIT FILE STRUCTURE
+/natoli-truth-ranking
+│
+├── natoli_truths.json
+├── rank_engine.js
+├── input_companies.json
+├── ranked_natoli_companies.json (auto-generated)
+└── README.md
+
+1️⃣ natoli_truths.json
+
+(Use the same truth file you already approved with rejection sentences + routing)
+
+👉 DO NOT CHANGE IT
+
+2️⃣ rank_engine.js
+
+This is the ranking engine
+
+👉 PASTE EXACTLY
+
+const fs = require("fs");
+
+const rules = JSON.parse(fs.readFileSync("natoli_truths.json", "utf8"));
+const companies = JSON.parse(fs.readFileSync("input_companies.json", "utf8"));
+
+function normalize(text) {
+  return text.toLowerCase();
+}
+
+function hasAny(text, list = []) {
+  return list.some(k => text.includes(k));
+}
+
+function evaluateCompany(company) {
+  const text = normalize(
+    `${company.name} ${company.industry} ${company.description}`
+  );
+
+  const evaluation = {
+    name: company.name,
+    industry: company.industry,
+    satisfied_truths: [],
+    failed_truths: [],
+    rejection_reasons: [],
+    routing: [],
+    truth_score: 0,
+    rank_tier: null
+  };
+
+  // GLOBAL BLOCK
+  if (hasAny(text, rules.global_blocked_keywords)) {
+    evaluation.failed_truths.push("global_block");
+    evaluation.rejection_reasons.push(
+      "Company operates in a manufacturing category that is structurally incompatible with Natoli."
+    );
+    return evaluation;
+  }
+
+  // TRUTH EVALUATION
+  for (const truth of rules.truths) {
+    let passed = true;
+
+    if (truth.required_keywords && !hasAny(text, truth.required_keywords)) {
+      passed = false;
+    }
+
+    if (truth.blocked_keywords && hasAny(text, truth.blocked_keywords)) {
+      passed = false;
+    }
+
+    if (passed) {
+      evaluation.satisfied_truths.push(truth.id);
+      evaluation.truth_score += 1;
+    } else {
+      evaluation.failed_truths.push(truth.id);
+      evaluation.rejection_reasons.push(truth.rejection_sentence);
+    }
+  }
+
+  // ROUTING SIGNALS
+  for (const [route, keywords] of Object.entries(rules.routing_rules)) {
+    if (hasAny(text, keywords)) {
+      evaluation.routing.push(route);
+    }
+  }
+
+  if (evaluation.routing.length === 0) {
+    evaluation.routing.push("routing_review_required");
+  }
+
+  return evaluation;
+}
+
+// RANK TIERS (TRUTH-BASED)
+function assignTier(score, totalTruths) {
+  const ratio = score / totalTruths;
+
+  if (ratio === 1) return "Tier 1 – Immediate Natoli Priority";
+  if (ratio >= 0.75) return "Tier 2 – High Potential / Emerging";
+  if (ratio >= 0.5) return "Tier 3 – Monitor";
+  return "Tier 4 – Not a Fit";
+}
+
+// RUN RANKING
+const totalTruths = rules.truths.length;
+
+const ranked = companies
+  .map(evaluateCompany)
+  .map(c => ({
+    ...c,
+    rank_tier: assignTier(c.truth_score, totalTruths)
+  }))
+  .sort((a, b) => b.truth_score - a.truth_score);
+
+// WRITE OUTPUT
+fs.writeFileSync(
+  "ranked_natoli_companies.json",
+  JSON.stringify(ranked, null, 2)
+);
+
+// PRINT SUMMARY
+console.log(`Ranked ${ranked.length} companies using ${totalTruths} Natoli truths.`);
+
+3️⃣ input_companies.json
+
+(Works with any list: Apollo, CRM, web discovery)
+
+[
+  {
+    "name": "TrueDose Pharma",
+    "industry": "Generic Pharmaceutical Manufacturing",
+    "description": "Internal drug product manufacturing with solid oral dosage tablets, formulation development, granulation, tablet compression, tooling optimization, USP dissolution testing, and pilot scale-up"
+  },
+  {
+    "name": "EarlyForm Labs",
+    "industry": "Pharmaceutical R&D",
+    "description": "Pilot-scale formulation lab developing compressed tablets and studying compaction behavior during scale-up"
+  },
+  {
+    "name": "GummyWorld",
+    "industry": "Nutraceutical Manufacturing",
+    "description": "Direct to consumer gummy vitamins and liquid supplements"
+  }
+]
+
+4️⃣ README.md
+Natoli Truth Ranking Engine
+
+Purpose:
+Rank all companies based on how closely they match Natoli's
+powder compaction, tooling, and formulation truths.
+
+Ranking:
+Tier 1 – All truths satisfied
+Tier 2 – Most truths satisfied (emerging)
+Tier 3 – Partial relevance
+Tier 4 – Not a fit
+
+Why:
+Natoli prioritizes process reality, not industry labels.
+
+HOW TO RUN
+node rank_engine.js
+
+WHY THIS IS THE RIGHT RANKING MODEL
+
+• No revenue guessing
+• No headcount bias
+• No industry bias
+• No sales optimism
+
+A company ranks higher only if reality supports it.
+
+WHAT DALE WILL LIKE MOST
+
+If he asks
+“Why is this ranked above that?”
+
+The answer is always:
+
+“Because it satisfies more of the Natoli compaction truths.”
+
+That’s unarguable.

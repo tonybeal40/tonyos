@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli RevOps | Personas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Persona Playbooks</h1>
+        <p class="revops-subtitle">Decision drivers by role</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona" class="active">Personas</a>
+      <a href="/natoli-revops/results">Results</a>
+      <a href="/natoli-revops/downloads">Downloads</a>
+      <a href="/natoli-revops/message-center">Message Center</a>
+    </nav>
+
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-avatar">DE</div>
+        <div class="persona-info">
+          <h3>Director of Engineering</h3>
+          <p>Technical Decision Maker</p>
+        </div>
+      </div>
+      <div class="persona-details">
+        <div class="detail-item">
+          <label>Primary Focus</label>
+          <span>Uptime, tooling life, throughput</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-avatar">MS</div>
+        <div class="persona-info">
+          <h3>MS&T</h3>
+          <p>Manufacturing Science & Technology</p>
+        </div>
+      </div>
+      <div class="persona-details">
+        <div class="detail-item">
+          <label>Primary Focus</label>
+          <span>Scale-up risk, variability, validation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-avatar">RD</div>
+        <div class="persona-info">
+          <h3>R&D</h3>
+          <p>Research & Development</p>
+        </div>
+      </div>
+      <div class="persona-details">
+        <div class="detail-item">
+          <label>Primary Focus</label>
+          <span>Formulation feasibility, early signal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-avatar">OP</div>
+        <div class="persona-info">
+          <h3>Operations</h3>
+          <p>Production Leadership</p>
+        </div>
+      </div>
+      <div class="persona-details">
+        <div class="detail-item">
+          <label>Primary Focus</label>
+          <span>Predictability and control</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+</body>
+</html>

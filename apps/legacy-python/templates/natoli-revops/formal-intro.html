@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formal Introduction System | Natoli RevOps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+  <style>
+    .intro-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .intro-header {
+        text-align: center;
+        padding: 30px;
+        background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(168,85,247,0.1));
+        border-radius: 16px;
+        margin-bottom: 30px;
+        border: 1px solid var(--glass-border);
+    }
+    
+    .intro-header h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    
+    .intro-header p {
+        color: var(--text-secondary);
+    }
+    
+    .two-column {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 24px;
+    }
+    
+    @media (max-width: 900px) {
+        .two-column {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .form-panel, .preview-panel {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 24px;
+    }
+    
+    .panel-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+    }
+    
+    .template-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+    
+    .template-tab {
+        padding: 10px 16px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.85rem;
+    }
+    
+    .template-tab:hover {
+        background: rgba(34,211,238,0.1);
+        border-color: var(--accent-cyan);
+    }
+    
+    .template-tab.active {
+        background: rgba(34,211,238,0.2);
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+    }
+    
+    .email-preview {
+        background: rgba(0,0,0,0.3);
+        border-radius: 8px;
+        padding: 20px;
+        min-height: 400px;
+    }
+    
+    .email-subject {
+        font-weight: 600;
+        color: var(--accent-cyan);
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--glass-border);
+        margin-bottom: 16px;
+    }
+    
+    .email-body {
+        line-height: 1.7;
+        white-space: pre-wrap;
+    }
+    
+    .email-body .highlight {
+        background: rgba(249,115,22,0.3);
+        padding: 2px 4px;
+        border-radius: 3px;
+        color: #f97316;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+    
+    .btn-copy, .btn-download {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .btn-copy {
+        background: #22d3ee;
+        color: #000;
+    }
+    
+    .btn-copy:hover {
+        background: #06b6d4;
+    }
+    
+    .btn-download {
+        background: #a855f7;
+        color: #fff;
+    }
+    
+    .btn-download:hover {
+        background: #9333ea;
+    }
+    
+    .saved-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #10b981;
+        color: #000;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: none;
+    }
+    
+    .template-description {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        padding: 10px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 6px;
+        margin-bottom: 16px;
+    }
+    
+    .sender-section {
+        padding: 16px;
+        background: rgba(168,85,247,0.1);
+        border: 1px solid rgba(168,85,247,0.3);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .sender-section h3 {
+        font-size: 0.9rem;
+        color: #a855f7;
+        margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Formal Introduction System</h1>
+        <p class="revops-subtitle">Generate professional outreach emails</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona">Personas</a>
+      <a href="/natoli-revops/results">Results</a>
+      <a href="/natoli-revops/downloads">Downloads</a>
+      <a href="/natoli-revops/formal-intro" class="active">Intro Builder</a>
+    </nav>
+    
+    <div class="intro-container">
+      <div class="template-tabs">
+        <button class="template-tab active" data-template="peer">Peer Fit (Warm)</button>
+        <button class="template-tab" data-template="problem">Problem-Led (Pain)</button>
+        <button class="template-tab" data-template="strategic">Strategic (Executive)</button>
+        <button class="template-tab" data-template="followup">Follow-Up</button>
+      </div>
+      
+      <div class="template-description" id="templateDescription">
+        <strong>Peer Fit:</strong> Warm, credible approach. Best for similar manufacturers where you can establish peer credibility.
+      </div>
+      
+      <div class="two-column">
+        <div class="form-panel">
+          <div class="panel-title">Email Details</div>
+          
+          <div class="sender-section">
+            <h3>Your Information</h3>
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" id="senderName" placeholder="e.g., Dale Wilson" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Title</label>
+              <input type="text" id="senderTitle" placeholder="e.g., Regional Sales Manager" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Phone</label>
+              <input type="text" id="senderPhone" placeholder="e.g., (555) 123-4567" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+              <label>Your Email</label>
+              <input type="email" id="senderEmail" placeholder="e.g., dale@natoli.com" oninput="updatePreview()">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Recipient First Name</label>
+            <input type="text" id="recipientName" placeholder="e.g., John" oninput="updatePreview()">
+          </div>
+          
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="companyName" placeholder="e.g., Pharmavite LLC" oninput="updatePreview()">
+          </div>
+          
+          <div class="form-group" id="industryGroup">
+            <label>Industry / Region (Problem-Led only)</label>
+            <input type="text" id="industryRegion" placeholder="e.g., nutraceutical manufacturing" oninput="updatePreview()">
+          </div>
+        </div>
+        
+        <div class="preview-panel">
+          <div class="panel-title">Email Preview</div>
+          
+          <div class="email-preview">
+            <div class="email-subject" id="emailSubject">Subject: Quick introduction – tablet compression support</div>
+            <div class="email-body" id="emailBody"></div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-copy" onclick="copyEmail()">Copy to Clipboard</button>
+            <button class="btn-download" onclick="downloadEmail()">Download as .txt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="saved-indicator" id="savedIndicator">Copied to clipboard!</div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  
+  <script>
+const templates = {
+    peer: {
+        subject: "Quick introduction – tablet compression support",
+        description: "<strong>Peer Fit:</strong> Warm, credible approach. Best for similar manufacturers where you can establish peer credibility.",
+        body: `{{RecipientName}},
+
+My name is {{SenderName}}, {{SenderTitle}} with Natoli Engineering.
+
+I am reaching out because {{CompanyName}} looks similar to many of the manufacturers we support when it comes to reducing time, waste, and variability in tablet production.
+
+Since we began nearly 50 years ago, our engineers and scientists have continuously harnessed past experience and stayed aligned with evolving formulation needs to better understand real production challenges and help teams achieve optimal results.
+
+Given {{CompanyName}}'s commitment to quality and Natoli's role as a global leader in tablet compression, I believe a short conversation could be valuable.
+
+Whether you are evaluating tooling, expanding capacity, or troubleshooting tablet performance, I would welcome the opportunity to learn more about your operation and share how we support manufacturers like you.
+
+Please let me know if you have availability for a brief call in the next couple of weeks.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    problem: {
+        subject: "Supporting tablet quality and production consistency",
+        description: "<strong>Problem-Led:</strong> Addresses operational pain points directly. Best when you know they're facing tooling or quality challenges.",
+        body: `{{RecipientName}},
+
+I came across {{CompanyName}} while researching manufacturers in {{IndustryRegion}}.
+
+Many tablet manufacturing teams face the same challenges:
+• Tooling wear
+• Inconsistent tablet quality
+• Difficulty scaling efficiently
+
+These issues are often rooted in tooling design and compaction process control.
+
+At Natoli Engineering, we have spent nearly 50 years helping pharmaceutical and nutraceutical manufacturers solve these problems through precision tooling and compaction science expertise.
+
+If your team is currently evaluating tooling, experiencing quality issues, or preparing for production growth, I believe a short introduction would be worthwhile.
+
+I would be happy to share what we are seeing across similar operations.
+
+Please let me know what works for you in the next couple of weeks.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    strategic: {
+        subject: "Tooling as a performance lever",
+        description: "<strong>Strategic:</strong> Executive-level positioning. Best for VPs, Directors, and scale buyers who think strategically.",
+        body: `{{RecipientName}},
+
+The most successful tablet manufacturers I work with share one common belief:
+they treat tooling as a strategic decision, not a commodity purchase.
+
+At Natoli Engineering, we have partnered with pharmaceutical and nutraceutical manufacturers for nearly 50 years, from emerging companies to Fortune 500 organizations.
+
+What they value most is our combination of precision tooling and compaction science expertise to support consistent, scalable production.
+
+Given {{CompanyName}}'s focus on quality, efficiency, or capacity growth, I would welcome the opportunity to introduce our approach and connect you with the appropriate regional representative.
+
+Please let me know a convenient time for a brief introductory discussion.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    },
+    followup: {
+        subject: "Re: tablet compression support",
+        description: "<strong>Follow-Up:</strong> Nurture email for 2-3 weeks after initial outreach. Keeps the door open without pressure.",
+        body: `{{RecipientName}},
+
+I just wanted to follow up on my note below.
+
+If tablet performance, tooling reliability, or process consistency is a current or future priority for your team, I would be glad to connect you with our technical experts.
+
+Please feel free to let me know if now is not the right time, or if someone else on your team would be a better contact.
+
+Best regards,
+{{SenderName}}
+{{SenderTitle}}
+Natoli Engineering
+{{SenderPhone}} | {{SenderEmail}}`
+    }
+};
+
+let currentTemplate = 'peer';
+
+function selectTemplate(template) {
+    currentTemplate = template;
+    document.querySelectorAll('.template-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.template === template);
+    });
+    document.getElementById('templateDescription').innerHTML = templates[template].description;
+    document.getElementById('industryGroup').style.display = template === 'problem' ? 'block' : 'none';
+    updatePreview();
+}
+
+window.updatePreview = function() {
+    const recipientName = document.getElementById('recipientName').value || '[Recipient Name]';
+    const companyName = document.getElementById('companyName').value || '[Company Name]';
+    const industryRegion = document.getElementById('industryRegion').value || '[Industry/Region]';
+    const senderName = document.getElementById('senderName').value || '[Your Name]';
+    const senderTitle = document.getElementById('senderTitle').value || '[Your Title]';
+    const senderPhone = document.getElementById('senderPhone').value || '[Phone]';
+    const senderEmail = document.getElementById('senderEmail').value || '[Email]';
+    
+    const template = templates[currentTemplate];
+    document.getElementById('emailSubject').textContent = 'Subject: ' + template.subject;
+    
+    let body = template.body
+        .replace(/\{\{RecipientName\}\}/g, recipientName)
+        .replace(/\{\{CompanyName\}\}/g, companyName)
+        .replace(/\{\{IndustryRegion\}\}/g, industryRegion)
+        .replace(/\{\{SenderName\}\}/g, senderName)
+        .replace(/\{\{SenderTitle\}\}/g, senderTitle)
+        .replace(/\{\{SenderPhone\}\}/g, senderPhone)
+        .replace(/\{\{SenderEmail\}\}/g, senderEmail);
+    
+    body = body.replace(/\[(.*?)\]/g, '<span class="highlight">[$1]</span>');
+    
+    document.getElementById('emailBody').innerHTML = body;
+    
+    localStorage.setItem('natoli_intro_sender', JSON.stringify({
+        name: document.getElementById('senderName').value,
+        title: document.getElementById('senderTitle').value,
+        phone: document.getElementById('senderPhone').value,
+        email: document.getElementById('senderEmail').value
+    }));
+}
+
+function getPlainEmail() {
+    const recipientName = document.getElementById('recipientName').value || '[Recipient Name]';
+    const companyName = document.getElementById('companyName').value || '[Company Name]';
+    const industryRegion = document.getElementById('industryRegion').value || '[Industry/Region]';
+    const senderName = document.getElementById('senderName').value || '[Your Name]';
+    const senderTitle = document.getElementById('senderTitle').value || '[Your Title]';
+    const senderPhone = document.getElementById('senderPhone').value || '[Phone]';
+    const senderEmail = document.getElementById('senderEmail').value || '[Email]';
+    
+    const template = templates[currentTemplate];
+    const subject = 'Subject: ' + template.subject;
+    
+    let body = template.body
+        .replace(/\{\{RecipientName\}\}/g, recipientName)
+        .replace(/\{\{CompanyName\}\}/g, companyName)
+        .replace(/\{\{IndustryRegion\}\}/g, industryRegion)
+        .replace(/\{\{SenderName\}\}/g, senderName)
+        .replace(/\{\{SenderTitle\}\}/g, senderTitle)
+        .replace(/\{\{SenderPhone\}\}/g, senderPhone)
+        .replace(/\{\{SenderEmail\}\}/g, senderEmail);
+    
+    return subject + '\n\n' + body;
+}
+
+window.copyEmail = function() {
+    const text = getPlainEmail();
+    navigator.clipboard.writeText(text).then(() => {
+        const indicator = document.getElementById('savedIndicator');
+        indicator.style.display = 'block';
+        setTimeout(() => indicator.style.display = 'none', 2000);
+    });
+}
+
+window.downloadEmail = function() {
+    const text = getPlainEmail();
+    const companyName = document.getElementById('companyName').value || 'outreach';
+    const filename = `natoli_intro_${companyName.toLowerCase().replace(/\s+/g, '_')}.txt`;
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+document.querySelectorAll('.template-tab').forEach(tab => {
+    tab.addEventListener('click', () => selectTemplate(tab.dataset.template));
+});
+
+const savedSender = localStorage.getItem('natoli_intro_sender');
+if (savedSender) {
+    const sender = JSON.parse(savedSender);
+    document.getElementById('senderName').value = sender.name || '';
+    document.getElementById('senderTitle').value = sender.title || '';
+    document.getElementById('senderPhone').value = sender.phone || '';
+    document.getElementById('senderEmail').value = sender.email || '';
+}
+
+updatePreview();
+  </script>
+</body>
+</html>

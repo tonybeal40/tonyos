@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Search OS – TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2948 0, #050814 55%, #02030a 100%);
+      color: #f6f7fb;
+    }
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+    h1 { margin: 0; font-size: 1.5rem; }
+    p { margin: 0.25rem 0 0; font-size: 0.85rem; opacity: 0.8; }
+    .btn-back {
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(7,11,26,0.95);
+      color: inherit;
+      font-size: 0.8rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.4fr);
+      gap: 1rem;
+    }
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .card {
+      background: rgba(7,11,26,0.96);
+      border-radius: 1rem;
+      padding: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
+    .card p {
+      margin: 0 0 0.6rem;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    .card ul {
+      margin: 0.2rem 0 0.4rem 1.1rem;
+      padding: 0;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(3,6,18,0.95);
+      color: #f6f7fb;
+      padding: 0.6rem;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>Job Search OS</h1>
+        <p>One page to track roles, messaging, and your daily actions.</p>
+      </div>
+      <a href="{{ url_for('index') }}" class="btn-back">← Back to TonyOS</a>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Target Roles and Companies</h2>
+        <p>List 10 dream roles and the companies that actually match your skills and pay goals.</p>
+        <textarea placeholder="Example:
+1. Outside Sales – Red Bud Industries – pay target 90k
+2. Business Development – Natoli – pay target 85k
+3. ..."></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Daily Non-Negotiables</h2>
+        <p>Keep this simple and brutal. What you hit every day no matter what.</p>
+        <ul>
+          <li>3 targeted applications</li>
+          <li>5 direct messages to hiring leaders</li>
+          <li>15 minutes improving resume or portfolio</li>
+        </ul>
+        <textarea placeholder="Write your own daily standard here."></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Outreach Scripts Parking Lot</h2>
+        <p>Paste your best LinkedIn and email scripts here so they live in one place.</p>
+        <textarea placeholder="Paste your best connection requests, email openers, and follow up lines here."></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Interview Notes</h2>
+        <p>Quick notes after every conversation so you never lose context.</p>
+        <textarea placeholder="Company, who you spoke with, what they cared about, next steps."></textarea>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

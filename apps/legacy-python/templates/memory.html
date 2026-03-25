@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <title>TonyOS Money & Budget</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0f1118;
+      --ink:#f5f7ff;
+      --muted:#b1b6c8;
+      --line:#222638;
+      --accent:#e11d48;
+      --accent2:#ff3b6a;
+      --good:#22c55e;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --blue:#3b82f6;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(225,29,72,.18), transparent 55%),
+                  radial-gradient(1200px 700px at 80% 20%, rgba(34,197,94,.12), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:22px}
+    .top{
+      display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+    h1{margin:0;font-size:26px;letter-spacing:.2px}
+    .sub{color:var(--muted);margin-top:6px;font-size:13px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 4;
+      background: rgba(15,17,24,.92);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:16px;
+    }
+    .card.wide{grid-column: span 6}
+    .card.full{grid-column: 1 / -1}
+    .card-title{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+    .val{
+      font-size:28px;font-weight:700;
+    }
+    .val.good{color:var(--good)}
+    .val.warn{color:var(--warn)}
+    .val.bad{color:var(--bad)}
+    .bar{
+      height:10px;border-radius:999px;background:#111425;border:1px solid var(--line);
+      overflow:hidden;margin-top:12px;
+    }
+    .bar > div{height:100%;width:0%;transition:width .3s}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+    input, select, button{
+      background:#0b0d14;color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-size:14px;
+    }
+    input:focus{border-color:rgba(225,29,72,.5)}
+    button{
+      cursor:pointer;
+      background: linear-gradient(180deg, rgba(225,29,72,.95), rgba(225,29,72,.75));
+      border:0;
+      font-weight:700;
+    }
+    button:hover{filter:brightness(1.05)}
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--line);
+      color:var(--muted);
+    }
+    .btn-ghost:hover{border-color:var(--accent);color:var(--ink)}
+    .btn-small{padding:6px 12px;font-size:12px}
+    .btn-success{
+      background:rgba(34,197,94,.15);
+      border:1px solid rgba(34,197,94,.4);
+      color:var(--good);
+    }
+    .btn-danger{
+      background:rgba(225,29,72,.12);
+      border:1px solid rgba(225,29,72,.4);
+      color:var(--bad);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size:13px;
+      margin-top:10px;
+    }
+    th, td{
+      padding:10px 8px;
+      border-bottom:1px solid rgba(34,38,56,.65);
+      text-align:left;
+      color: var(--muted);
+    }
+    th{color:#d7dcff;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .pill{
+      display:inline-block;padding:5px 10px;border-radius:999px;
+      background: rgba(225,29,72,.14); border:1px solid rgba(225,29,72,.35);
+      color:#ffd0da;font-size:12px;
+    }
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .small{font-size:12px;color:var(--muted)}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .field label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .savings-item{
+      display:flex;gap:10px;align-items:center;
+      padding:10px;
+      background:rgba(0,0,0,.2);
+      border-radius:10px;
+      margin-bottom:8px;
+    }
+    .savings-item input{flex:1;min-width:0}
+    .status-bar{
+      padding:12px 16px;
+      border-radius:12px;
+      margin-bottom:16px;
+      font-size:13px;
+    }
+    .status-bar.connected{
+      background:rgba(34,197,94,.1);
+      border:1px solid rgba(34,197,94,.3);
+    }
+    .status-bar.local{
+      background:rgba(251,191,36,.1);
+      border:1px solid rgba(251,191,36,.3);
+    }
+    @media(max-width:980px){
+      .card{grid-column: span 12}
+      .card.wide{grid-column: span 12}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Money & Budget</h1>
+        <div class="sub">Zero-based budgeting with savings tracking. All fields start blank - you fill in the numbers.</div>
+      </div>
+      <div class="right">
+        <span class="pill" id="sheetsStatus">Checking...</span>
+        <a href="/" class="btn-ghost" style="text-decoration:none;display:inline-block;padding:10px 16px">Back to TonyOS</a>
+      </div>
+    </div>
+
+    <div id="statusBar" class="status-bar local" style="display:none"></div>
+
+    <div class="grid">
+      <div class="card wide">
+        <div class="card-title">Weekly Budget Setup</div>
+        <div class="row">
+          <div class="field" style="flex:1">
+            <label>Weekly Budget</label>
+            <input type="number" id="weeklyBudget" placeholder="" step="0.01" />
+          </div>
+          <div class="field" style="flex:1">
+            <label>Checking Balance</label>
+            <input type="number" id="checkingBalance" placeholder="" step="0.01" />
+          </div>
+          <button class="btn-success btn-small" onclick="saveSettings()" style="margin-bottom:0">Save</button>
+        </div>
+      </div>
+
+      <div class="card wide">
+        <div class="card-title">Savings Accounts</div>
+        <div id="savingsAccounts"></div>
+        <button class="btn-ghost btn-small" onclick="addSavingsAccount()" style="margin-top:8px">+ Add Savings Account</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Spent This Week</div>
+        <div class="val" id="spentWeekVal">$0</div>
+        <div class="bar"><div id="spentBar"></div></div>
+        <div class="small" id="paceMsg" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Remaining This Week</div>
+        <div class="val good" id="remainingVal">$0</div>
+        <div class="small" id="daysLeftMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Daily Allowance</div>
+        <div class="val" id="dailyAllowanceVal">$0</div>
+        <div class="small">Per day until end of week</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Total Savings</div>
+        <div class="val good" id="totalSavingsVal">$0</div>
+        <div class="small">Across all savings accounts</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Net Worth</div>
+        <div class="val" id="netWorthVal">$0</div>
+        <div class="small">Checking + All Savings</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">14-Day Runway</div>
+        <div class="val" id="runwayVal">$0</div>
+        <div class="small">Based on recent spending</div>
+      </div>
+
+      <div class="card full">
+        <div class="card-title">Add Transaction</div>
+        <div class="row">
+          <div class="field">
+            <label>Type</label>
+            <select id="txnType">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1">
+            <label>Amount</label>
+            <input type="number" id="txnAmount" placeholder="" step="0.01" />
+          </div>
+          <div class="field" style="flex:1">
+            <label>Category</label>
+            <input id="txnCategory" placeholder="" />
+          </div>
+          <div class="field" style="flex:1">
+            <label>Merchant</label>
+            <input id="txnMerchant" placeholder="" />
+          </div>
+          <div class="field" style="flex:1">
+            <label>Note</label>
+            <input id="txnNote" placeholder="" />
+          </div>
+          <button onclick="addTransaction()">Add</button>
+        </div>
+        <div class="small" id="txnStatus" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card full">
+        <div class="card-title">Recent Transactions</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Merchant</th>
+              <th>Amount</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="txnRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<script>
+let settings = {
+  weeklyBudget: null,
+  checkingBalance: null
+};
+let savingsAccounts = [];
+let transactions = [];
+let dbConnected = false;
+
+function money(n) {
+  const v = Number(n || 0);
+  return v.toLocaleString(undefined, { style: "currency", currency: "USD" });
+}
+
+async function loadData() {
+  try {
+    const [settingsRes, savingsRes, txnRes] = await Promise.all([
+      fetch("/api/db/budget/settings"),
+      fetch("/api/db/budget/savings"),
+      fetch("/api/db/budget/transactions")
+    ]);
+    
+    if (settingsRes.ok) {
+      const data = await settingsRes.json();
+      settings = {
+        weeklyBudget: data.weekly_budget,
+        checkingBalance: data.checking_balance
+      };
+    }
+    
+    if (savingsRes.ok) {
+      const savingsData = await savingsRes.json();
+      savingsAccounts = savingsData.accounts || [];
+    }
+    
+    if (txnRes.ok) {
+      const txnData = await txnRes.json();
+      transactions = txnData.transactions || [];
+    }
+    
+    dbConnected = true;
+    updateStatusUI();
+    render();
+  } catch (err) {
+    console.error("Failed to load data:", err);
+    dbConnected = false;
+    updateStatusUI();
+  }
+}
+
+async function saveSettings() {
+  settings.weeklyBudget = parseFloat(document.getElementById("weeklyBudget").value) || null;
+  settings.checkingBalance = parseFloat(document.getElementById("checkingBalance").value) || null;
+  
+  try {
+    await fetch("/api/db/budget/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        weekly_budget: settings.weeklyBudget,
+        checking_balance: settings.checkingBalance
+      })
+    });
+  } catch (err) {
+    console.error("Failed to save settings:", err);
+  }
+  render();
+}
+
+function renderSavingsAccounts() {
+  const container = document.getElementById("savingsAccounts");
+  container.innerHTML = savingsAccounts.map((acc) => `
+    <div class="savings-item" data-id="${acc.id}">
+      <input placeholder="Account name" value="${acc.name || ''}" onchange="updateSavingsAccount(${acc.id}, 'name', this.value)" />
+      <input type="number" placeholder="Balance" value="${acc.balance || ''}" step="0.01" onchange="updateSavingsAccount(${acc.id}, 'balance', this.value)" />
+      <button class="btn-danger btn-small" onclick="removeSavingsAccount(${acc.id})">Remove</button>
+    </div>
+  `).join("");
+}
+
+async function addSavingsAccount() {
+  try {
+    const res = await fetch("/api/db/budget/savings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "", balance: null })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      savingsAccounts.push({ id: data.id, name: "", balance: null });
+      renderSavingsAccounts();
+    }
+  } catch (err) {
+    console.error("Failed to add savings account:", err);
+  }
+}
+
+async function updateSavingsAccount(id, field, value) {
+  const acc = savingsAccounts.find(a => a.id === id);
+  if (!acc) return;
+  
+  if (field === "balance") {
+    acc.balance = parseFloat(value) || null;
+  } else {
+    acc.name = value;
+  }
+  
+  try {
+    await fetch(`/api/db/budget/savings/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: acc.name, balance: acc.balance })
+    });
+  } catch (err) {
+    console.error("Failed to update savings account:", err);
+  }
+  render();
+}
+
+async function removeSavingsAccount(id) {
+  try {
+    await fetch(`/api/db/budget/savings/${id}`, { method: "DELETE" });
+    savingsAccounts = savingsAccounts.filter(a => a.id !== id);
+    renderSavingsAccounts();
+    render();
+  } catch (err) {
+    console.error("Failed to remove savings account:", err);
+  }
+}
+
+function updateStatusUI() {
+  const statusEl = document.getElementById("sheetsStatus");
+  const statusBar = document.getElementById("statusBar");
+  
+  if (dbConnected) {
+    statusEl.innerHTML = '<span style="color:var(--good)">Database Connected</span>';
+    statusBar.style.display = "block";
+    statusBar.className = "status-bar connected";
+    statusBar.innerHTML = '<strong>Database Connected:</strong> Your data is saved to the server.';
+  } else {
+    statusEl.innerHTML = 'Offline';
+    statusBar.style.display = "block";
+    statusBar.className = "status-bar local";
+    statusBar.innerHTML = '<strong>Offline:</strong> Unable to connect to database.';
+  }
+}
+
+function startOfWeek(d) {
+  const dt = new Date(d);
+  const day = dt.getDay();
+  const diff = (day + 6) % 7;
+  dt.setDate(dt.getDate() - diff);
+  dt.setHours(0, 0, 0, 0);
+  return dt;
+}
+
+function endOfWeek(d) {
+  const s = startOfWeek(d);
+  const e = new Date(s);
+  e.setDate(e.getDate() + 7);
+  return e;
+}
+
+function daysBetween(a, b) {
+  return Math.ceil((b - a) / (24 * 60 * 60 * 1000));
+}
+
+function computeKPIs() {
+  const now = new Date();
+  const wkStart = startOfWeek(now);
+  const wkEnd = endOfWeek(now);
+  const daysLeft = Math.max(1, daysBetween(now, wkEnd));
+  
+  let spentWeek = 0;
+  let income14 = 0;
+  let expense14 = 0;
+  const d14 = new Date(now);
+  d14.setDate(d14.getDate() - 14);
+  
+  transactions.forEach(t => {
+    const dt = new Date(t.date || t.transaction_date || t.created_at);
+    const amt = Number(t.amount || 0);
+    const txnType = t.type || t.transaction_type || 'expense';
+    
+    if (dt >= wkStart && dt < wkEnd && txnType === "expense") {
+      spentWeek += amt;
+    }
+    
+    if (dt >= d14) {
+      if (txnType === "income") income14 += amt;
+      if (txnType === "expense") expense14 += amt;
+    }
+  });
+  
+  const weeklyBudget = settings.weeklyBudget || 0;
+  const remaining = weeklyBudget - spentWeek;
+  const dailyAllowance = remaining / daysLeft;
+  const runway = income14 - expense14;
+  const pacePct = weeklyBudget > 0 ? (spentWeek / weeklyBudget) * 100 : 0;
+  
+  const totalSavings = savingsAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+  const checking = settings.checkingBalance || 0;
+  const netWorth = checking + totalSavings;
+  
+  return { spentWeek, remaining, dailyAllowance, daysLeft, runway, pacePct, totalSavings, netWorth, weeklyBudget };
+}
+
+function setBar(el, pct) {
+  const p = Math.max(0, Math.min(100, pct));
+  el.style.width = p + "%";
+  if (p < 70) el.style.background = "rgba(34,197,94,.9)";
+  else if (p < 95) el.style.background = "rgba(251,191,36,.95)";
+  else el.style.background = "rgba(225,29,72,.95)";
+}
+
+function renderTransactions() {
+  const tbody = document.getElementById("txnRows");
+  tbody.innerHTML = transactions.slice(0, 50).map((t) => {
+    const txnType = t.type || t.transaction_type || 'expense';
+    const txnDate = t.date || t.transaction_date || t.created_at;
+    return `
+    <tr>
+      <td>${txnDate ? new Date(txnDate).toLocaleDateString() : ''}</td>
+      <td>${txnType}</td>
+      <td>${t.category || ""}</td>
+      <td>${t.merchant || ""}</td>
+      <td style="color:${txnType === 'expense' ? 'var(--bad)' : 'var(--good)'}">${txnType === 'expense' ? '-' : '+'}${money(t.amount)}</td>
+      <td>${t.note || ""}</td>
+      <td><button class="btn-danger btn-small" onclick="deleteTransaction(${t.id})">Del</button></td>
+    </tr>
+  `}).join("");
+}
+
+async function deleteTransaction(id) {
+  try {
+    await fetch(`/api/db/budget/transactions/${id}`, { method: "DELETE" });
+    transactions = transactions.filter(t => t.id !== id);
+    render();
+  } catch (err) {
+    console.error("Failed to delete transaction:", err);
+  }
+}
+
+async function addTransaction() {
+  const type = document.getElementById("txnType").value;
+  const amount = parseFloat(document.getElementById("txnAmount").value);
+  const category = document.getElementById("txnCategory").value.trim();
+  const merchant = document.getElementById("txnMerchant").value.trim();
+  const note = document.getElementById("txnNote").value.trim();
+  
+  const status = document.getElementById("txnStatus");
+  
+  if (!amount || amount <= 0) {
+    status.textContent = "Enter a valid amount";
+    status.style.color = "var(--bad)";
+    return;
+  }
+  
+  try {
+    const res = await fetch("/api/db/budget/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, amount, category, merchant, note })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      const newTxn = {
+        id: data.id,
+        transaction_type: type,
+        type: type,
+        amount: amount,
+        category: category,
+        merchant: merchant,
+        note: note,
+        transaction_date: new Date().toISOString()
+      };
+      transactions.unshift(newTxn);
+      
+      if (window.SheetsSync) {
+        SheetsSync.syncBudgetEntry({
+          id: data.id,
+          type: type,
+          category: category,
+          description: merchant,
+          amount: amount,
+          date: new Date().toISOString(),
+          recurring: false
+        });
+      }
+      
+      document.getElementById("txnAmount").value = "";
+      document.getElementById("txnCategory").value = "";
+      document.getElementById("txnMerchant").value = "";
+      document.getElementById("txnNote").value = "";
+      
+      status.textContent = "Saved!";
+      status.style.color = "var(--good)";
+      setTimeout(() => status.textContent = "", 2000);
+      
+      render();
+    } else {
+      status.textContent = "Failed to save";
+      status.style.color = "var(--bad)";
+    }
+  } catch (err) {
+    console.error("Failed to add transaction:", err);
+    status.textContent = "Failed to save";
+    status.style.color = "var(--bad)";
+  }
+}
+
+function render() {
+  document.getElementById("weeklyBudget").value = settings.weeklyBudget ?? "";
+  document.getElementById("checkingBalance").value = settings.checkingBalance ?? "";
+  
+  renderSavingsAccounts();
+  
+  const k = computeKPIs();
+  
+  document.getElementById("spentWeekVal").textContent = money(k.spentWeek);
+  document.getElementById("remainingVal").textContent = money(k.remaining);
+  document.getElementById("dailyAllowanceVal").textContent = money(k.dailyAllowance);
+  document.getElementById("totalSavingsVal").textContent = money(k.totalSavings);
+  document.getElementById("netWorthVal").textContent = money(k.netWorth);
+  document.getElementById("runwayVal").textContent = money(k.runway);
+  document.getElementById("daysLeftMsg").textContent = k.daysLeft + " days left in week";
+  
+  setBar(document.getElementById("spentBar"), k.pacePct);
+  
+  const pace = document.getElementById("paceMsg");
+  if (k.weeklyBudget === 0 || k.weeklyBudget === null) {
+    pace.textContent = "Set your weekly budget above";
+    pace.style.color = "var(--muted)";
+  } else if (k.pacePct <= 70) {
+    pace.textContent = "On pace - looking good!";
+    pace.style.color = "var(--good)";
+  } else if (k.pacePct < 95) {
+    pace.textContent = "Getting close to the limit";
+    pace.style.color = "var(--warn)";
+  } else {
+    pace.textContent = "Over budget - tighten up";
+    pace.style.color = "var(--bad)";
+  }
+  
+  const remainingEl = document.getElementById("remainingVal");
+  if (k.remaining < 0) {
+    remainingEl.className = "val bad";
+  } else if (k.remaining < k.weeklyBudget * 0.2) {
+    remainingEl.className = "val warn";
+  } else {
+    remainingEl.className = "val good";
+  }
+  
+  renderTransactions();
+}
+
+loadData();
+</script>
+<script src="/static/sheets-sync.js"></script>
+<script src="/static/connection-status.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli RevOps | Executive Summary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='natoli-revops.css') }}">
+</head>
+<body>
+  <div class="revops-shell">
+    <header class="revops-header">
+      <div>
+        <h1 class="revops-title">Natoli Revenue Operations</h1>
+        <p class="revops-subtitle">An internal operating system aligning targeting, personas, outreach, and signal capture</p>
+      </div>
+      <a href="/" class="nav-btn">Back to TonyOS</a>
+    </header>
+
+    <nav class="nav-tabs">
+      <a href="/natoli-revops" class="active">Summary</a>
+      <a href="/natoli-revops/system">System</a>
+      <a href="/natoli-revops/targeting">Targeting</a>
+      <a href="/natoli-revops/persona">Personas</a>
+      <a href="/natoli-revops/results">Results</a>
+      <a href="/natoli-revops/downloads">Downloads</a>
+      <a href="/natoli-revops/message-center">Message Center</a>
+    </nav>
+
+    <div class="card">
+      <h3>Core Principle</h3>
+      <div class="list-item">
+        <div class="list-item-icon">1</div>
+        <div class="list-item-content">
+          <h4>Revenue is not activity</h4>
+          <p>Focus on outcomes, not motion</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon">2</div>
+        <div class="list-item-content">
+          <h4>Revenue is decision discipline</h4>
+          <p>Every action must drive toward a decision</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon">3</div>
+        <div class="list-item-content">
+          <h4>Target environments before people</h4>
+          <p>Understand the context, then the contacts</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon">4</div>
+        <div class="list-item-content">
+          <h4>Reduce risk for decision owners</h4>
+          <p>Make it easy for them to say yes</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Purpose</h3>
+      <div class="list-item">
+        <div class="list-item-icon">A</div>
+        <div class="list-item-content">
+          <h4>Eliminate wasted outreach</h4>
+          <p>No more spray-and-pray, only targeted engagement</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon">B</div>
+        <div class="list-item-content">
+          <h4>Create consistent executive-level conversations</h4>
+          <p>Speak the language of decision makers</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="list-item-icon">C</div>
+        <div class="list-item-content">
+          <h4>Align Sales, Marketing, and Scientific Support</h4>
+          <p>One unified revenue engine</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Quick Navigation</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>System</h3>
+        <p>The complete RevOps framework and how all the pieces connect.</p>
+        <a href="/natoli-revops/system" class="action-btn">View System</a>
+      </div>
+      <div class="card">
+        <h3>Targeting</h3>
+        <p>Environment-first targeting with tier definitions and account criteria.</p>
+        <a href="/natoli-revops/targeting" class="action-btn">View Targeting</a>
+      </div>
+      <div class="card">
+        <h3>Personas</h3>
+        <p>Key stakeholders and their decision drivers.</p>
+        <a href="/natoli-revops/persona" class="action-btn">View Personas</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+</body>
+</html>

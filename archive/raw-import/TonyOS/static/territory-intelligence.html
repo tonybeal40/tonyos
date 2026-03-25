@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natoli Territory Intelligence | RevOps Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #0a0a0f;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.1);
+  --text-primary: #ffffff;
+  --text-muted: #9ca3af;
+  --accent-red: #dc2626;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #a855f7;
+  --engineering: #3b82f6;
+  --scientific: #22c55e;
+  --both: #a855f7;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent-red);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+header p {
+  color: var(--text-muted);
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-zone {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 197, 94, 0.05));
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  padding: 60px 40px;
+  text-align: center;
+  margin-bottom: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-zone:hover {
+  border-color: var(--accent-blue);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(34, 197, 94, 0.1));
+}
+
+.upload-zone.dragover {
+  border-color: var(--accent-green);
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.upload-zone h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.upload-zone p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+#fileInput { display: none; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card.engineering .stat-value { color: var(--engineering); }
+.stat-card.scientific .stat-value { color: var(--scientific); }
+.stat-card.both .stat-value { color: var(--both); }
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-group select,
+.filter-group input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  min-width: 160px;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.btn-primary:hover { background: #2563eb; }
+
+.btn-success {
+  background: var(--accent-green);
+  color: white;
+}
+
+.btn-success:hover { background: #16a34a; }
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover { background: var(--bg-card-hover); }
+
+.territory-section {
+  margin-bottom: 40px;
+}
+
+.territory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
+  cursor: pointer;
+}
+
+.territory-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.territory-badge {
+  background: var(--accent-blue);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.territory-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.territory-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.territory-content {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 20px;
+}
+
+.industry-group {
+  margin-bottom: 24px;
+}
+
+.industry-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.industry-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-yellow);
+}
+
+.industry-count {
+  background: rgba(245, 158, 11, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--accent-yellow);
+}
+
+.company-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.company-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-blue);
+}
+
+.company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.company-location {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.fit-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.fit-badge.engineering {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--engineering);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.fit-badge.scientific {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--scientific);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.fit-badge.both {
+  background: rgba(168, 85, 247, 0.2);
+  color: var(--both);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.contacts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.contact-chip {
+  background: rgba(255,255,255,0.06);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-chip .title {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.tier-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.tier-badge.tier-a { background: var(--accent-green); color: #000; }
+.tier-badge.tier-b { background: var(--accent-yellow); color: #000; }
+.tier-badge.tier-c { background: var(--text-muted); color: #000; }
+
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  color: var(--text-muted);
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.export-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hidden { display: none !important; }
+
+.processing {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.processing h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 300px;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-blue);
+  transition: width 0.3s;
+}
+
+.rules-info {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.rules-info h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.rule-card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.rule-card h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rule-card ul {
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.rule-card li {
+  padding: 3px 0;
+}
+
+@media (max-width: 768px) {
+  .filter-bar { flex-direction: column; }
+  .filter-group select { width: 100%; }
+  .territory-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="logo-badge">
+      <span>N</span> Natoli RevOps
+    </div>
+    <h1>Territory Intelligence</h1>
+    <p>Upload Apollo export CSV to classify companies by territory, industry, and Natoli fit (Engineering vs Scientific)</p>
+  </header>
+
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📁</div>
+    <h3>Upload Apollo Export CSV</h3>
+    <p>Drag & drop or click to select your CSV file</p>
+    <input type="file" id="fileInput" accept=".csv" onchange="handleFile(event)">
+  </div>
+
+  <div class="rules-info">
+    <h3>📋 Classification Rules</h3>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <h4 style="color: var(--engineering);">🔧 Natoli Engineering</h4>
+        <ul>
+          <li>• Tablet press, tooling, die, punch</li>
+          <li>• Compression, powder metallurgy</li>
+          <li>• Ceramic, pellet, pressing</li>
+          <li>• Production-scale compaction</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <h4 style="color: var(--scientific);">🔬 Natoli Scientific</h4>
+        <ul>
+          <li>• R&D, research, formulation</li>
+          <li>• Analytical, pilot, scale-up</li>
+          <li>• Material science, lab work</li>
+          <li>• Development activities</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <h4 style="color: var(--accent-yellow);">📍 Territories</h4>
+        <ul>
+          <li>• West Coast: CA, OR, WA, HI</li>
+          <li>• Rocky Mountain: CO, AZ, UT, NV, etc.</li>
+          <li>• Midwest: IL, OH, MI, TX, etc.</li>
+          <li>• Southeast: FL, GA, TN, NC, etc.</li>
+          <li>• Northeast: NY, PA, MA, NJ, etc.</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <h4 style="color: var(--accent-red);">🚫 Exclusions</h4>
+        <ul>
+          <li>• Clinics, dealers, distributors</li>
+          <li>• Retail, service, repair</li>
+          <li>• Non-manufacturing entities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultsSection" class="hidden">
+    <div class="stats-grid" id="statsGrid"></div>
+    
+    <div class="export-bar">
+      <button class="btn btn-primary" onclick="resetUpload()">📁 Upload New CSV</button>
+      <button class="btn btn-outline" onclick="exportCSV()">📥 Export Cleaned CSV</button>
+      <button class="btn btn-success" onclick="copySourceCode()">📋 Copy Source Code</button>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label>Territory</label>
+        <select id="filterTerritory" onchange="applyFilters()">
+          <option value="">All Territories</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Natoli Fit</label>
+        <select id="filterFit" onchange="applyFilters()">
+          <option value="">All Divisions</option>
+          <option value="Natoli Engineering">Natoli Engineering</option>
+          <option value="Natoli Scientific">Natoli Scientific</option>
+          <option value="Both">Both</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Industry</label>
+        <select id="filterIndustry" onchange="applyFilters()">
+          <option value="">All Industries</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Search</label>
+        <input type="text" id="searchInput" placeholder="Company or contact..." oninput="applyFilters()">
+      </div>
+    </div>
+
+    <div id="territoriesContainer"></div>
+  </div>
+
+  <div id="emptyState" class="empty-state">
+    <h3>No Data Loaded</h3>
+    <p>Upload an Apollo export CSV to see territory intelligence</p>
+  </div>
+</div>
+
+<div id="processingOverlay" class="processing hidden">
+  <h2>Processing CSV...</h2>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <p id="processingStatus" style="margin-top: 16px; color: var(--text-muted);">Reading file...</p>
+  <p id="backgroundStatus" style="margin-top: 8px; color: #22c55e; font-weight: 600; display: none;">✓ Running on server - you can close this tab</p>
+  <div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;">
+    <button id="cancelJobBtn" onclick="cancelJob()" style="display: none; padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancel</button>
+  </div>
+</div>
+
+<div id="jobListPanel" class="hidden" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+  <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">📋 Previous Jobs <button onclick="refreshJobs()" style="margin-left: auto; padding: 6px 12px; background: var(--accent-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Refresh</button></h3>
+  <div id="jobList"></div>
+</div>
+
+<script>
+const TERRITORY_MAP = {
+  "AL": "Southeast", "AK": "West Coast", "AZ": "Rocky Mountain", "AR": "Midwest",
+  "CA": "West Coast", "CO": "Rocky Mountain", "CT": "Northeast", "DE": "Northeast",
+  "DC": "Northeast", "FL": "Southeast", "GA": "Southeast", "HI": "West Coast",
+  "ID": "Rocky Mountain", "IL": "Midwest", "IN": "Midwest", "IA": "Midwest",
+  "KS": "Midwest", "KY": "Southeast", "LA": "Midwest", "ME": "Northeast",
+  "MD": "Northeast", "MA": "Northeast", "MI": "Midwest", "MN": "Midwest",
+  "MS": "Southeast", "MO": "Midwest", "MT": "Rocky Mountain", "NE": "Midwest",
+  "NV": "Rocky Mountain", "NH": "Northeast", "NJ": "Northeast", "NM": "Rocky Mountain",
+  "NY": "Northeast", "NC": "Southeast", "ND": "Midwest", "OH": "Midwest",
+  "OK": "Midwest", "OR": "West Coast", "PA": "Northeast", "RI": "Northeast",
+  "SC": "Southeast", "SD": "Midwest", "TN": "Southeast", "TX": "Midwest",
+  "UT": "Rocky Mountain", "VT": "Northeast", "VA": "Northeast", "WA": "West Coast",
+  "WV": "Northeast", "WI": "Midwest", "WY": "Rocky Mountain"
+};
+
+const STATE_NAME_TO_ABBR = {
+  "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
+  "colorado": "CO", "connecticut": "CT", "delaware": "DE", "district of columbia": "DC",
+  "florida": "FL", "georgia": "GA", "hawaii": "HI", "idaho": "ID", "illinois": "IL",
+  "indiana": "IN", "iowa": "IA", "kansas": "KS", "kentucky": "KY", "louisiana": "LA",
+  "maine": "ME", "maryland": "MD", "massachusetts": "MA", "michigan": "MI", "minnesota": "MN",
+  "mississippi": "MS", "missouri": "MO", "montana": "MT", "nebraska": "NE", "nevada": "NV",
+  "new hampshire": "NH", "new jersey": "NJ", "new mexico": "NM", "new york": "NY",
+  "north carolina": "NC", "north dakota": "ND", "ohio": "OH", "oklahoma": "OK", "oregon": "OR",
+  "pennsylvania": "PA", "rhode island": "RI", "south carolina": "SC", "south dakota": "SD",
+  "tennessee": "TN", "texas": "TX", "utah": "UT", "vermont": "VT", "virginia": "VA",
+  "washington": "WA", "west virginia": "WV", "wisconsin": "WI", "wyoming": "WY"
+};
+
+const ENGINEERING_SIGNALS = ["tablet press","tooling","die","punch","compression","powder metallurgy","ceramic","pellet","pressing","compaction","sintering","forming","mold","stamping","production","manufacturing","plant","factory","facility","process","operations"];
+const SCIENTIFIC_SIGNALS = ["r&d","research","formulation","analytical","pilot","scale-up","material science","lab","development","scientist","testing","quality","validation","regulatory"];
+const EXCLUDE_SIGNALS = ["clinic","practice","dealer","dealership","distributor","reseller","retail","service center","repair","maintenance","pressure washer","animal hospital","consulting only","staffing","recruiting","hr services","insurance","law firm","legal","accounting","marketing agency","advertising"];
+
+const TIER_A_TITLES = ["vp","vice president","director","head of","chief","president","owner","ceo","coo","cto","cfo","cso","cmo","plant manager","general manager","senior director","svp","evp"];
+const TIER_B_TITLES = ["manager","senior manager","engineer","supervisor","lead","specialist","coordinator","scientist","analyst","principal"];
+
+const COLUMN_ALIASES = {
+  'company': ['company name', 'company', 'organization', 'account name', 'account', 'org name'],
+  'firstName': ['first name', 'firstname', 'first', 'given name'],
+  'lastName': ['last name', 'lastname', 'last', 'surname', 'family name'],
+  'title': ['title', 'job title', 'position', 'role', 'job role'],
+  'email': ['email', 'email address', 'e-mail', 'work email', 'business email'],
+  'state': ['state', 'company state', 'state/region', 'region', 'province', 'state/province'],
+  'city': ['city', 'company city', 'location'],
+  'industry': ['industry', 'industry (normalized)', 'industry normalized', 'sector', 'vertical'],
+  'website': ['website', 'company website', 'url', 'web', 'domain'],
+  'phone': ['phone', 'phone number', 'company phone', 'direct phone', 'mobile'],
+  'linkedin': ['linkedin', 'linkedin url', 'linkedin profile', 'person linkedin url'],
+  'departments': ['departments', 'department', 'function']
+};
+
+let allData = [];
+let filteredData = [];
+let companies = {};
+let columnMap = {};
+let currentJobId = null;
+let pollInterval = null;
+let useBackgroundProcessing = true;
+
+function normalizeState(state) {
+  if (!state) return null;
+  const s = state.trim().toUpperCase();
+  if (TERRITORY_MAP[s]) return s;
+  const lower = state.trim().toLowerCase();
+  if (STATE_NAME_TO_ABBR[lower]) return STATE_NAME_TO_ABBR[lower];
+  return null;
+}
+
+function assignTerritory(state) {
+  const abbr = normalizeState(state);
+  if (abbr && TERRITORY_MAP[abbr]) return TERRITORY_MAP[abbr];
+  return "International";
+}
+
+function containsAny(text, keywords) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return keywords.some(k => lower.includes(k.toLowerCase()));
+}
+
+function classifyFit(row) {
+  const text = [
+    getField(row, 'title'),
+    getField(row, 'company'),
+    getField(row, 'industry'),
+    getField(row, 'departments')
+  ].join(' ').toLowerCase();
+
+  if (containsAny(text, EXCLUDE_SIGNALS)) return null;
+
+  const hasEng = containsAny(text, ENGINEERING_SIGNALS);
+  const hasSci = containsAny(text, SCIENTIFIC_SIGNALS);
+
+  if (hasEng && hasSci) return "Both";
+  if (hasEng) return "Natoli Engineering";
+  if (hasSci) return "Natoli Scientific";
+  
+  return "Needs Review";
+}
+
+function assignContactTier(title) {
+  if (!title) return "C";
+  const lower = title.toLowerCase();
+  if (TIER_A_TITLES.some(t => lower.includes(t))) return "A";
+  if (TIER_B_TITLES.some(t => lower.includes(t))) return "B";
+  return "C";
+}
+
+function shouldExclude(row) {
+  const text = [
+    getField(row, 'company'),
+    getField(row, 'title'),
+    getField(row, 'industry')
+  ].join(' ').toLowerCase();
+  
+  return containsAny(text, EXCLUDE_SIGNALS);
+}
+
+function getField(row, alias) {
+  const col = columnMap[alias];
+  if (!col) return '';
+  return (row[col] || '').trim();
+}
+
+function buildColumnMap(headers) {
+  columnMap = {};
+  const lowerHeaders = headers.map(h => h.toLowerCase().trim());
+  
+  for (const [alias, variations] of Object.entries(COLUMN_ALIASES)) {
+    for (const variation of variations) {
+      const idx = lowerHeaders.indexOf(variation.toLowerCase());
+      if (idx !== -1) {
+        columnMap[alias] = headers[idx];
+        break;
+      }
+    }
+  }
+  
+  console.log('Column mapping:', columnMap);
+  return columnMap;
+}
+
+function parseCSV(text) {
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = text.split('\n');
+  if (lines.length === 0) return [];
+  
+  const headerLine = lines[0];
+  const headers = parseCSVLine(headerLine);
+  
+  buildColumnMap(headers);
+  
+  const data = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    const values = parseCSVLine(line);
+    
+    const row = {};
+    headers.forEach((h, idx) => {
+      row[h] = (values[idx] || '').replace(/^"|"$/g, '').trim();
+    });
+    data.push(row);
+  }
+  
+  return data;
+}
+
+function parseCSVLine(line) {
+  const values = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      values.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  values.push(current.trim());
+  
+  return values;
+}
+
+async function handleFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (useBackgroundProcessing) {
+    await handleFileBackground(file);
+  } else {
+    await handleFileLocal(file);
+  }
+}
+
+async function handleFileBackground(file) {
+  document.getElementById('processingOverlay').classList.remove('hidden');
+  document.getElementById('progressFill').style.width = '5%';
+  document.getElementById('processingStatus').textContent = 'Uploading to server...';
+  document.getElementById('backgroundStatus').style.display = 'block';
+  document.getElementById('cancelJobBtn').style.display = 'inline-block';
+  
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch('/api/territory-intel/process', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.error) {
+      alert('Error: ' + data.error);
+      document.getElementById('processingOverlay').classList.add('hidden');
+      return;
+    }
+    
+    currentJobId = data.jobId;
+    document.getElementById('processingStatus').textContent = `Job started (ID: ${currentJobId})`;
+    
+    pollInterval = setInterval(async () => {
+      try {
+        const statusRes = await fetch(`/api/territory-intel/status/${currentJobId}`, { credentials: 'include' });
+        const status = await statusRes.json();
+        
+        if (status.error) {
+          clearInterval(pollInterval);
+          pollInterval = null;
+          return;
+        }
+        
+        const pct = status.total > 0 ? (status.completed / status.total) * 100 : 0;
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('processingStatus').textContent = 
+          `Processing ${status.completed.toLocaleString()} / ${status.total.toLocaleString()} rows... (${status.qualified} qualified)`;
+        
+        if (status.status === 'completed' || status.status === 'cancelled') {
+          clearInterval(pollInterval);
+          pollInterval = null;
+          currentJobId = null;
+          
+          if (status.status === 'completed') {
+            const resultsRes = await fetch(`/api/territory-intel/results/${status.jobId}`, { credentials: 'include' });
+            const resultsData = await resultsRes.json();
+            
+            allData = resultsData.results || [];
+            filteredData = allData;
+            
+            companies = {};
+            for (const row of allData) {
+              const companyName = row['Company Name'] || row.company || 'Unknown';
+              const compKey = companyName.toLowerCase().trim();
+              if (!companies[compKey]) {
+                companies[compKey] = {
+                  name: companyName,
+                  state: row['Company State'] || row.state || '',
+                  territory: row.Territory || 'Unknown',
+                  fit: row.Natoli_Fit || 'Unknown',
+                  industry: row.Industry_Clean || 'Other',
+                  website: row.Website || row.website || '',
+                  contacts: []
+                };
+              }
+              companies[compKey].contacts.push({
+                name: `${row['First Name'] || ''} ${row['Last Name'] || ''}`.trim(),
+                title: row.Title || row.title || '',
+                email: row.Email || row.email || '',
+                tier: row.Contact_Tier || 'Tier 3'
+              });
+            }
+            
+            populateFilters();
+            renderResults();
+            
+            document.getElementById('processingOverlay').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('uploadZone').classList.add('hidden');
+          } else {
+            document.getElementById('processingStatus').textContent = 'Job cancelled';
+            setTimeout(() => {
+              document.getElementById('processingOverlay').classList.add('hidden');
+            }, 1000);
+          }
+          
+          document.getElementById('cancelJobBtn').style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Poll error:', err);
+      }
+    }, 1000);
+    
+  } catch (err) {
+    console.error('Upload error:', err);
+    alert('Error uploading file: ' + err.message);
+    document.getElementById('processingOverlay').classList.add('hidden');
+  }
+}
+
+async function cancelJob() {
+  if (!currentJobId) return;
+  
+  try {
+    await fetch(`/api/territory-intel/cancel/${currentJobId}`, { method: 'POST', credentials: 'include' });
+  } catch (err) {
+    console.error('Cancel error:', err);
+  }
+}
+
+async function refreshJobs() {
+  try {
+    const response = await fetch('/api/territory-intel/jobs');
+    const data = await response.json();
+    
+    const container = document.getElementById('jobList');
+    if (!data.jobs || data.jobs.length === 0) {
+      container.innerHTML = '<p style="color: var(--text-muted);">No previous jobs found</p>';
+      return;
+    }
+    
+    container.innerHTML = data.jobs.map(job => `
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 8px;">
+        <span style="font-weight: 600;">${job.jobId}</span>
+        <span style="color: ${job.status === 'completed' ? 'var(--accent-green)' : job.status === 'running' ? 'var(--accent-yellow)' : 'var(--text-muted)'};">${job.status}</span>
+        <span style="color: var(--text-muted);">${job.qualified} qualified / ${job.total} total</span>
+        <span style="color: var(--text-muted); margin-left: auto;">${new Date(job.startedAt).toLocaleString()}</span>
+        ${job.status === 'completed' ? `<button onclick="loadJob('${job.jobId}')" style="padding: 6px 12px; background: var(--accent-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Load</button>` : ''}
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('Refresh jobs error:', err);
+  }
+}
+
+async function loadJob(jobId) {
+  try {
+    const response = await fetch(`/api/territory-intel/results/${jobId}`, { credentials: 'include' });
+    const data = await response.json();
+    
+    if (data.error) {
+      alert('Error loading job: ' + data.error);
+      return;
+    }
+    
+    allData = data.results || [];
+    filteredData = allData;
+    
+    companies = {};
+    for (const row of allData) {
+      const companyName = row['Company Name'] || row.company || 'Unknown';
+      const compKey = companyName.toLowerCase().trim();
+      if (!companies[compKey]) {
+        companies[compKey] = {
+          name: companyName,
+          state: row['Company State'] || row.state || '',
+          territory: row.Territory || 'Unknown',
+          fit: row.Natoli_Fit || 'Unknown',
+          industry: row.Industry_Clean || 'Other',
+          website: row.Website || row.website || '',
+          contacts: []
+        };
+      }
+      companies[compKey].contacts.push({
+        name: `${row['First Name'] || ''} ${row['Last Name'] || ''}`.trim(),
+        title: row.Title || row.title || '',
+        email: row.Email || row.email || '',
+        tier: row.Contact_Tier || 'Tier 3'
+      });
+    }
+    
+    populateFilters();
+    renderResults();
+    
+    document.getElementById('jobListPanel').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('uploadZone').classList.add('hidden');
+  } catch (err) {
+    console.error('Load job error:', err);
+    alert('Error loading job results');
+  }
+}
+
+async function handleFileLocal(file) {
+  document.getElementById('processingOverlay').classList.remove('hidden');
+  document.getElementById('progressFill').style.width = '10%';
+  document.getElementById('processingStatus').textContent = 'Reading file...';
+  document.getElementById('backgroundStatus').style.display = 'none';
+  
+  try {
+    const text = await file.text();
+    
+    document.getElementById('progressFill').style.width = '30%';
+    document.getElementById('processingStatus').textContent = 'Parsing CSV...';
+    
+    await new Promise(r => setTimeout(r, 100));
+    
+    const rawData = parseCSV(text);
+    
+    if (rawData.length === 0) {
+      alert('No data found in CSV. Please check the file format.');
+      document.getElementById('processingOverlay').classList.add('hidden');
+      return;
+    }
+    
+    const mappedCols = Object.keys(columnMap).length;
+    console.log(`Mapped ${mappedCols} columns from CSV`);
+    
+    if (!columnMap.company) {
+      alert('Could not find Company column. Please ensure your CSV has a "Company Name" or "Company" column.');
+      document.getElementById('processingOverlay').classList.add('hidden');
+      return;
+    }
+    
+    document.getElementById('progressFill').style.width = '50%';
+    document.getElementById('processingStatus').textContent = `Processing ${rawData.length.toLocaleString()} rows...`;
+    
+    await new Promise(r => setTimeout(r, 100));
+    
+    allData = [];
+    companies = {};
+    
+    let processed = 0;
+    let excluded = 0;
+    let noFit = 0;
+    const total = rawData.length;
+    
+    for (const row of rawData) {
+      processed++;
+      
+      if (processed % 500 === 0) {
+        const pct = 50 + (processed / total) * 40;
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('processingStatus').textContent = `Classifying ${processed.toLocaleString()} / ${total.toLocaleString()}...`;
+        await new Promise(r => setTimeout(r, 10));
+      }
+      
+      if (shouldExclude(row)) {
+        excluded++;
+        continue;
+      }
+      
+      const fit = classifyFit(row);
+      if (!fit) {
+        noFit++;
+        continue;
+      }
+      
+      const state = getField(row, 'state');
+      const territory = assignTerritory(state);
+      const title = getField(row, 'title');
+      const tier = assignContactTier(title);
+      const industry = getField(row, 'industry') || 'Other';
+      const companyName = getField(row, 'company') || 'Unknown';
+      const firstName = getField(row, 'firstName');
+      const lastName = getField(row, 'lastName');
+      const email = getField(row, 'email');
+      const website = getField(row, 'website');
+      
+      const enrichedRow = {
+        ...row,
+        'Company Name': companyName,
+        'First Name': firstName,
+        'Last Name': lastName,
+        'Title': title,
+        'Email': email,
+        'Company State': state,
+        'Website': website,
+        'Industry_Clean': industry,
+        'Natoli_Fit': fit,
+        'Territory': territory,
+        'Contact_Tier': tier
+      };
+      
+      allData.push(enrichedRow);
+      
+      const compKey = companyName.toLowerCase().trim();
+      if (!companies[compKey]) {
+        companies[compKey] = {
+          name: companyName,
+          state: state,
+          territory: territory,
+          fit: fit,
+          industry: industry,
+          website: website,
+          contacts: []
+        };
+      }
+      
+      companies[compKey].contacts.push({
+        name: `${firstName} ${lastName}`.trim(),
+        title: title,
+        email: email,
+        tier: tier
+      });
+      
+      if (fit === 'Both' && companies[compKey].fit !== 'Both') {
+        companies[compKey].fit = 'Both';
+      }
+    }
+    
+    console.log(`Processed: ${processed}, Excluded: ${excluded}, No Fit: ${noFit}, Qualified: ${allData.length}`);
+    
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('processingStatus').textContent = 'Rendering results...';
+    
+    await new Promise(r => setTimeout(r, 200));
+    
+    if (allData.length === 0) {
+      alert(`Processed ${total} rows but none matched qualification criteria.\n\nExcluded: ${excluded}\nNo Fit Found: ${noFit}\n\nPlease check that your CSV contains relevant company/title data.`);
+      document.getElementById('processingOverlay').classList.add('hidden');
+      return;
+    }
+    
+    filteredData = allData;
+    populateFilters();
+    renderResults();
+    
+    document.getElementById('processingOverlay').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('uploadZone').classList.add('hidden');
+    
+  } catch (err) {
+    console.error('CSV processing error:', err);
+    alert('Error processing CSV: ' + err.message);
+    document.getElementById('processingOverlay').classList.add('hidden');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  refreshJobs();
+});
+
+function populateFilters() {
+  const territorySelect = document.getElementById('filterTerritory');
+  const industrySelect = document.getElementById('filterIndustry');
+  
+  const territories = [...new Set(allData.map(r => r.Territory))].sort();
+  const industries = [...new Set(allData.map(r => r.Industry_Clean))].sort();
+  
+  territorySelect.innerHTML = '<option value="">All Territories</option>' +
+    territories.map(t => `<option value="${t}">${t}</option>`).join('');
+  
+  industrySelect.innerHTML = '<option value="">All Industries</option>' +
+    industries.map(i => `<option value="${i}">${i}</option>`).join('');
+}
+
+function applyFilters() {
+  const territory = document.getElementById('filterTerritory').value;
+  const fit = document.getElementById('filterFit').value;
+  const industry = document.getElementById('filterIndustry').value;
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  
+  filteredData = allData.filter(row => {
+    if (territory && row.Territory !== territory) return false;
+    if (fit && row.Natoli_Fit !== fit) return false;
+    if (industry && row.Industry_Clean !== industry) return false;
+    if (search) {
+      const text = [row['Company Name'], row['First Name'], row['Last Name'], row['Title']].join(' ').toLowerCase();
+      if (!text.includes(search)) return false;
+    }
+    return true;
+  });
+  
+  renderResults();
+}
+
+function renderResults() {
+  renderStats();
+  renderTerritories();
+}
+
+function renderStats() {
+  const engCount = filteredData.filter(r => r.Natoli_Fit === 'Natoli Engineering').length;
+  const sciCount = filteredData.filter(r => r.Natoli_Fit === 'Natoli Scientific').length;
+  const bothCount = filteredData.filter(r => r.Natoli_Fit === 'Both').length;
+  
+  const uniqueCompanies = new Set(filteredData.map(r => (r['Company Name'] || '').toLowerCase().trim())).size;
+  
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-value">${filteredData.length.toLocaleString()}</div>
+      <div class="stat-label">Total Contacts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${uniqueCompanies.toLocaleString()}</div>
+      <div class="stat-label">Companies</div>
+    </div>
+    <div class="stat-card engineering">
+      <div class="stat-value">${engCount.toLocaleString()}</div>
+      <div class="stat-label">Engineering Fit</div>
+    </div>
+    <div class="stat-card scientific">
+      <div class="stat-value">${sciCount.toLocaleString()}</div>
+      <div class="stat-label">Scientific Fit</div>
+    </div>
+    <div class="stat-card both">
+      <div class="stat-value">${bothCount.toLocaleString()}</div>
+      <div class="stat-label">Both Divisions</div>
+    </div>
+  `;
+}
+
+function renderTerritories() {
+  const container = document.getElementById('territoriesContainer');
+  
+  const grouped = {};
+  filteredData.forEach(row => {
+    const t = row.Territory;
+    if (!grouped[t]) grouped[t] = [];
+    grouped[t].push(row);
+  });
+  
+  const territoryOrder = ["West Coast", "Rocky Mountain", "Midwest", "Southeast", "Northeast", "International"];
+  
+  let html = '';
+  
+  for (const territory of territoryOrder) {
+    if (!grouped[territory] || grouped[territory].length === 0) continue;
+    
+    const rows = grouped[territory];
+    const companyCount = new Set(rows.map(r => (r['Company Name'] || '').toLowerCase().trim())).size;
+    const engCount = rows.filter(r => r.Natoli_Fit === 'Natoli Engineering').length;
+    const sciCount = rows.filter(r => r.Natoli_Fit === 'Natoli Scientific').length;
+    
+    const byIndustry = {};
+    rows.forEach(row => {
+      const ind = row.Industry_Clean || 'Other';
+      if (!byIndustry[ind]) byIndustry[ind] = {};
+      const compKey = (row['Company Name'] || '').toLowerCase().trim();
+      if (!byIndustry[ind][compKey]) {
+        byIndustry[ind][compKey] = {
+          name: row['Company Name'],
+          state: row['Company State'] || row['State'],
+          fit: row.Natoli_Fit,
+          website: row['Website'],
+          contacts: []
+        };
+      }
+      byIndustry[ind][compKey].contacts.push({
+        name: `${row['First Name'] || ''} ${row['Last Name'] || ''}`.trim(),
+        title: row['Title'],
+        tier: row.Contact_Tier
+      });
+    });
+    
+    html += `
+      <div class="territory-section">
+        <div class="territory-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+          <h2>
+            ${territory}
+            <span class="territory-badge">${rows.length} contacts</span>
+          </h2>
+          <div class="territory-meta">
+            <span>🏢 ${companyCount} companies</span>
+            <span style="color: var(--engineering)">🔧 ${engCount}</span>
+            <span style="color: var(--scientific)">🔬 ${sciCount}</span>
+          </div>
+        </div>
+        <div class="territory-content">
+    `;
+    
+    const sortedIndustries = Object.keys(byIndustry).sort((a, b) => 
+      Object.keys(byIndustry[b]).length - Object.keys(byIndustry[a]).length
+    );
+    
+    for (const industry of sortedIndustries) {
+      const companiesInInd = Object.values(byIndustry[industry]);
+      
+      html += `
+        <div class="industry-group">
+          <div class="industry-header">
+            <h4>${industry}</h4>
+            <span class="industry-count">${companiesInInd.length} companies</span>
+          </div>
+      `;
+      
+      companiesInInd.slice(0, 10).forEach(company => {
+        const fitClass = company.fit === 'Both' ? 'both' : (company.fit === 'Natoli Engineering' ? 'engineering' : 'scientific');
+        
+        html += `
+          <div class="company-card">
+            <div class="company-header">
+              <div>
+                <div class="company-name">${company.name}</div>
+                <div class="company-location">${company.state || 'Unknown'}</div>
+              </div>
+              <span class="fit-badge ${fitClass}">${company.fit.replace('Natoli ', '')}</span>
+            </div>
+            <div class="contacts-list">
+        `;
+        
+        company.contacts.slice(0, 5).forEach(contact => {
+          const tierClass = contact.tier === 'A' ? 'tier-a' : (contact.tier === 'B' ? 'tier-b' : 'tier-c');
+          html += `
+            <div class="contact-chip">
+              <span class="tier-badge ${tierClass}">${contact.tier}</span>
+              ${contact.name}
+              ${contact.title ? `<span class="title">${contact.title}</span>` : ''}
+            </div>
+          `;
+        });
+        
+        if (company.contacts.length > 5) {
+          html += `<div class="contact-chip">+${company.contacts.length - 5} more</div>`;
+        }
+        
+        html += `
+            </div>
+          </div>
+        `;
+      });
+      
+      if (companiesInInd.length > 10) {
+        html += `<p style="color: var(--text-muted); font-size: 13px; padding: 10px;">+ ${companiesInInd.length - 10} more companies in ${industry}</p>`;
+      }
+      
+      html += `</div>`;
+    }
+    
+    html += `
+        </div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+}
+
+function exportCSV() {
+  if (filteredData.length === 0) {
+    alert('No data to export');
+    return;
+  }
+  
+  const headers = ['Company Name', 'First Name', 'Last Name', 'Title', 'Email', 'Company State', 'Territory', 'Natoli_Fit', 'Contact_Tier', 'Industry_Clean', 'Website'];
+  
+  let csv = headers.join(',') + '\n';
+  
+  filteredData.forEach(row => {
+    const values = headers.map(h => {
+      const val = row[h] || '';
+      return `"${val.replace(/"/g, '""')}"`;
+    });
+    csv += values.join(',') + '\n';
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'NATOLI_TERRITORY_INTELLIGENCE.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copySourceCode() {
+  fetch('/static/territory-intelligence.html')
+    .then(r => r.text())
+    .then(code => {
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Source code copied to clipboard!');
+      });
+    })
+    .catch(() => {
+      alert('Could not copy source code. Try downloading the file directly.');
+    });
+}
+
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('dragover');
+});
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.csv')) {
+    document.getElementById('fileInput').files = e.dataTransfer.files;
+    handleFile({ target: { files: [file] } });
+  }
+});
+
+function resetUpload() {
+  allData = [];
+  filteredData = [];
+  companies = {};
+  columnMap = {};
+  document.getElementById('fileInput').value = '';
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('uploadZone').classList.remove('hidden');
+  document.getElementById('emptyState').classList.remove('hidden');
+  document.getElementById('territoriesContainer').innerHTML = '';
+  document.getElementById('statsGrid').innerHTML = '';
+}
+</script>
+
+</body>
+</html>

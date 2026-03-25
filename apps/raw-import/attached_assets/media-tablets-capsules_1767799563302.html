@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tablets & Capsules - Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #facc15;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>Tablets &amp; Capsules - Full Media Evaluation</h1>
+        <p>
+          Qualitative review of Tablets &amp; Capsules as part of the Natoli media mix. This page explains where the title fits,
+          what it is good for, and why it should be treated as a core channel for tablet tooling and compression work.
+        </p>
+        <div class="chip-row">
+          <div class="chip">PHARMA</div>
+          <div class="chip">SOLID DOSE</div>
+          <div class="chip">TIER 1 BUYERS</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">A</div>
+        <div class="grade-caption">
+          Direct line into tablet and capsule decision makers.<br />
+          One of the strongest commercial fits in the entire scorecard.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://tabletscapsules.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Tablets &amp; Capsules site
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary - decision first</h2>
+    <p class="section-intro">
+      Tablets &amp; Capsules lives exactly where Natoli makes money. The title focuses on solid dose processing, tableting,
+      encapsulation and related technologies. A high share of the audience is made up of the same engineers, formulation
+      scientists and operations leaders who buy and run tablet tooling and presses. Compared with broad lab and general
+      pharma titles, buyer density is much higher and noise is much lower.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for 2026 planning</h3>
+      <p>
+        Tablets &amp; Capsules should be treated as a flagship commercial and technical channel for Natoli Engineering, with
+        strong support potential for Natoli Scientific when the story is tied to solid dose.
+      </p>
+      <ul>
+        <li>Audience aligns tightly with tablet compression, encapsulation and related production issues.</li>
+        <li>Readers include real decision makers for tooling, press performance and process reliability.</li>
+        <li>Buyer density is among the highest of any title in the workbook.</li>
+        <li>Spend can be directly linked to SQLs, quotes and long term strategic accounts.</li>
+      </ul>
+      <p class="pill-tagline">
+        Bottom line: this is one of the few titles where Natoli budget is clearly justified as sales fuel, not just awareness.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Tooling life, wear and failure analysis stories aimed at production and maintenance teams.</li>
+          <li>Features that connect press setup, CT analysis and USP 1062 work to measurable outcomes.</li>
+          <li>Campaigns that promote Natoli problem solving in capping, lamination and sticking.</li>
+          <li>Programs where Natoli wants direct conversations with plant level and corporate engineering leaders.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>Generic lab content that does not involve tablet or capsule production.</li>
+          <li>Non tablet product lines where the core audience is in a completely different industry.</li>
+          <li>Short lived vanity campaigns with no sales follow up plan.</li>
+          <li>Messages that belong in corporate image advertising rather than technical problem solving.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis - who is actually in the audience</h2>
+    <p class="section-intro">
+      Using the Natoli tier model, Tablets &amp; Capsules shows a high concentration of Tier 1 and Tier 2 roles. This is one of
+      the few publications where the majority of the list can be tied back to real commercial opportunity.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 - true buyers:</strong> production and process engineers, operations leaders, technical services,
+          MS and T contacts and plant engineering staff responsible for tablet and capsule lines. These roles are strongly
+          represented.
+        </li>
+        <li>
+          <strong>Tier 2 - adjacent roles:</strong> QA, QC, formulation and development staff who influence process and
+          tooling decisions, even if they do not sign the purchase order.
+        </li>
+        <li>
+          <strong>Tier 3 - background audience:</strong> suppliers, consultants and academic readers who add some visibility
+          but are not the core commercial focus.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: a rare channel where a high share of the reach can move directly into pipeline when the content and follow up are strong.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      Tablets &amp; Capsules does not have the largest list in the workbook, but it punches above its weight because of who
+      is on that list. Performance numbers only make sense when filtered through Natoli's ICP.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Open and click rates convert into real conversations because the audience is so focused.</li>
+        <li>Cost per Tier 1 contact is highly competitive when compared with broader pharma media.</li>
+        <li>Ideal environment for campaigns that tie CT analysis, tooling and press upgrades together.</li>
+        <li>Historic Natoli activity and industry reputation can be leveraged for even stronger response.</li>
+      </ul>
+      <p class="pill-tagline">
+        For a CFO, the story is that money spent here is pointed at real production floors and real capital decisions, not generic brand exposure.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      Tablets &amp; Capsules editorial content stays close to tablet and capsule manufacturing. The topics match the problems
+      Natoli solves every day.
+    </p>
+
+    <div class="card">
+      <h3>Typical topics seen</h3>
+      <ul>
+        <li>Tableting and encapsulation technologies, troubleshooting and best practices.</li>
+        <li>Case studies on compression issues, coating, fill weight and process stability.</li>
+        <li>Articles that link equipment set up, tooling choice and formulation to product quality.</li>
+      </ul>
+      <p class="pill-tagline">
+        The title lets Natoli speak in its natural language to the exact people who feel the pain of downtime and tablet defects.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades use the same scale as the wider Natoli Media Scorecard. Letters reflect both workbook data and this qualitative
+      review.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>A</span></div>
+        <div class="bubble">Buyer density<span>A-</span></div>
+        <div class="bubble">Scientific credibility<span>B+</span></div>
+        <div class="bubble">Engineering relevance<span>A</span></div>
+        <div class="bubble">Natoli fit<span>A</span></div>
+        <div class="bubble">ROI probability<span>High</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: Tablets &amp; Capsules is a premier channel where Natoli Engineering can expect measurable commercial outcomes.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for Dave and leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 1 commercial channel.</li>
+        <li><strong>Role:</strong> core platform for tablet and capsule production stories and campaigns.</li>
+        <li><strong>Sales posture:</strong> count this title directly in SQL and quote generation targets.</li>
+        <li><strong>Budget posture:</strong> protect and prioritize spend, especially when trade offs are needed with weaker titles.</li>
+      </ul>
+      <p class="pill-tagline">
+        If Natoli wants to dominate the tablet and capsule conversation, this is one of the places the brand must consistently show up.
+      </p>
+    </div>
+
+    <!-- 8. OS box -->
+    <h2 class="section-title">8. How to reuse this framework for other media buys</h2>
+    <p class="section-intro">
+      This evaluation follows the same template used for other publications in the Media Placement 2025 workbook. The structure
+      stays fixed so leadership can compare channels on equal terms.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> - overlap with Natoli's tablet and compaction decision makers.</li>
+        <li><strong>Buyer density</strong> - share of true Tier 1 ICP inside the audience.</li>
+        <li><strong>Scientific credibility</strong> - strength for Natoli Scientific narratives.</li>
+        <li><strong>Engineering relevance</strong> - focus on tooling, presses and reliability.</li>
+        <li><strong>Natoli fit</strong> - combined value across Natoli Engineering and Natoli Scientific.</li>
+        <li><strong>ROI probability</strong> - realistic chance to turn spend into revenue outcomes.</li>
+      </ul>
+      <p class="pill-tagline">
+        Rule of thumb: sales budget belongs in channels like Tablets &amp; Capsules where both audience fit and buyer density rank at the top of the scorecard.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2026 planning. Summary based on the Tablets &amp; Capsules data in the
+      Media Placement 2025 workbook and the Natoli ICP tiering model.
+    </p>
+  </div>
+</body>
+</html>

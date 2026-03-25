@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Daily Command Center - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .daily-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .daily-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .daily-header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .daily-header p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+    .daily-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .input-card, .output-card {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(30, 30, 40, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .input-card h3, .output-card h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .field-group {
+      margin-bottom: 20px;
+    }
+    .field-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e11d48;
+      font-size: 0.9rem;
+    }
+    .field-group textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+    .field-group textarea::placeholder {
+      color: #666;
+    }
+    .field-group textarea:focus {
+      outline: none;
+      border-color: #e11d48;
+    }
+    .generate-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #e11d48, #ff3b6a);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(225, 29, 72, 0.4);
+    }
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .error-msg {
+      color: #ff4d6a;
+      font-weight: 600;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+    .output-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 200px;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #ddd;
+    }
+    .output-footer {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #e11d48;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="daily-container">
+    <a href="/" class="back-link">Back to TonyOS</a>
+    
+    <div class="daily-header">
+      <h1>Daily Command Center</h1>
+      <p>Focus your day with three simple inputs. Get clarity fast.</p>
+    </div>
+
+    <div class="daily-grid">
+      <div class="input-card">
+        <h3>Your Inputs</h3>
+        
+        <div class="field-group">
+          <label for="one_win">Today's One Win</label>
+          <textarea id="one_win" placeholder="If I only accomplish one thing today, it is..."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="pressure">Top Pressure</label>
+          <textarea id="pressure" placeholder="The thing stressing me most is..."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="next_step">Next Action</label>
+          <textarea id="next_step" placeholder="The next smallest step I can take is..."></textarea>
+        </div>
+
+        <button id="generate-btn" class="generate-btn">Generate</button>
+        <div id="error-msg" class="error-msg"></div>
+      </div>
+
+      <div class="output-card">
+        <h3>Output</h3>
+        <div id="output-box" class="output-box">Fill the three fields and click Generate</div>
+        <p class="output-footer">Saved locally to logs/daily.jsonl</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const generateBtn = document.getElementById("generate-btn");
+    const outputBox = document.getElementById("output-box");
+    const errorMsg = document.getElementById("error-msg");
+
+    generateBtn.addEventListener("click", async () => {
+      errorMsg.textContent = "";
+      outputBox.textContent = "Working...";
+      generateBtn.disabled = true;
+
+      const payload = {
+        one_win: document.getElementById("one_win").value.trim(),
+        pressure: document.getElementById("pressure").value.trim(),
+        next_step: document.getElementById("next_step").value.trim(),
+      };
+
+      try {
+        const res = await fetch("/api/daily", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorMsg.textContent = data.error || "Something went wrong";
+          outputBox.textContent = "";
+        } else {
+          outputBox.textContent = data.result;
+        }
+      } catch (e) {
+        errorMsg.textContent = "Network error: " + e.message;
+        outputBox.textContent = "";
+      } finally {
+        generateBtn.disabled = false;
+      }
+      
+      if (window.SheetsSync) {
+        SheetsSync.syncDailyEntry(payload);
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+</body>
+</html>

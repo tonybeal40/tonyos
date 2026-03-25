@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TonyOS Money</title>
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0f1118;
+      --ink:#f5f7ff;
+      --muted:#b1b6c8;
+      --line:#222638;
+      --accent:#e11d48;
+      --good:#22c55e;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(225,29,72,.18), transparent 55%),
+                  radial-gradient(1200px 700px at 80% 20%, rgba(34,197,94,.12), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:22px}
+    .top{
+      display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap
+    }
+    h1{margin:0;font-size:26px;letter-spacing:.2px}
+    .sub{color:var(--muted);margin-top:6px;font-size:13px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .card{
+      grid-column: span 4;
+      background: rgba(15,17,24,.92);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:14px;
+    }
+    .card.wide{grid-column: span 8}
+    .card.full{grid-column: 1 / -1}
+    .kpi{
+      font-size:12px;color:var(--muted);
+    }
+    .val{
+      font-size:26px;margin-top:8px;font-weight:700;
+    }
+    .bar{
+      height:10px;border-radius:999px;background:#111425;border:1px solid var(--line);
+      overflow:hidden;margin-top:12px;
+    }
+    .bar > div{height:100%;width:0%}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    input, select, button{
+      background:#0b0d14;color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    button{
+      cursor:pointer;
+      background: linear-gradient(180deg, rgba(225,29,72,.95), rgba(225,29,72,.75));
+      border:0;
+      font-weight:700;
+    }
+    button:hover{filter:brightness(1.05)}
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size:13px;
+      margin-top:10px;
+    }
+    th, td{
+      padding:10px 8px;
+      border-bottom:1px solid rgba(34,38,56,.65);
+      text-align:left;
+      color: var(--muted);
+    }
+    th{color:#d7dcff;font-weight:700}
+    .pill{
+      display:inline-block;padding:5px 10px;border-radius:999px;
+      background: rgba(225,29,72,.14); border:1px solid rgba(225,29,72,.35);
+      color:#ffd0da;font-size:12px;
+    }
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .small{font-size:12px;color:var(--muted)}
+    .ok{color:var(--good)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    @media(max-width:980px){
+      .card{grid-column: span 12}
+      .card.wide{grid-column: span 12}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>TonyOS Money</h1>
+        <div class="sub">Truth dashboard: burn rate, runway, and a simple rule engine</div>
+      </div>
+      <div class="right">
+        <div class="small">Mode: <span id="modeLabel" class="pill">Normal</span></div>
+        <button id="refreshBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="kpi">Weekly budget</div>
+        <div class="val" id="weeklyBudgetVal">$0</div>
+        <div class="small">Set this and the rest calculates automatically</div>
+      </div>
+
+      <div class="card">
+        <div class="kpi">Spent this week</div>
+        <div class="val" id="spentWeekVal">$0</div>
+        <div class="bar"><div id="spentBar"></div></div>
+        <div class="small" id="paceMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="kpi">Daily allowance remaining</div>
+        <div class="val" id="dailyAllowanceVal">$0</div>
+        <div class="small" id="daysLeftMsg"></div>
+      </div>
+
+      <div class="card wide">
+        <div class="kpi">14 day runway</div>
+        <div class="val" id="runwayVal">$0</div>
+        <div class="small">This is your safety number. If it is negative, you are in defense mode</div>
+      </div>
+
+      <div class="card wide">
+        <div class="kpi">Add transaction</div>
+        <div class="row" style="margin-top:10px">
+          <select id="type">
+            <option value="expense">expense</option>
+            <option value="income">income</option>
+          </select>
+          <input id="amount" type="number" step="0.01" placeholder="amount" />
+          <input id="category" placeholder="category (gas, food, kids, bills)" />
+          <input id="merchant" placeholder="merchant" />
+          <input id="note" placeholder="note" />
+          <button id="addBtn">Add</button>
+        </div>
+        <div class="small" id="addStatus" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card full">
+        <div class="kpi">Recent transactions</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Merchant</th>
+              <th>Amount</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ========= CONFIG =========
+  const API_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+  const API_TOKEN = "PASTE_YOUR_TOKEN_HERE";
+
+  // Local settings
+  const SETTINGS_KEY = "tonyos_money_settings_v1";
+  const defaultSettings = {
+    weeklyBudget: 250,
+    bufferCash: 0,
+    mode: "Normal"
+  };
+
+  function money(n){
+    const v = Number(n || 0);
+    return v.toLocaleString(undefined, { style:"currency", currency:"USD" });
+  }
+
+  function loadSettings(){
+    try { return { ...defaultSettings, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}")) }; }
+    catch { return { ...defaultSettings }; }
+  }
+  function saveSettings(s){
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  }
+
+  // ======== Date helpers ========
+  function startOfWeek(d){
+    const dt = new Date(d);
+    const day = dt.getDay(); // 0 Sun
+    const diff = (day + 6) % 7; // make Monday start
+    dt.setDate(dt.getDate() - diff);
+    dt.setHours(0,0,0,0);
+    return dt;
+  }
+  function endOfWeek(d){
+    const s = startOfWeek(d);
+    const e = new Date(s);
+    e.setDate(e.getDate() + 7);
+    return e;
+  }
+
+  function daysBetween(a, b){
+    const ms = 24*60*60*1000;
+    return Math.ceil((b - a) / ms);
+  }
+
+  async function apiGet(action, params = {}){
+    const url = new URL(API_URL);
+    url.searchParams.set("action", action);
+    url.searchParams.set("token", API_TOKEN);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+    const res = await fetch(url.toString());
+    return await res.json();
+  }
+
+  async function apiPost(payload){
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...payload, token: API_TOKEN })
+    });
+    return await res.json();
+  }
+
+  function setBar(el, pct){
+    const p = Math.max(0, Math.min(100, pct));
+    el.style.width = p + "%";
+    if (p < 70) el.style.background = "rgba(34,197,94,.9)";
+    else if (p < 95) el.style.background = "rgba(251,191,36,.95)";
+    else el.style.background = "rgba(225,29,72,.95)";
+  }
+
+  function renderRows(rows){
+    const tb = document.getElementById("rows");
+    tb.innerHTML = "";
+    rows.slice(0, 40).forEach(r => {
+      const tr = document.createElement("tr");
+      const dt = new Date(r.createdAt);
+      const amount = Number(r.amount || 0) * (r.type === "expense" ? -1 : 1);
+      tr.innerHTML = `
+        <td>${dt.toLocaleString()}</td>
+        <td>${r.type}</td>
+        <td>${r.category || ""}</td>
+        <td>${r.merchant || ""}</td>
+        <td>${money(amount)}</td>
+        <td>${r.note || ""}</td>
+      `;
+      tb.appendChild(tr);
+    });
+  }
+
+  function computeKPIs(rows, settings){
+    const now = new Date();
+    const wkStart = startOfWeek(now);
+    const wkEnd = endOfWeek(now);
+    const daysLeft = Math.max(1, daysBetween(now, wkEnd));
+
+    let spentWeek = 0;
+    let income14 = 0;
+    let expense14 = 0;
+
+    const d14 = new Date(now);
+    d14.setDate(d14.getDate() - 14);
+
+    rows.forEach(r => {
+      const dt = new Date(r.createdAt);
+      const amt = Number(r.amount || 0);
+
+      // Week spend
+      if (dt >= wkStart && dt < wkEnd && r.type === "expense") {
+        spentWeek += amt;
+      }
+
+      // 14 day net
+      if (dt >= d14) {
+        if (r.type === "income") income14 += amt;
+        if (r.type === "expense") expense14 += amt;
+      }
+    });
+
+    const weeklyBudget = Number(settings.weeklyBudget || 0);
+    const remainingWeek = weeklyBudget - spentWeek;
+    const dailyAllowance = remainingWeek / daysLeft;
+
+    const runway14 = income14 - expense14; // net for last 14
+    const pacePct = weeklyBudget > 0 ? (spentWeek / weeklyBudget) * 100 : 0;
+
+    return { weeklyBudget, spentWeek, remainingWeek, dailyAllowance, daysLeft, runway14, pacePct };
+  }
+
+  async function refresh(){
+    const settings = loadSettings();
+
+    // Quick interactive prompt to set weekly budget if not set
+    if (!settings.weeklyBudget || settings.weeklyBudget <= 0) {
+      const v = prompt("Set weekly budget (number)", "250");
+      settings.weeklyBudget = Number(v || 250);
+      saveSettings(settings);
+    }
+
+    document.getElementById("weeklyBudgetVal").textContent = money(settings.weeklyBudget);
+    document.getElementById("modeLabel").textContent = settings.mode || "Normal";
+
+    const ping = await apiGet("ping");
+    if (!ping.ok) {
+      document.getElementById("paceMsg").textContent = "API error: " + (ping.error || "unknown");
+      document.getElementById("paceMsg").className = "small bad";
+      return;
+    }
+
+    const data = await apiGet("list", { limit: 800 });
+    if (!data.ok) {
+      document.getElementById("paceMsg").textContent = "List error: " + (data.error || "unknown");
+      document.getElementById("paceMsg").className = "small bad";
+      return;
+    }
+
+    const rows = data.rows || [];
+    const k = computeKPIs(rows, settings);
+
+    document.getElementById("spentWeekVal").textContent = money(k.spentWeek);
+    document.getElementById("dailyAllowanceVal").textContent = money(k.dailyAllowance);
+    document.getElementById("runwayVal").textContent = money(k.runway14);
+
+    document.getElementById("daysLeftMsg").textContent = k.daysLeft + " day(s) left in the week";
+    setBar(document.getElementById("spentBar"), k.pacePct);
+
+    const pace = document.getElementById("paceMsg");
+    if (k.pacePct <= 70){
+      pace.textContent = "On pace. Keep it boring and you win";
+      pace.className = "small ok";
+      settings.mode = "Normal";
+    } else if (k.pacePct < 95){
+      pace.textContent = "Close to the line. Tighten up now";
+      pace.className = "small warn";
+      settings.mode = "Tight";
+    } else {
+      pace.textContent = "Over budget pace. Bare minimum mode until next week";
+      pace.className = "small bad";
+      settings.mode = "Bare Minimum";
+    }
+    saveSettings(settings);
+    document.getElementById("modeLabel").textContent = settings.mode;
+
+    renderRows(rows);
+  }
+
+  document.getElementById("refreshBtn").addEventListener("click", refresh);
+
+  document.getElementById("addBtn").addEventListener("click", async () => {
+    const type = document.getElementById("type").value;
+    const amount = Number(document.getElementById("amount").value || 0);
+    const category = document.getElementById("category").value.trim();
+    const merchant = document.getElementById("merchant").value.trim();
+    const note = document.getElementById("note").value.trim();
+
+    const status = document.getElementById("addStatus");
+    status.textContent = "";
+
+    if (!amount || amount <= 0) {
+      status.textContent = "Amount must be > 0";
+      status.className = "small bad";
+      return;
+    }
+    if (!category) {
+      status.textContent = "Category required";
+      status.className = "small bad";
+      return;
+    }
+
+    const res = await apiPost({
+      createdAt: new Date().toISOString(),
+      amount,
+      category,
+      merchant,
+      note,
+      type
+    });
+
+    if (!res.ok) {
+      status.textContent = "Add failed: " + (res.error || "unknown");
+      status.className = "small bad";
+      return;
+    }
+
+    document.getElementById("amount").value = "";
+    document.getElementById("category").value = "";
+    document.getElementById("merchant").value = "";
+    document.getElementById("note").value = "";
+
+    status.textContent = "Saved";
+    status.className = "small ok";
+    refresh();
+  });
+
+  refresh();
+</script>
+</body>
+</html>

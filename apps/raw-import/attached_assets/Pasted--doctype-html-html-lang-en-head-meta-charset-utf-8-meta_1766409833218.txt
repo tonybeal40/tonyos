@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tony CRM</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a class="topbar-back" href="tonyos.html">Back to TonyOS</a>
+
+    <!-- NEW BUTTON (BETWEEN BACK + SYNCED) -->
+    <button id="revopsBtn" class="topbar-revops" type="button" aria-haspopup="dialog" aria-controls="revopsModal">
+      Natoli Revenue OS
+    </button>
+
+    <div class="topbar-right">
+      <span class="topbar-sync">SYNCED TO TONYOS DATA</span>
+      <a class="topbar-open" href="#" target="_blank" rel="noopener">OPEN SHEET</a>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT (your existing CRM UI goes here) -->
+  <main class="container">
+    <!-- ... your existing TonyCRM content ... -->
+  </main>
+
+  <!-- REVOPS MODAL (FORTUNE-50 STYLE) -->
+  <div id="revopsModal" class="revops-modal" role="dialog" aria-modal="true" aria-labelledby="revopsTitle" aria-hidden="true">
+    <div class="revops-scrim" data-close="true"></div>
+
+    <div class="revops-panel" role="document">
+      <div class="revops-header">
+        <div class="revops-header-left">
+          <div class="revops-badge">Operating Model</div>
+          <h2 id="revopsTitle" class="revops-title">Natoli Revenue Opportunities System</h2>
+          <p class="revops-subtitle">
+            A disciplined RevOps process designed for credibility, signal quality, and clean routing across Marketing, Sales, and Technical teams
+          </p>
+        </div>
+
+        <div class="revops-header-right">
+          <!-- OPTIONAL: if you host a PDF or PPTX later, replace href -->
+          <a class="revops-link" id="revopsDeckLink" href="#" target="_blank" rel="noopener">
+            Open Executive Deck
+          </a>
+
+          <button class="revops-close" id="revopsCloseBtn" type="button" aria-label="Close">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="revops-body">
+        <!-- LEFT: EXEC SUMMARY -->
+        <section class="revops-card">
+          <h3 class="revops-card-title">Executive Overview</h3>
+          <p class="revops-muted">
+            Simple, defensible sequence you can explain in under a minute
+          </p>
+
+          <ol class="revops-steps">
+            <li><span class="revops-step-title">Define the Market</span><span class="revops-step-note">Identify Targets</span></li>
+            <li><span class="revops-step-title">Cultivate the Database</span><span class="revops-step-note">Capture, Vet, Categorize</span></li>
+            <li><span class="revops-step-title">Tier Personas</span><span class="revops-step-note">Decision Impact, Risk Ownership</span></li>
+            <li><span class="revops-step-title">Develop Tailored Campaigns</span><span class="revops-step-note">Build Relationships</span></li>
+            <li><span class="revops-step-title">Execute Campaigns</span><span class="revops-step-note">Outreach</span></li>
+            <li><span class="revops-step-title">Track Engagement</span><span class="revops-step-note">Monitor Signals</span></li>
+            <li><span class="revops-step-title">Route Opportunities</span><span class="revops-step-note">Marketing, Sales, Technical</span></li>
+            <li><span class="revops-step-title">Build the Forecast</span><span class="revops-step-note">Validated Signals, Reduced Volatility</span></li>
+            <li><span class="revops-step-title">Review & Optimize Outreach</span><span class="revops-step-note">Targets, Messaging, Opportunities</span></li>
+          </ol>
+
+          <div class="revops-callout">
+            <div class="revops-callout-title">Operating Principle</div>
+            <div class="revops-callout-text">
+              RevOps is not activity. RevOps is decision discipline.
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: DEEP LOOK -->
+        <section class="revops-card">
+          <h3 class="revops-card-title">Natoli Revenue Opportunities System, Deeper Look</h3>
+          <p class="revops-muted">
+            Expand a step to see the intent, governance, and why it matters
+          </p>
+
+          <div class="revops-accordion">
+
+            <details open>
+              <summary>
+                <span class="revops-k">1</span>
+                <span class="revops-sum-title">Define the Market</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Identify target industries, environments, and account types</li>
+                  <li>Focus on markets where credibility, risk reduction, and expertise matter</li>
+                  <li>Align leadership on what good targets look like</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">2</span>
+                <span class="revops-sum-title">Cultivate the Database</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Capture contacts from approved, trusted sources</li>
+                  <li>Vet data for accuracy, relevance, and role legitimacy</li>
+                  <li>Categorize by account, persona, and priority level</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">3</span>
+                <span class="revops-sum-title">Tier Personas</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Define decision-makers, technical influencers, and stakeholders</li>
+                  <li>Tier personas by decision impact and risk responsibility</li>
+                  <li>Eliminate focus on roles that cannot drive outcomes</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">4</span>
+                <span class="revops-sum-title">Develop Tailored Campaigns</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Build campaigns around persona needs and operating risk</li>
+                  <li>Deliver technical credibility, not sales pressure</li>
+                  <li>Focus on relationship-building over immediate conversion</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">5</span>
+                <span class="revops-sum-title">Execute Campaigns</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Run disciplined, coordinated outreach across channels</li>
+                  <li>Follow approved messaging and cadence standards</li>
+                  <li>Ensure consistency regardless of team or touchpoint</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">6</span>
+                <span class="revops-sum-title">Track Engagement</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Monitor engagement quality, not just activity volume</li>
+                  <li>Identify intent, urgency, and readiness signals</li>
+                  <li>Separate real interest from passive consumption</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">7</span>
+                <span class="revops-sum-title">Route Opportunities</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Route signals to the right team: Marketing, Sales, or Technical</li>
+                  <li>Apply clear qualification rules before pipeline entry</li>
+                  <li>Maintain ownership and accountability at every stage</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">8</span>
+                <span class="revops-sum-title">Build the Forecast</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Base forecasts on validated engagement and decision signals</li>
+                  <li>Surface risk early and transparently</li>
+                  <li>Reduce volatility caused by optimism or assumptions</li>
+                </ul>
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="revops-k">9</span>
+                <span class="revops-sum-title">Review & Optimize Outreach</span>
+              </summary>
+              <div class="revops-detail">
+                <ul>
+                  <li>Review performance by target, persona, and campaign</li>
+                  <li>Refine messaging, targeting, and cadence based on signal</li>
+                  <li>Identify new campaign opportunities and scale what works</li>
+                </ul>
+              </div>
+            </details>
+
+            <div class="revops-footer-note">
+              Wash, rinse, and repeat this process to build brand awareness, followers, and loyalists.
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+      <div class="revops-bottom">
+        <div class="revops-bottom-left">
+          <span class="revops-version">RevOps Model v1.0</span>
+          <span class="revops-sep">•</span>
+          <span class="revops-muted">Built for clarity, credibility, and operational control</span>
+        </div>
+        <div class="revops-bottom-right">
+          <button id="revopsPrintBtn" class="revops-btn-secondary" type="button">Print / Save PDF</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="assets/revops-modal.js"></script>
+</body>
+</html>

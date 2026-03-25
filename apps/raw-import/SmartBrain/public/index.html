@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>SmartBrain Chat</title>
+  <style>
+    :root{
+      --bg:#07070a; --panel:#0f1118; --panel2:#121521;
+      --ink:#f5f7ff; --muted:#b1b6c8; --line:#23283a;
+      --accent:#e11d48; --accent2:#ff3b6a;
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      background: radial-gradient(1100px 600px at 10% -10%, rgba(225,29,72,.18), transparent 60%),
+                  radial-gradient(900px 700px at 90% -20%, rgba(255,59,106,.10), transparent 55%),
+                  linear-gradient(180deg, var(--bg) 0%, #04040a 100%);
+      height:100vh; display:flex; flex-direction:column;
+    }
+    header{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background: rgba(7,7,10,.75);
+      backdrop-filter: blur(10px);
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      flex-wrap: wrap;
+    }
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{
+      width:34px;height:34px;border-radius:14px;
+      display:grid;place-items:center;font-weight:900;
+      background: linear-gradient(135deg, rgba(225,29,72,.95), rgba(255,59,106,.85));
+    }
+    .title{font-weight:900}
+    .sub{font-size:12px;color:rgba(177,182,200,.8);margin-top:2px}
+    .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    select, input[type="checkbox"]{
+      accent-color: var(--accent);
+    }
+    select{
+      padding:10px 12px; border-radius:14px;
+      background: rgba(10,10,16,.55);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--ink); outline:none;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      color:rgba(177,182,200,.9);
+      display:flex; gap:8px; align-items:center;
+    }
+    main{flex:1; display:flex; flex-direction:column; max-width:1100px; width:100%; margin:0 auto; padding:14px}
+    .chat{
+      flex:1;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r);
+      overflow:auto;
+      padding:14px;
+    }
+    .msg{max-width: 78ch; padding:12px 12px; border-radius:16px; margin:10px 0; border:1px solid rgba(255,255,255,.08); white-space: pre-wrap;}
+    .user{margin-left:auto; background: rgba(225,29,72,.10); border-color: rgba(225,29,72,.25)}
+    .asst{margin-right:auto; background: rgba(0,0,0,.18)}
+    .meta{font-size:12px;color:rgba(177,182,200,.75);margin-top:6px}
+    .citations{margin-top:10px; font-size:12px; color:rgba(177,182,200,.9)}
+    .citations a{color:rgba(245,247,255,.95)}
+    .bar{
+      margin-top:12px;
+      display:flex; gap:10px; align-items:flex-end;
+    }
+    textarea{
+      flex:1;
+      resize:none;
+      min-height:52px;
+      max-height:160px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,10,16,.55);
+      color:var(--ink);
+      outline:none;
+    }
+    button{
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(225,29,72,.45);
+      background: linear-gradient(135deg, rgba(225,29,72,.95), rgba(255,59,106,.85));
+      color:var(--ink);
+      font-weight:900;
+      cursor:pointer;
+    }
+    button:disabled{opacity:.6; cursor:not-allowed}
+    .back-link{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      transition: all 0.2s ease;
+    }
+    .back-link:hover{
+      border-color: rgba(225,29,72,.45);
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">SB</div>
+      <div>
+        <div class="title">SmartBrain Chat</div>
+        <div class="sub">Multi-model router with optional citations</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="claude">Claude</option>
+        <option value="gemini">Gemini</option>
+      </select>
+
+      <select id="model"></select>
+
+      <label class="chip">
+        <input id="truthMode" type="checkbox"/>
+        Truth mode (citations)
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <div id="chat" class="chat"></div>
+
+    <div class="bar">
+      <textarea id="input" placeholder="Message SmartBrain..."></textarea>
+      <button id="send">Send</button>
+    </div>
+  </main>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const send = document.getElementById("send");
+    const provider = document.getElementById("provider");
+    const model = document.getElementById("model");
+    const truthMode = document.getElementById("truthMode");
+
+    const modelsByProvider = {
+      openai: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
+      claude: ["claude-3-5-sonnet-20241022", "claude-3-opus-20240229", "claude-3-haiku-20240307"],
+      gemini: ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+    };
+
+    const state = {
+      messages: [
+        { role: "system", content: "You are SmartBrain. Be precise. If truthMode is on, rely on citations and admit uncertainty." }
+      ]
+    };
+
+    function setModelOptions(){
+      model.innerHTML = "";
+      for(const m of modelsByProvider[provider.value]){
+        const opt = document.createElement("option");
+        opt.value = m; opt.textContent = m;
+        model.appendChild(opt);
+      }
+      if(provider.value !== "openai") truthMode.checked = false;
+      truthMode.disabled = provider.value !== "openai";
+    }
+
+    function addMsg(role, text, citations){
+      const box = document.createElement("div");
+      box.className = "msg " + (role === "user" ? "user" : "asst");
+      box.textContent = text;
+
+      if(citations && citations.length){
+        const c = document.createElement("div");
+        c.className = "citations";
+        c.innerHTML = "<div class='meta'>Sources</div>" + citations.map(x =>
+          `<div>• <a href="${x.url}" target="_blank" rel="noreferrer">${x.title}</a></div>`
+        ).join("");
+        box.appendChild(c);
+      }
+
+      chat.appendChild(box);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function go(){
+      const text = input.value.trim();
+      if(!text) return;
+
+      input.value = "";
+      addMsg("user", text);
+
+      state.messages.push({ role: "user", content: text });
+      send.disabled = true;
+
+      try{
+        const resp = await fetch("/api/chat", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            provider: provider.value,
+            model: model.value,
+            messages: state.messages,
+            truthMode: truthMode.checked
+          })
+        });
+
+        const data = await resp.json();
+        if(!resp.ok) throw new Error(data.error || "Request failed");
+
+        addMsg("assistant", data.text || "(empty)", data.citations || []);
+        state.messages.push({ role: "assistant", content: data.text || "" });
+      } catch(e){
+        addMsg("assistant", "Error: " + e.message);
+      } finally{
+        send.disabled = false;
+      }
+    }
+
+    send.onclick = go;
+    input.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); go(); }
+    });
+
+    provider.onchange = setModelOptions;
+    setModelOptions();
+  </script>
+</body>
+</html>

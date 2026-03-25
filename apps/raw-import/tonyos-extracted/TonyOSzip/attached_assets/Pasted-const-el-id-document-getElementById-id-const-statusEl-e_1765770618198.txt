@@ -1,0 +1,108 @@
+const el = (id) => document.getElementById(id);
+
+const statusEl = el("status");
+const runBtn = el("runBtn");
+const aiBtn = el("aiBtn");
+const sendPrompt = el("sendPrompt");
+const promptEl = el("prompt");
+const aiOut = el("aiOut");
+const preview = el("preview");
+
+const tabs = Array.from(document.querySelectorAll(".tab"));
+const editors = {
+  html: el("html"),
+  css: el("css"),
+  js: el("js")
+};
+
+function setStatus(msg){
+  statusEl.textContent = msg;
+}
+
+function switchTab(tabName){
+  tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tabName));
+  Object.entries(editors).forEach(([k, area]) => {
+    area.classList.toggle("active", k === tabName);
+  });
+}
+
+tabs.forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
+
+function buildDoc(){
+  const html = editors.html.value || "";
+  const css = editors.css.value || "";
+  const js = editors.js.value || "";
+
+  return `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>${css}</style>
+</head>
+<body>
+${html}
+<script>
+try {
+${js}
+} catch (e) {
+  document.body.insertAdjacentHTML("afterbegin", "<pre style='color:#b00020;white-space:pre-wrap;'>JS Error: " + (e && e.message ? e.message : e) + "</pre>");
+  console.error(e);
+}
+<\/script>
+</body>
+</html>`;
+}
+
+function run(){
+  setStatus("Running");
+  const doc = buildDoc();
+  preview.srcdoc = doc;
+  setTimeout(() => setStatus("Idle"), 250);
+}
+
+async function callAI(prompt){
+  setStatus("AI working");
+  aiOut.textContent = "Calling server...";
+  try{
+    const res = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error || "AI request failed");
+    aiOut.textContent = JSON.stringify(data, null, 2);
+  } catch (e){
+    aiOut.textContent = "Error: " + (e?.message || e);
+  } finally {
+    setStatus("Idle");
+  }
+}
+
+runBtn.addEventListener("click", run);
+
+aiBtn.addEventListener("click", () => {
+  const p = promptEl.value.trim() || "Review my code and suggest improvements";
+  callAI(p);
+});
+
+sendPrompt.addEventListener("click", () => {
+  const p = promptEl.value.trim();
+  if (!p) {
+    aiOut.textContent = "Type a prompt first";
+    return;
+  }
+  callAI(p);
+});
+
+// Starter content
+editors.html.value = `<h1 style="font-family:system-ui">Codebench is live</h1>
+<p>Type HTML, CSS, JS then click Run</p>
+<button onclick="document.body.insertAdjacentHTML('beforeend','<p>Button works</p>')">Test Button</button>`;
+
+editors.css.value = `body{ padding:20px; } h1{ margin:0 0 10px; } button{ padding:10px 12px; }`;
+
+editors.js.value = `console.log("JS is running");`;
+
+run();

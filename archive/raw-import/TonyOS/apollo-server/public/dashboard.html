@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Tony CRM</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    a { color: #00ff88; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { margin-bottom: 1.5rem; }
+    h1 { color: #00ff88; font-size: 1.8rem; margin-bottom: 1.5rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .stat-card h3 {
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card .value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00ff88;
+    }
+    .stat-card.tier-a .value { color: #00ff88; }
+    .stat-card.tier-b .value { color: #ffd700; }
+    .stat-card.tier-c .value { color: #888; }
+    .stat-card.scientific .value { color: #00aaff; }
+    .stat-card.engineering .value { color: #ff6600; }
+    .section {
+      background: #1a1a24;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .section h2 {
+      font-size: 1rem;
+      color: #00ff88;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.5rem;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .bar-chart {
+      list-style: none;
+    }
+    .bar-item {
+      margin-bottom: 0.8rem;
+    }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+    .bar {
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #00aaff);
+      border-radius: 4px;
+    }
+    .recent-list {
+      list-style: none;
+    }
+    .recent-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #222;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .tier-badge {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tier-badge.A { background: #00ff88; color: #0a0a0f; }
+    .tier-badge.B { background: #ffd700; color: #0a0a0f; }
+    .tier-badge.C { background: #666; color: #fff; }
+    .conversion {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="index.html">&larr; Accounts</a>
+    <a href="tier-a.html">Tier A</a>
+    <a href="divisions.html">Divisions</a>
+  </div>
+  <h1>Leadership Dashboard</h1>
+
+  <div class="grid" id="stats">
+    <div class="stat-card">
+      <h3>Total Accounts</h3>
+      <div class="value" id="total">-</div>
+    </div>
+    <div class="stat-card tier-a">
+      <h3>Tier A</h3>
+      <div class="value" id="tierA">-</div>
+    </div>
+    <div class="stat-card tier-b">
+      <h3>Tier B</h3>
+      <div class="value" id="tierB">-</div>
+    </div>
+    <div class="stat-card">
+      <h3>Qualified</h3>
+      <div class="value" id="qualified">-</div>
+    </div>
+    <div class="stat-card">
+      <h3>Conversion Rate</h3>
+      <div class="value" id="conversion">-</div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="section">
+      <h2>Division Split</h2>
+      <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="stat-card scientific">
+          <h3>Scientific</h3>
+          <div class="value" id="scientific">-</div>
+        </div>
+        <div class="stat-card engineering">
+          <h3>Engineering</h3>
+          <div class="value" id="engineering">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>Both</h3>
+          <div class="value" id="both">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Top Industries</h2>
+      <ul class="bar-chart" id="industries"></ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Recent Accounts</h2>
+    <ul class="recent-list" id="recent"></ul>
+  </div>
+
+  <script>
+    const isProxy = window.location.pathname.startsWith('/apollo-crm');
+    const API_BASE = isProxy ? '/apollo-crm' : '';
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch(API_BASE + '/metrics');
+        const data = await res.json();
+
+        document.getElementById('total').textContent = data.total_accounts;
+        document.getElementById('tierA').textContent = data.tiers?.A || 0;
+        document.getElementById('tierB').textContent = data.tiers?.B || 0;
+        document.getElementById('qualified').textContent = data.qualified_accounts;
+        document.getElementById('conversion').textContent = data.conversion_rate + '%';
+        document.getElementById('scientific').textContent = data.divisions?.scientific || 0;
+        document.getElementById('engineering').textContent = data.divisions?.engineering || 0;
+        document.getElementById('both').textContent = data.divisions?.both || 0;
+
+        const maxCount = Math.max(...(data.by_industry?.map(i => i.count) || [1]));
+        document.getElementById('industries').innerHTML = (data.by_industry || []).map(ind => `
+          <li class="bar-item">
+            <div class="bar-label">
+              <span>${ind.industry || 'Unknown'}</span>
+              <span>${ind.count}</span>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="width: ${(ind.count / maxCount) * 100}%"></div>
+            </div>
+          </li>
+        `).join('');
+
+        document.getElementById('recent').innerHTML = (data.recent_accounts || []).map(a => `
+          <li class="recent-item">
+            <a href="${API_BASE}/account.html?id=${a.id}">${a.company_name}</a>
+            <div>
+              <span style="color:#888;margin-right:0.5rem;">${a.division_fit || ''}</span>
+              <span class="tier-badge ${a.tier}">${a.tier || '-'}</span>
+            </div>
+          </li>
+        `).join('');
+
+      } catch (e) {
+        console.error('Failed to load dashboard:', e);
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

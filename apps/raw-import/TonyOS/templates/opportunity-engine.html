@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TonyOS Opportunity Engine</title>
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-input: #1a1a24;
+      --border: #2a2a3a;
+      --text: #e0e0e0;
+      --text-muted: #888;
+      --accent: #00d4ff;
+      --accent-hover: #00b8e0;
+      --success: #00ff88;
+      --warning: #ffaa00;
+      --danger: #ff4466;
+      --tier1: #00ff88;
+      --tier2: #ffaa00;
+      --tier3: #666;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text); min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; gap: 12px; font-size: 1.25rem; font-weight: 600; }
+    .logo-icon { font-size: 1.5rem; }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    .status { padding: 6px 12px; background: rgba(0, 255, 136, 0.1); color: var(--success); border-radius: 6px; font-size: 0.85rem; }
+    .back-link { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap; }
+    .tab { padding: 10px 20px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .tab:hover { color: var(--text); border-color: var(--accent); }
+    .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h2 { margin-bottom: 8px; }
+    .card h3 { margin-bottom: 12px; color: var(--accent); }
+    .muted { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-muted); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    input[type="text"], textarea, select { width: 100%; padding: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+    textarea { resize: vertical; font-family: inherit; }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .checkbox-label input { width: auto; }
+    .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--bg-input); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); }
+    .btn-danger { background: rgba(255, 68, 102, 0.2); color: var(--danger); }
+    .btn-danger:hover { background: rgba(255, 68, 102, 0.3); }
+    .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+    .progress-container { margin-top: 20px; text-align: center; }
+    .progress-bar { height: 8px; background: var(--bg-input); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+    .progress-text { color: var(--text-muted); font-size: 0.85rem; }
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg-input); padding: 16px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+    .stat-card.tier1 { border-color: var(--tier1); }
+    .stat-card.tier2 { border-color: var(--tier2); }
+    .stat-card.tier3 { border-color: var(--tier3); }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .stat-card.tier1 .stat-value { color: var(--tier1); }
+    .stat-card.tier2 .stat-value { color: var(--tier2); }
+    .stat-card.tier3 .stat-value { color: var(--tier3); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+    .filter-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-row select { width: auto; min-width: 150px; }
+    .results-list { display: flex; flex-direction: column; gap: 12px; }
+    .result-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+    .result-tier { width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; }
+    .result-tier.tier-1 { background: rgba(0, 255, 136, 0.2); color: var(--tier1); }
+    .result-tier.tier-2 { background: rgba(255, 170, 0, 0.2); color: var(--tier2); }
+    .result-tier.tier-3 { background: rgba(102, 102, 102, 0.2); color: var(--tier3); }
+    .result-info h4 { margin-bottom: 4px; }
+    .result-info .meta { color: var(--text-muted); font-size: 0.85rem; }
+    .result-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .tag { padding: 4px 8px; background: rgba(0, 212, 255, 0.1); color: var(--accent); border-radius: 4px; font-size: 0.75rem; }
+    .result-actions { display: flex; gap: 8px; }
+    .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+    .intel-section { margin-bottom: 24px; }
+    .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { padding: 8px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 20px; font-size: 0.85rem; }
+    .competitor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .competitor-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .competitor-card h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .competitor-card .meta { font-size: 0.8rem; color: var(--text-muted); }
+    @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .form-row { grid-template-columns: 1fr; } .result-card { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🎯</span>
+      <span>TonyOS Opportunity Engine</span>
+    </div>
+    <div class="header-actions">
+      <span class="status" id="status">Ready</span>
+      <a href="/" class="back-link">← Back to TonyOS</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab active" data-tab="single">Single Scan</button>
+      <button class="tab" data-tab="batch">Batch Scan</button>
+      <button class="tab" data-tab="results">Results</button>
+      <button class="tab" data-tab="intelligence">Intelligence</button>
+    </div>
+
+    <div class="tab-content active" id="tab-single">
+      <div class="card">
+        <h2>🔍 Single Company Scanner</h2>
+        <p class="muted">Analyze a single company for compression/tablet manufacturing relevance</p>
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="singleName" placeholder="e.g., Pharma Corp Inc">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Website (optional)</label>
+            <input type="text" id="singleWebsite" placeholder="e.g., pharmacorp.com">
+          </div>
+          <div class="form-group">
+            <label>Region</label>
+            <select id="singleRegion">
+              <option value="usa">USA</option>
+              <option value="canada">Canada</option>
+              <option value="puerto-rico">Puerto Rico</option>
+              <option value="mexico">Mexico</option>
+              <option value="emea">EMEA</option>
+              <option value="apac">APAC</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Company Description / Intelligence</label>
+          <textarea id="singleDescription" rows="6" placeholder="Paste company description, news, job postings, or any text for analysis..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="singleUseAI">
+            <span>Use AI-Powered Deep Scan (OpenAI)</span>
+          </label>
+        </div>
+        <button class="btn btn-primary" onclick="runSingleScan()">🚀 Run Scan</button>
+      </div>
+      <div class="card" id="singleResult" style="display: none;">
+        <h3>📊 Scan Results</h3>
+        <div id="singleResultContent"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-batch">
+      <div class="card">
+        <h2>📦 Batch Company Scanner</h2>
+        <p class="muted">Scan multiple companies at once using JSON input</p>
+        <div class="form-group">
+          <label>Companies JSON</label>
+          <textarea id="batchInput" rows="12" placeholder='[{"name": "Company A", "description": "Scaling tablet throughput..."}]'></textarea>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="batchUseAI">
+            <span>Use AI-Powered Deep Scan (slower, uses OpenAI credits)</span>
+          </label>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="runBatchScan()">🚀 Run Batch Scan</button>
+          <button class="btn btn-secondary" onclick="loadSampleBatch()">📋 Load Sample</button>
+        </div>
+        <div class="progress-container" id="batchProgress" style="display: none;">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <span class="progress-text" id="progressText">Processing...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-results">
+      <div class="card">
+        <h2>📈 Scan Results & Opportunities</h2>
+        <div class="stats-row" id="summaryStats">
+          <div class="stat-card"><div class="stat-value" id="totalScanned">0</div><div class="stat-label">Total Scanned</div></div>
+          <div class="stat-card tier1"><div class="stat-value" id="tier1Count">0</div><div class="stat-label">Tier 1 (Hot)</div></div>
+          <div class="stat-card tier2"><div class="stat-value" id="tier2Count">0</div><div class="stat-label">Tier 2 (Warm)</div></div>
+          <div class="stat-card tier3"><div class="stat-value" id="tier3Count">0</div><div class="stat-label">Tier 3 (Monitor)</div></div>
+        </div>
+        <div class="stats-row" style="margin-top: 12px;">
+          <div class="stat-card" style="border-color: #8b5cf6;"><div class="stat-value" id="scientificCount" style="color: #8b5cf6;">0</div><div class="stat-label">🔬 Scientific</div></div>
+          <div class="stat-card" style="border-color: #f59e0b;"><div class="stat-value" id="engineeringCount" style="color: #f59e0b;">0</div><div class="stat-label">🔧 Engineering</div></div>
+          <div class="stat-card" style="border-color: #10b981;"><div class="stat-value" id="bothCount" style="color: #10b981;">0</div><div class="stat-label">🎯 Both</div></div>
+          <div class="stat-card"><div class="stat-value" id="unknownCount">0</div><div class="stat-label">❓ Unknown</div></div>
+        </div>
+        <div class="filter-row">
+          <select id="tierFilter" onchange="filterResults()">
+            <option value="all">All Tiers</option>
+            <option value="1">Tier 1 Only</option>
+            <option value="2">Tier 2 Only</option>
+            <option value="3">Tier 3 Only</option>
+          </select>
+          <select id="divisionFilter" onchange="filterResults()">
+            <option value="all">All Divisions</option>
+            <option value="scientific">🔬 Scientific Only</option>
+            <option value="engineering">🔧 Engineering Only</option>
+            <option value="both">🎯 Both Divisions</option>
+          </select>
+        </div>
+        <div class="filter-row" style="margin-top: 8px;">
+          <button class="btn btn-secondary" onclick="exportResults('json')">📥 Export All JSON</button>
+          <button class="btn btn-secondary" onclick="exportResults('csv')">📥 Export All CSV</button>
+          <button class="btn btn-secondary" style="background: #8b5cf6; color: white;" onclick="exportByDivision('scientific')">🔬 Export Scientific</button>
+          <button class="btn btn-secondary" style="background: #f59e0b; color: white;" onclick="exportByDivision('engineering')">🔧 Export Engineering</button>
+          <button class="btn btn-secondary" style="background: #10b981; color: white;" onclick="exportByDivision('both')">🎯 Export Both</button>
+          <button class="btn btn-danger" onclick="clearResults()">🗑️ Clear All</button>
+        </div>
+        <div class="results-list" id="resultsList">
+          <div class="empty-state">No scan results yet. Run a scan to see opportunities.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-intelligence">
+      <div class="card">
+        <h2>🧠 Intelligence Database</h2>
+        <div class="intel-section">
+          <h3>📊 Taxonomy Categories</h3>
+          <div class="chip-grid" id="taxonomyGrid"></div>
+        </div>
+        <div class="intel-section">
+          <h3>🔑 Detection Keywords</h3>
+          <div class="chip-grid" id="keywordsGrid"></div>
+        </div>
+        <div class="intel-section">
+          <h3>⚔️ Competitor Database</h3>
+          <div class="competitor-grid" id="competitorGrid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = 'http://localhost:3003';
+    let allResults = JSON.parse(localStorage.getItem('oppEngineResults') || '[]');
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupTabs();
+      loadIntelligence();
+      renderResults();
+    });
+
+    function setupTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+        });
+      });
+    }
+
+    async function loadIntelligence() {
+      try {
+        const [taxonomyRes, keywordsRes, competitorsRes] = await Promise.all([
+          fetch(`${API_BASE}/api/taxonomy`),
+          fetch(`${API_BASE}/api/keywords`),
+          fetch(`${API_BASE}/api/competitors`)
+        ]);
+        const taxonomy = await taxonomyRes.json();
+        const keywords = await keywordsRes.json();
+        const competitors = await competitorsRes.json();
+        document.getElementById('taxonomyGrid').innerHTML = taxonomy.taxonomy.map(t => `<span class="chip">${t}</span>`).join('');
+        document.getElementById('keywordsGrid').innerHTML = [...keywords.keywords, ...keywords.pressureKeywords.map(k => `⚠️ ${k}`)].map(k => `<span class="chip">${k}</span>`).join('');
+        document.getElementById('competitorGrid').innerHTML = competitors.competitors.map(c => `<div class="competitor-card"><h4>${c.name}</h4><div class="meta">${c.type} • ${c.region}</div></div>`).join('');
+      } catch (error) {
+        console.error('Failed to load intelligence:', error);
+      }
+    }
+
+    async function runSingleScan() {
+      const name = document.getElementById('singleName').value || 'Unknown Company';
+      const description = document.getElementById('singleDescription').value;
+      const website = document.getElementById('singleWebsite').value;
+      const region = document.getElementById('singleRegion').value;
+      const useAI = document.getElementById('singleUseAI').checked;
+      if (!description) { alert('Please enter a company description'); return; }
+      setStatus('Scanning...');
+      try {
+        const res = await fetch(`${API_BASE}/api/scan/single`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description, website, region, useAI })
+        });
+        const result = await res.json();
+        allResults.unshift(result);
+        saveResults();
+        document.getElementById('singleResult').style.display = 'block';
+        document.getElementById('singleResultContent').innerHTML = renderResultDetail(result);
+        renderResults();
+        setStatus('Scan Complete');
+      } catch (error) {
+        console.error('Scan failed:', error);
+        setStatus('Scan Failed');
+        alert('Scan failed: ' + error.message);
+      }
+    }
+
+    async function runBatchScan() {
+      const input = document.getElementById('batchInput').value;
+      const useAI = document.getElementById('batchUseAI').checked;
+      let companies;
+      try { companies = JSON.parse(input); if (!Array.isArray(companies)) throw new Error('Must be an array'); } catch (e) { alert('Invalid JSON.'); return; }
+      setStatus('Batch Scanning...');
+      showProgress(0, companies.length);
+      try {
+        const res = await fetch(`${API_BASE}/api/scan/batch`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ companies, useAI })
+        });
+        const data = await res.json();
+        allResults = [...data.results, ...allResults];
+        saveResults();
+        hideProgress();
+        renderResults();
+        document.querySelector('[data-tab="results"]').click();
+        setStatus(`Scanned ${data.results.length} companies`);
+      } catch (error) {
+        console.error('Batch scan failed:', error);
+        hideProgress();
+        setStatus('Batch Failed');
+        alert('Batch scan failed: ' + error.message);
+      }
+    }
+
+    function loadSampleBatch() {
+      document.getElementById('batchInput').value = JSON.stringify([
+        { name: "PharmaCo Industries", description: "Leading CDMO expanding tablet production capacity. Currently experiencing throughput bottlenecks. Looking for formulation scale-up support, R&D collaboration, and process development expertise. Need help with bioavailability studies and dissolution testing.", region: "usa" },
+        { name: "ToolMaster Manufacturing", description: "Vitamin manufacturer seeking new tooling solutions. Current press dies showing wear after 2M cycles. Need punch refurbishment, turret inspection, and preventive maintenance program. Looking at B tooling upgrades.", region: "canada" },
+        { name: "FormulaTech Pharma", description: "Generic pharma company needing tech transfer support and formulation development. Also require new D tooling for their Korsch presses and tooling maintenance training.", region: "usa" },
+        { name: "BatteryTech Materials", description: "Advanced battery materials company compacting cathode powders. Expanding sodium-ion production line. Need high-precision compaction equipment.", region: "usa" }
+      ], null, 2);
+    }
+
+    function renderResults() {
+      const tierFilter = document.getElementById('tierFilter').value;
+      const divisionFilter = document.getElementById('divisionFilter').value;
+      let filtered = allResults;
+      if (tierFilter !== 'all') { filtered = filtered.filter(r => r.finalTier === parseInt(tierFilter)); }
+      if (divisionFilter !== 'all') { filtered = filtered.filter(r => r.division?.division === divisionFilter); }
+      
+      document.getElementById('totalScanned').textContent = allResults.length;
+      document.getElementById('tier1Count').textContent = allResults.filter(r => r.finalTier === 1).length;
+      document.getElementById('tier2Count').textContent = allResults.filter(r => r.finalTier === 2).length;
+      document.getElementById('tier3Count').textContent = allResults.filter(r => r.finalTier === 3).length;
+      document.getElementById('scientificCount').textContent = allResults.filter(r => r.division?.division === 'scientific').length;
+      document.getElementById('engineeringCount').textContent = allResults.filter(r => r.division?.division === 'engineering').length;
+      document.getElementById('bothCount').textContent = allResults.filter(r => r.division?.division === 'both').length;
+      document.getElementById('unknownCount').textContent = allResults.filter(r => r.division?.division === 'unknown' || !r.division).length;
+      
+      const container = document.getElementById('resultsList');
+      if (filtered.length === 0) { container.innerHTML = '<div class="empty-state">No results match current filters.</div>'; return; }
+      container.innerHTML = filtered.map((r, i) => {
+        const divColor = r.division?.division === 'scientific' ? '#8b5cf6' : r.division?.division === 'engineering' ? '#f59e0b' : r.division?.division === 'both' ? '#10b981' : '#666';
+        const divLabel = r.division?.division === 'scientific' ? '🔬 Scientific' : r.division?.division === 'engineering' ? '🔧 Engineering' : r.division?.division === 'both' ? '🎯 Both' : '❓ Unknown';
+        return `
+        <div class="result-card">
+          <div class="result-tier tier-${r.finalTier}">T${r.finalTier}</div>
+          <div class="result-info">
+            <h4>${escHtml(r.name)} <span style="background: ${divColor}22; color: ${divColor}; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 8px;">${divLabel}</span></h4>
+            <div class="meta">${r.region?.toUpperCase() || 'N/A'} • ${r.scannedAt ? new Date(r.scannedAt).toLocaleDateString() : 'N/A'}</div>
+            <div class="result-tags">
+              ${r.taxonomy?.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('') || ''}
+              ${r.competitors?.map(c => `<span class="tag" style="background:rgba(255,68,102,0.1);color:#ff4466;">⚔️ ${c}</span>`).join('') || ''}
+            </div>
+            ${r.division?.recommendation ? `<div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">${escHtml(r.division.recommendation)}</div>` : ''}
+          </div>
+          <div class="result-actions"><button class="btn btn-secondary" onclick="viewDetail(${i})">View</button></div>
+        </div>
+      `}).join('');
+    }
+
+    function renderResultDetail(result) {
+      const divColor = result.division?.division === 'scientific' ? '#8b5cf6' : result.division?.division === 'engineering' ? '#f59e0b' : result.division?.division === 'both' ? '#10b981' : '#666';
+      const divLabel = result.division?.division === 'scientific' ? '🔬 Scientific' : result.division?.division === 'engineering' ? '🔧 Engineering' : result.division?.division === 'both' ? '🎯 Both' : '❓ Unknown';
+      return `<div style="display: grid; gap: 16px;">
+        <div><strong>Company:</strong> ${escHtml(result.name)}<br><strong>Region:</strong> ${result.region?.toUpperCase() || 'N/A'}<br><strong>Tier:</strong> <span style="color: ${result.finalTier === 1 ? 'var(--tier1)' : result.finalTier === 2 ? 'var(--tier2)' : 'var(--tier3)'}">Tier ${result.finalTier}</span><br><strong>Division:</strong> <span style="color: ${divColor};">${divLabel}</span></div>
+        ${result.division ? `<div><strong>Division Routing:</strong><br>${escHtml(result.division.recommendation)}<br><small style="color: var(--text-muted);">Scientific signals: ${result.division.scientificScore} | Engineering signals: ${result.division.engineeringScore}</small></div>` : ''}
+        <div><strong>Local Analysis:</strong><pre style="background: var(--bg-input); padding: 12px; border-radius: 8px; overflow: auto; font-size: 0.85rem;">${JSON.stringify(result.localAnalysis, null, 2)}</pre></div>
+        ${result.competitors?.length ? `<div><strong>Competitors Detected:</strong> ${result.competitors.join(', ')}</div>` : ''}
+        ${result.taxonomy?.length ? `<div><strong>Taxonomy Match:</strong> ${result.taxonomy.join(', ')}</div>` : ''}
+        ${result.ai ? `<div><strong>AI Analysis:</strong><pre style="background: var(--bg-input); padding: 12px; border-radius: 8px; overflow: auto; font-size: 0.85rem;">${JSON.stringify(result.ai, null, 2)}</pre></div>` : ''}
+      </div>`;
+    }
+
+    function viewDetail(index) { alert(JSON.stringify(allResults[index], null, 2)); }
+    function filterResults() { renderResults(); }
+
+    function exportResults(format) {
+      if (allResults.length === 0) { alert('No results to export'); return; }
+      downloadData(allResults, `opportunity-scan-all-${Date.now()}`, format);
+    }
+
+    function exportByDivision(division) {
+      const filtered = allResults.filter(r => r.division?.division === division);
+      if (filtered.length === 0) { alert(`No ${division} results to export`); return; }
+      downloadData(filtered, `opportunity-${division}-${Date.now()}`, 'csv');
+    }
+
+    function downloadData(data, filename, format) {
+      let content, type;
+      if (format === 'json') {
+        content = JSON.stringify(data, null, 2);
+        type = 'application/json';
+        filename += '.json';
+      } else {
+        const headers = ['Name', 'Region', 'Tier', 'Division', 'Division Recommendation', 'Keywords', 'Competitors', 'Taxonomy', 'Scanned At'];
+        const rows = data.map(r => [
+          r.name, 
+          r.region, 
+          r.finalTier, 
+          r.division?.division || 'unknown',
+          r.division?.recommendation || '',
+          r.localAnalysis?.keywords?.join(';') || '', 
+          r.competitors?.join(';') || '', 
+          r.taxonomy?.join(';') || '', 
+          r.scannedAt
+        ]);
+        content = [headers.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n');
+        type = 'text/csv';
+        filename += '.csv';
+      }
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearResults() { if (confirm('Clear all scan results?')) { allResults = []; saveResults(); renderResults(); } }
+    function saveResults() { localStorage.setItem('oppEngineResults', JSON.stringify(allResults)); }
+    function showProgress(current, total) { document.getElementById('batchProgress').style.display = 'block'; document.getElementById('progressFill').style.width = `${(current / total) * 100}%`; document.getElementById('progressText').textContent = `Processing ${current} of ${total}...`; }
+    function hideProgress() { document.getElementById('batchProgress').style.display = 'none'; }
+    function setStatus(text) { document.getElementById('status').textContent = text; }
+    function escHtml(str) { if (!str) return ''; return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  </script>
+</body>
+</html>

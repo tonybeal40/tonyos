@@ -1,0 +1,229 @@
+PHASE 3 + 4
+Apollo Enrichment + Natoli Scoring LOCKED INTO ACCOUNT CREATION
+
+This is the most important phase.
+From now on, accounts are created correctly or not at all.
+
+🔁 Updated architecture (read once)
+Domain entered
+   ↓
+Apollo enrichment
+   ↓
+Persona detection
+   ↓
+Natoli Engineering vs Scientific vs BOTH
+   ↓
+Pain points
+   ↓
+Tier
+   ↓
+Saved to CRM
+
+
+No manual entry. No opinion.
+
+1️⃣ Add Apollo + Scoring into the CRM save flow
+Create new file
+/server/enrich-and-save.js
+import { enrichCompany, getPersonas } from "./apollo.js";
+import { scorePersonas, assignTier } from "./scoring.js";
+import { routeNatoli } from "./routing.js";
+import { painPoints } from "./pains.js";
+import { TOP_PERSONAS } from "./personas.js";
+import { createAccount } from "./accounts.js";
+
+export async function enrichAndSave(domain) {
+  const company = await enrichCompany(domain);
+  if (!company) throw new Error("Company not found in Apollo");
+
+  const people = await getPersonas(
+    company.id,
+    Object.keys(TOP_PERSONAS)
+  );
+
+  const personaData = scorePersonas(people);
+  const tier = assignTier(personaData.score);
+  const division = routeNatoli(company.naics_codes || []);
+  const pains = painPoints(company.industry, division);
+
+  const accountData = {
+    company_name: company.name,
+    domain: domain,
+    website: company.website_url,
+    linkedin_url: company.linkedin_url,
+    industry: company.industry,
+    naics: (company.naics_codes || []).join(","),
+    sic: (company.sic_codes || []).join(","),
+    employees: company.estimated_num_employees,
+    revenue: company.annual_revenue,
+    division_fit: division,
+    persona_score: personaData.score,
+    tier,
+    pain_points: pains.join(", "),
+    why_natoli:
+      division === "Natoli Scientific"
+        ? "Analytical rigor and scale-up confidence"
+        : division === "Natoli Engineering"
+        ? "Precision tooling and production reliability"
+        : "End-to-end compaction support",
+    status: "New"
+  };
+
+  const result = createAccount(accountData);
+  return { id: result.lastInsertRowid, ...accountData };
+}
+
+2️⃣ Replace manual account creation with enrichment
+Update /server/index.js
+
+REMOVE the old /accounts POST route
+ADD this one instead
+
+import { enrichAndSave } from "./enrich-and-save.js";
+
+/* ENRICH + CREATE ACCOUNT */
+app.post("/accounts/enrich", async (req, res) => {
+  try {
+    const { domain } = req.body;
+    const result = await enrichAndSave(domain);
+    res.json(result);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+
+Now:
+
+Accounts can only be created via logic
+
+No bad data enters the CRM
+
+This is RevOps discipline.
+
+PHASE 2 (UI)
+SIMPLE WEB INTERFACE (USABLE DAY ONE)
+
+We’re not building React.
+We’re building something leadership can click.
+
+3️⃣ Create UI folder
+/public
+  ├── index.html
+  └── account.html
+
+4️⃣ Account list UI
+/public/index.html
+<!doctype html>
+<html>
+<head>
+  <title>Tony CRM</title>
+</head>
+<body>
+  <h1>Tony CRM – Accounts</h1>
+  <ul id="accounts"></ul>
+
+  <script>
+    fetch("/accounts")
+      .then(r => r.json())
+      .then(data => {
+        const ul = document.getElementById("accounts");
+        data.forEach(a => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <a href="account.html?id=${a.id}">
+              ${a.company_name} | ${a.tier} | ${a.division_fit}
+            </a>
+          `;
+          ul.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
+
+5️⃣ Account detail UI
+/public/account.html
+<!doctype html>
+<html>
+<head>
+  <title>Account</title>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script>
+    const id = new URLSearchParams(window.location.search).get("id");
+
+    fetch(`/accounts/${id}`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("content").innerHTML = `
+          <h2>${data.account.company_name}</h2>
+          <p><b>Division:</b> ${data.account.division_fit}</p>
+          <p><b>Tier:</b> ${data.account.tier}</p>
+          <p><b>Persona Score:</b> ${data.account.persona_score}</p>
+          <p><b>Pain Points:</b> ${data.account.pain_points}</p>
+          <p><a href="${data.account.linkedin_url}" target="_blank">LinkedIn</a></p>
+        `;
+      });
+  </script>
+</body>
+</html>
+
+6️⃣ Serve the UI
+
+Add this to /server/index.js near the top
+
+app.use(express.static("public"));
+
+
+Now your CRM has:
+
+A list view
+
+A detail view
+
+Clickable LinkedIn
+
+Real data
+
+PHASE 3 (EXPORT)
+CSV EXPORT FOR LEADERSHIP
+7️⃣ Add export route
+
+Add to /server/index.js
+
+app.get("/export/accounts.csv", (req, res) => {
+  const rows = getAllAccounts();
+  const header = Object.keys(rows[0] || {}).join(",");
+  const csv = rows.map(r => Object.values(r).join(","));
+  res.setHeader("Content-Type", "text/csv");
+  res.send([header, ...csv].join("\n"));
+});
+
+
+Leadership can now:
+
+Download
+
+Review
+
+Trust the system
+
+WHAT YOU HAVE NOW (IMPORTANT)
+
+You now have:
+
+✅ A real CRM
+✅ Company intelligence
+✅ Persona-based scoring
+✅ Natoli Engineering vs Scientific routing
+✅ Persistent database
+✅ UI
+✅ CSV export
+✅ No Salesforce
+✅ No HubSpot
+✅ No junk
+
+This is better than most paid CRMs because it’s opinionated and correct.

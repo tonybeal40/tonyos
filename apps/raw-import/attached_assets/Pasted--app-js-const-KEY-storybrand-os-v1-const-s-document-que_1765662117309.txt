@@ -1,0 +1,263 @@
+// app.js
+(() => {
+  const KEY = "storybrand_os_v1";
+
+  const $ = (s) => document.querySelector(s);
+  const view = $("#view");
+  const projectName = $("#projectName");
+  const projectNameText = $("#projectNameText");
+  const saveProjectBtn = $("#saveProjectBtn");
+  const exportBtn = $("#exportBtn");
+  const importFile = $("#importFile");
+  const resetBtn = $("#resetBtn");
+  const search = $("#search");
+
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+
+  const DEFAULT = () => ({
+    version: 1,
+    activeId: null,
+    projects: []
+  });
+
+  let STATE = load();
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return DEFAULT();
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULT(), ...parsed, projects: Array.isArray(parsed.projects) ? parsed.projects : [] };
+    } catch {
+      return DEFAULT();
+    }
+  }
+
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify(STATE));
+  }
+
+  function uid(){
+    return Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
+
+  function nowISO(){
+    return new Date().toISOString();
+  }
+
+  function activeProject(){
+    const p = STATE.projects.find(x => x.id === STATE.activeId);
+    return p || null;
+  }
+
+  function setActive(id){
+    STATE.activeId = id;
+    save();
+    render();
+  }
+
+  function setTab(tab){
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+    view.dataset.tab = tab;
+    render();
+  }
+
+  function esc(s){
+    return String(s || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function splitTags(s){
+    return (s || "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12);
+  }
+
+  function sbTemplate(p){
+    const brand = p.brand || {};
+    const hero = brand.hero || {};
+    const problem = brand.problem || {};
+    const guide = brand.guide || {};
+    const plan = brand.plan || {};
+    const cta = brand.cta || {};
+    const avoid = brand.avoid || {};
+    const success = brand.success || {};
+
+    return [
+      `${hero.who || "A customer"} wants ${hero.want || "a clear outcome"}.`,
+      `But they struggle with ${problem.external || "a frustrating problem"}, which causes ${problem.internal || "stress and doubt"}.`,
+      `They fear ${problem.philosophical || "wasting time and money"}.`,
+      ``,
+      `You are the guide who has ${guide.empathy || "been there"} and ${guide.authority || "a proven method"}.`,
+      `You give them a plan:`,
+      `1) ${plan.step1 || "Step one"}`,
+      `2) ${plan.step2 || "Step two"}`,
+      `3) ${plan.step3 || "Step three"}`,
+      ``,
+      `You call them to action: ${cta.primary || "Book a call"}.`,
+      `If they do nothing, they risk ${avoid.failure || "staying stuck"}.`,
+      `If they act, they will achieve ${success.win || "a better future"}.`
+    ].join("\n");
+  }
+
+  function landingCopy(p){
+    const b = p.brand || {};
+    const hero = b.hero || {};
+    const problem = b.problem || {};
+    const success = b.success || {};
+    const cta = b.cta || {};
+    const oneLiner = `${hero.who || "Teams"} get ${hero.want || "a clear outcome"} without ${problem.external || "the usual pain"}.`;
+
+    const headline = hero.want
+      ? `Get ${hero.want} without ${problem.external || "the headache"}`
+      : `Clarity that turns into action`;
+
+    const sub = [
+      `If you're ${hero.who || "the customer"} trying to ${hero.want || "get the outcome"},`,
+      `we help you avoid ${problem.external || "the pain"} so you can ${success.win || "win faster"}.`
+    ].join(" ");
+
+    const bullets = [
+      `Stop ${problem.internal || "second guessing"}`,
+      `Avoid ${problem.external || "wasted effort"}`,
+      `Get ${success.win || "measurable results"}`
+    ];
+
+    return { oneLiner, headline, sub, bullets, primary: cta.primary || "Get started", secondary: cta.secondary || "See how it works" };
+  }
+
+  function emailDraft(p){
+    const b = p.brand || {};
+    const hero = b.hero || {};
+    const problem = b.problem || {};
+    const plan = b.plan || {};
+    const success = b.success || {};
+    const cta = b.cta || {};
+
+    const subject = hero.want
+      ? `Quick way to ${hero.want}`
+      : `Quick question`;
+
+    const body = [
+      `Hi [Name],`,
+      ``,
+      `If you're trying to ${hero.want || "hit your goal"} but ${problem.external || "things keep getting messy"}, you're not alone.`,
+      `Most teams feel ${problem.internal || "frustrated"} because the path isn't clear.`,
+      ``,
+      `Here’s the simple plan we use:`,
+      `1) ${plan.step1 || "Clarify the goal"}`,
+      `2) ${plan.step2 || "Remove the blockers"}`,
+      `3) ${plan.step3 || "Execute with tracking"}`,
+      ``,
+      `Result: ${success.win || "a clear win you can measure"}.`,
+      ``,
+      `If it’s useful, ${cta.primary || "want me to share a quick outline"}?`,
+      ``,
+      `Best,`,
+      `[Your Name]`
+    ].join("\n");
+
+    return { subject, body };
+  }
+
+  function makeProject(){
+    return {
+      id: uid(),
+      name: "Untitled",
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+      notes: "",
+      brand: {
+        hero: {
+          who: "",
+          want: ""
+        },
+        problem: {
+          external: "",
+          internal: "",
+          philosophical: ""
+        },
+        guide: {
+          empathy: "",
+          authority: ""
+        },
+        plan: {
+          step1: "",
+          step2: "",
+          step3: ""
+        },
+        cta: {
+          primary: "",
+          secondary: ""
+        },
+        avoid: {
+          failure: ""
+        },
+        success: {
+          win: ""
+        }
+      }
+    };
+  }
+
+  function ensureActive(){
+    if(STATE.projects.length === 0){
+      const p = makeProject();
+      STATE.projects.push(p);
+      STATE.activeId = p.id;
+      save();
+    }
+    if(!STATE.activeId){
+      STATE.activeId = STATE.projects[0].id;
+      save();
+    }
+  }
+
+  function updateActive(mutator){
+    const p = activeProject();
+    if(!p) return;
+    mutator(p);
+    p.updatedAt = nowISO();
+    save();
+    render(false);
+  }
+
+  function currentTab(){
+    const t = tabs.find(x => x.classList.contains("active"));
+    return t ? t.dataset.tab : "builder";
+  }
+
+  function render(repaint = true){
+    ensureActive();
+    const p = activeProject();
+
+    projectName.value = p.name || "";
+    projectNameText.textContent = p.name || "Untitled";
+
+    const tab = currentTab();
+
+    if(tab === "builder") view.innerHTML = builderHTML(p);
+    if(tab === "outputs") view.innerHTML = outputsHTML(p);
+    if(tab === "vault") view.innerHTML = vaultHTML();
+    if(tab === "prompts") view.innerHTML = promptsHTML(p);
+
+    if(repaint) wire(p);
+  }
+
+  function builderHTML(p){
+    const b = p.brand;
+    return `
+      <div class="grid">
+        <div class="card">
+          <div class="head">
+            <div>
+              <div class="h1">StoryBrand Builder</div>
+              <div class="h2">Fill the inputs. Get clean outputs. No guessing.</div>
+            </div>
+            <div class="badge">7 Part Framework</div>
+          </div>
+          <div class="body">
+            ${sectionField("Hero", "Who is the customer", "brand.hero.who", b.hero.who, "Example: Plant managers, founders, directors of ops")}
+            ${sectionField("Hero", "What do they want", "brand.hero.want", b.hero.want, "Example: reduce downtime, generate pipeline,

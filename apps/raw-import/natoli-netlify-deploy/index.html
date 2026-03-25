@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natoli Engineering | Formal Introduction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1a365d;
+      --navy-light: #2c5282;
+      --orange: #dd6b20;
+      --orange-light: #ed8936;
+      --gray-50: #f7fafc;
+      --gray-100: #edf2f7;
+      --gray-200: #e2e8f0;
+      --gray-600: #718096;
+      --gray-800: #2d3748;
+      --gray-900: #1a202c;
+      --green: #38a169;
+      --blue: #3182ce;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: white;
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+    .screen-only { display: block; }
+    
+    /* Print Styles */
+    @media print {
+      .screen-only { display: none !important; }
+      .no-break { page-break-inside: avoid; }
+      .page-break { page-break-before: always; }
+      body { font-size: 11pt; }
+      .container { max-width: 100%; padding: 0; }
+      .hero { padding: 40px 20px; min-height: auto; }
+      .section { padding: 30px 20px; }
+      .nav-bar { display: none; }
+    }
+    
+    /* Navigation */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--navy);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .nav-bar .logo {
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .nav-bar .logo span { color: var(--orange); }
+    .nav-bar .actions { display: flex; gap: 12px; }
+    .nav-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .nav-btn.primary { background: var(--orange); color: white; }
+    .nav-btn.primary:hover { background: var(--orange-light); }
+    .nav-btn.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+    .nav-btn.secondary:hover { background: rgba(255,255,255,0.2); }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      padding: 100px 40px 60px;
+      text-align: center;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero .tagline {
+      font-size: 1.4rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 24px;
+    }
+    .hero .subtitle {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-bottom: 32px;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    /* Sections */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section {
+      padding: 60px 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .section:last-child { border-bottom: none; }
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title .icon {
+      width: 40px;
+      height: 40px;
+      background: var(--orange);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    
+    /* Core Message Box */
+    .core-message {
+      background: var(--gray-50);
+      border-left: 4px solid var(--orange);
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      border-radius: 0 8px 8px 0;
+    }
+    .core-message p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--navy);
+      font-style: italic;
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin: 32px 0;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+      background: var(--gray-50);
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-top: 4px;
+    }
+    
+    /* Value Props */
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .value-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .value-card h4 {
+      color: var(--navy);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .value-card h4 .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--orange);
+      border-radius: 50%;
+    }
+    .value-card p {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+    }
+    
+    /* Divisions */
+    .division-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .division-card {
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .division-card.engineering { border-color: var(--orange); }
+    .division-card.scientific { border-color: var(--blue); }
+    .division-card h4 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+    .division-card.engineering h4 { color: var(--orange); }
+    .division-card.scientific h4 { color: var(--blue); }
+    .division-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .division-card li {
+      padding: 6px 0;
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .division-card li::before {
+      content: ">";
+      color: var(--gray-600);
+      font-weight: bold;
+    }
+    
+    /* Message Types */
+    .message-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .message-card {
+      background: var(--gray-50);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--gray-200);
+    }
+    .message-card h5 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .message-card p {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+    
+    /* Industries */
+    .industry-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .industry-tag {
+      background: var(--gray-100);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--gray-800);
+      text-align: center;
+    }
+    
+    /* Team */
+    .team-section {
+      background: var(--gray-50);
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .team-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+    .team-card .name { font-weight: 600; color: var(--navy); }
+    .team-card .role { font-size: 0.85rem; color: var(--gray-600); }
+    .team-card .region { font-size: 0.8rem; color: var(--orange); margin-top: 4px; }
+    
+    /* Thank You */
+    .thank-you {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    .thank-you h2 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .thank-you p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+    .contact-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .contact-item {
+      text-align: center;
+    }
+    .contact-item .label { font-size: 0.8rem; opacity: 0.7; }
+    .contact-item .value { font-size: 1.1rem; font-weight: 600; }
+    
+    /* Generator Button */
+    .generator-cta {
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--gray-100);
+    }
+    .generator-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--orange);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .generator-btn:hover { background: var(--orange-light); transform: translateY(-2px); }
+    
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .value-grid, .division-row, .message-grid { grid-template-columns: 1fr; }
+      .industry-list { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (Screen Only) -->
+  <nav class="nav-bar screen-only">
+    <div class="logo"><span>Natoli</span> Engineering</div>
+    <div class="actions">
+      <button class="nav-btn secondary" onclick="window.print()">Print Document</button>
+      <a href="/static/natoli-intro-templates-netlify.html" class="nav-btn primary">Open Message Generator</a>
+    </div>
+  </nav>
+
+  <!-- Hero / Cover Page -->
+  <section class="hero">
+    <h1><span>Natoli</span> Engineering</h1>
+    <p class="tagline">Tablet Compression Tooling, Parts, and Technical Services</p>
+    <p class="subtitle">Formal Introduction for Enterprise Manufacturing Partners</p>
+    <div class="badge-row">
+      <span class="badge">Est. 1975 | St. Charles, MO</span>
+      <span class="badge">ISO 9001:2015 Certified</span>
+      <span class="badge">Global Manufacturing Support</span>
+    </div>
+  </section>
+
+  <!-- Core Philosophy -->
+  <section class="section no-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">1</span> Our Philosophy</h2>
+      <div class="core-message">
+        <p>"Tooling is a strategic decision, not a commodity purchase."</p>
+      </div>
+      <p style="font-size: 1.05rem; color: var(--gray-800); margin-bottom: 24px;">
+        Natoli Engineering approaches tablet compression as a manufacturing discipline, not a transaction. We help pharmaceutical, nutraceutical, and industrial manufacturers solve root-cause problems that affect quality, efficiency, and compliance.
+      </p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">49+</div>
+          <div class="stat-label">Years in Business</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">500+</div>
+          <div class="stat-label">Tooling Designs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">75+</div>
+          <div class="stat-label">Countries Served</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">24hr</div>
+          <div class="stat-label">Technical Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Natoli -->
+  <section class="section no-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">2</span> Why Natoli</h2>
+      <p style="color: var(--gray-600); margin-bottom: 24px;">Enterprise manufacturers choose Natoli because we focus on solving problems, not just selling products.</p>
+      <div class="value-grid">
+        <div class="value-card">
+          <h4><span class="dot"></span>Root-Cause Problem Solving</h4>
+          <p>We diagnose issues like sticking, capping, weight variation, and premature tooling wear — not just replace parts.</p>
+        </div>
+        <div class="value-card">
+          <h4><span class="dot"></span>Vertical Integration</h4>
+          <p>Design, engineering, manufacturing, and support all under one roof. No finger-pointing between vendors.</p>
+        </div>
+        <div class="value-card">
+          <h4><span class="dot"></span>Technical Partnership</h4>
+          <p>Dedicated regional specialists who understand your processes and can respond quickly when issues arise.</p>
+        </div>
+        <div class="value-card">
+          <h4><span class="dot"></span>Compliance Confidence</h4>
+          <p>Documentation, traceability, and quality systems built for FDA-regulated environments.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two Divisions -->
+  <section class="section no-break page-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">3</span> Two Divisions, One Mission</h2>
+      <div class="division-row">
+        <div class="division-card engineering">
+          <h4>Natoli Engineering</h4>
+          <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px;">Tooling, parts, and manufacturing support</p>
+          <ul>
+            <li>Tablet compression tooling (punches & dies)</li>
+            <li>Custom tooling design and engineering</li>
+            <li>Tablet press parts for all major brands</li>
+            <li>NP-RD30 R&D tablet press</li>
+            <li>Encapsulation equipment and parts</li>
+            <li>Training and technical support</li>
+          </ul>
+        </div>
+        <div class="division-card scientific">
+          <h4>Natoli Scientific</h4>
+          <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px;">Research, formulation, and troubleshooting</p>
+          <ul>
+            <li>Compaction research and characterization</li>
+            <li>Formulation troubleshooting</li>
+            <li>Material science analysis</li>
+            <li>Scale-up consulting</li>
+            <li>Process optimization</li>
+            <li>Training and workshops</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Industries Served -->
+  <section class="section no-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">4</span> Industries Served</h2>
+      <p style="color: var(--gray-600); margin-bottom: 16px;">Natoli supports powder compaction across diverse manufacturing environments.</p>
+      <div class="industry-list">
+        <div class="industry-tag">Pharmaceutical</div>
+        <div class="industry-tag">Generic Pharma</div>
+        <div class="industry-tag">Nutraceutical</div>
+        <div class="industry-tag">503B Outsourcing</div>
+        <div class="industry-tag">CDMO</div>
+        <div class="industry-tag">Veterinary Pharma</div>
+        <div class="industry-tag">Battery / Energy</div>
+        <div class="industry-tag">Nuclear / SMR</div>
+        <div class="industry-tag">Catalyst Manufacturing</div>
+        <div class="industry-tag">Advanced Ceramics</div>
+        <div class="industry-tag">Cosmetics</div>
+        <div class="industry-tag">Industrial Compaction</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Communication Approach -->
+  <section class="section no-break page-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">5</span> Our Communication Approach</h2>
+      <p style="color: var(--gray-600); margin-bottom: 24px;">All outreach follows a problem-first approach. We identify challenges relevant to your operation and offer to help — no aggressive pitches, no empty follow-ups.</p>
+      <div class="message-grid">
+        <div class="message-card">
+          <h5>Initial Introduction</h5>
+          <p>First contact that identifies industry-specific pain points and offers a conversation about root-cause solutions.</p>
+        </div>
+        <div class="message-card">
+          <h5>Follow-Up</h5>
+          <p>Brief, respectful check-in acknowledging timing constraints while leaving the door open for future needs.</p>
+        </div>
+        <div class="message-card">
+          <h5>Technical Problem</h5>
+          <p>Response to a specific issue mentioned — sticking, capping, weight variation — with offer to troubleshoot.</p>
+        </div>
+        <div class="message-card">
+          <h5>Trade Show Lead</h5>
+          <p>Post-event follow-up continuing a conversation started at INTERPHEX, AAPS, or similar industry events.</p>
+        </div>
+        <div class="message-card">
+          <h5>Referral Introduction</h5>
+          <p>Connection made through a mutual contact or colleague with context on why they suggested reaching out.</p>
+        </div>
+        <div class="message-card">
+          <h5>Reconnection</h5>
+          <p>Re-engagement with previous customers or contacts, acknowledging the gap and offering current support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Regional Team -->
+  <section class="section team-section no-break">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">6</span> Regional Sales Team</h2>
+      <p style="color: var(--gray-600); margin-bottom: 16px;">Dedicated specialists across North America, each with deep knowledge of their territory's manufacturing landscape.</p>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="name">Fernando Delgado</div>
+          <div class="role">Sales</div>
+          <div class="region">West Coast / HI / AK</div>
+        </div>
+        <div class="team-card">
+          <div class="name">Eric Maughan</div>
+          <div class="role">Sales</div>
+          <div class="region">Rocky Mountain</div>
+        </div>
+        <div class="team-card">
+          <div class="name">Raffaele Romano</div>
+          <div class="role">Sales</div>
+          <div class="region">Northeast</div>
+        </div>
+        <div class="team-card">
+          <div class="name">Danny Ambrose</div>
+          <div class="role">Sales</div>
+          <div class="region">Southeast</div>
+        </div>
+        <div class="team-card">
+          <div class="name">Emmanuel Davilla</div>
+          <div class="role">Sales</div>
+          <div class="region">Puerto Rico</div>
+        </div>
+        <div class="team-card">
+          <div class="name">Fazal Mohideen</div>
+          <div class="role">Sales</div>
+          <div class="region">Canada</div>
+        </div>
+      </div>
+      <p style="text-align: center; margin-top: 20px; color: var(--gray-600); font-size: 0.9rem;">
+        <strong>Encapsulation:</strong> Caitlyn Partl &nbsp;|&nbsp; <strong>Customer Experience:</strong> Gregory Lyle, Ada Obi-Ibeabuchi, and team
+      </p>
+    </div>
+  </section>
+
+  <!-- Thank You -->
+  <section class="thank-you no-break">
+    <h2>Thank You</h2>
+    <p>We appreciate the opportunity to introduce Natoli Engineering. When tablet compression challenges arise, we're here to help solve them — not just sell products.</p>
+    <div class="contact-row">
+      <div class="contact-item">
+        <div class="label">Phone</div>
+        <div class="value">636-926-8900</div>
+      </div>
+      <div class="contact-item">
+        <div class="label">Website</div>
+        <div class="value">natoli.com</div>
+      </div>
+      <div class="contact-item">
+        <div class="label">Email</div>
+        <div class="value">info@natoli.com</div>
+      </div>
+      <div class="contact-item">
+        <div class="label">Location</div>
+        <div class="value">St. Charles, MO</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Generator CTA (Screen Only) -->
+  <section class="generator-cta screen-only">
+    <p style="color: var(--gray-600); margin-bottom: 16px;">Ready to create personalized outreach messages?</p>
+    <a href="/static/natoli-intro-templates-netlify.html" class="generator-btn">
+      Open Message Generator
+    </a>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+remember my kids are Breyer, Beckham and Saylor
+remember that I work at Natoli in lead generation
+save this: my 2026 goal is to build TonyOS into a real product
+remember that I care about American manufacturing and AI
+remember my 2026 target is to be a top AI-powered RevOps leader
+My name is Tony Beal and I work in RevOps and AI for manufacturing.
+My 2026 goal is to become a top AI-powered RevOps leader.
+I care deeply about American manufacturing and building strong systems.
+User said: are you working
+AI replied: Yes, I’m here and ready to help. What do you need?
+User said: Design a 3 step outbound sequence for CEOs in manufacturing who are curious about AI but skeptical of hype.
+AI replied: **3-Step Outbound Sequence for Manufacturing CEOs (AI-Curious, Skeptical of Hype)**
+
+---
+
+**Step 1: Value-Centric Initial Email**
+
+_Subject:_ AI that Boosts Uptime—Not Buzzwords
+
+Hi [CEO Name],
+
+I know you’re probably tired of AI hype. If you’ve got 30 seconds: We’ve helped manufacturers cut machine downtime by 17%—using AI that quietly fits into existing workflows.
+
+Would you be open to a short call to hear how it works (and exactly what it doesn’t do)?
+
+Best,  
+Tony
+
+---
+
+**Step 2: Credibility-Focused Voicemail + Quick Case Study PDF**
+
+_Voicemail:_  
+Hi [CEO Name], this is Tony Beal. I recently emailed—just following up. We’re working with manufacturers who want real ROI from AI, not moonshot promises. I’ll send a brief case study—would appreciate your perspective on whether this would fit for you.
+
+_Attach Case Study PDF:_  
+One-page, bulleted, showing before/after metrics for a real manufacturing client, including challenges, solution, and outcomes—no jargon, just numbers.
+
+---
+
+**Step 3: No-Nonsense LinkedIn Message**
+
+Hi [CEO Name],
+
+Saw you lead at [Company]—impressive track record. I help manufacturers quietly implement practical AI—not the kind that needs a research team. If you ever want examples from the shop floor (not the lab), I’m around.
+
+Cheers,  
+Tony
+
+---
+
+**Key Principles:**  
+- Focus on measurable, relatable outcomes.  
+- Anticipate and defuse “AI hype” objections up front.  
+- Use numbers and real stories in follow-up.  
+- Keep tone concise, direct, and respectful of time.
+[2025-12-11T06:29:17.783427Z] USER: are you working right now
+[2025-12-11T06:29:17.783427Z] TONYOS: Yes, I’m here and ready to help. What do you need?
+
+[2025-12-11T06:29:43.539965Z] USER: can you help me tell me who the top tier contacts at natoli.com
+[2025-12-11T06:29:43.539965Z] TONYOS: I can’t pull live data or personal contact info. But here’s how you find top-tier contacts at natoli.com fast:
+
+1. **LinkedIn:** Search “Natoli” company page. Look for people with titles like CEO, President, VP, Director, or Head of [Department].
+2. **Company Website:** Check their “About Us” or “Leadership” page for executive names.
+3. **Hunter.io or Apollo.io:** Use these tools to find verified emails and contact info tied to natoli.com.
+4. **ZoomInfo or Crunchbase:** Paid platforms with detailed org charts and decision-maker lists.
+
+If you want, I can help you draft outreach messages once you identify the right people.
+
+[2025-12-11T06:33:49.407433Z] USER: can you pull tier 1 targets for natoli engineering
+[2025-12-11T06:33:49.407433Z] TONYOS: I can’t pull real-time or private data. But here’s a practical list of Tier 1 targets you want to focus on at Natoli Engineering:
+
+- CEO / President
+- VP of Engineering
+- Director of Engineering
+- Head of Product Development
+- Chief Technology Officer (CTO)
+- Operations Manager (if relevant)
+
+Use LinkedIn to find these exact titles at Natoli Engineering. Once you get names, I can help you craft outreach or sales strategies.
+
+[2025-12-11T06:34:16.134975Z] USER: so you don't know much
+[2025-12-11T06:34:16.134975Z] TONYOS: I know plenty about how to find and engage the right people, build offers, and run outreach that works. But I don’t have access to private or live databases to pull specific current contacts. 
+
+If you want, I can guide you step-by-step on how to get that info fast and use it to close deals or connect effectively. What’s your goal with Natoli Engineering?
+
+[2025-12-11T06:34:45.584991Z] USER: chatgpt can pull this information
+[2025-12-11T06:34:45.584991Z] TONYOS: ChatGPT doesn’t have live access to private databases or real-time contact info either. If you’ve seen tools or plugins that do, they’re usually connected to external data sources or APIs—not the base ChatGPT model.
+
+I focus on practical, actionable advice you can use right now. If you want, I can help you build a search plan or outreach sequence to get the info you need and connect successfully.
+
+[2025-12-11T06:35:03.697125Z] USER: how smart are you
+[2025-12-11T06:35:03.697125Z] TONYOS: I’m sharp where it counts: strategy, sales, outreach, operations, and getting things done in the real world. I don’t pretend to know everything or pull private data. Instead, I give clear, no-nonsense advice that moves the needle.
+
+If you want smart, practical help that works, that’s me. What’s the challenge you’re facing?
+
+[2025-12-22T04:57:13+00:00] MARKET EXPANSION: Added 'Battery Manufacturing / Energy Storage' as new Natoli target market. Routes to Engineering division for electrode pressing/compaction tooling opportunities. Signal: Duracell analysis showed powder compaction overlap with lithium coin batteries and electrode pellet manufacturing.
+
+[2025-12-22] MAJOR MARKET EXPANSION - Added 20+ new target industries:
+
+ENERGY & MATERIALS:
+- Nuclear Fuel & SMR Materials (fuel pellets, ultra-tight tolerances)
+- Battery Manufacturing / Energy Storage (solid-state, lithium, sodium-ion)
+- Hydrogen Storage Materials (compressed powders, porosity control)
+- Catalyst Manufacturing (petrochemical & green fuels)
+- Carbon Capture Sorbents (tabletized powders)
+
+ADVANCED MANUFACTURING:
+- Advanced Ceramics (aerospace & defense)
+- 3D Printing Feedstock (powder morphology)
+- Rare Earth Magnets (powder metallurgy)
+- Semiconductor Materials (ultra-clean compaction)
+- Space Materials (zero-defect manufacturing)
+
+DEFENSE & SECURITY:
+- Explosives & Propellants (precision pressing)
+- Ammunition & Ballistics (powder consistency)
+
+INDUSTRIAL & SPECIALTY:
+- Abrasives & Grinding Media (hardness uniformity)
+- Medical Implants (ceramic/composite)
+- Cosmetics Pressed Powders (compaction QA)
+- Agricultural Micronutrient Pellets (controlled release)
+- Animal Feed Supplements (precision dosing)
+- Forensic Standards (repeatability)
+- Recycling & Reclaimed Materials (consistency from variable inputs)
+- Art Conservation & Pigments (high precision)
+
+ROUTING: Most route to Engineering. R&D-heavy applications route to Scientific or Both.
+
+[2025-12-22] INDUSTRY DETECTION FIX - Resolved Duracell/battery misclassification:
+- Added priority-based industry detection in Apollo Server (industries.js)
+- Battery manufacturing now checked BEFORE cannabis (shared NAICS code 325411)
+- NAICS prefix matching implemented (e.g., "33591" matches "335912")
+- Company name included in detection text for better accuracy
+- Delete endpoint added for clearing cached account data (/api/accounts/domain/:domain)
+
+FILES UPDATED:
+- TonyOS/apollo-server/industries.js (20+ industries, priority detection)
+- TonyOS/natoli-scanner/evidenceExtractor.js (matching market patterns)
+- TonyOS/apollo-server/db.js (deleteAccountByDomain function)
+- TonyOS/apollo-server/index.js (delete endpoint)
+
+CRM STATUS: Fully operational with all features working.

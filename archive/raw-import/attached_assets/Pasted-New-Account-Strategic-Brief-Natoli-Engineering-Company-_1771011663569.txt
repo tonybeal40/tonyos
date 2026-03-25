@@ -1,0 +1,46 @@
+New Account Strategic Brief
+Natoli Engineering Company - Sales Intelligence Report
+February 03, 2026
+CONFIDENTIAL
+625
+New Accounts
+228
+Strong Fit
+176
+Medium Fit
+78
+More Research
+SAVE TO COMPUTER:
+Save as PDF (Portrait)
+Save as CSV
+Apollo Target Personas (Pull 5 Contacts Per Account)
+Director of R&D / Formulation Scientist
+"The Architect of Certainty"
+Pain Points: Scale-up failures, Weak compaction data, Unpredictable powder behavior, Launch delays
+Look For: New product launches, R&D expansion, regulatory submissions, formulation challenges
+Approach: Speak in data, predictability, reproducibility
+Solutions: Compaction studies, CT-scan defect mapping, Predictive modeling, AIM R&D
+Engineering & Technical Manager
+"The Engineer of Integration"
+Pain Points: Equipment integration issues, Limited automation/data visibility, Vendor designs ignore constraints
+Look For: New line installations, automation upgrades, equipment replacement, MES initiatives
+Approach: Speak in systems, controls, integration - technical language
+Solutions: PLC-controlled presses, Line integration support, Custom automation
+Production / Operations Manager
+"The Commander of Continuity"
+Pain Points: Unplanned downtime, Difficult/slow cleaning, Capacity limits, Maintenance delays
+Look For: Capacity expansion, shift additions, OEE improvement, changeover complaints
+Approach: Speak in uptime, efficiency, continuity - ease, reliability, speed
+Solutions: Production-grade presses, Tool-less changeovers, Cleaning-friendly designs
+Quality Assurance / Regulatory Manager
+"The Guardian of Compliance"
+Pain Points: Equipment complicates validation, Documentation gaps, Audit findings risk
+Look For: FDA inspections, 483s, warning letters, facility qualifications, validation projects
+Approach: Speak in standards, compliance, risk mitigation - trust, rigor
+Solutions: Compliance-ready equipment, Validation/documentation support
+Purchasing / Procurement Manager
+"The Keeper of Value"
+Pain Points: Vendor consolidation pressure, Lead time unpredictability, Hidden costs after purchase, Inconsistent supplier quality
+Look For: Contract renewals, budget cycles, vendor audits, cost reduction initiatives, capital planning
+Approach: Speak in total cost of ownership, lead times, warranty, service agreements
+Solutions: Transparent pricing, Fast delivery, Strong warranty, Reliable service network

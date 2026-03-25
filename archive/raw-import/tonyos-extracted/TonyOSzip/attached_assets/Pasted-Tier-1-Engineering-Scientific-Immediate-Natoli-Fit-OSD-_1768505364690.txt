@@ -1,0 +1,120 @@
+Tier 1 — Engineering + Scientific (Immediate Natoli Fit)
+
+OSD tablets + compaction + potency/containment signals are explicit or very likely
+
+Pfizer CentreOne — Both (OSD sites + potent handling)
+
+Viatris — Both (OCP/HRT generics, OSD scale)
+
+Sandoz — Both (global OSD, hormones)
+
+Hikma Pharmaceuticals — Both (OSD + hormones)
+
+Amneal Pharmaceuticals — Both (OSD generics)
+
+Aurobindo Pharma — Both (OSD + APIs)
+
+Zydus Cadila — Both (OSD hormones/generics)
+
+Venus Remedies — Both (OSD focus)
+
+Neopharma — Both (OSD CDMO)
+
+Molteni Farmaceutici — Both (EU OSD/CDMO)
+
+Famar Health Care Services — Both (OSD CDMO)
+
+Siegfried USA — Both (OSD sites)
+
+Siegfried Chengdu — Both (OSD capability)
+
+Why Tier 1:
+These companies are tablet manufacturers at scale where compression, cleaning, uniformity, and containment are real operational risks. Engineering and Scientific both belong.
+
+Tier 2 — Scientific-First, Engineering Conditional
+
+OSD or hormone adjacency exists, but confirmation needed
+
+Patheon — Scientific-first (site dependent)
+
+PCI Pharma Services — Engineering (OSD), Scientific conditional
+
+Avara Pharmaceutical Services — Engineering-first
+
+Endo International — Both, site dependent
+
+Bausch Health — Engineering conditional
+
+Shasun Pharmaceuticals — Scientific-first
+
+Gland Pharma — Scientific-first (check OSD)
+
+Granite Pharma — Scientific-first
+
+Amri — Scientific-first
+
+Sterling Pharma Solutions — Scientific-first
+
+Jiangsu Hengrui Medicine — Scientific-first
+
+Kollis Pharma — Engineering conditional
+
+Sinthesis — Scientific-first
+
+LGM Pharma — Engineering conditional
+
+BluePoint Laboratories — Scientific-first
+
+SPS International — Scientific-first
+
+Why Tier 2:
+Good development, scale-up, or API adjacency, but tablet press reality must be confirmed before Engineering leads.
+
+Tier 3 — Scientific-Only or Not a Natoli Core Fit
+
+API-only, sterile-only, excipient-only, or support organizations
+
+Bristol Myers Squibb — Scientific only
+
+Eli Lilly — Scientific only
+
+AstraZeneca — Scientific only
+
+Pfizer Global Supply — Scientific only
+
+Mallinckrodt Pharmaceuticals — API-heavy
+
+Purdue Pharma — Limited relevance
+
+Evonik Health Care — Support
+
+Roquette Pharma Solutions — Support
+
+ACG Worldwide — Supplier, not customer
+
+Sabinsa — Precursors
+
+Caplin Steriles — Sterile only
+
+Diosynth — Biologics
+
+AOP Orphan — Niche APIs
+
+Suresh Industries — Intermediates
+
+Innovene — Support
+
+BioReliance — Services
+
+ABPI — Not a target
+
+Why Tier 3:
+These do not live in daily tablet compaction reality. Valuable to know, not to lead with.
+
+Bottom Line (what to say confidently)
+
+Tier 1 ≈ 25–30% of this list
+
+Tier 2 ≈ 40–45%
+
+Tier 3 ≈ 25–30%

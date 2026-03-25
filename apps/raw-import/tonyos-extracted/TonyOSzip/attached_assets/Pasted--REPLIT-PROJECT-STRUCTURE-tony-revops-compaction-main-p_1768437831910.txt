@@ -1,0 +1,199 @@
+📁 REPLIT PROJECT STRUCTURE
+tony-revops-compaction/
+│
+├── main.py
+├── processor.py
+├── territories.py
+├── rules.py
+├── requirements.txt
+└── templates/
+    └── index.html
+
+1️⃣ requirements.txt
+pandas
+requests
+beautifulsoup4
+flask
+
+2️⃣ territories.py (LOCKED to your definitions)
+TERRITORIES = {
+    "West Coast": ["Hawaii","California","Oregon","Washington"],
+    "Rocky Mountain": ["Montana","Idaho","Wyoming","Nevada","Utah","Colorado","Arizona","New Mexico"],
+    "Midwest": ["North Dakota","South Dakota","Nebraska","Kansas","Oklahoma","Texas",
+                "Minnesota","Iowa","Missouri","Arkansas","Louisiana","Wisconsin",
+                "Illinois","Michigan","Indiana","Ohio"],
+    "Southeast": ["Kentucky","Tennessee","Mississippi","Alabama","Georgia",
+                  "South Carolina","North Carolina","Florida"],
+    "Northeast": ["West Virginia","Virginia","Maryland","Delaware","New Jersey",
+                  "New York","Pennsylvania","Vermont","New Hampshire",
+                  "Massachusetts","Maine","Connecticut"]
+}
+
+def assign_territory(state):
+    for territory, states in TERRITORIES.items():
+        if state in states:
+            return territory
+    return "Unassigned"
+
+3️⃣ rules.py (ALL BUSINESS LOGIC LIVES HERE)
+MANUFACTURING_REQUIRED = [
+    "manufacturing","production","processing","pressing",
+    "forming","compaction","powder","tablet","pellet",
+    "sinter","scale-up","formulation"
+]
+
+EXCLUDE_ALWAYS = [
+    "clinic","practice","dealer","dealership",
+    "distributor","reseller","retail",
+    "service","repair","maintenance",
+    "equipment sales","pressure washer",
+    "animal hospital","spring manufacturer"
+]
+
+ENGINEERING_SIGNALS = [
+    "tablet press","tooling","die","punch","compression",
+    "powder metallurgy","ceramic","pellet","pressing"
+]
+
+SCIENTIFIC_SIGNALS = [
+    "r&d","research","formulation","analytical",
+    "pilot","scale-up","material science","lab"
+]
+
+AUTOMOTIVE_REQUIRED = [
+    "airbag","inflator","gas generant",
+    "energetic","propellant","pyrotechnic"
+]
+
+def contains_any(text, keywords):
+    return any(k in text for k in keywords)
+
+def classify_fit(text):
+    eng = contains_any(text, ENGINEERING_SIGNALS)
+    sci = contains_any(text, SCIENTIFIC_SIGNALS)
+
+    if eng and sci:
+        return "Both"
+    if eng:
+        return "Natoli Engineering"
+    if sci:
+        return "Natoli Scientific"
+    return None
+
+def assign_tier(text):
+    if "pharma" in text or "tablet" in text:
+        return "Tier 1"
+    if "ceramic" in text or "powder metallurgy" in text:
+        return "Tier 2"
+    if "materials" in text or "mining" in text:
+        return "Tier 3"
+    return "Tier 4"
+
+def fit_reason(fit, tier):
+    if fit == "Natoli Engineering":
+        return "Production-scale compaction, tooling, or pressing requirements"
+    if fit == "Natoli Scientific":
+        return "R&D, formulation, or scale-up activities aligned with Natoli Scientific"
+    if fit == "Both":
+        return "R&D to production workflow requiring Scientific and Engineering support"
+    return ""
+
+4️⃣ processor.py (THE ENGINE)
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from rules import *
+from territories import assign_territory
+import time
+
+HEADERS = {"User-Agent":"Mozilla/5.0"}
+TIMEOUT = 8
+
+def get_site_text(url):
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+        soup = BeautifulSoup(r.text,"html.parser")
+        return soup.get_text(" ").lower()
+    except:
+        return ""
+
+def process_csv(input_csv):
+    df = pd.read_csv(input_csv)
+
+    good = []
+    bad = []
+
+    for _, row in df.iterrows():
+        website = str(row.get("Website","")).strip()
+        state = str(row.get("Company State","")).title()
+
+        if not website.startswith("http"):
+            continue
+
+        text = get_site_text(website)
+
+        if contains_any(text, EXCLUDE_ALWAYS):
+            continue
+
+        if not contains_any(text, MANUFACTURING_REQUIRED):
+            continue
+
+        if row.get("Industry","").lower() == "automotive":
+            if not contains_any(text, AUTOMOTIVE_REQUIRED):
+                continue
+
+        fit = classify_fit(text)
+        if not fit:
+            continue
+
+        tier = assign_tier(text)
+        territory = assign_territory(state)
+
+        row["Natoli_Fit"] = fit
+        row["Tier"] = tier
+        row["Territory"] = territory
+        row["Fit_Reason"] = fit_reason(fit, tier)
+
+        good.append(row)
+        time.sleep(0.5)
+
+    clean_df = pd.DataFrame(good)
+    clean_df.to_csv("TONY_REVOPS_CLEANED.csv", index=False)
+
+    return clean_df
+
+5️⃣ main.py (WEB APP + DOWNLOAD PAGE)
+from flask import Flask, render_template, send_file
+from processor import process_csv
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/run")
+def run():
+    process_csv("apollo_export (version 1).csv")
+    return send_file("TONY_REVOPS_CLEANED.csv", as_attachment=True)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=3000)
+
+6️⃣ templates/index.html (TONY REVOPS DOWNLOAD PAGE)
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tony RevOps – Compaction Cleaner</title>
+  <style>
+    body { font-family: Arial; padding: 40px; }
+    h1 { color: #111; }
+    button { padding: 15px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Tony RevOps Compaction Filter</h1>
+  <p>This tool validates Apollo data against real manufacturing activity and removes non-fit companies.</p>
+  <a href="/run"><button>Run Filter & Download Clean CSV</button></a>
+</body>
+</html>

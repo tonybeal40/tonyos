@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Natoli Engineering | Event ROI & Buyer Alignment Report</title>
+
+<style>
+:root {
+  --blue-dark: #0b1e3b;
+  --blue-mid: #123a6f;
+  --blue-light: #1f5fbf;
+  --white: #ffffff;
+  --muted: #c7d3ea;
+  --card-bg: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--white);
+  background: radial-gradient(circle at top, var(--blue-light), var(--blue-mid), var(--blue-dark));
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Bubble background */
+.bubbles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -150px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  animation: rise 25s infinite ease-in;
+}
+
+@keyframes rise {
+  0% { transform: translateY(0) scale(1); opacity: 0.2; }
+  50% { opacity: 0.4; }
+  100% { transform: translateY(-120vh) scale(1.3); opacity: 0; }
+}
+
+/* Layout */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: auto;
+  padding: 80px 24px 120px;
+}
+
+header {
+  margin-bottom: 80px;
+}
+
+header h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+header p {
+  font-size: 20px;
+  color: var(--muted);
+  max-width: 900px;
+}
+
+.section {
+  margin-bottom: 80px;
+}
+
+.section h2 {
+  font-size: 34px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.card h3 {
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+
+.card h4 {
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.card p, .card li {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+ul {
+  margin-left: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 14px;
+  text-align: left;
+}
+
+th {
+  background: rgba(255,255,255,0.08);
+}
+
+.footer {
+  margin-top: 120px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bubbles">
+  <div class="bubble" style="left:10%; width:40px; height:40px; animation-duration:22s;"></div>
+  <div class="bubble" style="left:25%; width:70px; height:70px; animation-duration:28s;"></div>
+  <div class="bubble" style="left:45%; width:50px; height:50px; animation-duration:26s;"></div>
+  <div class="bubble" style="left:65%; width:90px; height:90px; animation-duration:32s;"></div>
+  <div class="bubble" style="left:85%; width:60px; height:60px; animation-duration:24s;"></div>
+</div>
+
+<div class="container">
+
+<header>
+<h1>Natoli Engineering<br>Event ROI & Buyer Alignment Report</h1>
+<p>
+Purpose: Identify where Natoli Engineering generates measurable, defensible ROI based on who attends, what they buy, and why they buy.
+</p>
+</header>
+
+<section class="section">
+<h2>Executive Conclusion</h2>
+<div class="card">
+<p>
+Across all regional manufacturing trade shows reviewed from 2022 through upcoming 2026 events, Natoli Engineering’s major competitors and top-tier pharmaceutical equipment OEMs have been notably absent.
+</p>
+<p>
+This absence is not a weakness. It is a strategic advantage.
+</p>
+<p>
+These shows place Natoli upstream of commoditization, where engineering problems are still being defined, not price-shopped. Buyers arrive accountable for tooling performance, uptime, and yield.
+</p>
+</div>
+</section>
+
+<section class="section">
+<h2>Design-2-Part Trade Shows</h2>
+<div class="card">
+<h3>ROI Grade: A+</h3>
+<p><strong>Timing:</strong> March–June and September–November (Annual)</p>
+<p><strong>Locations:</strong> Chicago, TX, Northeast, Midwest, Southeast</p>
+<p><strong>Website:</strong> https://www.d2p.com</p>
+
+<h4>Industries Attending</h4>
+<ul>
+<li>Pharmaceutical Manufacturing</li>
+<li>Nutraceuticals</li>
+<li>Medical Devices</li>
+<li>Powder Metallurgy</li>
+<li>Advanced Materials</li>
+<li>Automotive Suppliers</li>
+<li>Aerospace & Defense</li>
+<li>Contract Manufacturers (CMOs)</li>
+<li>Precision Machining</li>
+<li>Metal Forming & Compaction</li>
+<li>Additive Manufacturing</li>
+</ul>
+
+<h4>Buyer Personas</h4>
+<ul>
+<li>Manufacturing Engineers</li>
+<li>Process Engineers</li>
+<li>Tooling Engineers</li>
+<li>Operations Managers</li>
+<li>Plant Managers</li>
+</ul>
+
+<h4>What They’re Dealing With</h4>
+<p>
+Active production programs, tooling wear, tolerance drift, startup scrap, yield loss, press downtime, and scale-up failures where lab results break under production pressure.
+</p>
+
+<h4>How Natoli Fits</h4>
+<p>
+Natoli’s tablet tooling, punch and die systems, and compaction expertise directly translate into powder metallurgy, precision forming, and advanced material environments where tooling stability drives yield and uptime.
+</p>
+
+<h4>How ROI Is Created</h4>
+<p>
+Engineers arrive with live programs and drawings. Tooling specs and tolerances are discussed on the floor. Feasibility is validated immediately. This leads to RFQs, trials, validation work, plant visits, and multi-year tooling programs with short sales cycles because the pain already exists.
+</p>
+
+<h4>Estimated Cost</h4>
+<ul>
+<li>Booth and Space: $6k–$10k</li>
+<li>Travel and Lodging: $4k–$6k</li>
+<li>Materials and Labor: $3k–$5k</li>
+<li><strong>Total Estimated Cost:</strong> $13k–$21k</li>
+</ul>
+
+<h4>ROI Measurement</h4>
+<p>
+Qualified engineering conversations, RFQs initiated, trials launched, plant visits scheduled, and revenue influenced within 3–9 months.
+</p>
+
+<h4>Why This Show Makes Sense</h4>
+<p>
+This is Natoli’s highest-probability environment because the buyers already compress, compact, or form materials and are accountable for tooling performance.
+</p>
+</div>
+</section>
+
+<section class="section">
+<h2>Indiana Manufacturing Suppliers Expo</h2>
+<div class="card">
+<h3>ROI Grade: A</h3>
+<p><strong>Timing:</strong> August (Annual)</p>
+<p><strong>Location:</strong> Central Indiana</p>
+<p><strong>Website:</strong> https://www.indianamfgexpo.com</p>
+
+<h4>Industries Attending</h4>
+<ul>
+<li>Pharma and Life Sciences</li>
+<li>Medical Devices</li>
+<li>Specialty Chemicals</li>
+<li>Advanced Materials</li>
+<li>Automotive Suppliers</li>
+<li>Industrial Manufacturing</li>
+</ul>
+
+<h4>Buyer Personas</h4>
+<ul>
+<li>Plant Managers</li>
+<li>Directors of Operations</li>
+<li>Manufacturing Engineers</li>
+<li>Maintenance Leaders</li>
+</ul>
+
+<h4>What They’re Dealing With</h4>
+<p>
+Press uptime accountability, cost per unit pressure, aging tooling programs, under-optimized forming operations, and reliability gaps.
+</p>
+
+<h4>How Natoli Fits</h4>
+<p>
+Natoli provides tooling reliability, replacement programs, and performance-driven standardization that Indiana manufacturers value for long-term partnerships.
+</p>
+
+<h4>How ROI Is Created</h4>
+<p>
+Fewer but higher-authority conversations. Easier post-show plant access. Relationship-driven buying leads to sustained tooling programs rather than one-off orders.
+</p>
+
+<h4>Estimated Cost</h4>
+<p>Total Estimated Cost: $8k–$14k</p>
+
+<h4>ROI Measurement</h4>
+<p>
+Plant visits booked, regional accounts opened, multi-year tooling revenue.
+</p>
+
+<h4>Why This Show Makes Sense</h4>
+<p>
+Indiana concentrates regulated and precision manufacturing where tooling reliability directly impacts profitability.
+</p>
+</div>
+</section>
+
+<section class="section">
+<h2>Wisconsin Manufacturing & Technology Show</h2>
+<div class="card">
+<h3>ROI Grade: A</h3>
+<p><strong>Timing:</strong> Spring (Biennial)</p>
+<p><strong>Location:</strong> Milwaukee, WI Area</p>
+<p><strong>Website:</strong> https://www.wimts.com</p>
+
+<h4>Industries Attending</h4>
+<ul>
+<li>Medical Devices</li>
+<li>Diagnostics</li>
+<li>Pharmaceutical Packaging</li>
+<li>Powder Metallurgy</li>
+<li>Precision Machining</li>
+<li>Industrial Equipment OEMs</li>
+</ul>
+
+<h4>Buyer Personas</h4>
+<ul>
+<li>Senior Manufacturing Engineers</li>
+<li>Tooling Owners</li>
+<li>Operations Leadership</li>
+</ul>
+
+<h4>What They’re Dealing With</h4>
+<p>
+Demand for precision, repeatability, long tool life, and standardized processes across multiple plants.
+</p>
+
+<h4>How Natoli Fits</h4>
+<p>
+Natoli’s engineering credibility and precision tooling aligns with Wisconsin’s process-driven manufacturing culture.
+</p>
+
+<h4>How ROI Is Created</h4>
+<p>
+Deep technical discussions produce trials, internal champions, and multi-site expansion opportunities.
+</p>
+
+<h4>Estimated Cost</h4>
+<p>Total Estimated Cost: $12k–$18k</p>
+
+<h4>ROI Measurement</h4>
+<p>
+Trials initiated, tooling programs expanded, multi-plant adoption.
+</p>
+
+<h4>Why This Show Makes Sense</h4>
+<p>
+Engineering-led buyers who invest in reliability over lowest price.
+</p>
+</div>
+</section>
+
+<section class="section">
+<h2>Manufacturing First Expo & Conference</h2>
+<div class="card">
+<h3>ROI Grade: B+</h3>
+<p><strong>Timing:</strong> October (Annual)</p>
+<p><strong>Location:</strong> Wisconsin</p>
+<p><strong>Website:</strong> https://www.manufacturingfirst.com</p>
+
+<h4>Industries Attending</h4>
+<ul>
+<li>Pharma and Life Sciences</li>
+<li>Food and Nutrition</li>
+<li>Industrial Manufacturing</li>
+<li>Chemical Processing</li>
+</ul>
+
+<h4>Buyer Personas</h4>
+<ul>
+<li>Plant Managers</li>
+<li>Operations Leaders</li>
+<li>Continuous Improvement Teams</li>
+</ul>
+
+<h4>What They’re Dealing With</h4>
+<p>
+Hidden compaction problems, mixed-process inefficiencies, tooling often overlooked as root cause.
+</p>
+
+<h4>How Natoli Fits</h4>
+<p>
+Natoli enters as a discovery and performance partner, uncovering tooling-driven losses.
+</p>
+
+<h4>How ROI Is Created</h4>
+<p>
+Account mapping, discovery, and long-term pipeline creation rather than immediate sales.
+</p>
+
+<h4>Estimated Cost</h4>
+<p>Total Estimated Cost: $9k–$15k</p>
+
+<h4>ROI Measurement</h4>
+<p>
+Accounts identified, follow-up assessments, pipeline value created.
+</p>
+
+<h4>Why This Show Makes Sense</h4>
+<p>
+Surfaces latent Natoli problems leadership has not yet connected to tooling.
+</p>
+</div>
+</section>
+
+<section class="section">
+<h2>Advanced Manufacturing Expo</h2>
+<div class="card">
+<h3>ROI Grade: A</h3>
+<p><strong>Timing:</strong> Late July or Early August (Annual)</p>
+<p><strong>Location:</strong> Grand Rapids, MI</p>
+<p><strong>Website:</strong> https://www.advancedmanufacturingexpo.com</p>
+
+<h4>Industries Attending</h4>
+<ul>
+<li>Automation and Robotics</li>
+<li>Advanced Materials</li>
+<li>Automotive</li>
+<li>Aerospace</li>
+<li>Medical Manufacturing</li>
+</ul>
+
+<h4>Buyer Personas</h4>
+<ul>
+<li>Plant Managers</li>
+<li>Manufacturing Engineers</li>
+<li>Reliability Leaders</li>
+</ul>
+
+<h4>What They’re Dealing With</h4>
+<p>
+Automation instability caused by inconsistent tooling and process variability.
+</p>
+
+<h4>How Natoli Fits</h4>
+<p>
+Natoli provides the reliability foundation automation depends on.
+</p>
+
+<h4>How ROI Is Created</h4>
+<p>
+Tooling reliability tied directly to automation success and scale.
+</p>
+
+<h4>Estimated Cost</h4>
+<p>Total Estimated Cost: $11k–$17k</p>
+
+<h4>ROI Measurement</h4>
+<p>
+Automation-linked tooling programs, larger deal sizes, longer-term revenue.
+</p>
+
+<h4>Why This Show Makes Sense</h4>
+<p>
+Automation fails without tooling stability. Natoli owns that layer.
+</p>
+</div>
+</section>
+
+<footer class="footer">
+<p>
+Prepared for executive review.  
+All findings based on exhibitor lists, show directories, and published agendas from 2022–2026.
+</p>
+</footer>
+
+</div>
+
+</body>
+</html>

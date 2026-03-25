@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natoli Engineering | Event ROI & Buyer Alignment Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --blue-dark: #0b1e3b;
+  --blue-mid: #123a6f;
+  --blue-light: #1f5fbf;
+  --white: #ffffff;
+  --muted: #c7d3ea;
+  --card-bg: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.15);
+  --grade-a-plus: #22c55e;
+  --grade-a: #3b82f6;
+  --grade-b-plus: #f59e0b;
+  --grade-b: #f97316;
+  --grade-c: #6b7280;
+  --natoli-red: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--white);
+  background: radial-gradient(ellipse at top left, var(--blue-light), var(--blue-mid) 40%, var(--blue-dark) 80%);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bubbles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -150px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  animation: rise 25s infinite ease-in;
+}
+
+@keyframes rise {
+  0% { transform: translateY(0) scale(1); opacity: 0.15; }
+  50% { opacity: 0.25; }
+  100% { transform: translateY(-120vh) scale(1.4); opacity: 0; }
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--natoli-red);
+  padding: 12px 24px;
+  border-radius: 50px;
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+header h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+header .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: var(--natoli-red);
+  border-radius: 2px;
+}
+
+.executive-card {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(255,255,255,0.05));
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+.executive-card h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.executive-card p {
+  color: var(--muted);
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+.executive-card .highlight {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.report-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.report-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.report-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.report-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.report-card.grade-a-plus::before { background: var(--grade-a-plus); }
+.report-card.grade-a::before { background: var(--grade-a); }
+.report-card.grade-b-plus::before { background: var(--grade-b-plus); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.card-timing {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.grade-badge {
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.grade-badge.a-plus {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--grade-a-plus);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.grade-badge.a {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--grade-a);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.grade-badge.b-plus {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--grade-b-plus);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.card-section {
+  margin-bottom: 16px;
+}
+
+.card-section h4 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.card-section p, .card-section li {
+  font-size: 14px;
+  color: var(--white);
+}
+
+.card-section ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-section li {
+  background: rgba(255,255,255,0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.cost-range {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.why-box {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 16px;
+}
+
+.why-box h4 {
+  color: var(--grade-a-plus);
+  margin-bottom: 6px;
+}
+
+.why-box p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.competitor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.competitor-table th,
+.competitor-table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.competitor-table th {
+  background: rgba(255,255,255,0.08);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.competitor-table td {
+  font-size: 14px;
+}
+
+.competitor-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.none {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--grade-a-plus);
+}
+
+.status-badge.na {
+  background: rgba(107, 114, 128, 0.2);
+  color: var(--grade-c);
+}
+
+.dale-qa {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(255,255,255,0.03));
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 40px;
+  margin-top: 40px;
+}
+
+.dale-qa h3 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dale-qa .question {
+  background: rgba(255,255,255,0.06);
+  border-left: 4px solid var(--blue-light);
+  padding: 16px 20px;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 20px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.dale-qa .answer {
+  padding-left: 24px;
+  border-left: 2px solid var(--border);
+}
+
+.dale-qa .answer p {
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
+.dale-qa .answer strong {
+  color: var(--white);
+}
+
+.key-point {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+}
+
+.key-point p {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--white);
+  margin: 0;
+}
+
+.key-point .quote {
+  font-style: italic;
+  color: var(--grade-a-plus);
+}
+
+.absent-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.absent-item {
+  background: rgba(255,255,255,0.05);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.absent-item::before {
+  content: '✗';
+  color: var(--grade-c);
+}
+
+.conclusion-box {
+  background: linear-gradient(135deg, var(--natoli-red), #991b1b);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.conclusion-box h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.conclusion-box p {
+  font-size: 18px;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.footer {
+  margin-top: 80px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .report-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  header h1 {
+    font-size: 28px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bubbles">
+  <div class="bubble" style="left:5%; width:50px; height:50px; animation-duration:20s;"></div>
+  <div class="bubble" style="left:15%; width:80px; height:80px; animation-duration:28s; animation-delay:2s;"></div>
+  <div class="bubble" style="left:30%; width:40px; height:40px; animation-duration:22s; animation-delay:4s;"></div>
+  <div class="bubble" style="left:45%; width:100px; height:100px; animation-duration:30s; animation-delay:1s;"></div>
+  <div class="bubble" style="left:60%; width:60px; height:60px; animation-duration:25s; animation-delay:3s;"></div>
+  <div class="bubble" style="left:75%; width:45px; height:45px; animation-duration:23s; animation-delay:5s;"></div>
+  <div class="bubble" style="left:88%; width:70px; height:70px; animation-duration:27s; animation-delay:2s;"></div>
+  <div class="bubble" style="left:20%; width:30px; height:30px; animation-duration:18s; animation-delay:6s;"></div>
+  <div class="bubble" style="left:55%; width:55px; height:55px; animation-duration:24s; animation-delay:4s;"></div>
+  <div class="bubble" style="left:92%; width:35px; height:35px; animation-duration:21s; animation-delay:7s;"></div>
+</div>
+
+<div class="container">
+
+<header>
+  <div class="logo-badge">
+    <span>N</span> Natoli Engineering
+  </div>
+  <h1>Event ROI & Buyer Alignment Report</h1>
+  <p class="subtitle">
+    Strategic analysis of regional manufacturing trade shows identifying where Natoli generates measurable, defensible ROI based on who attends, what they buy, and why they buy.
+  </p>
+</header>
+
+<section class="section">
+  <div class="executive-card">
+    <h2>Executive Conclusion</h2>
+    <p>
+      Across all regional manufacturing trade shows reviewed from 2022 through upcoming 2026 events, <span class="highlight">Natoli Engineering's major competitors and top-tier pharmaceutical equipment OEMs have been notably absent.</span>
+    </p>
+    <p>
+      <span class="highlight">This absence aligns with Natoli's upstream positioning and early technical influence.</span>
+    </p>
+    <p>
+      These shows place Natoli <span class="highlight">upstream of commoditization</span>, where engineering problems are still being defined, not price-shopped. Buyers arrive accountable for tooling performance, uptime, and yield.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Trade Show Report Cards</h2>
+  
+  <div class="report-cards-grid">
+    
+    <div class="report-card grade-a-plus">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Design-2-Part Trade Shows</div>
+          <div class="card-timing">📅 March–June & Sept–Nov (Annual) | 📍 Chicago, TX, Midwest, Northeast, Southeast</div>
+          <div class="card-timing">🌐 <a href="https://www.d2p.com" target="_blank" style="color: var(--blue-light);">www.d2p.com</a></div>
+        </div>
+        <div class="grade-badge a-plus">A+</div>
+      </div>
+      
+      <div class="card-section">
+        <h4>Industries Attending</h4>
+        <ul>
+          <li>Pharmaceutical Mfg</li>
+          <li>Nutraceuticals</li>
+          <li>Medical Devices</li>
+          <li>Powder Metallurgy</li>
+          <li>Aerospace & Defense</li>
+          <li>CMOs</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>Buyer Personas</h4>
+        <ul>
+          <li>Manufacturing Engineers</li>
+          <li>Process Engineers</li>
+          <li>Tooling Engineers</li>
+          <li>Plant Managers</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>What They're Dealing With</h4>
+        <p>Active production programs, tooling wear, tolerance drift, startup scrap, yield loss, press downtime, and scale-up failures where lab results break under production pressure.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>How ROI Is Created</h4>
+        <p>Engineers arrive with live drawings. Specs and tolerances discussed on the floor. Feasibility validated immediately → RFQs, trials, validation work, plant visits, multi-year tooling programs.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>Estimated Cost</h4>
+        <span class="cost-range">$13k – $21k</span>
+      </div>
+      
+      <div class="why-box">
+        <h4>✓ Why This Show Makes Sense</h4>
+        <p>Natoli's highest-probability environment. Buyers already compress, compact, or form materials and are accountable for tooling performance. No competitor booth pressure.</p>
+      </div>
+    </div>
+
+    <div class="report-card grade-a">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Indiana Manufacturing Suppliers Expo</div>
+          <div class="card-timing">📅 August (Annual) | 📍 Central Indiana</div>
+          <div class="card-timing">🌐 <a href="https://www.indianamfgexpo.com" target="_blank" style="color: var(--blue-light);">www.indianamfgexpo.com</a></div>
+        </div>
+        <div class="grade-badge a">A</div>
+      </div>
+      
+      <div class="card-section">
+        <h4>Industries Attending</h4>
+        <ul>
+          <li>Pharma & Life Sciences</li>
+          <li>Medical Devices</li>
+          <li>Specialty Chemicals</li>
+          <li>Advanced Materials</li>
+          <li>Automotive</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>Buyer Personas</h4>
+        <ul>
+          <li>Plant Managers</li>
+          <li>Directors of Operations</li>
+          <li>Manufacturing Engineers</li>
+          <li>Maintenance Leaders</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>What They're Dealing With</h4>
+        <p>Press uptime accountability, cost per unit pressure, aging tooling programs, under-optimized forming operations, reliability gaps.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>How ROI Is Created</h4>
+        <p>Fewer but higher-authority conversations. Easier post-show plant access. Relationship-driven buying → sustained multi-year tooling programs.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>Estimated Cost</h4>
+        <span class="cost-range">$8k – $14k</span>
+      </div>
+      
+      <div class="why-box">
+        <h4>✓ Why This Show Makes Sense</h4>
+        <p>Indiana concentrates regulated and precision manufacturing where tooling reliability directly impacts profitability. Regional loyalty favors long-term partnerships.</p>
+      </div>
+    </div>
+
+    <div class="report-card grade-a">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Wisconsin Manufacturing & Technology Show</div>
+          <div class="card-timing">📅 Spring (Biennial) | 📍 Milwaukee, WI</div>
+          <div class="card-timing">🌐 <a href="https://www.wimts.com" target="_blank" style="color: var(--blue-light);">www.wimts.com</a></div>
+        </div>
+        <div class="grade-badge a">A</div>
+      </div>
+      
+      <div class="card-section">
+        <h4>Industries Attending</h4>
+        <ul>
+          <li>Medical Devices</li>
+          <li>Diagnostics</li>
+          <li>Pharma Packaging</li>
+          <li>Powder Metallurgy</li>
+          <li>Precision Machining</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>Buyer Personas</h4>
+        <ul>
+          <li>Senior Mfg Engineers</li>
+          <li>Tooling Owners</li>
+          <li>Operations Leadership</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>What They're Dealing With</h4>
+        <p>Demand for precision, repeatability, long tool life, and standardized processes across multiple plants.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>How ROI Is Created</h4>
+        <p>Deep technical discussions produce trials, internal champions, and multi-site expansion opportunities. Engineering credibility wins here.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>Estimated Cost</h4>
+        <span class="cost-range">$12k – $18k</span>
+      </div>
+      
+      <div class="why-box">
+        <h4>✓ Why This Show Makes Sense</h4>
+        <p>Engineering-led buyers who invest in reliability over lowest price. Wisconsin's process-driven culture aligns with Natoli's precision tooling expertise.</p>
+      </div>
+    </div>
+
+    <div class="report-card grade-b-plus">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Manufacturing First Expo & Conference</div>
+          <div class="card-timing">📅 October (Annual) | 📍 Wisconsin</div>
+          <div class="card-timing">🌐 <a href="https://www.manufacturingfirst.com" target="_blank" style="color: var(--blue-light);">www.manufacturingfirst.com</a></div>
+        </div>
+        <div class="grade-badge b-plus">B+</div>
+      </div>
+      
+      <div class="card-section">
+        <h4>Industries Attending</h4>
+        <ul>
+          <li>Pharma & Life Sciences</li>
+          <li>Food & Nutrition</li>
+          <li>Industrial Mfg</li>
+          <li>Chemical Processing</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>Buyer Personas</h4>
+        <ul>
+          <li>Plant Managers</li>
+          <li>Operations Leaders</li>
+          <li>CI Teams</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>What They're Dealing With</h4>
+        <p>Hidden compaction problems, mixed-process inefficiencies, tooling often overlooked as root cause of yield issues.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>How ROI Is Created</h4>
+        <p>Account mapping, discovery, and long-term pipeline creation. Natoli enters as a performance partner, uncovering tooling-driven losses.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>Estimated Cost</h4>
+        <span class="cost-range">$9k – $15k</span>
+      </div>
+      
+      <div class="why-box">
+        <h4>✓ Why This Show Makes Sense</h4>
+        <p>Surfaces latent Natoli problems leadership hasn't yet connected to tooling. Buying conversation starts before vendor selection.</p>
+      </div>
+    </div>
+
+    <div class="report-card grade-a">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Advanced Manufacturing Expo</div>
+          <div class="card-timing">📅 Late July / Early August (Annual) | 📍 Grand Rapids, MI</div>
+          <div class="card-timing">🌐 <a href="https://www.advancedmanufacturingexpo.com" target="_blank" style="color: var(--blue-light);">www.advancedmanufacturingexpo.com</a></div>
+        </div>
+        <div class="grade-badge a">A</div>
+      </div>
+      
+      <div class="card-section">
+        <h4>Industries Attending</h4>
+        <ul>
+          <li>Automation & Robotics</li>
+          <li>Advanced Materials</li>
+          <li>Automotive</li>
+          <li>Aerospace</li>
+          <li>Medical Mfg</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>Buyer Personas</h4>
+        <ul>
+          <li>Plant Managers</li>
+          <li>Manufacturing Engineers</li>
+          <li>Reliability Leaders</li>
+        </ul>
+      </div>
+      
+      <div class="card-section">
+        <h4>What They're Dealing With</h4>
+        <p>Automation instability caused by inconsistent tooling and process variability. Need reliability as foundation for automation success.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>How ROI Is Created</h4>
+        <p>Tooling reliability tied directly to automation success and scale. Larger deal sizes, longer-term revenue, automation-linked programs.</p>
+      </div>
+      
+      <div class="card-section">
+        <h4>Estimated Cost</h4>
+        <span class="cost-range">$11k – $17k</span>
+      </div>
+      
+      <div class="why-box">
+        <h4>✓ Why This Show Makes Sense</h4>
+        <p>Automation fails without tooling stability. Natoli owns that reliability layer that others ignore.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Competitor & OEM Presence Analysis (2022–2026)</h2>
+  
+  <p style="color: var(--muted); margin-bottom: 24px;">
+    Question: <strong style="color: var(--white);">"Which competitors or top-tier pharmaceutical equipment OEMs have participated or committed space for 2026?"</strong>
+  </p>
+
+  <table class="competitor-table">
+    <thead>
+      <tr>
+        <th>Trade Show</th>
+        <th>Pharma OEMs Present</th>
+        <th>Natoli Competitors Present</th>
+        <th>2026 Commitments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Design-2-Part</strong></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Announced</span></td>
+      </tr>
+      <tr>
+        <td><strong>Indiana Mfg Expo</strong></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Announced</span></td>
+      </tr>
+      <tr>
+        <td><strong>WIMTS</strong></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge na">N/A (2027 Next)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Manufacturing First</strong></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Announced</span></td>
+      </tr>
+      <tr>
+        <td><strong>Advanced Mfg Expo</strong></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Found</span></td>
+        <td><span class="status-badge none">None Announced</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size: 18px; margin: 32px 0 16px;">Companies Not Identified in Public Exhibitor Listings (2022–2026)</h3>
+  <div class="absent-list">
+    <div class="absent-item">Fette Compacting</div>
+    <div class="absent-item">Korsch AG</div>
+    <div class="absent-item">I Holland</div>
+    <div class="absent-item">Elizabeth Tooling</div>
+    <div class="absent-item">IMA Group</div>
+    <div class="absent-item">Syntegon (Bosch)</div>
+    <div class="absent-item">GEA Group</div>
+    <div class="absent-item">ACG Worldwide</div>
+  </div>
+
+  <p style="color: var(--muted); margin-top: 24px; font-size: 14px;">
+    <strong style="color: var(--white);">Sources:</strong> Review of publicly available exhibitor directories, floor plans, sponsor lists, archived exhibitor PDFs, and promotional materials from 2022–2026. Even when pharma manufacturers attend, they do so as buyers, not exhibitors.
+  </p>
+</section>
+
+<section class="section">
+  <div class="dale-qa">
+    <h3>💡 Dale's Question: Do These Accounts Work for Natoli?</h3>
+    
+    <div class="question">
+      "If top pharma OEMs and competitors aren't there, are these buyers real? Do these accounts actually work for Natoli?"
+    </div>
+    
+    <div class="answer">
+      <p><strong>Short answer: Yes. These accounts absolutely work for Natoli.</strong></p>
+      
+      <p>They just don't work the way people expect trade shows to work. What you're seeing is not a red flag. <strong>It's actually the signal.</strong></p>
+      
+      <h4 style="margin: 24px 0 12px; color: var(--white);">Why These Accounts Work:</h4>
+      
+      <p><strong>1. Buyers are operators, not shoppers.</strong><br>
+      Manufacturing Engineers, Process Engineers, Tooling Owners, Plant Managers. These people own tooling performance, get blamed for downtime/scrap/yield loss, and influence RFQs before procurement gets involved.</p>
+      
+      <p><strong>2. Competitor absence is a feature, not a flaw.</strong><br>
+      If competitors were there, conversations would shift to price. Specs would be frozen. Decisions would already be downstream. Instead, problems are still being defined, tooling assumptions are still open, and engineering credibility matters more than logos.</p>
+      
+      <p><strong>3. These shows feed higher-value downstream outcomes.</strong><br>
+      What happens after the show: Plant invitations, drawings and tolerances shared, feasibility opinions requested, trials and validation work triggered, multi-year tooling programs established.</p>
+      
+      <p><strong>4. Why pharma OEMs aren't there (and why that's fine).</strong><br>
+      Big OEMs chase capital budgets and executive visibility. Natoli's value is tool life, yield stability, process repeatability, uptime. Different layer of the stack.</p>
+    </div>
+
+    <div class="key-point">
+      <p class="quote">"If competitors were already there, we'd be late."</p>
+    </div>
+
+    <div class="key-point" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
+      <p><strong>The Executive Framing:</strong><br>
+      "We are choosing environments where competitors are not present, buyers are accountable, and tooling performance directly impacts yield and uptime."</p>
+    </div>
+  </div>
+</section>
+
+<div class="conclusion-box">
+  <h2>Strategic Advantage Confirmed</h2>
+  <p>
+    Natoli is not competing head-to-head at these shows. No booth crowding, no price-shopping environment, no OEM brand arms race. These events favor engineering-led discovery, not vendor theater.
+  </p>
+</div>
+
+<footer class="footer">
+  <p>Prepared for executive review | All findings based on exhibitor lists, show directories, and published agendas from 2022–2026</p>
+  <p style="margin-top: 8px;">© 2026 Natoli Engineering Company, Inc.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

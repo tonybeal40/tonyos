@@ -1,0 +1,276 @@
+Good. This is the right next evolution of what you already built.
+
+You’re not building a new app.
+You’re adding a second brain layer to an existing one.
+
+Think of this as Manufacturing Intelligence Mode.
+
+Below is a clear, buildable design plus working starter code you can drop into your existing tonyrevops downloads / internal app without turning it into a science project.
+
+No fluff. No overbuilding.
+
+WHAT YOU’RE ADDING (ONE LEVEL DEEPER)
+
+You already have:
+
+Company discovery
+
+Basic Natoli fit logic
+
+You now need:
+
+Manufacturing Source Intelligence
+
+Not “where they say it’s made”
+But where it almost certainly is made and how confident you are
+
+THE APP FEATURE (LOCK THIS IN)
+Feature name
+
+Manufacturing Deep Search
+
+What it does
+
+Given a company name, the app:
+
+Infers likely manufacturing model
+
+Identifies probable manufacturing location
+
+Scores confidence
+
+Outputs Natoli relevance context
+
+No scraping. No APIs required (yet).
+This is signal triangulation, not data hoarding.
+
+UI STRUCTURE (KEEP IT SIMPLE)
+Inputs
+
+Company Name
+
+Product Type (dropdown)
+
+Tablet
+
+Nutraceutical
+
+Veterinary
+
+Food-adjacent pressed
+
+Claimed Location (optional)
+
+Output (fixed, centered, calm)
+
+Manufacturing Model
+
+Likely Location(s)
+
+Evidence Signals
+
+Confidence Level
+
+Natoli Fit Reinforcement
+
+One screen. No tabs.
+
+DATA LOGIC (THIS IS THE SECRET)
+
+You’re not “finding” one answer.
+You’re stacking weak signals into strong inference.
+
+Each signal adds weight.
+
+Signal Types
+Signal	Weight
+FDA Registration	High
+Job Postings	High
+LinkedIn Role Density	Medium
+Label Language	Medium
+Certifications	Medium
+Imports / Exports	Low
+SIMPLE SCORING MODEL
+0–2 signals → Low confidence
+3–4 signals → Medium confidence
+5+ signals → High confidence
+
+
+That’s enough. Don’t overthink.
+
+FILE STRUCTURE (DROP-IN)
+manufacturing-intel/
+├── index.html
+├── style.css
+├── app.js
+└── signals.js
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manufacturing Deep Search</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="container">
+  <h1>Manufacturing Deep Search</h1>
+
+  <input id="company" placeholder="Company name" />
+  
+  <select id="productType">
+    <option>Tablet</option>
+    <option>Nutraceutical</option>
+    <option>Veterinary</option>
+    <option>Pressed Food</option>
+  </select>
+
+  <button onclick="runSearch()">Run Analysis</button>
+
+  <section id="results" class="hidden"></section>
+</main>
+
+<script src="signals.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+
+style.css (Fortune-50 internal look)
+body {
+  font-family: system-ui, sans-serif;
+  background: #f6f6f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: white;
+  padding: 32px;
+  width: 480px;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+}
+
+input, select, button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+button {
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+#results {
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+signals.js (YOUR INTELLIGENCE RULES)
+const signals = [
+  { name: "FDA Registration", weight: 3 },
+  { name: "Compression Job Roles", weight: 3 },
+  { name: "LinkedIn Manufacturing Density", weight: 2 },
+  { name: "Manufactured For Language", weight: 2 },
+  { name: "cGMP Facility Claims", weight: 2 },
+  { name: "Import / Export Records", weight: 1 }
+];
+
+app.js (CORE LOGIC)
+function runSearch() {
+  const company = document.getElementById("company").value;
+  const product = document.getElementById("productType").value;
+  const results = document.getElementById("results");
+
+  let score = 0;
+  let evidence = [];
+
+  signals.forEach(signal => {
+    if (Math.random() > 0.5) { // placeholder logic
+      score += signal.weight;
+      evidence.push(signal.name);
+    }
+  });
+
+  let confidence =
+    score >= 8 ? "High" :
+    score >= 4 ? "Medium" :
+    "Low";
+
+  results.innerHTML = `
+    <strong>Company:</strong> ${company}<br>
+    <strong>Product:</strong> ${product}<br><br>
+    <strong>Likely Manufacturing Model:</strong> ${
+      evidence.includes("Manufactured For Language") ? "Outsourced CDMO" : "In-house or Hybrid"
+    }<br>
+    <strong>Evidence Signals:</strong><br>
+    ${evidence.map(e => `• ${e}`).join("<br>")}<br><br>
+    <strong>Confidence Level:</strong> ${confidence}<br>
+    <strong>Natoli Relevance:</strong> ${
+      product === "Tablet" && confidence !== "Low"
+        ? "Strong potential tooling / press relevance"
+        : "Limited or indirect fit"
+    }
+  `;
+
+  results.classList.remove("hidden");
+}
+
+WHY THIS WORKS (IMPORTANT)
+
+You’re codifying how you already think
+
+You’re not pretending to know the truth
+
+You’re expressing confidence bands
+
+You can later replace random logic with:
+
+FDA lookup
+
+LinkedIn API
+
+CSV imports
+
+Manual toggles
+
+This is decision support, not fantasy AI.
+
+NEXT EVOLUTION (ONLY WHEN READY)
+
+Later, you can add:
+
+Manual signal checkboxes
+
+Evidence notes
+
+Export to CSV
+
+Natoli Tier auto-classification
+
+“Who should I talk to next” logic
+
+But not now.
+
+Straight talk
+
+This is exactly the right scope.
+Anything bigger becomes avoidance.
+
+If you want, next I can:
+
+Convert this into a Netlify-ready internal tool
+
+Add manual override controls
+
+Or wire it into your existing company-finder app cleanly
+
+Say which one and we’ll do it properly.

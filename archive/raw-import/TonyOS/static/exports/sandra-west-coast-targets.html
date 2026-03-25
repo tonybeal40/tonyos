@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>West Coast Target List | Natoli RevOps</title>
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --border: #2a2a3a;
+      --text: #e4e4e7;
+      --text-muted: #9ca3af;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-green: #10b981;
+      --accent-orange: #f97316;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(168,85,247,0.1));
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+    }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+    .stats-bar {
+      display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+    }
+    .stat {
+      background: var(--bg-card);
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--accent-cyan); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+    
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .section-header:hover { background: rgba(255,255,255,0.05); }
+    .section-title {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-badge {
+      background: var(--accent-purple);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .chevron {
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    .section.collapsed .chevron { transform: rotate(-90deg); }
+    .section.collapsed .section-content { display: none; }
+    
+    .section-content { padding: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: rgba(0,0,0,0.3);
+      font-weight: 600;
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+    }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .company-name { font-weight: 600; color: var(--accent-cyan); }
+    .industry { color: var(--accent-purple); font-size: 0.9rem; }
+    .phone { font-family: monospace; white-space: nowrap; }
+    .revenue { color: var(--accent-green); }
+    .link {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+    .link:hover { text-decoration: underline; }
+    .fit-tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: rgba(168,85,247,0.2);
+      color: var(--accent-purple);
+    }
+    
+    .contacts-btn {
+      background: var(--accent-orange);
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .contacts-btn:hover { background: #fb923c; transform: scale(1.05); }
+    .contacts-btn.active { background: var(--accent-green); }
+    
+    .contacts-row { display: none; }
+    .contacts-row.show { display: table-row; }
+    .contacts-row td {
+      background: rgba(249,115,22,0.08);
+      padding: 16px;
+    }
+    .contacts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .contact-card {
+      background: var(--bg-dark);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .contact-name { font-weight: 600; color: var(--accent-cyan); margin-bottom: 2px; }
+    .contact-title { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 4px; }
+    .contact-email { color: var(--accent-orange); font-size: 0.85rem; }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
+      th, td { padding: 8px 10px; font-size: 0.85rem; }
+      .stats-bar { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>West Coast Target List</h1>
+      <p class="subtitle">Natoli RevOps | Tablet Manufacturing Prospects</p>
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value">19</div>
+          <div class="stat-label">Target Companies</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">27</div>
+          <div class="stat-label">Total Contacts</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this.parentElement)">
+        <div class="section-title">
+          <span>Sandra List - West Coast Tablet Targets</span>
+          <span class="section-badge">19 Companies</span>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="section-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Industry</th>
+              <th>Employees</th>
+              <th>Revenue</th>
+              <th>Phone</th>
+              <th>Why it Fits</th>
+              <th>Links</th>
+              <th>Contacts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="company-name">AMVAC Chemical Corporation</td>
+              <td class="industry">Industrial & Agricultural Chemicals</td>
+              <td>400</td>
+              <td class="revenue">$417M</td>
+              <td class="phone">+1 888-462-6822</td>
+              <td><span class="fit-tag">Tabletized Agrochemicals</span></td>
+              <td><a href="http://www.amvac.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/amvac-us" class="link" target="_blank">LinkedIn</a></td>
+              <td><button class="contacts-btn" onclick="toggleContacts(this, 'amvac')">4 Contacts</button></td>
+            </tr>
+            <tr class="contacts-row" id="amvac">
+              <td colspan="8">
+                <div class="contacts-grid">
+                  <div class="contact-card">
+                    <div class="contact-name">Mark Foster</div>
+                    <div class="contact-title">Director, Global Commercial Operations</div>
+                    <div class="contact-email">markwf@amvac.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Gary Cundiff</div>
+                    <div class="contact-title">Product Development Manager Mid-South</div>
+                    <div class="contact-email">garyc@amvac-chemical.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Curtis Engle</div>
+                    <div class="contact-title">Product Mgr, Field Development Rep</div>
+                    <div class="contact-email">curtis.engle@uniphos.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Steve Hardgrave</div>
+                    <div class="contact-title">Technical Sales Rep</div>
+                    <div class="contact-email">steveh@amvac-chemical.com</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="company-name">Bio-Clean Products</td>
+              <td class="industry">Industrial Cleaning Chemicals</td>
+              <td>1</td>
+              <td class="revenue">-</td>
+              <td class="phone">+1 702-472-7494</td>
+              <td><span class="fit-tag">Enzyme & Septic Tablets</span></td>
+              <td><a href="http://www.bio-cleanproducts.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/bio-clean-products" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Chem Lab Products, Inc.</td>
+              <td class="industry">Industrial Sanitation</td>
+              <td>55</td>
+              <td class="revenue">$6M</td>
+              <td class="phone">951-842-5479</td>
+              <td><span class="fit-tag">Cleaning Tablets</span></td>
+              <td><a href="https://www.chemlabinc.com/" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/chemlabsltd" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Chemco Corporation</td>
+              <td class="industry">Industrial Chemicals</td>
+              <td>69</td>
+              <td class="revenue">-</td>
+              <td class="phone">+1 305-623-4445</td>
+              <td><span class="fit-tag">Tabletized Chemical Compounds</span></td>
+              <td><a href="http://www.echemco.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/chemco-corp" class="link" target="_blank">LinkedIn</a></td>
+              <td><button class="contacts-btn" onclick="toggleContacts(this, 'chemco')">1 Contact</button></td>
+            </tr>
+            <tr class="contacts-row" id="chemco">
+              <td colspan="8">
+                <div class="contacts-grid">
+                  <div class="contact-card">
+                    <div class="contact-name">Zhelka Gerinska</div>
+                    <div class="contact-title">R&D Lab Manager</div>
+                    <div class="contact-email">zhelka@echemco.com</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="company-name">GMP Products Inc</td>
+              <td class="industry">Nutraceutical Manufacturing</td>
+              <td>3</td>
+              <td class="revenue">-</td>
+              <td class="phone">+1 626-810-8760</td>
+              <td><span class="fit-tag">Specialty Tablets</span></td>
+              <td><a href="http://www.gmpvitamin.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/gmp-products-inc" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Hasa, Inc.</td>
+              <td class="industry">Pool & Water Treatment</td>
+              <td>240</td>
+              <td class="revenue">$15M</td>
+              <td class="phone">+1 661-259-5848</td>
+              <td><span class="fit-tag">Chlorine Tablets</span></td>
+              <td><a href="http://www.hasa.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/hassapools" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Lief Labs</td>
+              <td class="industry">Nutraceutical Brand</td>
+              <td>110</td>
+              <td class="revenue">$60M</td>
+              <td class="phone">+1 661-775-2500</td>
+              <td><span class="fit-tag">Gummy Supplements / Possible Tablets</span></td>
+              <td><a href="http://www.lieflabs.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/lieflabs" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Magno-Humphries Labs</td>
+              <td class="industry">OTC & Nutraceutical Manufacturing</td>
+              <td>13</td>
+              <td class="revenue">$10M</td>
+              <td class="phone">+1 800-935-6737</td>
+              <td><span class="fit-tag">Tablet Compression</span></td>
+              <td><a href="http://www.magno-humphries.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/magno-humphries-labs" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Metagenics, Inc.</td>
+              <td class="industry">Nutraceutical Manufacturing</td>
+              <td>1,100</td>
+              <td class="revenue">$375M</td>
+              <td class="phone">+1 800-692-9400</td>
+              <td><span class="fit-tag">Solid Dose Tablets</span></td>
+              <td><a href="http://www.metagenics.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/metagenics" class="link" target="_blank">LinkedIn</a></td>
+              <td><button class="contacts-btn" onclick="toggleContacts(this, 'metagenics')">2 Contacts</button></td>
+            </tr>
+            <tr class="contacts-row" id="metagenics">
+              <td colspan="8">
+                <div class="contacts-grid">
+                  <div class="contact-card">
+                    <div class="contact-name">Patrick O'Shaughnessy</div>
+                    <div class="contact-title">Director of IT Operations - North America</div>
+                    <div class="contact-email">patrickoshaughnessy@metagenics.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Shane Espersen</div>
+                    <div class="contact-title">Product Development Technician</div>
+                    <div class="contact-email">shaneespersen@metagenics.com</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="company-name">Natural Factors</td>
+              <td class="industry">Nutraceutical Manufacturing</td>
+              <td>540</td>
+              <td class="revenue">$29M</td>
+              <td class="phone">+1 800-663-8900</td>
+              <td><span class="fit-tag">Solid Dose Tablets</span></td>
+              <td><a href="http://www.naturalfactors.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/natural-factors" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Nutrex Hawaii</td>
+              <td class="industry">Nutraceutical Manufacturing</td>
+              <td>7</td>
+              <td class="revenue">$50M</td>
+              <td class="phone">+1 808-326-1353</td>
+              <td><span class="fit-tag">Algae Tablets</span></td>
+              <td><a href="http://www.nutrex-hawaii.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/nutrex-hawaii" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Paragon Laboratories</td>
+              <td class="industry">Nutraceutical CDMO</td>
+              <td>66</td>
+              <td class="revenue">$25M</td>
+              <td class="phone">+1 800-231-3670</td>
+              <td><span class="fit-tag">Contract Tablet Manufacturing</span></td>
+              <td><a href="http://www.paragonlabsusa.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/paragon-laboratories" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Pharmatek Laboratories</td>
+              <td class="industry">Pharmaceutical CDMO</td>
+              <td>68</td>
+              <td class="revenue">-</td>
+              <td class="phone">+1 510-579-7650</td>
+              <td><span class="fit-tag">cGMP Solid Dose</span></td>
+              <td><a href="http://www.pharmateksol.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/pharmatek-laboratories-inc-" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Pharmavite LLC</td>
+              <td class="industry">Nutraceutical Manufacturing</td>
+              <td>1,600</td>
+              <td class="revenue">$748M</td>
+              <td class="phone">+1 818-221-6200</td>
+              <td><span class="fit-tag">Solid Dose Tablets</span></td>
+              <td><a href="http://www.pharmavite.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/pharmavite" class="link" target="_blank">LinkedIn</a></td>
+              <td><button class="contacts-btn" onclick="toggleContacts(this, 'pharmavite')">9 Contacts</button></td>
+            </tr>
+            <tr class="contacts-row" id="pharmavite">
+              <td colspan="8">
+                <div class="contacts-grid">
+                  <div class="contact-card">
+                    <div class="contact-name">Solanda Prather</div>
+                    <div class="contact-title">Sr. Director, Manufacturing</div>
+                    <div class="contact-email">sprather@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Sedrick Flaggs</div>
+                    <div class="contact-title">Director of Operations, Packaging</div>
+                    <div class="contact-email">sflaggs@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Julie Catzalco</div>
+                    <div class="contact-title">R&D Manager</div>
+                    <div class="contact-email">jcatzalco@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Ying Liu</div>
+                    <div class="contact-title">PHV Leader, R&D Analytical</div>
+                    <div class="contact-email">yliu@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Kara Siak</div>
+                    <div class="contact-title">DVP Customer Marketing, Sales Strategy</div>
+                    <div class="contact-email">ksiak@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Tracy Poblete</div>
+                    <div class="contact-title">OS&D Department Leader</div>
+                    <div class="contact-email">tpoblete@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Yuxiao Wu</div>
+                    <div class="contact-title">R&D Scientist</div>
+                    <div class="contact-email">ywu@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Victor Ramos</div>
+                    <div class="contact-title">Product Development Technician</div>
+                    <div class="contact-email">vramos@pharmavite.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Bill Schultz</div>
+                    <div class="contact-title">R & D Chemist</div>
+                    <div class="contact-email">bschultz@pharmavite.net</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="company-name">Shaklee Corporation</td>
+              <td class="industry">Nutraceutical Brand</td>
+              <td>3,400</td>
+              <td class="revenue">$500M</td>
+              <td class="phone">+1 925-924-2205</td>
+              <td><span class="fit-tag">Mixed Outsource</span></td>
+              <td><a href="http://www.shaklee.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/shaklee-corporation" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">SmartyPants Vitamins</td>
+              <td class="industry">Nutraceutical Brand</td>
+              <td>66</td>
+              <td class="revenue">$40M</td>
+              <td class="phone">+1 888-751-2291</td>
+              <td><span class="fit-tag">CDMO Tablets</span></td>
+              <td><a href="http://www.smartypantsvitamins.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/smartypantsvitamins" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Vitamer Labs</td>
+              <td class="industry">Nutraceutical CDMO</td>
+              <td>4</td>
+              <td class="revenue">-</td>
+              <td class="phone">+1 800-432-8355</td>
+              <td><span class="fit-tag">Contract Tablet Manufacturing</span></td>
+              <td><a href="http://www.vitamer.com" class="link" target="_blank">Web</a> | <a href="http://www.linkedin.com/company/vitamer-laboratories" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Irwin Naturals</td>
+              <td class="industry">Nutraceutical Brand</td>
+              <td>-</td>
+              <td class="revenue">-</td>
+              <td class="phone">1-888-223-1548</td>
+              <td><span class="fit-tag">Mixed Manufacturing</span></td>
+              <td><a href="https://irwinnaturals.com" class="link" target="_blank">Web</a> | <a href="https://linkedin.com/company/irwin-naturals" class="link" target="_blank">LinkedIn</a></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="company-name">Central Garden & Pet Company</td>
+              <td class="industry">Consumer & Industrial Chemicals</td>
+              <td>6,000</td>
+              <td class="revenue">$3.1B</td>
+              <td class="phone">844-718-1702</td>
+              <td><span class="fit-tag">Tabletized Pest & Pool Chem</span></td>
+              <td><a href="https://central.com" class="link" target="_blank">Web</a> | <a href="https://linkedin.com/company/central-garden-&-pet" class="link" target="_blank">LinkedIn</a></td>
+              <td><button class="contacts-btn" onclick="toggleContacts(this, 'central')">11 Contacts</button></td>
+            </tr>
+            <tr class="contacts-row" id="central">
+              <td colspan="8">
+                <div class="contacts-grid">
+                  <div class="contact-card">
+                    <div class="contact-name">Fernando Delgado</div>
+                    <div class="contact-title">Pest Control Division</div>
+                    <div class="contact-email">Contact via company</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Jason Trout</div>
+                    <div class="contact-title">Senior Director, Sales Operations</div>
+                    <div class="contact-email">jasontrout@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Gayle Lockerman</div>
+                    <div class="contact-title">Director, Sales & Operations Planning</div>
+                    <div class="contact-email">glockerman@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Anthony Ross</div>
+                    <div class="contact-title">Director of Operations Logistics</div>
+                    <div class="contact-email">aross@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Cruz Barron</div>
+                    <div class="contact-title">Director of Warehouse Operations</div>
+                    <div class="contact-email">cbarron@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Valerie Kehoe</div>
+                    <div class="contact-title">Senior Product Manager Global R&D</div>
+                    <div class="contact-email">vkehoe@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Robin Baum</div>
+                    <div class="contact-title">Sr. Manager, Product Development</div>
+                    <div class="contact-email">rbaum@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Taylor Kerner</div>
+                    <div class="contact-title">Manager R&D, Product Development</div>
+                    <div class="contact-email">tkerner@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">William Warner</div>
+                    <div class="contact-title">Sr. Specialty Product Development Mgr.</div>
+                    <div class="contact-email">wwarner@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Lori Adams</div>
+                    <div class="contact-title">Marketing Manager D&D Commodities</div>
+                    <div class="contact-email">ladams@central.com</div>
+                  </div>
+                  <div class="contact-card">
+                    <div class="contact-name">Jeff Hellinger</div>
+                    <div class="contact-title">R&D Engineer</div>
+                    <div class="contact-email">jhellinger@central.com</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <p>Natoli RevOps | West Coast Target List</p>
+      <p style="margin-top: 8px;">Generated: January 2026 | Netlify Deployment Ready</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleSection(section) {
+      section.classList.toggle('collapsed');
+    }
+    
+    function toggleContacts(btn, id) {
+      const row = document.getElementById(id);
+      row.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

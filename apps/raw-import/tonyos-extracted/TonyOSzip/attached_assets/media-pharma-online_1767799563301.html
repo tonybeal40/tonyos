@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pharmaceutical Online Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #4ade80;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>Pharmaceutical Online Media Evaluation</h1>
+        <p>
+          Evaluation of Pharmaceutical Online as a digital channel for Natoli. This page explains what the Web Audience
+          Access, ON24 webinar and custom newsletter packages actually deliver, and where this spend sits compared with
+          Natoli's Tier 1 media.
+        </p>
+        <div class="chip-row">
+          <div class="chip">DIGITAL ONLY</div>
+          <div class="chip">GLOBAL PHARMA</div>
+          <div class="chip">TIER 2 COMMERCIAL</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">B</div>
+        <div class="grade-caption">
+          Strong reach into pharma and outsourcing.<br />
+          Commercially viable when tightly scoped and well messaged.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.pharmaceuticalonline.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Pharmaceutical Online
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary</h2>
+    <p class="section-intro">
+      Pharmaceutical Online, and the related Outsourced Pharma and Virtual Pharma Expo properties, are digital only titles
+      that sit close to Natoli's core world of drug product manufacturing and outsourcing. The packages offered include
+      always on web access, ON24 webinar programs and exclusive custom newsletters. The price tag is significant, but the
+      audience is closer to true buyers than many general science titles.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for planning</h3>
+      <p>
+        Pharmaceutical Online should be treated as a Tier 2 commercial channel that can produce real leads when used for
+        specific campaigns. It is not a replacement for APR or Tablets and Capsules, but it is stronger than broad lab or
+        chemistry titles for compaction work.
+      </p>
+      <ul>
+        <li>Web Audience Access including Templeton Basic, with monthly digital placements across the year.</li>
+        <li>ON24 webinar offering positioned as a high impact lead generation and education asset.</li>
+        <li>Exclusive custom newsletter across Pharmaceutical Online and Outsourced Pharma lists.</li>
+        <li>Lead generation line for the main bundle at around 64,025, with an extended stack later in the sheet near 86,550.</li>
+      </ul>
+      <p class="pill-tagline">
+        Combined, the full Pharmaceutical Online and Outsourced Pharma stack can approach roughly 150,000 in lead generation
+        spend. That makes targeting, messaging and follow through critical.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Digital campaigns where webinar and long form content can tell the full tooling and compaction story.</li>
+          <li>Lead generation sprints tied to specific offers such as CT imaging, troubleshooting clinics or scale up support.</li>
+          <li>Outsourcing and CDMO related plays where Natoli wants visibility among external manufacturing partners.</li>
+          <li>Campaigns where Natoli is prepared to work every lead through a proper nurture and qualification path.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>Generic brand awareness with no strong call to value or clear next step.</li>
+          <li>Evergreen spend that is not tied to a specific campaign, offer or product story.</li>
+          <li>Situations where the commercial team cannot support webinar follow up or newsletter response.</li>
+          <li>Any plan that expects APR level buyer density from a broader digital network.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis</h2>
+    <p class="section-intro">
+      Pharmaceutical Online and its sister properties speak directly to pharma manufacturing, outsourcing and development
+      roles. When mapped against Natoli's ICP, the signal is noticeably stronger than general lab titles, but still not as
+      concentrated as the tightest tablet tooling publications.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 buyers:</strong> operations leaders, manufacturing engineers, tech transfer and process roles in
+          solid dose and related areas. Present at meaningful levels, especially around webinar and newsletter activity.
+        </li>
+        <li>
+          <strong>Tier 2 adjacent roles:</strong> quality, supply chain, outsourcing managers and CDMO contacts who can
+          influence decisions or pull Natoli in.
+        </li>
+        <li>
+          <strong>Tier 3 broader audience:</strong> general pharma readers that follow the titles but do not own equipment
+          or tooling spend.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: this network sits closer to real commercial opportunity than broad science titles. It still needs
+        surgical use to keep cost per true buyer under control.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The workbook details several components. For decision making, it is more helpful to think in terms of bundles and
+      effective cost for a real compaction buyer.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Web Audience Access Basic runs across the full year, with an annual value of around 12,600.</li>
+        <li>The ON24 webinar program sits at about 18,500 and is the core high touch asset.</li>
+        <li>The first custom newsletter bundle sits near 13,825, feeding the 64,025 lead generation line in the sheet.</li>
+        <li>An extended combination with Outsourced Pharma and Virtual Pharma Expo moves the lead generation line to about 86,550.</li>
+      </ul>
+      <p class="pill-tagline">
+        If Natoli can pull out a focused set of Tier 1 buyers from these programs, the spend can be justified. If the list
+        remains broad and lightly worked, cost per buyer will spike.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      Content on Pharmaceutical Online and related properties focuses on drug development, manufacturing, outsourcing and
+      technology. This is closer to Natoli's world than general lab titles, but the relevance still depends on topic choice.
+    </p>
+
+    <div class="card">
+      <h3>Typical themes</h3>
+      <ul>
+        <li>Drug product manufacturing articles, facility and process features.</li>
+        <li>Outsourcing and CDMO coverage where equipment and capability matter.</li>
+        <li>Technology and operations content that can support a tablet tooling and press performance angle.</li>
+      </ul>
+      <p class="pill-tagline">
+        Result: good alignment for campaigns built around compaction, scale up and troubleshooting. Weak alignment if used
+        for generic branding with no clear equipment or tooling point of view.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades follow the same framework as the rest of the media scorecard. Letters balance the workbook numbers with the
+      qualitative view above.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>B+</span></div>
+        <div class="bubble">Buyer density<span>B</span></div>
+        <div class="bubble">Scientific credibility<span>B</span></div>
+        <div class="bubble">Engineering relevance<span>B</span></div>
+        <div class="bubble">Natoli fit<span>B</span></div>
+        <div class="bubble">ROI probability<span>Medium</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: stronger commercial potential than broad lab titles. Not as buyer dense as APR or Tablets and
+        Capsules, but worth serious consideration for campaign based investments.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 2 commercial channel.</li>
+        <li><strong>Role:</strong> campaign driver for specific offers, not always on background spend.</li>
+        <li>
+          <strong>Sales posture:</strong> any program here should have clearly defined follow up responsibility inside Natoli,
+          with webinar and newsletter leads pushed into a structured nurture path.
+        </li>
+        <li>
+          <strong>Budget posture:</strong> treat the main 64,025 bundle as a high intent experiment with strong tracking.
+          Only consider the full 86,550 stack if a previous campaign has proven cost per opportunity.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        If leadership wants a digital media test outside the core print titles, Pharmaceutical Online is one of the cleaner
+        places to do it, provided the team commits to execution.
+      </p>
+    </div>
+
+    <!-- 8. OS section -->
+    <h2 class="section-title">8. How to reuse this framework</h2>
+    <p class="section-intro">
+      This structure can be copied for Outsourced Pharma, Virtual Pharma Expo and every other media line in the workbook.
+      The evaluation rules stay fixed. Only the scores and story change.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> asks whether the title reaches real tablet and compaction decision makers.</li>
+        <li><strong>Buyer density</strong> focuses on how much of the audience is Tier 1 ICP rather than background readers.</li>
+        <li><strong>Scientific credibility</strong> matters for Natoli Scientific and deeper technical stories.</li>
+        <li><strong>Engineering relevance</strong> checks how much equipment, tooling and reliability content appears.</li>
+        <li><strong>Natoli fit</strong> blends engineering and scientific value into one view.</li>
+        <li><strong>ROI probability</strong> is the honest view of whether money spent here is likely to come back as revenue.</li>
+      </ul>
+      <p class="pill-tagline">
+        Same rule as everywhere else. Sales budget lives in Tier 1. Tier 2 and Tier 3 spend must earn its place with clear,
+        provable outcomes.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2025 and 2026 planning. Summary based on the Pharmaceutical Online
+      worksheet and Natoli ICP tiering model.
+    </p>
+  </div>
+</body>
+</html>

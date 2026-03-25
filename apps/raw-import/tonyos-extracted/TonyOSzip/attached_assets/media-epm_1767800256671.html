@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Natoli Media Scorecard – EPM Full Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-soft: #111827;
+      --accent: #1da1f2;
+      --accent-strong: #3bb3ff;
+      --accent-soft: #22344f;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 48px;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    h1 {
+      font-size: 30px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 760px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-top: 22px;
+      margin-bottom: 26px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-soft);
+      background: rgba(11, 18, 32, 0.9);
+    }
+
+    .pill.tier-2 {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: #fb923c;
+      color: #fed7aa;
+    }
+
+    .grade-badge {
+      min-width: 120px;
+      padding: 14px 18px;
+      border-radius: 20px;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 70%);
+      border: 1px solid var(--accent-soft);
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 32px;
+      font-weight: 700;
+      color: #facc15;
+      margin-bottom: 4px;
+    }
+
+    .grade-caption {
+      font-size: 11px;
+      color: var(--text-soft);
+      line-height: 1.4;
+    }
+
+    .back-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.16s ease, box-shadow 0.16s ease,
+        transform 0.06s ease, border-color 0.16s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      border-color: transparent;
+      color: #f9fafb;
+      box-shadow: 0 16px 32px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.7);
+      background: #111827;
+      border-color: var(--accent-strong);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.7);
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 26px;
+      margin-bottom: 6px;
+    }
+
+    .section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 14px;
+      max-width: 780px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 16px 16px 14px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .metric-main {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .metric-sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    ul {
+      margin-top: 6px;
+      margin-left: 18px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    ul li {
+      margin-bottom: 4px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .grade-table {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .grade-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .grade-row:last-child {
+      border-bottom: none;
+    }
+
+    .grade-label {
+      color: var(--text-muted);
+    }
+
+    .grade-value {
+      font-weight: 600;
+    }
+
+    .footnote {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 720px) {
+      .top-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="back-row">
+      <a href="index.html#scorecard" class="btn">Back to Natoli Dashboard</a>
+      <a href="media-scorecard.html" class="btn">Back to all media tiles</a>
+    </div>
+
+    <div class="top-row">
+      <div>
+        <h1>EPM – European Pharmaceutical Manufacturer</h1>
+        <p class="subtitle">
+          European manufacturing focus with a mix of suppliers and technology profiles. 
+          Helpful for Natoli visibility when supported by higher-grade campaigns in APR and other Tier&nbsp;1 titles.
+        </p>
+        <div class="pill-row">
+          <span class="pill tier-2">Tier 2 – Visibility and authority</span>
+          <span class="pill">Europe</span>
+          <span class="pill">Manufacturing</span>
+        </div>
+      </div>
+
+      <div class="grade-badge">
+        <div class="grade-letter">B</div>
+        <div class="grade-caption">
+          Useful European visibility channel when paired with Tier 1 activity.  
+          Not a primary commercial engine on its own.
+        </div>
+      </div>
+    </div>
+
+    <div class="back-row" style="margin-bottom: 0;">
+      <a href="https://www.epmmagazine.com"
+         target="_blank" rel="noopener"
+         class="btn btn-primary">Visit EPM site</a>
+    </div>
+
+    <!-- Positioning -->
+    <h2>Positioning snapshot</h2>
+    <p class="section-intro">
+      EPM is a pan-European outlet that blends equipment suppliers, technology
+      providers and general manufacturing stories. It gives Natoli regional
+      exposure to production teams and buyers across Europe, but the audience is
+      more mixed than APR or Tablets &amp; Capsules.
+    </p>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">What EPM is</div>
+        <div class="metric-sub">
+          <ul>
+            <li>Manufacturing-oriented coverage with regular visibility for machinery, components and technology vendors.</li>
+            <li>A channel where European plant managers, engineering leaders and project teams can see tooling and press brands in context.</li>
+            <li>Good support vehicle for reinforcing Natoli’s name around other Tier&nbsp;1 pharma campaigns.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">What EPM is not</div>
+        <div class="metric-sub">
+          <ul>
+            <li>It is not a pure solid-dose tablet press and tooling hub.</li>
+            <li>It is not the place where MS&amp;T and formulation teams go first for deep compaction science.</li>
+            <li>It is not a standalone pipeline engine. On its own, it will not generate consistent SQL-level opportunities.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category grades -->
+    <h2>Category grades</h2>
+    <p class="section-intro">
+      Letter grades mirror the main dashboard card: audience match, buyer
+      density, scientific credibility, engineering relevance, Natoli fit and
+      ROI probability.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Fit and density</div>
+        <div class="grade-table">
+          <div class="grade-row">
+            <span class="grade-label">Audience fit</span>
+            <span class="grade-value">B</span>
+          </div>
+          <div class="grade-row">
+            <span class="grade-label">Buyer density</span>
+            <span class="grade-value">B-</span>
+          </div>
+          <div class="grade-row">
+            <span class="grade-label">Engineering relevance</span>
+            <span class="grade-value">B</span>
+          </div>
+          <div class="grade-row">
+            <span class="grade-label">Natoli fit</span>
+            <span class="grade-value">B</span>
+          </div>
+        </div>
+        <div class="metric-sub" style="margin-top:8px;">
+          The audience includes real manufacturing stakeholders, but it is a
+          blend of segments. True solid-dose tooling buyers are present but not
+          concentrated in the way they are on APR or Tablets &amp; Capsules.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Authority and ROI</div>
+        <div class="grade-table">
+          <div class="grade-row">
+            <span class="grade-label">Scientific credibility</span>
+            <span class="grade-value">B</span>
+          </div>
+          <div class="grade-row">
+            <span class="grade-label">ROI probability</span>
+            <span class="grade-value">B-</span>
+          </div>
+        </div>
+        <div class="metric-sub" style="margin-top:8px;">
+          Content is credible and aligned with manufacturing, but the broader
+          mix of topics means impact is spread out. When Natoli appears, it
+          benefits from a professional environment but not a hyper-focused
+          compaction crowd.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Bottom line for Natoli</div>
+        <div class="metric-sub">
+          <strong>If the goal is pure pipeline:</strong> EPM should never replace
+          Tier&nbsp;1 channels. It can assist, not lead.
+          <br /><br />
+          <strong>If the goal is European brand presence:</strong> EPM helps
+          keep Natoli visible alongside other manufacturing brands across the EU
+          market.
+          <br /><br />
+          <strong>If the goal is strategic authority:</strong> use selectively
+          for case studies and plant-level stories that show Natoli solving
+          production challenges.
+        </div>
+      </div>
+    </div>
+
+    <!-- Execution details -->
+    <h2>Execution details from 2025 plan</h2>
+    <p class="section-intro">
+      The EPM worksheet in your media file lists a mix of placements and content
+      options. This section summarizes the <em>types</em> of activity without
+      exposing any numeric line items.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Commercial relationship</div>
+        <div class="metric-sub">
+          <strong>Channel type:</strong> European manufacturing publication
+          covering machinery, processing, packaging and technology vendors.<br /><br />
+          The worksheet captures a combination of:
+          <ul>
+            <li>Display placements promoting Natoli’s tooling and compaction capabilities.</li>
+            <li>Editorial or sponsored content opportunities tied to manufacturing themes.</li>
+            <li>Digital visibility options that follow EPM’s regular email and web cadence.</li>
+          </ul>
+          All costs remain in the internal spreadsheet; this view is built for
+          VP / CFO scrutiny without rate cards.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">How Natoli should use EPM</div>
+        <div class="metric-sub">
+          <ul>
+            <li>Position EPM as a reinforcement channel when Natoli is already active in APR, T&amp;C and other Tier&nbsp;1 titles.</li>
+            <li>Use it to support plant-level stories, European case studies and reliability themes.</li>
+            <li>Align calls to action with higher intent channels: web forms, webinars, or CT/compaction content that lives on Natoli’s own properties.</li>
+            <li>Avoid over-investing in pure banners; concentrate on placements where Natoli’s story can be told with context.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Executive summary -->
+    <h2>Executive summary for leadership</h2>
+    <div class="card">
+      <div class="card-title">Decision statement</div>
+      <div class="metric-sub">
+        EPM is a solid Tier&nbsp;2 European visibility channel. It keeps Natoli
+        present in the manufacturing conversation, but it does not replace Tier&nbsp;1
+        pharma engines for serious compaction work.
+        <br /><br />
+        Practical interpretation:
+        <ul>
+          <li>Fund EPM only after core Tier&nbsp;1 channels are secured.</li>
+          <li>Cap EPM spend so it never dilutes budget away from APR, Tablets &amp; Capsules or other high-density buyer hubs.</li>
+          <li>Measure success in terms of European awareness, not raw SQL count.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footnote">
+      Source: Natoli “Media Placement 2025 – EPM” worksheet and qualitative
+      Tier-2 evaluation. All numeric cost values and line item totals remain in
+      the internal Excel file and are intentionally excluded from this view.
+    </div>
+  </div>
+</body>
+</html>

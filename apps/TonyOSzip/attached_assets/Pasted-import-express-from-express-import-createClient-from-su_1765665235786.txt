@@ -1,0 +1,221 @@
+import express from "express";
+import { createClient } from "@supabase/supabase-js";
+
+const app = express();
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static("public"));
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+const SHORT_TERM_MESSAGES = 20;
+const LONG_TERM_MATCHES = 8;
+const MIN_SIMILARITY = 0.78;
+
+function systemForMode(mode = "default") {
+  const base =
+`You are TonyOS.
+Be direct, practical, and clear.
+No em dashes.
+Never invent facts.
+If you are unsure, say so.
+Use short paragraphs and clean bullets.
+`;
+
+  const map = {
+    default: base + `You help execute, build, and decide.`,
+    storybrand: base + `You are the StoryBrand Pro Engine. Output: One-liner, Header, Problem, Value Pillars, CTA.`,
+    analyzer: base + `You are the Website Analyzer. Output: who it is for, offer, proof, confusion points, fixes.`,
+    jobs: base + `You are Job Search HQ. Output: next steps, outreach scripts, positioning.`,
+    money: base + `You are Money and Budget. Be conservative and numeric.`,
+    builder: base + `You are Website Builder. Output: clean copy blocks and simple HTML sections.`,
+  };
+  return map[mode] || map.default;
+}
+
+async function openaiResponses(input) {
+  const r = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({ model: "gpt-5", input })
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function embedText(text) {
+  const r = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({ model: "text-embedding-3-small", input: text })
+  });
+  if (!r.ok) throw new Error(await r.text());
+  const j = await r.json();
+  return j.data?.[0]?.embedding;
+}
+
+async function getOrCreateConversation(conversationId, userId) {
+  if (conversationId) {
+    const { data } = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("id", conversationId)
+      .maybeSingle();
+    if (data?.id) return data.id;
+  }
+
+  const { data: created, error } = await supabase
+    .from("conversations")
+    .insert({ user_id: userId })
+    .select("id")
+    .single();
+
+  if (error) throw error;
+  return created.id;
+}
+
+async function loadShortTerm(conversationId) {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("role,content,created_at")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true })
+    .limit(500);
+
+  if (error) throw error;
+  const clipped = (data || []).slice(-SHORT_TERM_MESSAGES);
+  return clipped.map(m => ({ role: m.role, content: m.content }));
+}
+
+async function saveMessage(conversationId, role, content) {
+  const { error } = await supabase
+    .from("messages")
+    .insert({ conversation_id: conversationId, role, content });
+  if (error) throw error;
+}
+
+async function retrieveLongTerm(userId, queryText) {
+  const qEmb = await embedText(queryText);
+  if (!qEmb) return [];
+
+  const { data, error } = await supabase.rpc("match_memories", {
+    p_user_id: userId,
+    p_query_embedding: qEmb,
+    p_match_count: LONG_TERM_MATCHES
+  });
+
+  if (error) throw error;
+
+  return (data || [])
+    .filter(m => (m.similarity ?? 0) >= MIN_SIMILARITY)
+    .sort((a, b) => {
+      const sa = (a.importance || 3) * 0.1 + (a.similarity || 0);
+      const sb = (b.importance || 3) * 0.1 + (b.similarity || 0);
+      return sb - sa;
+    });
+}
+
+async function extractMemory(userMessage) {
+  const system =
+`You are a memory extraction engine.
+Only save stable, useful facts that will matter later.
+Do not save secrets like API keys.
+Do not save one-time tasks or temporary emotions.
+Return JSON only:
+{"should_save":true/false,"memory":"one clean sentence","importance":1-5}
+`;
+
+  const input = [
+    { role: "system", content: system },
+    { role: "user", content: userMessage }
+  ];
+
+  const data = await openaiResponses(input);
+  const txt = data?.output_text || "";
+
+  try {
+    const a = txt.indexOf("{");
+    const b = txt.lastIndexOf("}");
+    if (a === -1 || b === -1) return { should_save: false };
+    const obj = JSON.parse(txt.slice(a, b + 1));
+    if (!obj?.should_save) return { should_save: false };
+    if (!obj.memory || typeof obj.memory !== "string") return { should_save: false };
+    const lower = obj.memory.toLowerCase();
+    if (lower.includes("api key") || lower.includes("password")) return { should_save: false };
+    const importance = Math.max(1, Math.min(5, Number(obj.importance || 3)));
+    return { should_save: true, memory: obj.memory.slice(0, 220), importance };
+  } catch {
+    return { should_save: false };
+  }
+}
+
+async function saveLongTerm(userId, memoryText, importance) {
+  const emb = await embedText(memoryText);
+  if (!emb) return;
+
+  const { error } = await supabase.from("memories").insert({
+    user_id: userId,
+    memory: memoryText,
+    importance,
+    embedding: emb
+  });
+
+  if (error) throw error;
+}
+
+app.post("/api/brain", async (req, res) => {
+  try {
+    if (!OPENAI_API_KEY) return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return res.status(500).json({ error: "Missing Supabase secrets" });
+
+    const { userId = "tony", conversationId = null, mode = "default", message = "", context = "" } = req.body || {};
+    if (!message) return res.status(400).json({ error: "message required" });
+
+    const convoId = await getOrCreateConversation(conversationId, userId);
+
+    const shortTerm = await loadShortTerm(convoId);
+    const longTerm = await retrieveLongTerm(userId, message);
+
+    const memoryBlock = longTerm.length
+      ? longTerm.map(m => `- ${m.memory}`).join("\n")
+      : "";
+
+    const sys = systemForMode(mode);
+
+    const input = [
+      { role: "system", content: sys },
+      ...(memoryBlock ? [{ role: "system", content: `Long-term memory:\n${memoryBlock}` }] : []),
+      ...(context ? [{ role: "system", content: `Page context:\n${String(context).slice(0, 4000)}` }] : []),
+      ...shortTerm,
+      { role: "user", content: message }
+    ];
+
+    await saveMessage(convoId, "user", message);
+
+    const data = await openaiResponses(input);
+    const reply = data?.output_text || "";
+
+    await saveMessage(convoId, "assistant", reply);
+
+    const mem = await extractMemory(message);
+    if (mem.should_save) await saveLongTerm(userId, mem.memory, mem.importance);
+
+    res.json({ reply, conversationId: convoId });
+  } catch (e) {
+    res.status(500).json({ error: "Server error", detail: String(e) });
+  }
+});
+
+app.get("/health", (req, res) => res.send("ok"));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("TonyOS running on port", PORT));

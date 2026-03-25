@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>503B Outsourcing Facilities | Natoli Territory Intelligence</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e5e5e5;
+      --text-muted: #9ca3af;
+      --accent-green: #22c55e;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-orange: #f97316;
+      --accent-red: #ef4444;
+      --border-color: #2d2d3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(59,130,246,0.1) 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .header p { color: var(--text-muted); }
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      padding: 15px 25px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .stat-number { font-size: 1.8rem; font-weight: 700; color: var(--accent-green); }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    .search-box:focus { outline: none; border-color: var(--accent-blue); }
+    select {
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn {
+      padding: 12px 20px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-green { background: var(--accent-green); }
+    .company-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+    }
+    .company-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    .company-card:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+    }
+    .company-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .company-location {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+    .company-phone {
+      color: var(--accent-green);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .company-contact {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+    .natoli-fit {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .fit-both { background: rgba(34,197,94,0.2); color: var(--accent-green); }
+    .fit-scientific { background: rgba(168,85,247,0.2); color: var(--accent-purple); }
+    .fit-engineering { background: rgba(59,130,246,0.2); color: var(--accent-blue); }
+    .company-reason {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+    }
+    .company-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .badge-inspected { background: rgba(34,197,94,0.2); color: var(--accent-green); }
+    .badge-new { background: rgba(249,115,22,0.2); color: var(--accent-orange); }
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏥 503B Outsourcing Facilities</h1>
+    <p>FDA-Registered Compounding Pharmacies | Natoli Prospect Database</p>
+    <div class="stats-bar">
+      <div class="stat-box">
+        <div class="stat-number" id="totalCount">0</div>
+        <div class="stat-label">Total Facilities</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="bothCount">0</div>
+        <div class="stat-label">Both Divisions</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="scientificCount">0</div>
+        <div class="stat-label">Scientific</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="engineeringCount">0</div>
+        <div class="stat-label">Engineering</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search company, city, state...">
+    <select id="fitFilter">
+      <option value="">All Natoli Fit</option>
+      <option value="Both">Both Divisions</option>
+      <option value="Scientific">Scientific</option>
+      <option value="Engineering">Engineering</option>
+    </select>
+    <select id="stateFilter">
+      <option value="">All States</option>
+    </select>
+    <button class="btn btn-green" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
+  
+  <div class="company-grid" id="companyGrid"></div>
+  <div id="toast"></div>
+
+  <script src="503b-companies.js"></script>
+  <script>
+    let filteredCompanies = [...COMPANIES_503B];
+    
+    function init() {
+      populateStateFilter();
+      updateStats();
+      renderCompanies();
+      
+      document.getElementById('searchBox').addEventListener('input', filterCompanies);
+      document.getElementById('fitFilter').addEventListener('change', filterCompanies);
+      document.getElementById('stateFilter').addEventListener('change', filterCompanies);
+    }
+    
+    function populateStateFilter() {
+      const states = [...new Set(COMPANIES_503B.map(c => c.state))].sort();
+      const select = document.getElementById('stateFilter');
+      states.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        select.appendChild(opt);
+      });
+    }
+    
+    function filterCompanies() {
+      const search = document.getElementById('searchBox').value.toLowerCase();
+      const fit = document.getElementById('fitFilter').value;
+      const state = document.getElementById('stateFilter').value;
+      
+      filteredCompanies = COMPANIES_503B.filter(c => {
+        const matchSearch = !search || 
+          c.name.toLowerCase().includes(search) ||
+          c.city.toLowerCase().includes(search) ||
+          c.state.toLowerCase().includes(search);
+        const matchFit = !fit || c.natoliFit === fit;
+        const matchState = !state || c.state === state;
+        return matchSearch && matchFit && matchState;
+      });
+      
+      updateStats();
+      renderCompanies();
+    }
+    
+    function updateStats() {
+      document.getElementById('totalCount').textContent = filteredCompanies.length;
+      document.getElementById('bothCount').textContent = filteredCompanies.filter(c => c.natoliFit === 'Both').length;
+      document.getElementById('scientificCount').textContent = filteredCompanies.filter(c => c.natoliFit === 'Scientific').length;
+      document.getElementById('engineeringCount').textContent = filteredCompanies.filter(c => c.natoliFit === 'Engineering').length;
+    }
+    
+    function renderCompanies() {
+      const grid = document.getElementById('companyGrid');
+      
+      if (filteredCompanies.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No facilities found matching your criteria.</div>';
+        return;
+      }
+      
+      grid.innerHTML = filteredCompanies.map(c => {
+        const fitClass = c.natoliFit === 'Both' ? 'fit-both' : (c.natoliFit === 'Scientific' ? 'fit-scientific' : 'fit-engineering');
+        const badge = c.inspected ? '<span class="badge badge-inspected">✓ FDA Inspected</span>' : '<span class="badge badge-new">New</span>';
+        
+        return `
+          <div class="company-card">
+            <div class="company-name">${c.name} ${badge}</div>
+            <div class="company-location">📍 ${c.city}, ${c.state}</div>
+            <div class="company-phone">📞 ${c.phone}</div>
+            <div class="company-contact">👤 ${c.contact}</div>
+            <div class="natoli-fit ${fitClass}">${c.natoliFit === 'Both' ? '🎯 Full Solution' : (c.natoliFit === 'Scientific' ? '🧪 Scientific' : '🔧 Engineering')}</div>
+            <div class="company-reason">💡 ${c.reason}</div>
+            <div class="company-actions">
+              ${c.website ? `<a href="${c.website}" target="_blank" class="action-btn">🌐 Website</a>` : ''}
+              ${c.linkedin ? `<a href="${c.linkedin}" target="_blank" class="action-btn">💼 LinkedIn</a>` : ''}
+              <button class="action-btn" onclick="copyPhone('${c.phone}')">📋 Copy Phone</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function copyPhone(phone) {
+      navigator.clipboard.writeText(phone);
+      showToast('Copied: ' + phone);
+    }
+    
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    
+    function exportCSV() {
+      const headers = ['Company', 'City', 'State', 'Phone', 'Contact', 'Website', 'LinkedIn', 'Natoli Fit', 'Reason'];
+      const rows = filteredCompanies.map(c => [
+        c.name, c.city, c.state, c.phone, c.contact, c.website, c.linkedin, c.natoliFit, c.reason
+      ]);
+      
+      let csv = headers.join(',') + '\n';
+      rows.forEach(r => {
+        csv += r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '503b-facilities-natoli.csv';
+      a.click();
+      showToast('Downloaded ' + filteredCompanies.length + ' facilities');
+    }
+    
+    init();
+  </script>
+</body>
+</html>

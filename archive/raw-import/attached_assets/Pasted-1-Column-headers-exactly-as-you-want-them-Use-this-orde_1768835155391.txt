@@ -1,0 +1,172 @@
+1️⃣ Column headers (exactly as you want them)
+
+Use this order, no extras, no fluff:
+
+Company
+City
+State
+Phone
+Contact
+Website
+LinkedIn
+Natoli Fit
+Reason
+
+
+Natoli Fit = Engineering | Scientific | Both | No Fit
+Reason = one plain-English sentence why
+
+This format is Dale-safe and operator-readable.
+
+2️⃣ The 4 key job titles to target (don’t overcomplicate)
+
+These four cover 90% of real buying influence for Natoli:
+
+Director of Engineering
+
+Manufacturing Manager
+
+Operations Manager
+
+Director of Quality
+
+If you can’t find one of these, pause before pursuing the account.
+
+Optional backups (only if needed):
+
+Plant Manager
+
+Engineering Manager
+
+But keep the core four sacred.
+
+3️⃣ Python code to generate and populate this structure
+
+Below is a clean Python script that:
+
+Creates your table
+
+Scores Natoli fit
+
+Populates the Natoli Fit and Reason fields
+
+Outputs a CSV you can use immediately
+
+This plugs into the scoring + routing logic you already built.
+
+✅ Python: Natoli Account Structuring Script
+import pandas as pd
+
+# -----------------------------
+# INPUT: raw company data
+# -----------------------------
+# Expected columns if available:
+# Company, City, State, Phone, Website, LinkedIn, industry, website_text
+
+input_file = "raw_companies.csv"
+output_file = "natoli_targets.csv"
+
+df = pd.read_csv(input_file)
+
+# -----------------------------
+# Natoli Fit Logic
+# -----------------------------
+
+def determine_natoli_fit(text):
+    if not isinstance(text, str):
+        return "No Fit", "Insufficient public manufacturing signal"
+
+    t = text.lower()
+
+    engineering_signals = [
+        "tablet", "capsule", "solid oral", "manufacturing",
+        "production", "batch", "throughput", "press"
+    ]
+
+    scientific_signals = [
+        "formulation", "ms&t", "process development",
+        "analytical", "characterization", "scale-up"
+    ]
+
+    disqualifiers = [
+        "injectable only", "infusion", "admixture",
+        "clinic", "wellness", "pellet", "trt"
+    ]
+
+    if any(d in t for d in disqualifiers):
+        return "No Fit", "Primarily sterile, clinical, or non-compression operation"
+
+    eng = any(e in t for e in engineering_signals)
+    sci = any(s in t for s in scientific_signals)
+
+    if eng and sci:
+        return "Both", "Production-scale compression with active development or scale-up"
+    elif eng:
+        return "Engineering", "Tablet production where press uptime and tooling reliability matter"
+    elif sci:
+        return "Scientific", "Focus on formulation, compaction understanding, or scale-up"
+    else:
+        return "No Fit", "No clear tablet compression or compaction signal"
+
+# -----------------------------
+# Apply logic
+# -----------------------------
+
+fits = df["website_text"].apply(determine_natoli_fit)
+df["Natoli Fit"] = fits.apply(lambda x: x[0])
+df["Reason"] = fits.apply(lambda x: x[1])
+
+# -----------------------------
+# Ensure final columns
+# -----------------------------
+
+final_columns = [
+    "Company",
+    "City",
+    "State",
+    "Phone",
+    "Contact",
+    "Website",
+    "LinkedIn",
+    "Natoli Fit",
+    "Reason"
+]
+
+for col in final_columns:
+    if col not in df.columns:
+        df[col] = ""
+
+df = df[final_columns]
+
+# -----------------------------
+# Output
+# -----------------------------
+
+df.to_csv(output_file, index=False)
+print(f"Natoli target file created: {output_file}")
+
+4️⃣ How you use this in practice (important)
+
+Start with raw FDA / Apollo / Navigator exports
+
+Enrich with website text
+
+Run this script
+
+Sort by Natoli Fit
+
+Only pursue:
+
+Engineering
+
+Scientific
+
+Both
+
+Everything else is noise.
+
+5️⃣ The internal one-liner (use this if asked)
+
+“This table shows who actually runs tablet compression, who supports compaction science, and who we should ignore.”
+
+That’s it. No debate.

@@ -1,0 +1,271 @@
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("TonyOS")
+    .addItem("Install HubSpot Style Setup", "setupTonyOS")
+    .addSeparator()
+    .addItem("Import LinkedIn Connections CSV", "showImportCsvDialog")
+    .addItem("Mark Reachout Today (selected row)", "markReachoutSelected")
+    .addItem("Add Activity From Selected Connection", "addActivityFromSelectedConnection")
+    .addSeparator()
+    .addItem("Open 10 Minute Sprint Timer", "showTimer")
+    .addToUi();
+}
+
+function setupTonyOS() {
+  const ss = SpreadsheetApp.getActive();
+  const required = ["Dashboard","DashData","Connections","Activity","Pipeline","Daily","Log","Settings"];
+  required.forEach(name => ss.getSheetByName(name) || ss.insertSheet(name));
+
+  // Ensure headers
+  setHeaders_("Connections", [
+    "contact_id","first_name","last_name","full_name","title","company",
+    "linkedin_url","source","import_date","status",
+    "first_reachout_date","last_reachout_date","next_followup_date",
+    "channel","notes"
+  ]);
+
+  setHeaders_("Activity", [
+    "activity_id","date","company","contact_id","full_name","title",
+    "channel","activity_type","outcome","next_step","next_step_due","notes"
+  ]);
+
+  setHeaders_("Pipeline", [
+    "deal_id","company","contact_id","full_name","stage","est_value",
+    "probability","next_step","next_step_due","last_activity_date","notes"
+  ]);
+
+  setHeaders_("Daily", [
+    "date","one_win","top_pressure","next_action",
+    "one_sentence_plan","blocker_breaker","ten_minute_sprint",
+    "energy_0_10","focus_0_10","peace_0_10"
+  ]);
+
+  setHeaders_("Log", ["timestamp","type","reference","input","output","notes"]);
+  setHeaders_("DashData", ["metric","value","as_of"]);
+  setHeaders_("Settings", ["key","value"]);
+
+  // Default settings values if blank
+  seedSettings_();
+
+  // Data validation dropdowns (HubSpot feel)
+  applyValidations_();
+
+  // Dashboard formulas scaffold (KPIs)
+  writeDashboardScaffold_();
+
+  SpreadsheetApp.getUi().alert("TonyOS HubSpot style setup installed. Use TonyOS menu to import CSV and track outreach.");
+}
+
+function setHeaders_(sheetName, headers) {
+  const sh = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  const existing = sh.getRange(1,1,1,Math.max(1,headers.length)).getValues()[0];
+  const hasAny = existing.some(v => String(v).trim() !== "");
+  if (!hasAny) {
+    sh.getRange(1,1,1,headers.length).setValues([headers]);
+    sh.setFrozenRows(1);
+    sh.autoResizeColumns(1, headers.length);
+  }
+}
+
+function seedSettings_() {
+  const sh = SpreadsheetApp.getActive().getSheetByName("Settings");
+  const vals = sh.getDataRange().getValues();
+  const hasKeys = vals.length > 1;
+  if (hasKeys) return;
+
+  const seed = [
+    ["MODEL","gpt-4.1-mini"],
+    ["MAX_OUTPUT_TOKENS","250"],
+    ["SYSTEM_RULES","short, no emojis, 3 sections only"],
+    ["WEEKLY_OUTREACH_TARGET","150"],
+    ["WEEKLY_CONNECTIONS_TARGET","50"]
+  ];
+  sh.getRange(2,1,seed.length,2).setValues(seed);
+  sh.autoResizeColumns(1,2);
+}
+
+function applyValidations_() {
+  const ss = SpreadsheetApp.getActive();
+
+  // Connections status
+  const con = ss.getSheetByName("Connections");
+  const statusRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["New","Connected","Reached Out","Replied","Meeting","Opportunity","Won","Lost","Do Not Contact"], true)
+    .setAllowInvalid(false)
+    .build();
+  con.getRange("J2:J").setDataValidation(statusRule);
+
+  // Connections channel
+  const channelRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["LinkedIn","Email","Call"], true)
+    .setAllowInvalid(false)
+    .build();
+  con.getRange("N2:N").setDataValidation(channelRule);
+
+  // Activity type and outcome
+  const act = ss.getSheetByName("Activity");
+  const typeRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["Connect","Email 1","Email Follow Up","Call","Follow Up","Meeting","Note"], true)
+    .setAllowInvalid(false)
+    .build();
+  act.getRange("H2:H").setDataValidation(typeRule);
+
+  const outcomeRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["No reply","Reply","Meeting set","Bounced","Not a fit","Do Not Contact"], true)
+    .setAllowInvalid(false)
+    .build();
+  act.getRange("I2:I").setDataValidation(outcomeRule);
+
+  // Pipeline stage
+  const pipe = ss.getSheetByName("Pipeline");
+  const stageRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["Awareness","Conversation","Meeting","Opportunity","Won","Lost"], true)
+    .setAllowInvalid(false)
+    .build();
+  pipe.getRange("E2:E").setDataValidation(stageRule);
+}
+
+function writeDashboardScaffold_() {
+  const dash = SpreadsheetApp.getActive().getSheetByName("Dashboard");
+  dash.clear();
+
+  dash.getRange("A1").setValue("TonyOS Outreach Dashboard (HubSpot Style)");
+  dash.getRange("A3").setValue("KPIs (Last 7 Days)");
+  dash.getRange("A4").setValue("Outreach Count");
+  dash.getRange("A5").setValue("Replies");
+  dash.getRange("A6").setValue("Meetings Set");
+  dash.getRange("A7").setValue("Active Deals");
+
+  // Formulas (Google Sheets)
+  dash.getRange("B4").setFormula('=COUNTIF(Activity!B:B,">="&TODAY()-7)');
+  dash.getRange("B5").setFormula('=COUNTIFS(Activity!B:B,">="&TODAY()-7,Activity!I:I,"Reply")+COUNTIFS(Activity!B:B,">="&TODAY()-7,Activity!I:I,"Meeting set")');
+  dash.getRange("B6").setFormula('=COUNTIFS(Activity!B:B,">="&TODAY()-30,Activity!I:I,"Meeting set")');
+  dash.getRange("B7").setFormula('=COUNTIFS(Pipeline!E:E,"<>Won",Pipeline!E:E,"<>Lost",Pipeline!E:E,"<>")');
+
+  dash.getRange("A9").setValue("Weekly Targets (from Settings)");
+  dash.getRange("A10").setValue("Outreach Target");
+  dash.getRange("B10").setFormula('=IFERROR(VLOOKUP("WEEKLY_OUTREACH_TARGET",Settings!A:B,2,false),"")');
+  dash.getRange("A11").setValue("Connections Target");
+  dash.getRange("B11").setFormula('=IFERROR(VLOOKUP("WEEKLY_CONNECTIONS_TARGET",Settings!A:B,2,false),"")');
+
+  dash.getRange("A13").setValue("Charts to Add (Insert -> Chart)");
+  dash.getRange("A14").setValue("1) Activity trend: use Activity!B:B grouped by date");
+  dash.getRange("A15").setValue("2) Funnel: Outreach, Replies, Meetings, Opportunities");
+  dash.getRange("A16").setValue("3) Stage aging: Pipeline stage counts");
+
+  dash.setFrozenRows(2);
+  dash.autoResizeColumns(1, 5);
+}
+
+function showImportCsvDialog() {
+  const html = HtmlService.createHtmlOutputFromFile("ImportCsv")
+    .setWidth(560)
+    .setHeight(520);
+  SpreadsheetApp.getUi().showModalDialog(html, "Import LinkedIn Connections CSV");
+}
+
+function importLinkedInCsvText(csvText) {
+  const ss = SpreadsheetApp.getActive();
+  const con = ss.getSheetByName("Connections");
+
+  const rows = parseCsv_(csvText);
+  if (!rows || rows.length < 2) return { ok:false, message:"CSV looks empty" };
+
+  // Map headers to our columns
+  const header = rows[0].map(h => String(h).trim().toLowerCase());
+  const idx = (name) => header.indexOf(name);
+
+  // Accept common LinkedIn export headers if present
+  const firstNameIdx = idx("first name") >= 0 ? idx("first name") : idx("firstname");
+  const lastNameIdx  = idx("last name")  >= 0 ? idx("last name")  : idx("lastname");
+  const companyIdx   = idx("company") >= 0 ? idx("company") : idx("company name");
+  const titleIdx     = idx("position") >= 0 ? idx("position") : idx("title");
+  const urlIdx       = idx("profile url") >= 0 ? idx("profile url") : idx("linkedin url");
+
+  const now = new Date();
+  const out = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const first = firstNameIdx >= 0 ? String(r[firstNameIdx] || "").trim() : "";
+    const last  = lastNameIdx  >= 0 ? String(r[lastNameIdx]  || "").trim() : "";
+    const full  = (first + " " + last).trim();
+    const comp  = companyIdx >= 0 ? String(r[companyIdx] || "").trim() : "";
+    const titl  = titleIdx   >= 0 ? String(r[titleIdx]   || "").trim() : "";
+    const url   = urlIdx     >= 0 ? String(r[urlIdx]     || "").trim() : "";
+
+    if (!full && !url) continue;
+
+    const contactId = "C" + Utilities.getUuid().slice(0,8).toUpperCase();
+
+    out.push([
+      contactId, first, last, full, titl, comp,
+      url, "LinkedIn CSV", now, "Connected",
+      "", "", "", "LinkedIn", ""
+    ]);
+  }
+
+  if (!out.length) return { ok:false, message:"No usable rows found" };
+
+  con.getRange(con.getLastRow()+1, 1, out.length, out[0].length).setValues(out);
+  return { ok:true, message:`Imported ${out.length} connections into Connections tab` };
+}
+
+function markReachoutSelected() {
+  const ss = SpreadsheetApp.getActive();
+  const con = ss.getSheetByName("Connections");
+  const range = con.getActiveRange();
+  if (!range) return;
+
+  const row = range.getRow();
+  if (row === 1) return;
+
+  const statusCell = con.getRange(row, 10); // J status
+  const firstCell  = con.getRange(row, 11); // K first_reachout_date
+  const lastCell   = con.getRange(row, 12); // L last_reachout_date
+
+  const today = new Date();
+
+  if (!firstCell.getValue()) firstCell.setValue(today);
+  lastCell.setValue(today);
+  statusCell.setValue("Reached Out");
+}
+
+function addActivityFromSelectedConnection() {
+  const ss = SpreadsheetApp.getActive();
+  const con = ss.getSheetByName("Connections");
+  const act = ss.getSheetByName("Activity");
+  const r = con.getActiveRange();
+  if (!r) return;
+
+  const row = r.getRow();
+  if (row === 1) return;
+
+  const contactId = con.getRange(row, 1).getValue();
+  const fullName  = con.getRange(row, 4).getValue();
+  const title     = con.getRange(row, 5).getValue();
+  const company   = con.getRange(row, 6).getValue();
+  const channel   = con.getRange(row, 14).getValue() || "LinkedIn";
+
+  const activityId = "A" + Utilities.getUuid().slice(0,8).toUpperCase();
+  const today = new Date();
+
+  act.appendRow([
+    activityId, today, company, contactId, fullName, title,
+    channel, "Email 1", "No reply", "", "", ""
+  ]);
+
+  // Also stamp reachout on the connection row
+  markReachoutSelected();
+}
+
+function showTimer() {
+  const html = HtmlService.createHtmlOutputFromFile("Timer")
+    .setTitle("10 Minute Sprint Timer");
+  SpreadsheetApp.getUi().showSidebar(html);
+}
+
+// Simple CSV parser (handles quoted fields)
+function parseCsv_(text) {
+  return Utilities.parseCsv(text);
+}

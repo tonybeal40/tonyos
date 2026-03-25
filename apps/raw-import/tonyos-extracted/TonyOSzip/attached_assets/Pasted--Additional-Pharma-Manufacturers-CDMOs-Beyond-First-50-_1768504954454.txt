@@ -1,0 +1,164 @@
+🔎 Additional Pharma Manufacturers & CDMOs (Beyond First 50)
+
+Pfizer CentreOne – API & HPAPI production
+
+Bristol Myers Squibb (manufacturing divisions)
+
+Eli Lilly (manufacturing divisions)
+
+AstraZeneca (manufacturing divisions)
+
+Mylan (now part of Viatris) – OSD & API production
+
+Viatris (post-Mylan) – large generic & OSD capabilities
+
+Mallinckrodt Pharmaceuticals – specialty APIs
+
+Amneal Pharmaceuticals – generics & OSD
+
+Purdue Pharma (manufacturing segments)
+
+Sandoz (Novartis generics) – OSD, global production
+
+Bausch Health / Salix – GI/hormone adjacent OSD units
+
+Endo International – generics & specialty pharma
+
+Pfizer Global Supply – oral dosage units & API lines
+
+Siegfried USA Inc. – Swiss-based CDMO with OSD
+
+Patheon (Thermo Fisher) – branded CDMO services
+
+Evonik Health Care – excipients, OSD support
+
+PCI Pharma Services – solid dose contract services
+
+Avara Pharmaceutical Services – OSD/CDMO focus
+
+Famar Health Care Services – EU CDMO
+
+Siegfried Chengdu – Chinese CDMO network
+
+Hikma Pharmaceuticals – generics/OCP/HRT space
+
+Jubilant HollisterStier – U.S. CDMO plus APIs
+
+Shasun Pharmaceuticals – Indian API + OSD lines
+
+Sinthesis (Servier Group) – API + manufacturing
+
+Famar/Rottendorf Pharma – tablet/tablet excipients
+
+Molteni Farmaceutici – European OSD/CDMO
+
+ACG Worldwide – tooling, excipients, co-manufacturing
+
+Roquette Pharma Solutions – excipients & co-manufacturing
+
+Diosynth (Ology Bio) – Boehringer CDMO frameworks
+
+AOP Orphan (orphans + specialized APIs)
+
+Sabinsa (fine chemicals & hormone precursors)
+
+Caplin Steriles – specialized sterile/CDMO services
+
+LGM Pharma – solid dose manufacturing
+
+BluePoint Laboratories – API/CDMO network
+
+SPS International – API supply, some hormone APIs
+
+Aurobindo Pharma – large generics & APIs
+
+Zydus Cadila – generics & finished dosage
+
+Suresh Industries – Indian API & hormone intermediates
+
+Gland Pharma – injectables + solid dose ties
+
+Venus Remedies – branded/generic OSD products
+
+Granite Pharma (Zhejiang) – API/OSD work
+
+Neopharma – UAE CDMO with OSD capabilities
+
+Amri (Albany Molecular Research) – CDMO services
+
+Swarovski Pharma Services – potent compound handling
+
+Jiangsu Hengrui Medicine – API + drug product manufacturing
+
+Innovene / IFF – excipients & specialized processing
+
+Assoc. British Pharmaceutical Industries (ABPI members)
+
+BioReliance / Millipore Sigma – analytical & support
+
+Kollis Pharma – emerging OSD/CDMO
+
+Sterling Pharma Solutions – API/CDMO network
+
+🧠 Notes on the List
+Why these matter
+
+These companies are in one or more of these buckets:
+
+Oral solid dose drug product manufacturing
+
+Pharmaceutical APIs (including steroids / hormone precursors)
+
+Potent compound / HPAPI manufacturing
+
+CDMO services with hormone-adjacent capability
+
+Multi-client production with segregated suite infrastructure
+
+What this isn’t
+
+This list doesn’t include:
+
+Clinics
+
+Telehealth hormone providers
+
+Wellness / anti-aging practices
+
+Compounding pharmacies
+
+Supplement / nutraceutical brands
+
+That keeps the signal strong.
+
+🪄 Quick Filter Guidance
+
+Once you have this list in a CRM or CSV, screen with the language signals you’ve already drafted:
+
+Manufacturing qualifiers
+
+cGMP / GMP
+
+Finished dosage (FDF)
+
+Oral solid dose (OSD) / tablets
+
+Dedicated suites, containment, OEL / OEB
+
+Engineering signals
+
+Compression, granulation, coating
+
+High-volume tablet production
+
+Cleaning/changeover language
+
+Scientific signals
+
+Tablet characterization
+
+Compaction behavior
+
+Scale-up or tech transfer
+
+MS&T, CQA/CPP

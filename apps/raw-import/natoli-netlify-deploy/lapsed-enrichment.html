@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lapsed Account Enrichment | Natoli RevOps</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e5e5e5;
+      --text-muted: #9ca3af;
+      --accent-green: #22c55e;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f97316;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --border-color: #2a2a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(239, 68, 68, 0.1));
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .header p { color: var(--text-muted); }
+    .badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--accent-orange);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 15px;
+    }
+    .section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .section h3 { margin-bottom: 20px; color: var(--accent-cyan); }
+    .info-box {
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .info-box h4 { color: var(--accent-orange); margin-bottom: 10px; }
+    .info-box p, .info-box li { font-size: 0.85rem; color: var(--text-muted); }
+    .info-box ul { margin-left: 20px; margin-top: 8px; }
+    .info-box li { margin-bottom: 5px; }
+    .upload-zone {
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-zone:hover { border-color: var(--accent-orange); background: rgba(249, 115, 22, 0.05); }
+    .upload-zone.dragover { border-color: var(--accent-green); background: rgba(34, 197, 94, 0.1); }
+    .upload-zone input { display: none; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-orange { background: var(--accent-orange); color: white; }
+    .btn-green { background: var(--accent-green); color: white; }
+    .btn-cyan { background: var(--accent-cyan); color: white; }
+    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .progress-container {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 25px;
+      margin-top: 20px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: var(--bg-primary);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-green));
+      transition: width 0.3s;
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .stat-box {
+      background: var(--bg-primary);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    .stat-value { font-size: 1.5rem; font-weight: 600; }
+    .stat-value.high { color: var(--accent-green); }
+    .stat-value.medium { color: var(--accent-orange); }
+    .stat-value.low { color: var(--accent-red); }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
+    .table-wrapper {
+      max-height: 500px;
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      background: var(--bg-secondary);
+      color: var(--accent-cyan);
+      position: sticky;
+      top: 0;
+      font-weight: 600;
+    }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .confidence-high { color: var(--accent-green); font-weight: 600; }
+    .confidence-medium { color: var(--accent-orange); }
+    .confidence-low { color: var(--accent-red); }
+    .link { color: var(--accent-cyan); text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-green);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    .back-link:hover { color: var(--accent-cyan); }
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .filter-btn.active { background: var(--accent-cyan); color: white; border-color: var(--accent-cyan); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/natoli-revops/downloads" class="back-link">← Back to Downloads</a>
+
+    <div class="header">
+      <h1>🔄 Lapsed Account Enrichment</h1>
+      <p>Recover factual contact info for lapsed accounts using AI</p>
+      <div class="badge">OpenAI-Powered • Batch Processing • CSV Export</div>
+    </div>
+
+    <div class="section">
+      <div class="info-box">
+        <h4>What This Tool Does</h4>
+        <p>Enriches lapsed customer records with factual company information:</p>
+        <ul>
+          <li><strong>Website URL</strong> — Official company website</li>
+          <li><strong>Phone Number</strong> — Main business phone (if publicly available)</li>
+          <li><strong>City & State</strong> — Headquarters location</li>
+          <li><strong>LinkedIn</strong> — Company page URL</li>
+          <li><strong>Natoli Fit</strong> — Engineering / Scientific / Both / No Fit</li>
+          <li><strong>Confidence Score</strong> — High / Medium / Low</li>
+        </ul>
+        <p style="margin-top: 10px; color: var(--accent-orange);">Uses AI knowledge base. Verify critical data before outreach.</p>
+      </div>
+    </div>
+
+    <div class="section" id="uploadSection">
+      <h3>📤 Upload Lapsed Accounts CSV</h3>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".csv">
+        <div style="font-size: 2rem; margin-bottom: 15px;">📁</div>
+        <div style="font-size: 1.1rem; margin-bottom: 10px;">Drop CSV file here or click to browse</div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">Must have a "Company" column</div>
+      </div>
+      <div id="fileInfo" style="margin-top: 15px; display: none;"></div>
+      <div class="controls">
+        <button class="btn btn-cyan" onclick="showPreview()" id="previewBtn" disabled>
+          👁️ Preview Cleaned Names
+        </button>
+        <button class="btn btn-orange" onclick="startEnrichment()" id="startBtn" disabled>
+          🚀 Start Enrichment
+        </button>
+        <button class="btn btn-green" onclick="saveToServer()" id="saveBtn" disabled>
+          💾 Save to App
+        </button>
+        <button class="btn btn-secondary" onclick="clearUpload()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; padding: 20px;">
+      <div style="max-width: 1000px; margin: 0 auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="margin: 0;">👁️ Preview: Cleaned Company Names</h2>
+          <button onclick="closePreview()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="padding: 20px;">
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button class="filter-btn active" onclick="filterPreview('all')">All (<span id="previewAllCount">0</span>)</button>
+            <button class="filter-btn" onclick="filterPreview('cleaned')">Cleaned (<span id="previewCleanedCount">0</span>)</button>
+            <button class="filter-btn" onclick="filterPreview('skipped')">Skipped (<span id="previewSkippedCount">0</span>)</button>
+          </div>
+          <div class="table-wrapper" style="max-height: 500px;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px;">#</th>
+                  <th>Original Name</th>
+                  <th>Cleaned Name</th>
+                  <th style="width: 100px;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="previewTable"></tbody>
+            </table>
+          </div>
+          <div class="controls" style="margin-top: 20px;">
+            <button class="btn btn-orange" onclick="closePreview(); startEnrichment();">Looks Good - Start Enrichment</button>
+            <button class="btn btn-secondary" onclick="closePreview()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="progressSection" style="display: none;">
+      <h3>⏳ Enrichment Progress</h3>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div class="progress-stats">
+          <span id="progressText">0 / 0 companies</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div id="currentCompany" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);"></div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-secondary" onclick="stopEnrichment()" id="stopBtn">⏹️ Stop</button>
+      </div>
+    </div>
+
+    <div class="section" id="resultsSection" style="display: none;">
+      <h3>📊 Enrichment Results</h3>
+
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterResults('all')">All</button>
+        <button class="filter-btn" onclick="filterResults('High')">High Confidence</button>
+        <button class="filter-btn" onclick="filterResults('Medium')">Medium</button>
+        <button class="filter-btn" onclick="filterResults('Low')">Low</button>
+        <button class="filter-btn" onclick="filterResults('Engineering')">Engineering Fit</button>
+        <button class="filter-btn" onclick="filterResults('Scientific')">Scientific Fit</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Website</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>State</th>
+              <th>LinkedIn</th>
+              <th>Natoli Fit</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTable"></tbody>
+        </table>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-green" onclick="exportCSV()">📥 Export Enriched CSV</button>
+        <button class="btn btn-cyan" onclick="exportHighConfidence()">📥 Export High Confidence Only</button>
+        <button class="btn btn-secondary" onclick="copyTable()">📋 Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let uploadedCompanies = [];
+    let enrichedData = [];
+    let isRunning = false;
+    let currentFilter = 'all';
+
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+      if (!file.name.endsWith('.csv')) {
+        showToast('Please upload a CSV file', true);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        parseCSV(text);
+      };
+      reader.readAsText(file);
+    }
+
+    // Advanced company name cleaning
+    function cleanCompanyName(name) {
+      if (!name) return null;
+      
+      let cleaned = name.trim();
+      
+      // Skip patterns - companies to completely exclude
+      const skipPatterns = [
+        /DO NOT USE/i, /DUPLICATE/i, /don't use/i, /Cash Sale/i,
+        /^\[.*\]$/, /^\*+$/, /^-\s*$/, /SEE \d+/i
+      ];
+      for (const pattern of skipPatterns) {
+        if (pattern.test(cleaned)) return null;
+      }
+      
+      // Clean patterns - remove prefixes/suffixes but keep company name
+      const cleanPatterns = [
+        /^\*+\s*/g,           // Leading asterisks
+        /\s*\*+$/g,           // Trailing asterisks
+        /^-+\s*/g,            // Leading dashes
+        /\s*-+$/g,            // Trailing dashes
+        /^\*+\s*-+\s*/g,      // Asterisks then dashes
+        /\s*\*+\s*$/g,        // Any trailing asterisks
+        /\*{2,}/g,            // Multiple asterisks anywhere
+      ];
+      for (const pattern of cleanPatterns) {
+        cleaned = cleaned.replace(pattern, '');
+      }
+      
+      // Remove common junk phrases
+      cleaned = cleaned
+        .replace(/\*\*\s*DO NOT USE\s*\*\*/gi, '')
+        .replace(/\*\*\s*DO NOT USE/gi, '')
+        .replace(/DO NOT USE\s*\*\*/gi, '')
+        .replace(/\*\*\*DUPLICATE[:\-\s]*/gi, '')
+        .replace(/\*\*DUPLICATE[:\-\s]*/gi, '')
+        .replace(/DUPLICATE[:\-\s]*/gi, '')
+        .replace(/don't use\s*\**/gi, '')
+        .trim();
+      
+      // Skip if too short or only special chars
+      if (cleaned.length < 3) return null;
+      if (/^[\*\-\s\[\]]+$/.test(cleaned)) return null;
+      
+      return cleaned;
+    }
+    
+    function parseCSV(text) {
+      const lines = text.split('\n').filter(l => l.trim());
+      if (lines.length < 2) {
+        showToast('CSV file is empty', true);
+        return;
+      }
+
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      const companyIndex = headers.findIndex(h => h.toLowerCase() === 'company');
+
+      if (companyIndex === -1) {
+        showToast('CSV must have a "Company" column', true);
+        return;
+      }
+
+      uploadedCompanies = [];
+      window.previewData = []; // Store for preview
+      let skippedCount = 0;
+      let cleanedCount = 0;
+      
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        const rawCompany = values[companyIndex]?.trim();
+        if (!rawCompany) continue;
+        
+        const cleanedCompany = cleanCompanyName(rawCompany);
+        
+        if (cleanedCompany) {
+          const wasModified = cleanedCompany !== rawCompany;
+          if (wasModified) cleanedCount++;
+          uploadedCompanies.push(cleanedCompany);
+          window.previewData.push({ original: rawCompany, cleaned: cleanedCompany, status: wasModified ? 'cleaned' : 'valid' });
+        } else {
+          skippedCount++;
+          window.previewData.push({ original: rawCompany, cleaned: null, status: 'skipped' });
+        }
+      }
+
+      // Remove duplicates (case-insensitive)
+      const seen = new Map();
+      uploadedCompanies = uploadedCompanies.filter(c => {
+        const lower = c.toLowerCase();
+        if (seen.has(lower)) return false;
+        seen.set(lower, true);
+        return true;
+      });
+
+      document.getElementById('fileInfo').style.display = 'block';
+      document.getElementById('fileInfo').innerHTML = `
+        <div style="background: var(--bg-secondary); padding: 15px; border-radius: 8px;">
+          <div style="font-size: 1.2rem; margin-bottom: 10px;"><strong>${uploadedCompanies.length}</strong> valid companies ready for enrichment</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            ${skippedCount > 0 ? `<span style="color: var(--accent-orange);">Skipped ${skippedCount} junk entries</span> • ` : ''}
+            ${cleanedCount > 0 ? `Cleaned ${cleanedCount} messy names • ` : ''}
+            Duplicates removed
+          </div>
+        </div>
+      `;
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('previewBtn').disabled = false;
+      document.getElementById('saveBtn').disabled = false;
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      for (let char of line) {
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    function clearUpload() {
+      uploadedCompanies = [];
+      window.previewData = [];
+      fileInput.value = '';
+      document.getElementById('fileInfo').style.display = 'none';
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('previewBtn').disabled = true;
+      document.getElementById('saveBtn').disabled = true;
+    }
+
+    // Preview functions
+    function showPreview() {
+      if (!window.previewData || window.previewData.length === 0) return;
+      
+      const all = window.previewData.length;
+      const cleaned = window.previewData.filter(p => p.status === 'cleaned').length;
+      const skipped = window.previewData.filter(p => p.status === 'skipped').length;
+      
+      document.getElementById('previewAllCount').textContent = all;
+      document.getElementById('previewCleanedCount').textContent = cleaned;
+      document.getElementById('previewSkippedCount').textContent = skipped;
+      
+      renderPreviewTable(window.previewData);
+      document.getElementById('previewModal').style.display = 'block';
+    }
+
+    function closePreview() {
+      document.getElementById('previewModal').style.display = 'none';
+    }
+
+    function filterPreview(filter) {
+      document.querySelectorAll('#previewModal .filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      let data = window.previewData;
+      if (filter === 'cleaned') data = window.previewData.filter(p => p.status === 'cleaned');
+      else if (filter === 'skipped') data = window.previewData.filter(p => p.status === 'skipped');
+      
+      renderPreviewTable(data);
+    }
+
+    function renderPreviewTable(data) {
+      const limit = 500; // Show first 500 for performance
+      const displayData = data.slice(0, limit);
+      
+      document.getElementById('previewTable').innerHTML = displayData.map((p, i) => {
+        const statusColor = p.status === 'skipped' ? 'var(--accent-red)' : p.status === 'cleaned' ? 'var(--accent-orange)' : 'var(--accent-green)';
+        const statusLabel = p.status === 'skipped' ? 'SKIPPED' : p.status === 'cleaned' ? 'CLEANED' : 'OK';
+        return `
+          <tr>
+            <td style="color: var(--text-muted);">${i + 1}</td>
+            <td style="font-size: 0.85rem; ${p.status === 'skipped' ? 'text-decoration: line-through; color: var(--text-muted);' : ''}">${esc(p.original)}</td>
+            <td style="font-size: 0.85rem; color: var(--accent-green);">${p.cleaned ? esc(p.cleaned) : '-'}</td>
+            <td><span style="background: ${statusColor}22; color: ${statusColor}; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem;">${statusLabel}</span></td>
+          </tr>
+        `;
+      }).join('') + (data.length > limit ? `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">...and ${data.length - limit} more</td></tr>` : '');
+    }
+
+    // Save to server
+    async function saveToServer() {
+      if (uploadedCompanies.length === 0) return;
+      
+      const csvContent = 'Company\n' + uploadedCompanies.map(c => `"${c.replace(/"/g, '""')}"`).join('\n');
+      
+      try {
+        const response = await fetch('/api/lapsed-accounts/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            companies: uploadedCompanies,
+            csv: csvContent,
+            filename: 'cleaned_companies_' + new Date().toISOString().split('T')[0] + '.csv'
+          })
+        });
+        
+        if (response.ok) {
+          showToast(`Saved ${uploadedCompanies.length} companies to app`);
+        } else {
+          throw new Error('Save failed');
+        }
+      } catch (err) {
+        // Fallback: download as file
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cleaned_companies_' + new Date().toISOString().split('T')[0] + '.csv';
+        a.click();
+        showToast('Downloaded cleaned companies CSV (server save unavailable)');
+      }
+    }
+
+    async function startEnrichment() {
+      if (uploadedCompanies.length === 0) return;
+
+      isRunning = true;
+      enrichedData = [];
+      
+      document.getElementById('uploadSection').style.display = 'none';
+      document.getElementById('progressSection').style.display = 'block';
+      document.getElementById('resultsSection').style.display = 'none';
+
+      const batchSize = 5;
+      let processed = 0;
+
+      for (let i = 0; i < uploadedCompanies.length && isRunning; i += batchSize) {
+        const batch = uploadedCompanies.slice(i, i + batchSize);
+        
+        document.getElementById('currentCompany').textContent = `Processing: ${batch.join(', ')}`;
+
+        try {
+          const results = await enrichBatch(batch);
+          enrichedData.push(...results);
+        } catch (err) {
+          console.error('Batch error:', err);
+          batch.forEach(c => {
+            enrichedData.push({
+              company: c, website: '', phone: '', city: '', state: '', linkedin: '', natoliFit: 'Unknown', confidence: 'Low'
+            });
+          });
+        }
+
+        processed += batch.length;
+        const pct = Math.round((processed / uploadedCompanies.length) * 100);
+        document.getElementById('progressBar').style.width = pct + '%';
+        document.getElementById('progressText').textContent = `${processed} / ${uploadedCompanies.length} companies`;
+        document.getElementById('progressPct').textContent = pct + '%';
+      }
+
+      isRunning = false;
+      showResults();
+    }
+
+    function stopEnrichment() {
+      isRunning = false;
+      showToast('Enrichment stopped');
+      if (enrichedData.length > 0) {
+        showResults();
+      } else {
+        document.getElementById('uploadSection').style.display = 'block';
+        document.getElementById('progressSection').style.display = 'none';
+      }
+    }
+
+    async function enrichBatch(companies) {
+      const prompt = `You are a B2B company research assistant for Natoli Engineering (tablet compression tooling).
+
+For each company, provide enriched profile data based on your knowledge:
+- Website URL (official company site)
+- Phone (main business phone if known)
+- City & State (US headquarters)
+- LinkedIn (company page URL if known)
+- Natoli Fit: "Engineering" (tablet manufacturing), "Scientific" (R&D/formulation), "Both", or "No Fit"
+- Confidence: "High" (well-known), "Medium" (likely accurate), "Low" (uncertain)
+
+Companies:
+${companies.map((c, i) => `${i+1}. ${c}`).join('\n')}
+
+Respond ONLY with a JSON array:
+[{"company":"Name","website":"url","phone":"xxx-xxx-xxxx","city":"City","state":"XX","linkedin":"url","natoliFit":"Engineering|Scientific|Both|No Fit","confidence":"High|Medium|Low"}]`;
+
+      const response = await fetch('/api/market-discovery/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!response.ok) throw new Error('API error');
+      const data = await response.json();
+      return data.results || [];
+    }
+
+    function showResults() {
+      document.getElementById('progressSection').style.display = 'none';
+      document.getElementById('resultsSection').style.display = 'block';
+
+      const high = enrichedData.filter(r => r.confidence === 'High').length;
+      const medium = enrichedData.filter(r => r.confidence === 'Medium').length;
+      const low = enrichedData.filter(r => r.confidence === 'Low').length;
+      const engineering = enrichedData.filter(r => r.natoliFit === 'Engineering' || r.natoliFit === 'Both').length;
+      const scientific = enrichedData.filter(r => r.natoliFit === 'Scientific' || r.natoliFit === 'Both').length;
+      const noFit = enrichedData.filter(r => r.natoliFit === 'No Fit').length;
+
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-box"><div class="stat-value">${enrichedData.length}</div><div class="stat-label">Total Processed</div></div>
+        <div class="stat-box"><div class="stat-value high">${high}</div><div class="stat-label">High Confidence</div></div>
+        <div class="stat-box"><div class="stat-value medium">${medium}</div><div class="stat-label">Medium Confidence</div></div>
+        <div class="stat-box"><div class="stat-value low">${low}</div><div class="stat-label">Low Confidence</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: var(--accent-cyan)">${engineering}</div><div class="stat-label">Engineering Fit</div></div>
+        <div class="stat-box"><div class="stat-value" style="color: var(--accent-purple)">${scientific}</div><div class="stat-label">Scientific Fit</div></div>
+      `;
+
+      renderTable(enrichedData);
+    }
+
+    function filterResults(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      let filtered = enrichedData;
+      if (filter === 'High' || filter === 'Medium' || filter === 'Low') {
+        filtered = enrichedData.filter(r => r.confidence === filter);
+      } else if (filter === 'Engineering') {
+        filtered = enrichedData.filter(r => r.natoliFit === 'Engineering' || r.natoliFit === 'Both');
+      } else if (filter === 'Scientific') {
+        filtered = enrichedData.filter(r => r.natoliFit === 'Scientific' || r.natoliFit === 'Both');
+      }
+
+      renderTable(filtered);
+    }
+
+    function renderTable(data) {
+      document.getElementById('resultsTable').innerHTML = data.map(r => `
+        <tr>
+          <td><strong>${esc(r.company)}</strong></td>
+          <td>${r.website ? `<a href="${esc(r.website)}" target="_blank" class="link">${esc(r.website.replace('https://','').replace('http://','').slice(0,30))}</a>` : '-'}</td>
+          <td>${esc(r.phone) || '-'}</td>
+          <td>${esc(r.city) || '-'}</td>
+          <td>${esc(r.state) || '-'}</td>
+          <td>${r.linkedin ? `<a href="${esc(r.linkedin)}" target="_blank" class="link">LinkedIn</a>` : '-'}</td>
+          <td>${esc(r.natoliFit)}</td>
+          <td class="confidence-${(r.confidence || '').toLowerCase()}">${esc(r.confidence)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function exportCSV() {
+      if (enrichedData.length === 0) return showToast('No data', true);
+      downloadCSV(enrichedData, 'natoli_lapsed_enriched.csv');
+    }
+
+    function exportHighConfidence() {
+      const highConf = enrichedData.filter(r => r.confidence === 'High');
+      if (highConf.length === 0) return showToast('No high confidence results', true);
+      downloadCSV(highConf, 'natoli_high_confidence.csv');
+    }
+
+    function downloadCSV(data, filename) {
+      const headers = ['Company', 'Website', 'Phone', 'City', 'State', 'LinkedIn', 'Natoli Fit', 'Confidence'];
+      let csv = headers.join(',') + '\n';
+      data.forEach(r => {
+        csv += [r.company, r.website, r.phone, r.city, r.state, r.linkedin, r.natoliFit, r.confidence]
+          .map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      showToast('CSV exported!');
+    }
+
+    function copyTable() {
+      if (enrichedData.length === 0) return showToast('No data', true);
+      const headers = ['Company', 'Website', 'Phone', 'City', 'State', 'LinkedIn', 'Natoli Fit', 'Confidence'];
+      let text = headers.join('\t') + '\n';
+      enrichedData.forEach(r => {
+        text += [r.company, r.website, r.phone, r.city, r.state, r.linkedin, r.natoliFit, r.confidence].join('\t') + '\n';
+      });
+      navigator.clipboard.writeText(text);
+      showToast('Copied!');
+    }
+
+    function esc(t) {
+      if (!t) return '';
+      const d = document.createElement('div');
+      d.textContent = t;
+      return d.innerHTML;
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? '#ef4444' : 'var(--accent-green)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

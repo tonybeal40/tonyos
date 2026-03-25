@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortune 50 Enterprise Lead Engine | Tony Beal</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #3b82f6;
+      --accent-green: #10b981;
+      --text: #334155;
+      --text-light: #64748b;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    
+    .header p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    
+    .form-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    
+    .form-panel h2 {
+      font-size: 1rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .form-section {
+      margin-bottom: 20px;
+    }
+    
+    .form-section h3 {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .btn-primary:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+    }
+    
+    .btn-success {
+      background: var(--accent-green);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+    }
+    
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+    
+    .output-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .output-header {
+      background: var(--primary);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .output-header h2 {
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    .output-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .output-body {
+      padding: 24px;
+      min-height: 500px;
+    }
+    
+    .output-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+    
+    .output-placeholder .icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .strategy-output {
+      display: none;
+    }
+    
+    .strategy-output.active {
+      display: block;
+    }
+    
+    .strategy-section {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .strategy-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    
+    .strategy-section h3 {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    
+    .strategy-section h4 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .strategy-section p {
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    
+    .badge.fit-engineering {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    
+    .badge.fit-scientific {
+      background: #dbeafe;
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    
+    .badge.fit-both {
+      background: #d1fae5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+    
+    .persona-list {
+      list-style: none;
+    }
+    
+    .persona-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    
+    .persona-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .talk-track {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #78350f;
+    }
+    
+    .cta-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .cta-block ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .cta-block li {
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+    
+    .copy-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--accent-green);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .copy-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .pdf-format {
+      display: none;
+    }
+    
+    .contact-card {
+      background: rgba(30, 58, 138, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    
+    .contact-card .contact-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    
+    .contact-card .contact-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .contact-card input, .contact-card select {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+    
+    .contact-card .remove-contact {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .contact-card .remove-contact:hover {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .contact-card .contact-header {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding-right: 30px;
+    }
+    
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white !important; color: #1a1a2e !important; font-size: 11pt; }
+      .form-panel, .output-header, .header, .btn, #copyBtn, #printBtn, #pdfBtn { display: none !important; }
+      .main-grid { grid-template-columns: 1fr; display: block; }
+      .output-panel { border: none; background: white !important; padding: 0; }
+      .strategy-output { display: block !important; background: white !important; }
+      .strategy-section { background: #f8f9fa !important; border: 1px solid #dee2e6 !important; margin-bottom: 12pt; padding: 12pt; page-break-inside: avoid; }
+      .strategy-section h3 { color: #1e3a8a !important; border-bottom: 2px solid #1e3a8a !important; padding-bottom: 6pt; }
+      .badge { padding: 4pt 8pt !important; font-size: 10pt !important; }
+      .badge.badge-green { background: #22c55e !important; color: white !important; }
+      .badge.badge-yellow { background: #eab308 !important; color: white !important; }
+      .badge.badge-blue { background: #3b82f6 !important; color: white !important; }
+      h4 { color: #1e3a8a !important; font-size: 14pt; }
+      ul, ol { margin-left: 16pt; }
+      .container::before { 
+        content: "FORTUNE 50 ACCOUNT STRATEGY - Tony Beal | Enterprise RevOps"; 
+        display: block; 
+        font-size: 14pt; 
+        font-weight: bold; 
+        color: #1e3a8a; 
+        border-bottom: 3px solid #1e3a8a; 
+        padding-bottom: 8pt; 
+        margin-bottom: 16pt; 
+      }
+      .container::after { 
+        content: "Generated: " attr(data-date) " | Confidential - For Internal Use Only"; 
+        display: block; 
+        font-size: 9pt; 
+        color: #64748b; 
+        border-top: 1px solid #dee2e6; 
+        padding-top: 8pt; 
+        margin-top: 16pt; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-badge">Fortune 50 Enterprise</div>
+      <h1>Enterprise RevOps Lead Engine</h1>
+      <p>Company classification, Natoli fit assessment, and outreach strategy generator</p>
+    </div>
+    
+    <div class="main-grid">
+      <div class="form-panel">
+        <h2>Lead Information</h2>
+        
+        <div style="margin-bottom: 20px; padding: 16px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); border-radius: 8px;">
+          <p style="color: rgba(255,255,255,0.8); font-size: 0.7rem; margin-bottom: 10px; letter-spacing: 0.5px;">SAVED LEADS</p>
+          <button onclick="loadKuntal()" style="background: white; color: #1e3a8a; border: none; padding: 12px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; text-align: left; margin-bottom: 8px;">
+            <div style="font-size: 0.95rem;">Kuntal Parikh</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Thermo Fisher Scientific - TabletCAD Request</div>
+          </button>
+        </div>
+        
+        <div class="form-section">
+          <h3>Contact Details</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="firstName" placeholder="John">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="lastName" placeholder="Smith">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" id="company" placeholder="Thermo Fisher Scientific">
+          </div>
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" id="title" placeholder="Director of MS&T">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" placeholder="name@company.com">
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="phone" placeholder="+1-555-555-5555">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="address" placeholder="City, State/Province, Country">
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Inbound Request Details</h3>
+          <div class="form-group">
+            <label>How They Reached Out</label>
+            <select id="reachMethod">
+              <option value="">-- Select --</option>
+              <option value="TabletCAD Request">TabletCAD Access Request Form</option>
+              <option value="Website Contact">Website Contact Form</option>
+              <option value="Email Direct">Direct Email</option>
+              <option value="Phone Call">Phone Call</option>
+              <option value="Trade Show">Trade Show</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="Referral">Referral / Friend or Colleague</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>What They Need</label>
+            <textarea id="whatNeeded" placeholder="Describe what the prospect requested..." rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label>How They Heard About Us</label>
+            <input type="text" id="howHeard" placeholder="Friend, colleague, event, etc.">
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Manufacturing Profile</h3>
+          <div class="form-group">
+            <label>Manufacturing Stage</label>
+            <select id="stage">
+              <option value="R&D">Research and Development</option>
+              <option value="Scale-Up">Scale-Up / Tech Transfer</option>
+              <option value="Commercial">Commercial Production</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tablet Press Type</label>
+            <select id="pressType">
+              <option value="Rotary">Rotary Press</option>
+              <option value="Single Station">Single Station / Benchtop</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Primary Environment</label>
+            <select id="environment">
+              <option value="Pharma / CDMO">Pharmaceutical / CDMO</option>
+              <option value="Nutraceutical">Nutraceutical / Supplements</option>
+              <option value="Advanced Materials">Advanced Materials / Battery</option>
+              <option value="Chemicals">Specialty Chemicals</option>
+              <option value="Generic Pharma">Generic Pharmaceutical</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Business Context</h3>
+          <div class="form-group">
+            <label>Primary Risk / Pain Point</label>
+            <select id="risk">
+              <option value="Scale-up failure">Scale-up failure / Batch rejection</option>
+              <option value="Tooling variability">Tooling variability / Inconsistency</option>
+              <option value="Regulatory risk">Regulatory compliance risk</option>
+              <option value="Downtime">Unplanned downtime / Press issues</option>
+              <option value="Tech transfer delay">Tech transfer delays</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Business Goal</label>
+            <select id="goal">
+              <option value="Faster development">Faster development cycles</option>
+              <option value="Lower cost">Lower production cost</option>
+              <option value="Predictable transfer">Predictable tech transfer</option>
+              <option value="Higher throughput">Higher throughput / Yield</option>
+              <option value="Reduce risk">Reduce compliance risk</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Natoli Division Fit</label>
+            <select id="division">
+              <option value="Auto">Auto-Detect</option>
+              <option value="Natoli Engineering">Natoli Engineering</option>
+              <option value="Natoli Scientific">Natoli Scientific</option>
+              <option value="Both">Both Divisions</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Buying Committee <span style="font-weight: normal; font-size: 0.8rem; color: #64748b;">(Additional Contacts)</span></h3>
+          <div id="additionalContacts">
+            <!-- Dynamic contacts will be added here -->
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="addContact()" style="margin-top: 10px; padding: 8px 16px; font-size: 0.85rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Add Team Member
+          </button>
+        </div>
+        
+        <div class="form-section">
+          <h3>Additional Notes</h3>
+          <div class="form-group">
+            <label>Custom Notes (Optional)</label>
+            <textarea id="notes" placeholder="Any additional context about this lead..."></textarea>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" onclick="generateStrategy()">
+          Generate Company Strategy
+        </button>
+      </div>
+      
+      <div class="output-panel">
+        <div class="output-header">
+          <h2>Strategy Output</h2>
+          <div class="output-actions">
+            <button class="btn btn-success" onclick="copyForEmail()" id="copyBtn" style="display:none;">
+              Copy for Email
+            </button>
+            <button class="btn btn-secondary" onclick="savePDF()" id="printBtn" style="display:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              Save PDF
+            </button>
+          </div>
+        </div>
+        
+        <div class="output-body">
+          <div class="output-placeholder" id="placeholder">
+            <div class="icon">📊</div>
+            <h3>No Strategy Generated</h3>
+            <p>Fill out the form and click "Generate Company Strategy" to create a complete lead profile.</p>
+          </div>
+          
+          <div class="strategy-output" id="strategyOutput">
+            <div class="strategy-section">
+              <h3>Company Profile</h3>
+              <h4 id="out-company">-</h4>
+              <p><strong>Environment:</strong> <span id="out-env">-</span></p>
+              <p><strong>Manufacturing Stage:</strong> <span id="out-stage">-</span></p>
+              <p><strong>Tablet Press:</strong> <span id="out-press">-</span></p>
+            </div>
+            
+            <div class="strategy-section" id="out-contact-section" style="display: none;">
+              <h3>Contact Information</h3>
+              <p><strong>Email:</strong> <a id="out-email" href="#" style="color: #3b82f6;">-</a></p>
+              <p><strong>Phone:</strong> <span id="out-phone">-</span></p>
+              <p><strong>Location:</strong> <span id="out-address">-</span></p>
+            </div>
+            
+            <div class="strategy-section" id="out-request-section" style="display: none;">
+              <h3>Inbound Request</h3>
+              <p><strong>How They Reached Out:</strong> <span id="out-reach">-</span></p>
+              <p><strong>What They Need:</strong> <span id="out-need">-</span></p>
+              <p><strong>How They Heard About Us:</strong> <span id="out-heard">-</span></p>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Natoli Division Fit</h3>
+              <span class="badge" id="out-fit-badge">-</span>
+              <p id="out-fit-reason" style="margin-top: 10px;">-</p>
+            </div>
+            
+            <div class="strategy-section" id="out-team-section" style="display: none;">
+              <h3>Buying Committee</h3>
+              <div id="out-team-list"></div>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Why Natoli</h3>
+              <p id="out-why">-</p>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>What We Provide</h3>
+              <p id="out-what">-</p>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Expected Results</h3>
+              <ul id="out-results"></ul>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Primary Persona</h3>
+              <p><strong id="out-persona-name">-</strong></p>
+              <p id="out-persona-title">-</p>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Buying Group to Target</h3>
+              <ul class="persona-list" id="out-buying-group"></ul>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Account Strategy</h3>
+              <p id="out-strategy">-</p>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Outreach Talk Track</h3>
+              <div class="talk-track" id="out-talk-track">-</div>
+            </div>
+            
+            <div class="strategy-section">
+              <h3>Call to Action</h3>
+              <div class="cta-block">
+                <ul id="out-cta"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="copy-toast" id="copyToast">Copied to clipboard - ready to paste in email</div>
+  
+  <script>
+    let currentStrategy = null;
+    let contactCounter = 0;
+    
+    function addContact() {
+      contactCounter++;
+      const container = document.getElementById('additionalContacts');
+      const card = document.createElement('div');
+      card.className = 'contact-card';
+      card.id = 'contact-' + contactCounter;
+      card.innerHTML = `
+        <div class="contact-header">Team Member #${contactCounter}</div>
+        <button type="button" class="remove-contact" onclick="removeContact(${contactCounter})">&times;</button>
+        <div class="contact-row">
+          <input type="text" placeholder="Name" class="contact-name">
+          <select class="contact-role">
+            <option value="">Role...</option>
+            <option value="Champion">Champion</option>
+            <option value="Decision Maker">Decision Maker</option>
+            <option value="Technical Evaluator">Technical Evaluator</option>
+            <option value="Procurement">Procurement</option>
+            <option value="End User">End User</option>
+            <option value="Influencer">Influencer</option>
+            <option value="Executive Sponsor">Executive Sponsor</option>
+          </select>
+        </div>
+        <div class="contact-row">
+          <input type="email" placeholder="Email" class="contact-email">
+          <input type="tel" placeholder="Phone" class="contact-phone">
+        </div>
+      `;
+      container.appendChild(card);
+    }
+    
+    function removeContact(id) {
+      const card = document.getElementById('contact-' + id);
+      if (card) card.remove();
+    }
+    
+    function getAdditionalContacts() {
+      const contacts = [];
+      document.querySelectorAll('.contact-card').forEach(card => {
+        const name = card.querySelector('.contact-name').value.trim();
+        const role = card.querySelector('.contact-role').value;
+        const email = card.querySelector('.contact-email').value.trim();
+        const phone = card.querySelector('.contact-phone').value.trim();
+        if (name || email || phone) {
+          contacts.push({ name, role, email, phone });
+        }
+      });
+      return contacts;
+    }
+    
+    function loadKuntal() {
+      document.getElementById('firstName').value = 'Kuntal';
+      document.getElementById('lastName').value = 'Parikh';
+      document.getElementById('company').value = 'Thermo Fisher Scientific';
+      document.getElementById('title').value = 'Manager, Development';
+      document.getElementById('email').value = 'kuntal.parikh@thermofisher.com';
+      document.getElementById('phone').value = '+1-416-726-9744';
+      document.getElementById('address').value = '2100 Syntex Court, Mississauga, Ontario L5N 3X4, Canada';
+      document.getElementById('reachMethod').value = 'TabletCAD Request';
+      document.getElementById('whatNeeded').value = 'Requested access to TabletCAD software for tablet design and formulation development.';
+      document.getElementById('howHeard').value = 'From a friend or colleague';
+      document.getElementById('stage').value = 'R&D';
+      document.getElementById('pressType').value = 'Rotary';
+      document.getElementById('environment').value = 'Pharma / CDMO';
+      document.getElementById('risk').value = 'Scale-up failure';
+      document.getElementById('goal').value = 'Faster development';
+      document.getElementById('division').value = 'Auto';
+      document.getElementById('notes').value = `INBOUND REQUEST - HIGH PRIORITY
+
+TabletCAD Access Request from Thermo Fisher Scientific (Fortune 50)
+
+PROCEDURE:
+1. Respond within 24 hours - Fortune 50 priority
+2. Grant TabletCAD access with personalized onboarding
+3. Schedule intro call within 1 week
+4. Identify additional stakeholders in R&D/MS&T
+
+STRATEGY:
+- Thermo Fisher is a strategic account - treat as enterprise opportunity
+- R&D stage + rotary press = Natoli Scientific fit with Engineering expansion potential
+- Colleague referral = warm lead with internal champion
+- Canada location = coordinate with appropriate territory rep
+
+RESPONSE APPROACH:
+- Lead with TabletCAD access (what they asked for)
+- Offer brief orientation call to maximize value
+- Ask about current formulation challenges
+- Mention compaction characterization services as natural next step`;
+    }
+    
+    function generateStrategy() {
+      const firstName = document.getElementById('firstName').value || 'Contact';
+      const lastName = document.getElementById('lastName').value || '';
+      const company = document.getElementById('company').value || 'Company';
+      const title = document.getElementById('title').value || 'Manager';
+      const email = document.getElementById('email').value || '';
+      const phone = document.getElementById('phone').value || '';
+      const address = document.getElementById('address').value || '';
+      const reachMethod = document.getElementById('reachMethod').value || '';
+      const whatNeeded = document.getElementById('whatNeeded').value || '';
+      const howHeard = document.getElementById('howHeard').value || '';
+      const stage = document.getElementById('stage').value;
+      const pressType = document.getElementById('pressType').value;
+      const environment = document.getElementById('environment').value;
+      const risk = document.getElementById('risk').value;
+      const goal = document.getElementById('goal').value;
+      const divisionSel = document.getElementById('division').value;
+      const notes = document.getElementById('notes').value;
+      const additionalContacts = getAdditionalContacts();
+      
+      let fit = '';
+      let fitClass = '';
+      let fitReason = '';
+      
+      if (divisionSel === 'Auto') {
+        if (stage === 'R&D') {
+          fit = 'Natoli Scientific';
+          fitClass = 'fit-scientific';
+          fitReason = 'R&D stage companies benefit most from analytical testing, compaction characterization, and formulation support.';
+        } else if (stage === 'Commercial') {
+          fit = 'Natoli Engineering';
+          fitClass = 'fit-engineering';
+          fitReason = 'Commercial production requires precision tooling, cams, and process reliability solutions.';
+        } else {
+          fit = 'Both Divisions';
+          fitClass = 'fit-both';
+          fitReason = 'Scale-up and tech transfer require both analytical validation (Scientific) and production tooling (Engineering).';
+        }
+      } else {
+        fit = divisionSel;
+        fitClass = divisionSel === 'Natoli Engineering' ? 'fit-engineering' : 
+                   divisionSel === 'Natoli Scientific' ? 'fit-scientific' : 'fit-both';
+        fitReason = 'Division manually selected based on specific account knowledge.';
+      }
+      
+      const buyingGroup = [
+        'Director of MS&T',
+        'Director of Pharmaceutical Development',
+        'Head of Tech Transfer',
+        'Process Engineering Manager',
+        'Manufacturing Director',
+        'VP of Operations'
+      ];
+      
+      const results = [
+        'Faster development cycles',
+        'Lower scrap and rework rates',
+        'Predictable scale-up outcomes',
+        'Operational confidence and repeatability',
+        'Reduced regulatory risk'
+      ];
+      
+      const ctas = [
+        'Validate one live product design',
+        'Schedule a technical review call',
+        'Request compaction characterization data',
+        'Review tooling specification alignment'
+      ];
+      
+      currentStrategy = {
+        firstName,
+        lastName,
+        company,
+        title,
+        email,
+        phone,
+        address,
+        reachMethod,
+        whatNeeded,
+        howHeard,
+        stage,
+        pressType,
+        environment,
+        risk,
+        goal,
+        fit,
+        fitClass,
+        fitReason,
+        buyingGroup,
+        results,
+        ctas,
+        notes,
+        additionalContacts
+      };
+      
+      document.getElementById('out-company').textContent = company;
+      document.getElementById('out-env').textContent = environment;
+      document.getElementById('out-stage').textContent = stage;
+      document.getElementById('out-press').textContent = pressType;
+      
+      if (email || phone || address) {
+        document.getElementById('out-contact-section').style.display = 'block';
+        document.getElementById('out-email').textContent = email || '-';
+        document.getElementById('out-email').href = email ? 'mailto:' + email : '#';
+        document.getElementById('out-phone').textContent = phone || '-';
+        document.getElementById('out-address').textContent = address || '-';
+      } else {
+        document.getElementById('out-contact-section').style.display = 'none';
+      }
+      
+      if (reachMethod || whatNeeded || howHeard) {
+        document.getElementById('out-request-section').style.display = 'block';
+        document.getElementById('out-reach').textContent = reachMethod || '-';
+        document.getElementById('out-need').textContent = whatNeeded || '-';
+        document.getElementById('out-heard').textContent = howHeard || '-';
+      } else {
+        document.getElementById('out-request-section').style.display = 'none';
+      }
+      
+      // Display additional contacts
+      if (additionalContacts.length > 0) {
+        document.getElementById('out-team-section').style.display = 'block';
+        const teamList = document.getElementById('out-team-list');
+        teamList.innerHTML = additionalContacts.map(c => `
+          <div style="padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; margin-bottom: 8px;">
+            <strong>${c.name}</strong>${c.role ? ` <span style="color: #64748b;">- ${c.role}</span>` : ''}
+            <div style="font-size: 0.85rem; margin-top: 4px; color: #94a3b8;">
+              ${c.email ? `<a href="mailto:${c.email}" style="color: #3b82f6;">${c.email}</a>` : ''}
+              ${c.email && c.phone ? ' | ' : ''}
+              ${c.phone || ''}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        document.getElementById('out-team-section').style.display = 'none';
+      }
+      
+      const fitBadge = document.getElementById('out-fit-badge');
+      fitBadge.textContent = fit;
+      fitBadge.className = 'badge ' + fitClass;
+      document.getElementById('out-fit-reason').textContent = fitReason;
+      
+      document.getElementById('out-why').textContent = 
+        `${company} operates in an environment where ${risk.toLowerCase()} and development inefficiency create hidden cost and delay. Fortune 50 enterprises cannot afford production surprises or regulatory setbacks.`;
+      
+      document.getElementById('out-what').textContent = 
+        `We provide tooling intelligence, compression insight, and process reliability that reduce uncertainty before production. Engineering delivers precision tooling and cams. Scientific delivers analytical testing, scale-up support, and data validation.`;
+      
+      const resultsUl = document.getElementById('out-results');
+      resultsUl.innerHTML = results.map(r => `<li>${r}</li>`).join('');
+      
+      document.getElementById('out-persona-name').textContent = `${firstName} ${lastName}`;
+      document.getElementById('out-persona-title').textContent = title;
+      
+      const buyingUl = document.getElementById('out-buying-group');
+      buyingUl.innerHTML = buyingGroup.map(p => `<li>${p}</li>`).join('');
+      
+      document.getElementById('out-strategy').textContent = 
+        `Land with R&D or MS&T teams. Expand into manufacturing and tech transfer. Standardize tooling specifications across production lines. Embed Natoli as the analytical and tooling workflow partner.`;
+      
+      document.getElementById('out-talk-track').textContent = 
+        `"${firstName}, teams at ${company} are under pressure to move faster without risking scale-up surprises. We help groups like yours validate tooling and compression behavior early so production is predictable."`;
+      
+      const ctaUl = document.getElementById('out-cta');
+      ctaUl.innerHTML = ctas.map(c => `<li>${c}</li>`).join('');
+      
+      document.getElementById('placeholder').style.display = 'none';
+      document.getElementById('strategyOutput').classList.add('active');
+      document.getElementById('copyBtn').style.display = 'inline-flex';
+      document.getElementById('printBtn').style.display = 'inline-flex';
+    }
+    
+    function copyForEmail() {
+      if (!currentStrategy) return;
+      
+      const s = currentStrategy;
+      
+      let contactSection = '';
+      if (s.email || s.phone || s.address) {
+        contactSection = `
+CONTACT INFORMATION
+-------------------
+Email: ${s.email || '-'}
+Phone: ${s.phone || '-'}
+Location: ${s.address || '-'}
+`;
+      }
+      
+      let requestSection = '';
+      if (s.reachMethod || s.whatNeeded || s.howHeard) {
+        requestSection = `
+INBOUND REQUEST
+---------------
+How They Reached Out: ${s.reachMethod || '-'}
+What They Need: ${s.whatNeeded || '-'}
+How They Heard About Us: ${s.howHeard || '-'}
+`;
+      }
+      
+      let teamSection = '';
+      if (s.additionalContacts && s.additionalContacts.length > 0) {
+        teamSection = `
+BUYING COMMITTEE
+----------------
+${s.additionalContacts.map(c => `- ${c.name}${c.role ? ' (' + c.role + ')' : ''}: ${c.email || ''} ${c.phone ? '| ' + c.phone : ''}`).join('\n')}
+`;
+      }
+      
+      const text = `FORTUNE 50 ACCOUNT STRATEGY
+================================
+
+COMPANY: ${s.company}
+CONTACT: ${s.firstName} ${s.lastName}, ${s.title}
+${contactSection}
+PROFILE
+-------
+Environment: ${s.environment}
+Manufacturing Stage: ${s.stage}
+Tablet Press: ${s.pressType}
+${requestSection}${teamSection}
+NATOLI FIT: ${s.fit}
+${s.fitReason}
+
+WHY NATOLI
+----------
+${s.company} operates in an environment where ${s.risk.toLowerCase()} and development inefficiency create hidden cost and delay. Fortune 50 enterprises cannot afford production surprises or regulatory setbacks.
+
+WHAT WE PROVIDE
+---------------
+Tooling intelligence, compression insight, and process reliability that reduce uncertainty before production.
+- Engineering: precision tooling, cams, process reliability
+- Scientific: analytical testing, scale-up support, data validation
+
+EXPECTED RESULTS
+----------------
+${s.results.map(r => '- ' + r).join('\n')}
+
+BUYING GROUP TO TARGET
+----------------------
+${s.buyingGroup.map(p => '- ' + p).join('\n')}
+
+ACCOUNT STRATEGY
+----------------
+Land with R&D or MS&T teams. Expand into manufacturing and tech transfer. Standardize tooling specifications across production lines. Embed Natoli as the analytical and tooling workflow partner.
+
+OUTREACH TALK TRACK
+-------------------
+"${s.firstName}, teams at ${s.company} are under pressure to move faster without risking scale-up surprises. We help groups like yours validate tooling and compression behavior early so production is predictable."
+
+NEXT STEPS
+----------
+${s.ctas.map(c => '- ' + c).join('\n')}
+
+${s.notes ? '\nNOTES / STRATEGY / PROCEDURE\n-----------------------------\n' + s.notes : ''}
+
+---
+Generated by Tony Beal | Enterprise RevOps Lead Engine
+`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      });
+    }
+    
+    function savePDF() {
+      // Set date for print footer
+      const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.querySelector('.container').setAttribute('data-date', today);
+      
+      // Trigger print dialog (user can select "Save as PDF")
+      window.print();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TM-II Software Design Specification Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+      padding: 40px 20px;
+      text-align: center;
+      border-bottom: 4px solid #3b82f6;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      color: #60a5fa;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .header .subtitle {
+      font-size: 1.2rem;
+      color: #94a3b8;
+    }
+    
+    .header .badge {
+      display: inline-block;
+      background: #10b981;
+      color: #000;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+    
+    .btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    
+    .btn-word { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; }
+    .btn-pdf { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; }
+    .btn-netlify { background: linear-gradient(135deg, #00c7b7, #00a693); color: white; }
+    .btn-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+    
+    .company-form {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .company-form h3 {
+      color: #60a5fa;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+    
+    .form-group input::placeholder { color: #64748b; }
+    
+    .sds-document {
+      background: #fff;
+      color: #1a1a2e;
+      border-radius: 12px;
+      padding: 60px;
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    
+    .sds-document h1 {
+      text-align: center;
+      color: #1e3a5f;
+      font-size: 2rem;
+      margin-bottom: 10px;
+      border-bottom: 3px solid #1e3a5f;
+      padding-bottom: 20px;
+    }
+    
+    .sds-document .doc-subtitle {
+      text-align: center;
+      font-size: 1.4rem;
+      color: #475569;
+      margin-bottom: 30px;
+    }
+    
+    .sds-document .company-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    
+    .sds-document .company-header h2 {
+      color: #1e3a5f;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+    
+    .sds-document .company-header p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+    
+    .doc-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .doc-meta p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+    
+    .doc-meta strong {
+      color: #1e3a5f;
+    }
+    
+    .sds-document h2 {
+      color: #1e3a5f;
+      font-size: 1.4rem;
+      margin-top: 40px;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3b82f6;
+    }
+    
+    .sds-document h3 {
+      color: #334155;
+      font-size: 1.15rem;
+      margin-top: 25px;
+      margin-bottom: 12px;
+    }
+    
+    .sds-document p {
+      line-height: 1.8;
+      margin-bottom: 15px;
+      color: #334155;
+    }
+    
+    .sds-document ul, .sds-document ol {
+      margin-left: 25px;
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+    
+    .sds-document li {
+      margin-bottom: 8px;
+    }
+    
+    .sds-document table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+    
+    .sds-document th {
+      background: #1e3a5f;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .sds-document td {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .sds-document tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    
+    .field-table td:first-child {
+      font-weight: 600;
+      color: #1e3a5f;
+      width: 200px;
+    }
+    
+    .signature-section {
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 2px solid #e2e8f0;
+    }
+    
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    
+    .signature-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .signature-box h4 {
+      color: #1e3a5f;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    
+    .signature-line {
+      border-bottom: 1px solid #94a3b8;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    
+    .signature-label {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .status-direct { background: #dcfce7; color: #166534; }
+    .status-nondirect { background: #f1f5f9; color: #475569; }
+    
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #10b981;
+      color: #000;
+      padding: 16px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      transform: translateY(100px);
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    
+    #toast.show { transform: translateY(0); }
+    
+    @media print {
+      body { background: white !important; }
+      .header, .controls, .company-form { display: none !important; }
+      .sds-document { box-shadow: none; padding: 0; max-width: 100%; }
+      @page { margin: 0.75in; }
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 { font-size: 1.8rem; }
+      .sds-document { padding: 30px 20px; }
+      .doc-meta { grid-template-columns: 1fr; }
+      .signature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>TM-II Software Design Specification</h1>
+    <p class="subtitle">Professional SDS Document Generator for Natoli Tool Management II</p>
+    <span class="badge">cGMP Compliant | 21 CFR Part 11</span>
+  </div>
+
+  <div class="container">
+    <div class="controls">
+      <button class="btn btn-word" onclick="downloadWord()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM9.5 18l-1.5-6h1.2l.9 4.2.9-4.2h1.2l.9 4.2.9-4.2H15l-1.5 6h-1.2l-.8-3.6-.8 3.6H9.5z"/></svg>
+        Download Word Document
+      </button>
+      <button class="btn btn-pdf" onclick="window.print()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 18v-1h1v-2h1.5a1.5 1.5 0 0 0 0-3H8.5v6z"/></svg>
+        Print / Save as PDF
+      </button>
+      <button class="btn btn-netlify" onclick="downloadNetlify()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Download for Netlify
+      </button>
+      <button class="btn btn-all" onclick="downloadAll()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download All Formats
+      </button>
+    </div>
+
+    <div class="company-form">
+      <h3>Customer Information (Auto-saves)</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Customer Company Name</label>
+          <input type="text" id="customerName" placeholder="e.g., ABC Pharmaceuticals" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="customerAddress" placeholder="e.g., 123 Manufacturing Way" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>City, State ZIP</label>
+          <input type="text" id="customerCity" placeholder="e.g., Newark, DE 19702" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Document Number</label>
+          <input type="text" id="docNumber" placeholder="e.g., SDS-TMII-2025-001" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Version</label>
+          <input type="text" id="docVersion" value="1.0" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="docDate" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Prepared By</label>
+          <input type="text" id="preparedBy" placeholder="e.g., Jason Crowder" oninput="saveData(); updateDocument()">
+        </div>
+        <div class="form-group">
+          <label>Approved By</label>
+          <input type="text" id="approvedBy" placeholder="e.g., Reggie Smith" oninput="saveData(); updateDocument()">
+        </div>
+      </div>
+    </div>
+
+    <div class="sds-document" id="sdsDocument">
+      <h1>SOFTWARE DESIGN SPECIFICATION</h1>
+      <p class="doc-subtitle">Natoli Tool Management II (TM-II)</p>
+      
+      <div class="company-header">
+        <h2 id="docCompanyName">[Customer Company Name]</h2>
+        <p id="docCompanyAddress">[Address] | [City, State ZIP]</p>
+      </div>
+      
+      <div class="doc-meta">
+        <div>
+          <p><strong>Document Number:</strong> <span id="docNumDisplay">SDS-TMII-2025-001</span></p>
+          <p><strong>Version:</strong> <span id="docVersionDisplay">1.0</span></p>
+          <p><strong>Status:</strong> Draft</p>
+        </div>
+        <div>
+          <p><strong>Date:</strong> <span id="docDateDisplay">[Date]</span></p>
+          <p><strong>Prepared By:</strong> <span id="docPreparedBy">[Preparer]</span></p>
+          <p><strong>Software Version:</strong> TM-II 2025.6</p>
+        </div>
+      </div>
+
+      <h2>1. Purpose</h2>
+      <p>The purpose of this Software Design Specification (SDS) is to define the functional, architectural, and operational design of the Tool Management II (TM-II) software system. This document establishes the design baseline supporting Installation Qualification (IQ), Operational Qualification (OQ), and validated use in accordance with cGMP requirements.</p>
+
+      <h2>2. Scope</h2>
+      <p>This SDS applies to the Tool Management II software program and all associated modules. The TM-II application was written and configured using Magic Software XPA which is an off-the-shelf program with a large installed base.</p>
+      <p>Reference: SPEC-0169357 v1.0 - Natoli Tool System TM-II Software User Requirements Specification</p>
+
+      <h2>3. System Description</h2>
+      <p>Tool Management II (TM-II) is designed for tablet manufacturers. The program provides tablet manufacturers with tool control and inspection features to improve product quality and consistency, eliminate waste, and help ensure compliance with cGMP record keeping requirements.</p>
+      
+      <h3>3.1 Functional Overview</h3>
+      <p>TM-II helps tablet manufacturers effectively manage their tool sets including:</p>
+      <ul>
+        <li>Tool storage and inventory management</li>
+        <li>Inspection and tolerance reporting</li>
+        <li>Usage monitoring and history tracking</li>
+        <li>Tool location identification</li>
+        <li>Tool drawing file maintenance</li>
+        <li>Comprehensive reporting capabilities</li>
+        <li>Purchase order creation for replacement tools</li>
+      </ul>
+
+      <h2>4. System Architecture</h2>
+      
+      <h3>4.1 Tool Directory</h3>
+      <p>The Tool Directory table is the main table upon which the system is based. Each entry contains information about the tooling.</p>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>ENTRY #</td><td>System generated unique number assigned to each tool</td></tr>
+          <tr><td>PART</td><td>Tool Part type: U (Upper Punch), L (Lower Punch), D (Die)</td></tr>
+          <tr><td>HOB/DIE #</td><td>Number associated with the particular Hob or Die</td></tr>
+          <tr><td>MACHINE ID</td><td>Machine for which the tool is designed</td></tr>
+          <tr><td>TYPE</td><td>Tool type designation (B type, D type, etc.)</td></tr>
+          <tr><td>QTY</td><td>Quantity of tools available</td></tr>
+          <tr><td>TIPS</td><td>Number of tips on a particular tool</td></tr>
+          <tr><td>SIZE</td><td>Size of the tablet the tool produces</td></tr>
+          <tr><td>SHAPE</td><td>Shape of the tablet the tool produces</td></tr>
+          <tr><td>CUP DEPTH</td><td>Size of the punch cup depth</td></tr>
+          <tr><td>LAND</td><td>Size of the punch land area</td></tr>
+          <tr><td>MANUFACTURED DATE</td><td>Tool manufacture/shipment date</td></tr>
+          <tr><td>INSPECTION</td><td>Date of most recent inspection and user</td></tr>
+          <tr><td>LOCATION</td><td>Most recent location activity update</td></tr>
+          <tr><td>MAINTENANCE</td><td>Most recent maintenance activity update</td></tr>
+          <tr><td>QUARANTINE</td><td>Quarantine status and date</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.2 Sets Directory</h3>
+      <p>The Set Directory contains an entry for each set. Sets can be inventoried to produce Products.</p>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>SET ID</td><td>20 character alphanumeric unique ID or NDC #</td></tr>
+          <tr><td>SET NAME</td><td>30 character alphanumeric name/description</td></tr>
+          <tr><td>NOTES</td><td>150 character alphanumeric notes field</td></tr>
+        </tbody>
+      </table>
+      
+      <h4>Sets Functions</h4>
+      <ul>
+        <li><strong>Assemble</strong> - Create new sets from tools</li>
+        <li><strong>Limits</strong> - View/edit usage history limits</li>
+        <li><strong>Delete</strong> - Remove sets with confirmation</li>
+        <li><strong>List</strong> - Print Set List Report</li>
+        <li><strong>Stamp</strong> - Display Date/Time stamp</li>
+        <li><strong>Current Status</strong> - Show usage status as percentage</li>
+      </ul>
+      
+      <h4>Sets Reports</h4>
+      <ul>
+        <li>Summary Report - High-level activity overview</li>
+        <li>Usage Status Report - Usage as percentage of limits</li>
+        <li>Usage Report - Detailed usage history</li>
+        <li>Location Report - Tool location tracking</li>
+        <li>Maintenance Report - Maintenance history</li>
+        <li>Quarantine Report - Quarantined tools list</li>
+        <li>Discard Report - Discarded tools list</li>
+        <li>Check In/Out Report - Set movement history</li>
+        <li>Matching Report - Inspection analysis</li>
+      </ul>
+
+      <h3>4.3 Products Directory</h3>
+      <p>The Products table contains an entry for every Product or Tablet with associated limits.</p>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Product Overview</td><td>Product identification and details</td></tr>
+          <tr><td>Recommended Limits</td><td>Default tablet limits per punch amounts</td></tr>
+          <tr><td>Product Tolerances</td><td>Tolerances related to tool wear</td></tr>
+          <tr><td>Estimated Limits</td><td>Default values when tool is inventoried</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5. Inspection Module</h2>
+      
+      <h3>5.1 Inspection Types</h3>
+      <ul>
+        <li><strong>In-Process Inspection</strong> - Using standard gages or Natoli LVS</li>
+        <li><strong>Supplier Inspection</strong> - For incoming tool verification</li>
+      </ul>
+      
+      <h3>5.2 Inspection Fields</h3>
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>INSPECTION DATE</td><td>Date of inspection (default: current date)</td></tr>
+          <tr><td>USE LVS</td><td>Yes/No for Natoli LVS Automatic System</td></tr>
+          <tr><td>INSPECTOR ID</td><td>Employee performing the inspection</td></tr>
+          <tr><td>UNIT OF MEASURE</td><td>Inches or Millimeters</td></tr>
+          <tr><td>O.L. REFERENCE PT.</td><td>Overall Length reference point for zeroing</td></tr>
+          <tr><td>PROMPT FOR VISUAL</td><td>Enable visual inspection prompts</td></tr>
+          <tr><td>SET ID</td><td>Optional set assignment</td></tr>
+          <tr><td>OPTIONAL MEASUREMENTS</td><td>Up to 5 additional punch dimensions</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Security Design</h2>
+      
+      <h3>6.1 Authentication</h3>
+      <p>System access is controlled through user authentication with unique User ID and password. Default User ID: Supervisor (not case sensitive).</p>
+      
+      <h3>6.2 Authorization - User Rights</h3>
+      <table>
+        <thead><tr><th>Category</th><th>Rights</th></tr></thead>
+        <tbody>
+          <tr><td>Inspections</td><td>MODIFY INSPECTIONS, CREATE INSPECTIONS</td></tr>
+          <tr><td>Tool Management</td><td>UPDATE TOOL LOCATION, UPDATE TOOL USAGE HISTORY, UPDATE TOOL QUARANTINE, UPDATE TOOL DISCARD, ADD/COPY NEW TOOLS</td></tr>
+          <tr><td>Sets</td><td>SETS, ASSEMBLE/DELETE SETS</td></tr>
+          <tr><td>Administration</td><td>AUDIT, ADD/CHANGE PRODUCTS, CHANGE TOOL ID'S, UPDATE PUNCHES, MODIFY SETUP TABLES, ELECTRONIC AUDIT, MODIFY SYSTEM INFO, MODIFY TOOL DIRECTORY, INSPECTION TOLERANCES</td></tr>
+          <tr><td>Utilities</td><td>DOWNLOAD DATA DISK, S.O.P. MAINTENANCE, MACHINE SETUP, PURCHASE ORDERS, VIEW MODIFY STAMPS</td></tr>
+        </tbody>
+      </table>
+      
+      <h3>6.3 License Enforcement</h3>
+      <p>A HASP hardware license key enforces application execution authorization.</p>
+
+      <h2>7. Data Integrity and Audit Trail</h2>
+      <p>The system records user ID, date, and time for all applicable actions per 21 CFR Part 11 requirements. The Electronic Audit function provides complete audit trail visibility.</p>
+      <ul>
+        <li>All data modifications are tracked</li>
+        <li>User ID recorded for all changes</li>
+        <li>Date and time stamps for all actions</li>
+        <li>View Modify Stamps function available</li>
+        <li>Audit records are immutable</li>
+      </ul>
+
+      <h2>8. URS Traceability</h2>
+      <p>Reference: SPEC-0169357 v1.0</p>
+      <table>
+        <thead><tr><th>URS Ref</th><th>Requirement</th><th>Impact</th><th>SDS Section</th></tr></thead>
+        <tbody>
+          <tr><td>5.1.1</td><td>Manage tool directory for punches and dies</td><td><span class="status-badge status-direct">Direct</span></td><td>4.1</td></tr>
+          <tr><td>5.1.1.1</td><td>Tool directory shall contain identifier, supplier, material, drawings, tolerance, status</td><td><span class="status-badge status-direct">Direct</span></td><td>4.1</td></tr>
+          <tr><td>5.1.1.2</td><td>Add, edit, or remove tools from directory</td><td><span class="status-badge status-direct">Direct</span></td><td>4.1</td></tr>
+          <tr><td>5.1.2</td><td>Manage set directory with all tools in each set</td><td><span class="status-badge status-direct">Direct</span></td><td>4.2</td></tr>
+          <tr><td>5.1.3</td><td>Link Tools to Tool Sets</td><td><span class="status-badge status-direct">Direct</span></td><td>4.2</td></tr>
+          <tr><td>5.1.4</td><td>Manage Product/Tablet Directory</td><td><span class="status-badge status-direct">Direct</span></td><td>4.3</td></tr>
+          <tr><td>5.1.6</td><td>Interface with Natoli Laser Vision System</td><td><span class="status-badge status-direct">Direct</span></td><td>5.1</td></tr>
+          <tr><td>5.1.8</td><td>Generate maintenance report</td><td><span class="status-badge status-direct">Direct</span></td><td>4.2</td></tr>
+          <tr><td>5.1.9</td><td>Generate usage report</td><td><span class="status-badge status-direct">Direct</span></td><td>4.2</td></tr>
+          <tr><td>5.1.10</td><td>Generate Tool Summary report</td><td><span class="status-badge status-direct">Direct</span></td><td>4.2</td></tr>
+          <tr><td>5.1.12</td><td>Perform tool inspections</td><td><span class="status-badge status-direct">Direct</span></td><td>5</td></tr>
+          <tr><td>5.1.13</td><td>Display inspection results</td><td><span class="status-badge status-direct">Direct</span></td><td>5</td></tr>
+        </tbody>
+      </table>
+
+      <h2>9. References</h2>
+      <ul>
+        <li>SPEC-0169357 v1.0 - Natoli Tool System TM-II User Requirements Specification</li>
+        <li>Tool Management II User Reference Manual Version 2025 Rev. 1</li>
+        <li>21 CFR Part 11 - Electronic Records; Electronic Signatures</li>
+        <li>cGMP Guidelines for Computerized Systems</li>
+      </ul>
+
+      <div class="signature-section">
+        <h2>10. Document Approval</h2>
+        <div class="signature-grid">
+          <div class="signature-box">
+            <h4>Prepared By</h4>
+            <div class="signature-line"></div>
+            <p class="signature-label">Name: <span id="sigPrepared">[Preparer]</span></p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Signature / Date</p>
+          </div>
+          <div class="signature-box">
+            <h4>System Owner</h4>
+            <div class="signature-line"></div>
+            <p class="signature-label">Name: <span id="sigApproved">[Approver]</span></p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Signature / Date</p>
+          </div>
+          <div class="signature-box">
+            <h4>Quality Assurance</h4>
+            <div class="signature-line"></div>
+            <p class="signature-label">Name: ____________________</p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Signature / Date</p>
+          </div>
+          <div class="signature-box">
+            <h4>Validation</h4>
+            <div class="signature-line"></div>
+            <p class="signature-label">Name: ____________________</p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Signature / Date</p>
+          </div>
+        </div>
+      </div>
+      
+      <p style="text-align:center;margin-top:40px;color:#64748b;font-size:0.9rem;">
+        Document generated by Natoli Engineering Validation Tools<br>
+        Natoli Engineering Co., Inc. | 28 Research Park Circle | St. Charles, MO 63304
+      </p>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+function saveData() {
+  const data = {
+    customerName: document.getElementById('customerName').value,
+    customerAddress: document.getElementById('customerAddress').value,
+    customerCity: document.getElementById('customerCity').value,
+    docNumber: document.getElementById('docNumber').value,
+    docVersion: document.getElementById('docVersion').value,
+    docDate: document.getElementById('docDate').value,
+    preparedBy: document.getElementById('preparedBy').value,
+    approvedBy: document.getElementById('approvedBy').value
+  };
+  localStorage.setItem('tmii_sds_data', JSON.stringify(data));
+}
+
+function loadData() {
+  const saved = localStorage.getItem('tmii_sds_data');
+  if (saved) {
+    const data = JSON.parse(saved);
+    Object.keys(data).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) el.value = data[key] || '';
+    });
+  }
+  if (!document.getElementById('docDate').value) {
+    document.getElementById('docDate').valueAsDate = new Date();
+  }
+  updateDocument();
+}
+
+function updateDocument() {
+  const name = document.getElementById('customerName').value || '[Customer Company Name]';
+  const addr = document.getElementById('customerAddress').value || '[Address]';
+  const city = document.getElementById('customerCity').value || '[City, State ZIP]';
+  const num = document.getElementById('docNumber').value || 'SDS-TMII-2025-001';
+  const ver = document.getElementById('docVersion').value || '1.0';
+  const date = document.getElementById('docDate').value || '[Date]';
+  const prep = document.getElementById('preparedBy').value || '[Preparer]';
+  const appr = document.getElementById('approvedBy').value || '[Approver]';
+  
+  document.getElementById('docCompanyName').textContent = name;
+  document.getElementById('docCompanyAddress').textContent = addr + ' | ' + city;
+  document.getElementById('docNumDisplay').textContent = num;
+  document.getElementById('docVersionDisplay').textContent = ver;
+  document.getElementById('docDateDisplay').textContent = date;
+  document.getElementById('docPreparedBy').textContent = prep;
+  document.getElementById('sigPrepared').textContent = prep;
+  document.getElementById('sigApproved').textContent = appr;
+}
+
+function downloadWord() {
+  const content = document.getElementById('sdsDocument').outerHTML;
+  const styles = `<style>
+    body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#333;}
+    h1{font-size:18pt;color:#1e3a5f;text-align:center;border-bottom:3px solid #1e3a5f;padding-bottom:15px;}
+    h2{font-size:14pt;color:#1e3a5f;border-bottom:2px solid #3b82f6;margin-top:30px;padding-bottom:5px;}
+    h3{font-size:12pt;color:#334155;margin-top:20px;}
+    table{width:100%;border-collapse:collapse;margin:15px 0;}
+    th{background:#1e3a5f;color:white;padding:10px;text-align:left;}
+    td{padding:10px;border:1px solid #e2e8f0;}
+    .company-header{text-align:center;background:#f1f5f9;padding:20px;margin:20px 0;}
+    .doc-meta{background:#f8fafc;padding:15px;margin:20px 0;border:1px solid #e2e8f0;}
+    .signature-box{border:1px solid #cbd5e1;padding:20px;margin:10px 0;}
+    .signature-line{border-bottom:1px solid #94a3b8;height:30px;margin:10px 0;}
+    .status-direct{background:#dcfce7;color:#166534;padding:3px 8px;border-radius:4px;}
+    .status-nondirect{background:#f1f5f9;color:#475569;padding:3px 8px;border-radius:4px;}
+  </style>`;
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>TM-II SDS</title>${styles}</head><body>${content}</body></html>`;
+  
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const name = document.getElementById('customerName').value || 'Customer';
+  a.download = `TMII_SDS_${name.replace(/\s+/g, '_')}.doc`;
+  a.click();
+  toast('Word document downloaded!');
+}
+
+function downloadNetlify() {
+  const fullHtml = document.documentElement.outerHTML;
+  const blob = new Blob([fullHtml], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tmii-sds-generator.html';
+  a.click();
+  toast('Netlify HTML downloaded!');
+}
+
+function downloadAll() {
+  downloadWord();
+  setTimeout(() => downloadNetlify(), 500);
+  setTimeout(() => toast('All formats downloaded!'), 1000);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Natoli Strategic Account Brief</title>
+
+<style>
+@page {
+  size: Letter;
+  margin: 0.75in;
+}
+
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 60px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.controls {
+  margin-bottom: 40px;
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #000;
+}
+
+.company-page {
+  page-break-after: always;
+}
+
+.header {
+  border-bottom: 2px solid #000;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+}
+
+.company {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.location {
+  font-size: 13px;
+  color: #555;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  width: 30%;
+  padding: 8px 0;
+  font-size: 11px;
+  color: #555;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ddd;
+  vertical-align: top;
+}
+
+td {
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.footer {
+  font-size: 10px;
+  color: #666;
+  margin-top: 40px;
+}
+
+@media print {
+  .controls, h1, .subtitle {
+    display: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Strategic Account Brief</h1>
+<div class="subtitle">Internal evaluation – Natoli Engineering</div>
+
+<div class="controls">
+  <input type="file" id="csvFile" accept=".csv">
+  <button onclick="savePDF()">Save PDF</button>
+</div>
+
+<div id="output"></div>
+
+<div class="footer">Confidential – Internal Use Only</div>
+
+<script>
+function savePDF() {
+  alert(
+    "In the next window:\n\n" +
+    "1. Destination → Save as PDF\n" +
+    "2. Click Save\n\n" +
+    "The file will be saved to your computer."
+  );
+  window.print();
+}
+
+document.getElementById("csvFile").addEventListener("change", function(e) {
+  const reader = new FileReader();
+  reader.onload = () => build(reader.result);
+  reader.readAsText(e.target.files[0]);
+});
+
+function build(text) {
+  const rows = text.trim().split("\n").map(r => r.split(","));
+  const headers = rows[0].map(h => h.trim().toLowerCase());
+  const data = rows.slice(1);
+
+  const out = document.getElementById("output");
+  out.innerHTML = "";
+
+  const v = (row, key) => row[headers.indexOf(key)] || "";
+
+  data.forEach(row => {
+    const page = document.createElement("div");
+    page.className = "company-page";
+
+    page.innerHTML = `
+      <div class="header">
+        <div class="company">${v(row,"company")}</div>
+        <div class="location">${v(row,"city")}, ${v(row,"state")}</div>
+      </div>
+
+      <table>
+        <tr><th>Website</th><td>${v(row,"website")}</td></tr>
+        <tr><th>Phone</th><td>${v(row,"phone")}</td></tr>
+        <tr><th>Confidence</th><td>${v(row,"confidence")}</td></tr>
+        <tr><th>Natoli Angle</th><td>${v(row,"natoli_angle")}</td></tr>
+        <tr><th>Press OEM</th><td>${v(row,"press_oem")}</td></tr>
+        <tr><th>Probable Defects</th><td>${v(row,"probable_defects")}</td></tr>
+        <tr><th>Production Stage</th><td>${v(row,"production_stage")}</td></tr>
+        <tr><th>Tooling Class</th><td>${v(row,"tooling_class")}</td></tr>
+      </table>
+    `;
+
+    out.appendChild(page);
+  });
+}
+</script>
+
+</body>
+</html>

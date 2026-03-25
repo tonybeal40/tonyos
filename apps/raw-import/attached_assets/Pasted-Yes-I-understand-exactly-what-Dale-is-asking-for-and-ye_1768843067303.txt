@@ -1,0 +1,199 @@
+Yes, I understand exactly what Dale is asking for, and yes — there are very specific “codes” and automations you can put around this to get this done by EOD without brute force.
+
+I’ll break this into three layers:
+
+What Dale actually wants (decoded)
+
+The fastest technical shortcuts you can use today
+
+Concrete Python / automation pieces that speed this up immediately
+
+No fluff.
+
+1️⃣ What Dale is really asking for (decoded)
+
+He does not want marketing collateral.
+He wants a formal, repeatable introduction system that:
+
+Explains who Natoli is to the industry
+
+Clearly separates:
+
+New prospects
+
+Existing / lapsed customers
+
+Shows who to contact without confusion
+
+Looks intentional and standardized
+
+This is about credibility and control, not creativity.
+
+2️⃣ Fastest way to structure the two templates (so you don’t overbuild)
+
+You only need one core structure with two narratives.
+
+Shared structure (both templates)
+
+You do NOT need separate layouts.
+
+Sections (locked):
+
+Who Natoli is (industry positioning)
+
+Why Natoli matters (value, not products)
+
+Who supports you (named humans)
+
+How to engage (regional clarity)
+
+Only the tone and framing change between:
+
+New customer
+
+Existing / lapsed customer
+
+That means you can generate both from the same data model.
+
+3️⃣ The “codes” that speed this up immediately
+
+Below are specific automations you can run TODAY.
+
+CODE #1: Single Source of Truth for People + Roles
+
+Instead of rewriting names/titles manually, create one config file.
+
+natoli_contacts.json
+{
+  "team": [
+    {"name": "Ada", "title": "Title Here", "email": "ada@natoli.com"},
+    {"name": "Tiffany", "title": "Title Here", "email": "tiffany@natoli.com"},
+    {"name": "Jennifer", "title": "Title Here", "email": "jennifer@natoli.com"},
+    {"name": "Caitlyn", "title": "Title Here", "email": "caitlyn@natoli.com"},
+    {"name": "Katrina", "title": "Title Here", "email": "katrina@natoli.com"},
+    {"name": "Sandra", "title": "Title Here", "email": "sandra@natoli.com"}
+  ]
+}
+
+
+Now you never rewrite names again.
+
+CODE #2: Regional Sales Rep Auto-Insert
+natoli_sales_regions.json
+{
+  "Domestic": [
+    {"region": "Midwest", "name": "Rep Name", "email": "rep@natoli.com", "phone": "xxx"},
+    {"region": "West", "name": "Rep Name", "email": "rep@natoli.com", "phone": "xxx"},
+    {"region": "East", "name": "Rep Name", "email": "rep@natoli.com", "phone": "xxx"}
+  ]
+}
+
+
+Now your template can auto-render sales contacts by region.
+
+CODE #3: Narrative Switch (New vs Existing Customer)
+
+This is the biggest time saver.
+
+Narrative logic
+def intro_narrative(customer_type):
+    if customer_type == "new":
+        return """
+Natoli Engineering is a long-standing partner to manufacturers running solid oral dose operations where consistency, reliability, and process control matter.
+"""
+    elif customer_type == "existing":
+        return """
+Natoli Engineering has supported manufacturing teams like yours over time, helping maintain consistency, reliability, and performance as processes and demands evolve.
+"""
+
+
+One function → two templates.
+
+CODE #4: Template Generator (EOD-ready)
+
+This generates both documents automatically.
+
+import json
+
+with open("natoli_contacts.json") as f:
+    contacts = json.load(f)["team"]
+
+with open("natoli_sales_regions.json") as f:
+    regions = json.load(f)["Domestic"]
+
+def generate_template(customer_type):
+    narrative = intro_narrative(customer_type)
+
+    contact_block = "\n".join(
+        [f"{c['name']} – {c['title']} | {c['email']}" for c in contacts]
+    )
+
+    sales_block = "\n".join(
+        [f"{r['region']}: {r['name']} | {r['email']} | {r['phone']}" for r in regions]
+    )
+
+    return f"""
+{narrative}
+
+Who You’ll Work With:
+{contact_block}
+
+Your Regional Contact:
+{sales_block}
+"""
+
+# Generate both
+new_customer_doc = generate_template("new")
+existing_customer_doc = generate_template("existing")
+
+print(new_customer_doc)
+print(existing_customer_doc)
+
+
+This gives you two clean drafts instantly.
+
+CODE #5: Language Guardrail (prevents salesy BS)
+
+You can add a simple filter to ensure tone stays right.
+
+FORBIDDEN_WORDS = ["best in class", "cutting edge", "leading provider", "revolutionary"]
+
+def language_check(text):
+    return [w for w in FORBIDDEN_WORDS if w in text.lower()]
+
+
+Run this before sending to Dale.
+
+4️⃣ What you send Dale today (simple + strong)
+
+When you reply or call him, you can truthfully say:
+
+“We’re building two standardized intro templates using the same structure, one for new customers and one for existing or lapsed customers. They clearly explain who Natoli is, why we matter, who supports customers, and how to engage regionally. This will be repeatable going forward.”
+
+That language lands.
+
+5️⃣ What NOT to do (important)
+
+Don’t over-design
+
+Don’t create multiple layouts
+
+Don’t product-dump
+
+Don’t add marketing language
+
+This is operational clarity, not promotion.
+
+If you want, next (optional)
+
+I can:
+
+Write the final polished copy for both templates (drop-in ready)
+
+Turn this into a 1-page PDF layout
+
+Create a Sales + CX playbook version
+
+Or help you frame this so Dale sees it as a system, not a one-off
+
+You’re asking the right question. The speed comes from structure, not effort.

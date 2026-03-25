@@ -1,0 +1,157 @@
+{
+  "type": "object",
+  "required": [
+    "company",
+    "storybrand",
+    "personas",
+    "competition",
+    "buying_signals",
+    "sales_strategy",
+    "roi_logic",
+    "cta_strategy",
+    "betting_questions"
+  ],
+  "properties": {
+    "company": {
+      "type": "object",
+      "required": ["name", "industry", "size_estimate"],
+      "properties": {
+        "name": { "type": "string" },
+        "industry": { "type": "string" },
+        "size_estimate": {
+          "type": "string",
+          "enum": ["small", "mid", "enterprise", "unclear"]
+        }
+      }
+    },
+
+    "storybrand": {
+      "type": "object",
+      "required": ["customer", "problem", "desire", "blockers", "success_definition"],
+      "properties": {
+        "customer": { "type": "string" },
+        "problem": { "type": "string" },
+        "desire": { "type": "string" },
+        "blockers": { "type": "string" },
+        "success_definition": { "type": "string" }
+      }
+    },
+
+    "personas": {
+      "type": "object",
+      "required": ["decision_maker", "champion", "blocker"],
+      "properties": {
+        "decision_maker": {
+          "type": "object",
+          "required": ["role", "cares_about", "fears"],
+          "properties": {
+            "role": { "type": "string" },
+            "cares_about": { "type": "string" },
+            "fears": { "type": "string" }
+          }
+        },
+        "champion": {
+          "type": "object",
+          "required": ["role", "cares_about", "fears"],
+          "properties": {
+            "role": { "type": "string" },
+            "cares_about": { "type": "string" },
+            "fears": { "type": "string" }
+          }
+        },
+        "blocker": {
+          "type": "object",
+          "required": ["role", "cares_about", "fears"],
+          "properties": {
+            "role": { "type": "string" },
+            "cares_about": { "type": "string" },
+            "fears": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "competition": {
+      "type": "object",
+      "required": ["explicit_competitors", "implicit_competitors", "competitive_posture", "exploit_angle"],
+      "properties": {
+        "explicit_competitors": { "type": "array", "items": { "type": "string" } },
+        "implicit_competitors": { "type": "array", "items": { "type": "string" } },
+        "competitive_posture": {
+          "type": "string",
+          "enum": ["speed", "cost", "reliability", "compliance", "unclear"]
+        },
+        "exploit_angle": { "type": "string" }
+      }
+    },
+
+    "buying_signals": {
+      "type": "object",
+      "required": ["readiness", "decision_friction", "silence_risk"],
+      "properties": {
+        "readiness": { "type": "string", "enum": ["high", "medium", "low"] },
+        "decision_friction": { "type": "string", "enum": ["high", "medium", "low"] },
+        "silence_risk": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+
+    "sales_strategy": {
+      "type": "object",
+      "required": ["primary_angle", "recommended_channel", "first_move"],
+      "properties": {
+        "primary_angle": {
+          "type": "string",
+          "enum": ["speed", "reliability", "scale", "downtime", "compliance", "not_ready"]
+        },
+        "recommended_channel": {
+          "type": "string",
+          "enum": ["email", "linkedin", "call", "warm_intro"]
+        },
+        "first_move": { "type": "string" }
+      }
+    },
+
+    "roi_logic": {
+      "type": "object",
+      "required": ["current_cost", "delay_cost", "upside_if_fixed"],
+      "properties": {
+        "current_cost": { "type": "string" },
+        "delay_cost": { "type": "string" },
+        "upside_if_fixed": { "type": "string" }
+      }
+    },
+
+    "cta_strategy": {
+      "type": "object",
+      "required": ["cta_type", "cta_language"],
+      "properties": {
+        "cta_type": {
+          "type": "string",
+          "enum": ["conversation", "discovery", "education", "comparison", "none"]
+        },
+        "cta_language": { "type": "string" }
+      }
+    },
+
+    "betting_questions": {
+      "type": "object",
+      "required": ["next_decision", "perfect_outcome_unlocks"],
+      "properties": {
+        "next_decision": {
+          "type": "string",
+          "enum": ["double_down", "adjust", "stop"]
+        },
+        "perfect_outcome_unlocks": {
+          "type": "string",
+          "enum": [
+            "revenue_now",
+            "revenue_later",
+            "access",
+            "protection",
+            "nothing_meaningful"
+          ]
+        }
+      }
+    }
+  }
+}

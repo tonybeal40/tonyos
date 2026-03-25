@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TonyOS Resume Builder</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121a22;
+      --muted: #9fb0c0;
+      --text: #e7eef6;
+      --line: #223040;
+      --accent: #2b7cff;
+      --accent2: #1d5bd6;
+      --hot: #ff2d55;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    h1 { margin: 0; font-size: 22px; }
+    .sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .card h2 { margin: 0 0 10px; font-size: 16px; }
+    .card h3 { margin: 16px 0 8px; font-size: 14px; color: var(--muted); }
+
+    label { display: block; margin: 10px 0; font-size: 12px; color: var(--muted); }
+    input, textarea, select {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0f151d;
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+    textarea { resize: vertical; }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #0f151d;
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .btn:hover { border-color: #36506a; }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+    .btn.hot { background: rgba(255,45,85,.16); border-color: rgba(255,45,85,.35); }
+
+    .select { min-width: 200px; }
+
+    .hint { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+
+    .list .item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px 0;
+      background: #0f151d;
+    }
+
+    .item .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .item .actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .generated .gitem {
+      border: 1px dashed #36506a;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px 0;
+      background: #0f151d;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      margin-left: 8px;
+      color: var(--muted);
+    }
+    .badge.good { border-color: #2ecc71; color: #2ecc71; }
+    .badge.ok { border-color: #f39c12; color: #f39c12; }
+    .badge.low { border-color: #e74c3c; color: #e74c3c; }
+
+    .match {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #0f151d;
+    }
+    .tiny { color: var(--muted); font-size: 12px; }
+
+    .foot { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+    .score-bar {
+      height: 8px;
+      background: #0f151d;
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #2ecc71);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <h1>TonyOS Resume Builder</h1>
+        <p class="sub">ATS safe. Outcome based. Built for real hiring managers.</p>
+      </div>
+      <div class="top-actions">
+        <a href="/" class="btn">Home</a>
+        <button id="btnNew" class="btn">New Resume</button>
+        <select id="resumeSelect" class="select"></select>
+        <button id="btnSave" class="btn primary">Save</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>1) Profile</h2>
+        <div class="two">
+          <label>Full Name<input id="name" placeholder="Tony Beal" /></label>
+          <label>Location<input id="location" placeholder="City, State" /></label>
+          <label>Email<input id="email" placeholder="email@example.com" /></label>
+          <label>Phone<input id="phone" placeholder="555-123-4567" /></label>
+          <label>LinkedIn<input id="linkedin" placeholder="https://linkedin.com/in/..." /></label>
+          <label>Website<input id="website" placeholder="Optional" /></label>
+        </div>
+
+        <h2>2) Summary</h2>
+        <textarea id="summary" rows="5" placeholder="2 to 4 lines. Who you are. What you do. Proof. What you want next."></textarea>
+
+        <h2>3) Skills</h2>
+        <input id="skills" placeholder="Comma separated: Sales, RevOps, HubSpot, Apollo, GMP, etc" />
+      </section>
+
+      <section class="card">
+        <h2>Experience Wizard</h2>
+        <p class="hint">This is the part that makes the resume professional. Answer like you are explaining impact to a VP.</p>
+
+        <div class="two">
+          <label>Company<input id="wCompany" /></label>
+          <label>Title<input id="wTitle" /></label>
+          <label>Start Date<input id="wStart" placeholder="Jan 2024" /></label>
+          <label>End Date<input id="wEnd" placeholder="Present" /></label>
+          <label>Location<input id="wLoc" placeholder="City, State" /></label>
+          <label>Tools Used<input id="wTools" placeholder="HubSpot, Apollo, Sales Nav, Excel" /></label>
+        </div>
+
+        <label>Business goal you were driving<textarea id="wGoal" rows="2" placeholder="Example: build qualified pipeline for pharma accounts"></textarea></label>
+        <label>What did you change or build<textarea id="wChange" rows="2" placeholder="Example: built outbound workflow, targeting, messaging, reporting"></textarea></label>
+        <label>What metric moved<textarea id="wMetric" rows="2" placeholder="Example: generated 35 SQLs in 60 days, reduced cycle time 25%, grew revenue 1.2M"></textarea></label>
+        <label>Scope (accounts, budget, volume, team size)<textarea id="wScope" rows="2" placeholder="Example: 150 target accounts, 2 SDRs, 3 regions"></textarea></label>
+
+        <div class="row">
+          <button id="btnGenerate" class="btn">Generate bullets</button>
+          <button id="btnAddExp" class="btn primary">Add Experience</button>
+        </div>
+
+        <div id="generated" class="generated"></div>
+      </section>
+
+      <section class="card">
+        <h2>Resume Experience</h2>
+        <div id="experienceList" class="list"></div>
+
+        <div class="row">
+          <button id="btnSnapshot" class="btn">Save Version</button>
+          <button id="btnPDF" class="btn hot">Export PDF</button>
+          <button id="btnDOCX" class="btn">Export DOCX</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Job Match</h2>
+        <textarea id="jobDescription" rows="10" placeholder="Paste the job description here"></textarea>
+        <div class="row">
+          <button id="btnScore" class="btn primary">Score match</button>
+        </div>
+        <div id="matchBox" class="match" style="display:none"></div>
+
+        <h3>Version History</h3>
+        <div id="versions" class="list"></div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span class="tiny">Built inside TonyOS. Clean formatting wins. Fancy templates lose.</span>
+    </footer>
+  </div>
+
+  <script>
+    let currentResumeId = null;
+    let currentData = {
+      profile: { name: "", location: "", email: "", phone: "", linkedin: "", website: "" },
+      summary: "",
+      skills: [],
+      jobDescription: "",
+      experience: []
+    };
+    let lastGenerated = [];
+
+    const el = (id) => document.getElementById(id);
+
+    function toast(msg) {
+      alert(msg);
+    }
+
+    function readFormToData() {
+      currentData.profile.name = el("name").value.trim();
+      currentData.profile.location = el("location").value.trim();
+      currentData.profile.email = el("email").value.trim();
+      currentData.profile.phone = el("phone").value.trim();
+      currentData.profile.linkedin = el("linkedin").value.trim();
+      currentData.profile.website = el("website").value.trim();
+      currentData.summary = el("summary").value.trim();
+
+      const skillsRaw = el("skills").value.trim();
+      currentData.skills = skillsRaw ? skillsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+
+      currentData.jobDescription = el("jobDescription").value.trim();
+    }
+
+    function writeDataToForm() {
+      el("name").value = currentData.profile.name || "";
+      el("location").value = currentData.profile.location || "";
+      el("email").value = currentData.profile.email || "";
+      el("phone").value = currentData.profile.phone || "";
+      el("linkedin").value = currentData.profile.linkedin || "";
+      el("website").value = currentData.profile.website || "";
+      el("summary").value = currentData.summary || "";
+      el("skills").value = (currentData.skills || []).join(", ");
+      el("jobDescription").value = currentData.jobDescription || "";
+      renderExperience();
+    }
+
+    function wizardAnswers() {
+      return {
+        company: el("wCompany").value.trim(),
+        title: el("wTitle").value.trim(),
+        start: el("wStart").value.trim(),
+        end: el("wEnd").value.trim(),
+        location: el("wLoc").value.trim(),
+        tools: el("wTools").value.trim(),
+        businessGoal: el("wGoal").value.trim(),
+        whatChanged: el("wChange").value.trim(),
+        metricMoved: el("wMetric").value.trim(),
+        scope: el("wScope").value.trim()
+      };
+    }
+
+    function clearWizard() {
+      ["wCompany","wTitle","wStart","wEnd","wLoc","wTools","wGoal","wChange","wMetric","wScope"].forEach(id => el(id).value = "");
+      lastGenerated = [];
+      el("generated").innerHTML = "";
+    }
+
+    function getScoreClass(score) {
+      if (score >= 70) return "good";
+      if (score >= 50) return "ok";
+      return "low";
+    }
+
+    function renderGenerated(bullets) {
+      const box = el("generated");
+      box.innerHTML = "";
+      bullets.forEach((b, idx) => {
+        const div = document.createElement("div");
+        div.className = "gitem";
+        div.innerHTML = `
+          <div><strong>Bullet ${idx + 1}</strong> <span class="badge ${getScoreClass(b.score)}">Score ${b.score}</span></div>
+          <div style="margin-top:8px">${escapeHtml(b.text)}</div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function renderExperience() {
+      const list = el("experienceList");
+      list.innerHTML = "";
+
+      (currentData.experience || []).forEach((exp, idx) => {
+        const div = document.createElement("div");
+        div.className = "item";
+
+        const meta = `${exp.start || ""}${exp.end ? " to " + exp.end : ""}${exp.location ? " | " + exp.location : ""}`;
+        const bullets = (exp.bullets || []).map(b => typeof b === "string" ? b : b.text);
+
+        div.innerHTML = `
+          <div><strong>${escapeHtml(exp.title || "")}</strong> | ${escapeHtml(exp.company || "")}</div>
+          <div class="meta">${escapeHtml(meta)}</div>
+          <div class="meta">${bullets.map(t => `&bull; ${escapeHtml(t)}`).join("<br>")}</div>
+          <div class="actions">
+            <button class="btn" data-act="up" data-idx="${idx}">Move up</button>
+            <button class="btn" data-act="down" data-idx="${idx}">Move down</button>
+            <button class="btn" data-act="remove" data-idx="${idx}">Remove</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      list.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const act = btn.dataset.act;
+          const idx = Number(btn.dataset.idx);
+          if (act === "remove") {
+            currentData.experience.splice(idx, 1);
+            renderExperience();
+          } else if (act === "up" && idx > 0) {
+            const tmp = currentData.experience[idx - 1];
+            currentData.experience[idx - 1] = currentData.experience[idx];
+            currentData.experience[idx] = tmp;
+            renderExperience();
+          } else if (act === "down" && idx < currentData.experience.length - 1) {
+            const tmp = currentData.experience[idx + 1];
+            currentData.experience[idx + 1] = currentData.experience[idx];
+            currentData.experience[idx] = tmp;
+            renderExperience();
+          }
+        });
+      });
+    }
+
+    function escapeHtml(str) {
+      return (str || "").replace(/[&<>"']/g, (m) => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        "\"":"&quot;",
+        "'":"&#039;"
+      }[m]));
+    }
+
+    async function api(url, method = "GET", body) {
+      const res = await fetch(url, {
+        method,
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body: body ? JSON.stringify(body) : undefined
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res;
+    }
+
+    async function loadResumes() {
+      try {
+        const res = await api("/api/resumes");
+        const json = await res.json();
+        const sel = el("resumeSelect");
+        sel.innerHTML = "";
+
+        const opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "Select resume";
+        sel.appendChild(opt0);
+
+        json.items.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.id;
+          opt.textContent = `${item.title} (#${item.id})`;
+          sel.appendChild(opt);
+        });
+      } catch (e) {
+        console.error("Failed to load resumes:", e);
+      }
+    }
+
+    async function loadResume(id) {
+      try {
+        const res = await api(`/api/resumes/${id}`);
+        const json = await res.json();
+        currentResumeId = json.id;
+        currentData = json.data || currentData;
+        writeDataToForm();
+        await loadVersions();
+      } catch (e) {
+        console.error("Failed to load resume:", e);
+      }
+    }
+
+    async function saveResume() {
+      readFormToData();
+      const title = currentData.profile.name ? `${currentData.profile.name} Resume` : "Resume";
+
+      try {
+        if (!currentResumeId) {
+          const res = await api("/api/resumes", "POST", { title, data: currentData });
+          const json = await res.json();
+          currentResumeId = json.id;
+          toast(`Saved new resume #${currentResumeId}`);
+        } else {
+          await api(`/api/resumes/${currentResumeId}`, "PUT", { title, data: currentData });
+          toast("Saved");
+        }
+
+        await loadResumes();
+        el("resumeSelect").value = currentResumeId;
+      } catch (e) {
+        toast("Failed to save: " + e.message);
+      }
+    }
+
+    async function generateBullets() {
+      const answers = wizardAnswers();
+      if (!answers.company || !answers.title) {
+        toast("Enter Company and Title first");
+        return;
+      }
+      try {
+        const res = await api("/api/bullets/generate", "POST", { answers });
+        const json = await res.json();
+        lastGenerated = json.bullets || [];
+        renderGenerated(lastGenerated);
+      } catch (e) {
+        toast("Failed to generate: " + e.message);
+      }
+    }
+
+    function addExperienceFromWizard() {
+      const a = wizardAnswers();
+
+      if (!a.company || !a.title) {
+        toast("Company and Title are required");
+        return;
+      }
+
+      const bullets = lastGenerated.length ? lastGenerated : [];
+      const exp = {
+        company: a.company,
+        title: a.title,
+        start: a.start,
+        end: a.end,
+        location: a.location,
+        tools: a.tools,
+        bullets: bullets
+      };
+
+      currentData.experience = currentData.experience || [];
+      currentData.experience.unshift(exp);
+      renderExperience();
+      clearWizard();
+      toast("Added experience");
+    }
+
+    async function scoreMatch() {
+      readFormToData();
+      try {
+        const res = await api("/api/match/score", "POST", { data: currentData });
+        const json = await res.json();
+
+        const box = el("matchBox");
+        box.style.display = "block";
+        
+        const scoreClass = json.score >= 70 ? "good" : json.score >= 50 ? "ok" : "low";
+        box.innerHTML = `
+          <div><strong>Match score:</strong> <span class="badge ${scoreClass}">${json.score || 0}/100</span></div>
+          <div class="score-bar"><div class="score-fill" style="width:${json.score || 0}%"></div></div>
+          ${json.note ? `<div class="meta" style="margin-top:10px">${escapeHtml(json.note)}</div>` : ""}
+          ${json.missing && json.missing.length ? `<div class="meta" style="margin-top:10px"><strong>Missing keywords:</strong><br>${(json.missing || []).map(k => `&bull; ${escapeHtml(k)}`).join("<br>")}</div>` : ""}
+        `;
+      } catch (e) {
+        toast("Failed to score: " + e.message);
+      }
+    }
+
+    async function exportFile(type) {
+      readFormToData();
+      try {
+        const res = await api(`/api/export/${type}`, "POST", { data: currentData });
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = type === "pdf" ? "resume.pdf" : "resume.docx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        toast("Failed to export: " + e.message);
+      }
+    }
+
+    async function snapshot() {
+      if (!currentResumeId) {
+        toast("Save the resume first");
+        return;
+      }
+      readFormToData();
+      const label = prompt("Version label", "Tailored version");
+      if (!label) return;
+
+      try {
+        await api(`/api/resumes/${currentResumeId}/versions`, "POST", { label, data: currentData });
+        toast("Version saved");
+        await loadVersions();
+      } catch (e) {
+        toast("Failed to save version: " + e.message);
+      }
+    }
+
+    async function loadVersions() {
+      const box = el("versions");
+      box.innerHTML = "";
+      if (!currentResumeId) return;
+
+      try {
+        const res = await api(`/api/resumes/${currentResumeId}/versions`);
+        const json = await res.json();
+
+        if (!json.items || json.items.length === 0) {
+          box.innerHTML = '<div class="meta">No versions saved yet</div>';
+          return;
+        }
+
+        json.items.forEach(v => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `
+            <div><strong>${escapeHtml(v.label)}</strong></div>
+            <div class="meta">${escapeHtml(v.created_at)}</div>
+            <div class="actions">
+              <button class="btn" data-id="${v.id}">Load version</button>
+            </div>
+          `;
+          div.querySelector("button").addEventListener("click", async () => {
+            try {
+              const r = await api(`/api/versions/${v.id}`);
+              const vv = await r.json();
+              currentData = vv.data;
+              writeDataToForm();
+              toast("Version loaded");
+            } catch (e) {
+              toast("Failed to load version: " + e.message);
+            }
+          });
+          box.appendChild(div);
+        });
+      } catch (e) {
+        console.error("Failed to load versions:", e);
+      }
+    }
+
+    el("btnNew").addEventListener("click", () => {
+      currentResumeId = null;
+      currentData = {
+        profile: { name: "", location: "", email: "", phone: "", linkedin: "", website: "" },
+        summary: "",
+        skills: [],
+        jobDescription: "",
+        experience: []
+      };
+      writeDataToForm();
+      clearWizard();
+      el("resumeSelect").value = "";
+      el("matchBox").style.display = "none";
+      el("versions").innerHTML = "";
+    });
+
+    el("resumeSelect").addEventListener("change", async () => {
+      const id = el("resumeSelect").value;
+      if (!id) return;
+      await loadResume(id);
+    });
+
+    el("btnSave").addEventListener("click", saveResume);
+    el("btnGenerate").addEventListener("click", generateBullets);
+    el("btnAddExp").addEventListener("click", addExperienceFromWizard);
+    el("btnScore").addEventListener("click", scoreMatch);
+    el("btnPDF").addEventListener("click", () => exportFile("pdf"));
+    el("btnDOCX").addEventListener("click", () => exportFile("docx"));
+    el("btnSnapshot").addEventListener("click", snapshot);
+
+    (async function init() {
+      await loadResumes();
+      writeDataToForm();
+    })();
+  </script>
+</body>
+</html>

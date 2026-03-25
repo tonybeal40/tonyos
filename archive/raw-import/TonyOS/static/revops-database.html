@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natoli RevOps Database | Account Scoring & Classification</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --text-primary: #e5e5e5;
+      --text-muted: #9ca3af;
+      --accent-green: #22c55e;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-orange: #f97316;
+      --accent-red: #ef4444;
+      --accent-yellow: #eab308;
+      --border-color: #2d2d3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(34,197,94,0.1) 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .header p { color: var(--text-muted); margin-bottom: 15px; }
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--accent-yellow);
+      font-style: italic;
+      padding: 10px;
+      background: rgba(234, 179, 8, 0.1);
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .stats-bar {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 25px 0;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      padding: 15px 25px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-number { font-size: 1.6rem; font-weight: 700; }
+    .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    .stat-engineering .stat-number { color: var(--accent-blue); }
+    .stat-scientific .stat-number { color: var(--accent-purple); }
+    .stat-both .stat-number { color: var(--accent-green); }
+    .stat-nofit .stat-number { color: var(--text-muted); }
+    .upload-zone {
+      background: var(--bg-card);
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-zone:hover { border-color: var(--accent-blue); background: rgba(59,130,246,0.05); }
+    .upload-zone.dragover { border-color: var(--accent-green); background: rgba(34,197,94,0.1); }
+    .upload-icon { font-size: 3rem; margin-bottom: 15px; }
+    .upload-text { color: var(--text-muted); margin-bottom: 10px; }
+    .upload-hint { font-size: 0.75rem; color: var(--text-muted); }
+    #fileInput { display: none; }
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    .search-box:focus { outline: none; border-color: var(--accent-blue); }
+    select {
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn {
+      padding: 12px 20px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-green { background: var(--accent-green); }
+    .btn-purple { background: var(--accent-purple); }
+    .btn-orange { background: var(--accent-orange); }
+    .btn-red { background: var(--accent-red); }
+    .target-titles {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .target-titles h3 { font-size: 0.9rem; color: var(--accent-green); margin-bottom: 12px; }
+    .title-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .title-badge {
+      padding: 8px 14px;
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--accent-green);
+    }
+    .title-badge.backup {
+      background: rgba(156,163,175,0.1);
+      border-color: rgba(156,163,175,0.3);
+      color: var(--text-muted);
+    }
+    .table-container {
+      overflow-x: auto;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th {
+      background: var(--bg-secondary);
+      padding: 14px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      cursor: pointer;
+    }
+    th:hover { color: var(--accent-blue); }
+    td {
+      padding: 12px;
+      border-top: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    tr:hover { background: rgba(59,130,246,0.05); }
+    .company-name { font-weight: 600; color: var(--text-primary); }
+    .location { color: var(--text-muted); font-size: 0.8rem; }
+    .fit-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .fit-engineering { background: rgba(59,130,246,0.2); color: var(--accent-blue); }
+    .fit-scientific { background: rgba(168,85,247,0.2); color: var(--accent-purple); }
+    .fit-both { background: rgba(34,197,94,0.2); color: var(--accent-green); }
+    .fit-nofit { background: rgba(156,163,175,0.1); color: var(--text-muted); }
+    .reason-text { font-size: 0.8rem; color: var(--text-muted); font-style: italic; max-width: 300px; }
+    .link-btn {
+      display: inline-block;
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      text-decoration: none;
+      margin-right: 4px;
+      transition: all 0.2s;
+    }
+    .link-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-green);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+      font-weight: 500;
+    }
+    #toast.show { opacity: 1; }
+    .manual-entry {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .manual-entry h3 { font-size: 0.9rem; color: var(--accent-orange); margin-bottom: 15px; }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+    .form-group input:focus { outline: none; border-color: var(--accent-orange); }
+    .results-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+      .controls { flex-direction: column; }
+      .search-box { min-width: 100%; }
+      .stats-bar { gap: 10px; }
+      .stat-box { min-width: 90px; padding: 12px 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Natoli RevOps Database</h1>
+    <p>Account Scoring & Classification Tool</p>
+    <div class="tagline">"This table shows who actually runs tablet compression, who supports compaction science, and who we should ignore."</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="stat-number" id="totalCount">0</div>
+      <div class="stat-label">Total Accounts</div>
+    </div>
+    <div class="stat-box stat-both">
+      <div class="stat-number" id="bothCount">0</div>
+      <div class="stat-label">Both</div>
+    </div>
+    <div class="stat-box stat-engineering">
+      <div class="stat-number" id="engineeringCount">0</div>
+      <div class="stat-label">Engineering</div>
+    </div>
+    <div class="stat-box stat-scientific">
+      <div class="stat-number" id="scientificCount">0</div>
+      <div class="stat-label">Scientific</div>
+    </div>
+    <div class="stat-box stat-nofit">
+      <div class="stat-number" id="nofitCount">0</div>
+      <div class="stat-label">No Fit</div>
+    </div>
+  </div>
+
+  <div class="target-titles">
+    <h3>🎯 Key Job Titles to Target (90% of buying influence)</h3>
+    <div class="title-grid">
+      <span class="title-badge">Director of Engineering</span>
+      <span class="title-badge">Manufacturing Manager</span>
+      <span class="title-badge">Operations Manager</span>
+      <span class="title-badge">Director of Quality</span>
+      <span class="title-badge backup">Plant Manager (backup)</span>
+      <span class="title-badge backup">Engineering Manager (backup)</span>
+    </div>
+  </div>
+
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📁</div>
+    <div class="upload-text">Drop CSV here or click to upload</div>
+    <div class="upload-hint">Accepts: Company, City, State, Phone, Contact, Website, LinkedIn, website_text (for auto-scoring)</div>
+    <input type="file" id="fileInput" accept=".csv">
+  </div>
+
+  <div class="manual-entry">
+    <h3>➕ Add Account Manually</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" id="manualCompany" placeholder="Company name">
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="manualCity" placeholder="City">
+      </div>
+      <div class="form-group">
+        <label>State</label>
+        <input type="text" id="manualState" placeholder="State">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" id="manualPhone" placeholder="Phone">
+      </div>
+      <div class="form-group">
+        <label>Contact</label>
+        <input type="text" id="manualContact" placeholder="Contact name">
+      </div>
+      <div class="form-group">
+        <label>Website</label>
+        <input type="text" id="manualWebsite" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>LinkedIn</label>
+        <input type="text" id="manualLinkedIn" placeholder="LinkedIn URL">
+      </div>
+      <div class="form-group">
+        <label>Natoli Fit</label>
+        <select id="manualFit">
+          <option value="Both">Both</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Scientific">Scientific</option>
+          <option value="No Fit">No Fit</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>Reason</label>
+      <input type="text" id="manualReason" placeholder="One sentence why this account fits (or doesn't)" style="width: 100%;">
+    </div>
+    <button class="btn btn-orange" onclick="addManualEntry()">Add Account</button>
+  </div>
+
+  <div class="controls">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search company, city, state, contact...">
+    <select id="fitFilter">
+      <option value="">All Natoli Fit</option>
+      <option value="Both">Both</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Scientific">Scientific</option>
+      <option value="No Fit">No Fit</option>
+    </select>
+    <select id="stateFilter">
+      <option value="">All States</option>
+    </select>
+    <button class="btn btn-green" onclick="exportCSV()">📥 Export CSV</button>
+    <button class="btn btn-purple" onclick="exportPursueOnly()">📥 Export Pursue Only</button>
+    <button class="btn btn-red" onclick="clearAll()">🗑️ Clear All</button>
+  </div>
+
+  <div class="results-count" id="resultsCount"></div>
+
+  <div class="table-container">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th onclick="sortBy('company')">Company ↕</th>
+          <th onclick="sortBy('city')">City ↕</th>
+          <th onclick="sortBy('state')">State ↕</th>
+          <th>Phone</th>
+          <th>Contact</th>
+          <th>Links</th>
+          <th onclick="sortBy('fit')">Natoli Fit ↕</th>
+          <th>Reason</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState">
+      <div class="icon">📊</div>
+      <p>No accounts loaded yet</p>
+      <p style="font-size: 0.8rem; margin-top: 10px;">Upload a CSV or add accounts manually</p>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let accounts = [];
+    let filteredAccounts = [];
+    let sortField = 'company';
+    let sortAsc = true;
+
+    const STORAGE_KEY = 'natoli_revops_accounts';
+
+    function init() {
+      loadFromStorage();
+      setupEventListeners();
+      updateDisplay();
+    }
+
+    function loadFromStorage() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        accounts = JSON.parse(stored);
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+    }
+
+    function setupEventListeners() {
+      document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+      document.getElementById('searchBox').addEventListener('input', filterAccounts);
+      document.getElementById('fitFilter').addEventListener('change', filterAccounts);
+      document.getElementById('stateFilter').addEventListener('change', filterAccounts);
+
+      const zone = document.getElementById('uploadZone');
+      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith('.csv')) processFile(file);
+      });
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (file) processFile(file);
+    }
+
+    function processFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        parseCSV(text);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSV(text) {
+      const lines = text.split('\n').filter(l => l.trim());
+      if (lines.length < 2) return showToast('No data found in CSV', true);
+
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+      const newAccounts = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        const row = {};
+        headers.forEach((h, idx) => row[h] = values[idx] || '');
+
+        const websiteText = row.website_text || row.description || row.industry || '';
+        const fitResult = determineNatoliFit(websiteText);
+
+        newAccounts.push({
+          id: Date.now() + i,
+          company: row.company || row.name || '',
+          city: row.city || '',
+          state: row.state || '',
+          phone: row.phone || '',
+          contact: row.contact || '',
+          website: row.website || '',
+          linkedin: row.linkedin || '',
+          fit: row['natoli fit'] || row.natoli_fit || fitResult.fit,
+          reason: row.reason || fitResult.reason
+        });
+      }
+
+      accounts = [...accounts, ...newAccounts];
+      saveToStorage();
+      updateDisplay();
+      showToast(`Imported ${newAccounts.length} accounts`);
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    function determineNatoliFit(text) {
+      if (!text || typeof text !== 'string') {
+        return { fit: 'No Fit', reason: 'Insufficient public manufacturing signal' };
+      }
+
+      const t = text.toLowerCase();
+
+      const engineeringSignals = ['tablet', 'capsule', 'solid oral', 'manufacturing', 'production', 'batch', 'throughput', 'press', 'compression', 'tooling'];
+      const scientificSignals = ['formulation', 'ms&t', 'process development', 'analytical', 'characterization', 'scale-up', 'r&d', 'research'];
+      const disqualifiers = ['injectable only', 'infusion', 'admixture', 'clinic', 'wellness', 'pellet', 'trt', 'iv only'];
+
+      if (disqualifiers.some(d => t.includes(d))) {
+        return { fit: 'No Fit', reason: 'Primarily sterile, clinical, or non-compression operation' };
+      }
+
+      const hasEng = engineeringSignals.some(s => t.includes(s));
+      const hasSci = scientificSignals.some(s => t.includes(s));
+
+      if (hasEng && hasSci) {
+        return { fit: 'Both', reason: 'Production-scale compression with active development or scale-up' };
+      } else if (hasEng) {
+        return { fit: 'Engineering', reason: 'Tablet production where press uptime and tooling reliability matter' };
+      } else if (hasSci) {
+        return { fit: 'Scientific', reason: 'Focus on formulation, compaction understanding, or scale-up' };
+      }
+
+      return { fit: 'No Fit', reason: 'No clear tablet compression or compaction signal' };
+    }
+
+    function addManualEntry() {
+      const company = document.getElementById('manualCompany').value.trim();
+      if (!company) return showToast('Company name required', true);
+
+      accounts.push({
+        id: Date.now(),
+        company,
+        city: document.getElementById('manualCity').value.trim(),
+        state: document.getElementById('manualState').value.trim(),
+        phone: document.getElementById('manualPhone').value.trim(),
+        contact: document.getElementById('manualContact').value.trim(),
+        website: document.getElementById('manualWebsite').value.trim(),
+        linkedin: document.getElementById('manualLinkedIn').value.trim(),
+        fit: document.getElementById('manualFit').value,
+        reason: document.getElementById('manualReason').value.trim() || 'Manually added'
+      });
+
+      ['manualCompany', 'manualCity', 'manualState', 'manualPhone', 'manualContact', 'manualWebsite', 'manualLinkedIn', 'manualReason'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+
+      saveToStorage();
+      updateDisplay();
+      showToast('Account added');
+    }
+
+    function deleteAccount(id) {
+      accounts = accounts.filter(a => a.id !== id);
+      saveToStorage();
+      updateDisplay();
+      showToast('Account deleted');
+    }
+
+    function filterAccounts() {
+      const search = document.getElementById('searchBox').value.toLowerCase();
+      const fit = document.getElementById('fitFilter').value;
+      const state = document.getElementById('stateFilter').value;
+
+      filteredAccounts = accounts.filter(a => {
+        const matchSearch = !search || 
+          a.company.toLowerCase().includes(search) ||
+          a.city.toLowerCase().includes(search) ||
+          a.state.toLowerCase().includes(search) ||
+          a.contact.toLowerCase().includes(search);
+        const matchFit = !fit || a.fit === fit;
+        const matchState = !state || a.state === state;
+        return matchSearch && matchFit && matchState;
+      });
+
+      sortAccounts();
+      renderTable();
+      updateResultsCount();
+    }
+
+    function sortBy(field) {
+      if (sortField === field) {
+        sortAsc = !sortAsc;
+      } else {
+        sortField = field;
+        sortAsc = true;
+      }
+      sortAccounts();
+      renderTable();
+    }
+
+    function sortAccounts() {
+      filteredAccounts.sort((a, b) => {
+        let valA = a[sortField] || '';
+        let valB = b[sortField] || '';
+        if (typeof valA === 'string') valA = valA.toLowerCase();
+        if (typeof valB === 'string') valB = valB.toLowerCase();
+        if (valA < valB) return sortAsc ? -1 : 1;
+        if (valA > valB) return sortAsc ? 1 : -1;
+        return 0;
+      });
+    }
+
+    function updateDisplay() {
+      populateStateFilter();
+      filterAccounts();
+      updateStats();
+    }
+
+    function populateStateFilter() {
+      const states = [...new Set(accounts.map(a => a.state).filter(s => s))].sort();
+      const select = document.getElementById('stateFilter');
+      select.innerHTML = '<option value="">All States</option>';
+      states.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        select.appendChild(opt);
+      });
+    }
+
+    function updateStats() {
+      document.getElementById('totalCount').textContent = accounts.length;
+      document.getElementById('bothCount').textContent = accounts.filter(a => a.fit === 'Both').length;
+      document.getElementById('engineeringCount').textContent = accounts.filter(a => a.fit === 'Engineering').length;
+      document.getElementById('scientificCount').textContent = accounts.filter(a => a.fit === 'Scientific').length;
+      document.getElementById('nofitCount').textContent = accounts.filter(a => a.fit === 'No Fit').length;
+    }
+
+    function updateResultsCount() {
+      const el = document.getElementById('resultsCount');
+      if (filteredAccounts.length === accounts.length) {
+        el.textContent = `Showing all ${accounts.length} accounts`;
+      } else {
+        el.textContent = `Showing ${filteredAccounts.length} of ${accounts.length} accounts`;
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const empty = document.getElementById('emptyState');
+
+      if (filteredAccounts.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      tbody.innerHTML = filteredAccounts.map(a => {
+        const fitClass = a.fit === 'Both' ? 'fit-both' : 
+                        a.fit === 'Engineering' ? 'fit-engineering' : 
+                        a.fit === 'Scientific' ? 'fit-scientific' : 'fit-nofit';
+
+        return `
+          <tr>
+            <td><span class="company-name">${escapeHtml(a.company)}</span></td>
+            <td>${escapeHtml(a.city)}</td>
+            <td>${escapeHtml(a.state)}</td>
+            <td>${a.phone ? `<a href="tel:${a.phone}" style="color: var(--accent-green);">${escapeHtml(a.phone)}</a>` : '-'}</td>
+            <td>${escapeHtml(a.contact) || '-'}</td>
+            <td>
+              ${a.website ? `<a href="${a.website}" target="_blank" class="link-btn">🌐</a>` : ''}
+              ${a.linkedin ? `<a href="${a.linkedin}" target="_blank" class="link-btn">💼</a>` : ''}
+            </td>
+            <td><span class="fit-badge ${fitClass}">${a.fit}</span></td>
+            <td><span class="reason-text">${escapeHtml(a.reason)}</span></td>
+            <td>
+              <button onclick="deleteAccount(${a.id})" class="link-btn" style="color: var(--accent-red);">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function exportCSV() {
+      if (filteredAccounts.length === 0) return showToast('No accounts to export', true);
+
+      const headers = ['Company', 'City', 'State', 'Phone', 'Contact', 'Website', 'LinkedIn', 'Natoli Fit', 'Reason'];
+      const rows = filteredAccounts.map(a => [
+        a.company, a.city, a.state, a.phone, a.contact, a.website, a.linkedin, a.fit, a.reason
+      ]);
+
+      let csv = headers.join(',') + '\n';
+      rows.forEach(r => {
+        csv += r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+
+      downloadCSV(csv, 'natoli_targets.csv');
+      showToast(`Exported ${filteredAccounts.length} accounts`);
+    }
+
+    function exportPursueOnly() {
+      const pursue = accounts.filter(a => ['Both', 'Engineering', 'Scientific'].includes(a.fit));
+      if (pursue.length === 0) return showToast('No pursue-worthy accounts', true);
+
+      const headers = ['Company', 'City', 'State', 'Phone', 'Contact', 'Website', 'LinkedIn', 'Natoli Fit', 'Reason'];
+      const rows = pursue.map(a => [
+        a.company, a.city, a.state, a.phone, a.contact, a.website, a.linkedin, a.fit, a.reason
+      ]);
+
+      let csv = headers.join(',') + '\n';
+      rows.forEach(r => {
+        csv += r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+
+      downloadCSV(csv, 'natoli_pursue_only.csv');
+      showToast(`Exported ${pursue.length} pursue-worthy accounts`);
+    }
+
+    function downloadCSV(csv, filename) {
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAll() {
+      if (!confirm('Delete all accounts? This cannot be undone.')) return;
+      accounts = [];
+      saveToStorage();
+      updateDisplay();
+      showToast('All accounts cleared');
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? 'var(--accent-red)' : 'var(--accent-green)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    init();
+  </script>
+</body>
+</html>

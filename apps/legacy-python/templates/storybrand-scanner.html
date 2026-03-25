@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StoryBrand Scanner | TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .scanner-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .scanner-header { text-align: center; margin-bottom: 2rem; }
+    .scanner-header h1 { font-size: 2.5rem; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+    .scanner-header p { color: #94a3b8; font-size: 1.1rem; }
+    
+    .scan-form { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+    .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .form-row input { flex: 1; padding: 1rem; border-radius: 8px; border: 1px solid rgba(148, 163, 184, 0.3); background: rgba(15, 23, 42, 0.8); color: #fff; font-size: 1rem; }
+    .form-row input:focus { outline: none; border-color: #f59e0b; }
+    .form-row button { padding: 1rem 2rem; background: linear-gradient(135deg, #f59e0b, #ef4444); border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform 0.2s; }
+    .form-row button:hover { transform: scale(1.02); }
+    .form-row button:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .loading { display: none; text-align: center; padding: 3rem; }
+    .loading.active { display: block; }
+    .loading-spinner { width: 50px; height: 50px; border: 4px solid rgba(245, 158, 11, 0.2); border-top-color: #f59e0b; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: #94a3b8; }
+    
+    .results { display: none; }
+    .results.active { display: block; }
+    
+    .company-header { background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1)); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; }
+    .company-logo { width: 60px; height: 60px; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .company-info h2 { color: #fff; margin: 0 0 0.25rem; }
+    .company-info p { color: #94a3b8; margin: 0; }
+    
+    .score-card { background: rgba(30, 41, 59, 0.8); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem; }
+    .score-circle { width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; }
+    .score-circle.high { background: linear-gradient(135deg, #10b981, #059669); }
+    .score-circle.medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .score-circle.low { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .score-circle .number { font-size: 2rem; color: #fff; }
+    .score-circle .label { font-size: 0.7rem; color: rgba(255,255,255,0.8); text-transform: uppercase; }
+    .score-details { flex: 1; }
+    .score-details h3 { color: #fff; margin: 0 0 0.5rem; }
+    .score-details p { color: #94a3b8; margin: 0; font-size: 0.95rem; }
+    
+    .framework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .framework-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; padding: 1.5rem; }
+    .framework-card.pass { border-color: rgba(16, 185, 129, 0.5); }
+    .framework-card.warning { border-color: rgba(245, 158, 11, 0.5); }
+    .framework-card.fail { border-color: rgba(239, 68, 68, 0.5); }
+    .framework-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .framework-header h4 { color: #fff; margin: 0; font-size: 1.1rem; }
+    .framework-status { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .framework-status.pass { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .framework-status.warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .framework-status.fail { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .framework-found { color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.75rem; line-height: 1.5; }
+    .framework-recommendation { background: rgba(15, 23, 42, 0.5); border-radius: 8px; padding: 1rem; }
+    .framework-recommendation h5 { color: #f59e0b; margin: 0 0 0.5rem; font-size: 0.85rem; text-transform: uppercase; }
+    .framework-recommendation p { color: #cbd5e1; margin: 0; font-size: 0.9rem; line-height: 1.5; }
+    
+    .actions-section { background: rgba(30, 41, 59, 0.8); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+    .actions-section h3 { color: #fff; margin: 0 0 1rem; }
+    .action-list { list-style: none; padding: 0; margin: 0; }
+    .action-list li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
+    .action-list li:last-child { border-bottom: none; }
+    .action-priority { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; flex-shrink: 0; }
+    .action-priority.high { background: #ef4444; color: #fff; }
+    .action-priority.medium { background: #f59e0b; color: #fff; }
+    .action-priority.low { background: #3b82f6; color: #fff; }
+    .action-text { color: #cbd5e1; font-size: 0.95rem; line-height: 1.4; }
+    
+    .copy-section { text-align: center; padding: 1rem; }
+    .copy-section button { padding: 0.75rem 1.5rem; background: #3b82f6; border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; margin: 0 0.5rem; }
+    .copy-section button:hover { background: #2563eb; }
+    
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #94a3b8; text-decoration: none; margin-bottom: 1rem; }
+    .back-link:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="scanner-container">
+    <a href="/" class="back-link">&larr; Back to TonyOS</a>
+    
+    <div class="scanner-header">
+      <h1>StoryBrand Scanner</h1>
+      <p>Paste any website URL. Get a complete StoryBrand analysis with actionable recommendations.</p>
+    </div>
+    
+    <div class="scan-form">
+      <div class="form-row">
+        <input type="url" id="websiteUrl" placeholder="https://example.com" required>
+        <button onclick="runScan()" id="scanBtn">Scan Website</button>
+      </div>
+      <p style="color: #64748b; font-size: 0.85rem; margin: 0;">We'll analyze the homepage through the 7-part StoryBrand framework and show you exactly what's working and what needs to change.</p>
+    </div>
+    
+    <div class="loading" id="loading">
+      <div class="loading-spinner"></div>
+      <p id="loadingText">Scanning website...</p>
+    </div>
+    
+    <div class="results" id="results">
+      <div class="company-header" id="companyHeader">
+        <div class="company-logo" id="companyLogo">🏢</div>
+        <div class="company-info">
+          <h2 id="companyName">Company Name</h2>
+          <p id="companyUrl">https://example.com</p>
+        </div>
+      </div>
+      
+      <div class="score-card">
+        <div class="score-circle medium" id="scoreCircle">
+          <span class="number" id="scoreNumber">72</span>
+          <span class="label">Clarity</span>
+        </div>
+        <div class="score-details">
+          <h3 id="scoreTitle">Message Clarity Score</h3>
+          <p id="scoreSummary">Your website has room for improvement. The hero section lacks a clear problem statement, and the call to action could be stronger.</p>
+        </div>
+      </div>
+      
+      <h3 style="color: #fff; margin-bottom: 1rem;">7-Part StoryBrand Analysis</h3>
+      <div class="framework-grid" id="frameworkGrid"></div>
+      
+      <div class="actions-section">
+        <h3>Priority Actions</h3>
+        <ul class="action-list" id="actionList"></ul>
+      </div>
+      
+      <div class="copy-section">
+        <button onclick="copyReport()">Copy Full Report</button>
+        <button onclick="runScan()" style="background: #10b981;">Scan Another</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    async function runScan() {
+      const url = document.getElementById('websiteUrl').value.trim();
+      if (!url) { alert('Please enter a website URL'); return; }
+      
+      document.getElementById('scanBtn').disabled = true;
+      document.getElementById('loading').classList.add('active');
+      document.getElementById('results').classList.remove('active');
+      
+      const steps = ['Scanning website...', 'Extracting content...', 'Analyzing StoryBrand elements...', 'Generating recommendations...'];
+      let step = 0;
+      const stepInterval = setInterval(() => {
+        step = (step + 1) % steps.length;
+        document.getElementById('loadingText').textContent = steps[step];
+      }, 2000);
+      
+      try {
+        const response = await fetch('/api/storybrand-scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        
+        const data = await response.json();
+        clearInterval(stepInterval);
+        
+        if (data.error) {
+          alert('Error: ' + data.error);
+          document.getElementById('loading').classList.remove('active');
+          document.getElementById('scanBtn').disabled = false;
+          return;
+        }
+        
+        displayResults(data, url);
+      } catch (err) {
+        clearInterval(stepInterval);
+        alert('Failed to scan website: ' + err.message);
+      }
+      
+      document.getElementById('loading').classList.remove('active');
+      document.getElementById('scanBtn').disabled = false;
+    }
+    
+    function displayResults(data, url) {
+      document.getElementById('companyName').textContent = data.company_name || 'Unknown Company';
+      document.getElementById('companyUrl').textContent = url;
+      
+      const score = data.score || 50;
+      const scoreCircle = document.getElementById('scoreCircle');
+      scoreCircle.className = 'score-circle ' + (score >= 75 ? 'high' : score >= 50 ? 'medium' : 'low');
+      document.getElementById('scoreNumber').textContent = score;
+      document.getElementById('scoreSummary').textContent = data.summary || '';
+      
+      const frameworkGrid = document.getElementById('frameworkGrid');
+      frameworkGrid.innerHTML = '';
+      
+      const parts = [
+        { key: 'character', title: '1. Character (Hero)', desc: 'Who is the customer?' },
+        { key: 'problem', title: '2. Problem', desc: 'External, internal, philosophical challenges' },
+        { key: 'guide', title: '3. Guide', desc: 'How does brand show empathy + authority?' },
+        { key: 'plan', title: '4. Plan', desc: 'Simple steps customer takes' },
+        { key: 'cta', title: '5. Call to Action', desc: 'What specific action to take?' },
+        { key: 'stakes', title: '6. Stakes (Failure)', desc: 'What happens if they do nothing?' },
+        { key: 'success', title: '7. Success', desc: 'What positive outcomes do they achieve?' }
+      ];
+      
+      parts.forEach(part => {
+        const analysis = data.framework?.[part.key] || {};
+        const status = analysis.status || 'warning';
+        const card = document.createElement('div');
+        card.className = 'framework-card ' + status;
+        card.innerHTML = `
+          <div class="framework-header">
+            <h4>${part.title}</h4>
+            <span class="framework-status ${status}">${status === 'pass' ? 'Strong' : status === 'warning' ? 'Needs Work' : 'Missing'}</span>
+          </div>
+          <p class="framework-found"><strong>Found:</strong> ${analysis.found || 'Not clearly identified'}</p>
+          <div class="framework-recommendation">
+            <h5>Recommendation</h5>
+            <p>${analysis.recommendation || 'Add clear messaging for this element'}</p>
+          </div>
+        `;
+        frameworkGrid.appendChild(card);
+      });
+      
+      const actionList = document.getElementById('actionList');
+      actionList.innerHTML = '';
+      (data.actions || []).forEach(action => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="action-priority ${action.priority || 'medium'}">${action.priority || 'Medium'}</span>
+          <span class="action-text">${action.text || ''}</span>
+        `;
+        actionList.appendChild(li);
+      });
+      
+      document.getElementById('results').classList.add('active');
+      window.lastScanData = data;
+    }
+    
+    function copyReport() {
+      if (!window.lastScanData) return;
+      const d = window.lastScanData;
+      let report = `STORYBRAND ANALYSIS REPORT\n`;
+      report += `Company: ${d.company_name}\n`;
+      report += `Score: ${d.score}/100\n\n`;
+      report += `SUMMARY:\n${d.summary}\n\n`;
+      report += `7-PART FRAMEWORK:\n`;
+      Object.entries(d.framework || {}).forEach(([key, val]) => {
+        report += `\n${key.toUpperCase()}:\nFound: ${val.found}\nStatus: ${val.status}\nRecommendation: ${val.recommendation}\n`;
+      });
+      report += `\nPRIORITY ACTIONS:\n`;
+      (d.actions || []).forEach((a, i) => {
+        report += `${i+1}. [${a.priority}] ${a.text}\n`;
+      });
+      navigator.clipboard.writeText(report);
+      alert('Report copied to clipboard!');
+    }
+  </script>
+</body>
+</html>

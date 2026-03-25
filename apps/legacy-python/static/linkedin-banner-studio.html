@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Banner Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', Arial, sans-serif; 
+      background: linear-gradient(135deg, #050508 0%, #0a0a12 50%, #050508 100%);
+      color: #fff; 
+      min-height: 100vh;
+      padding: 30px;
+    }
+    .container { max-width: 1800px; margin: 0 auto; }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0077b5, #00a0dc);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .header-text h1 { font-size: 1.8rem; margin-bottom: 2px; }
+    .header-text h1 span { 
+      background: linear-gradient(90deg, #0077b5, #00a0dc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-text p { color: #6b7280; font-size: 13px; }
+    
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 30px;
+    }
+    
+    .sidebar {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 24px;
+      height: fit-content;
+      position: sticky;
+      top: 30px;
+    }
+    
+    .section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .section:last-child { border-bottom: none; margin-bottom: 0; }
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #0077b5;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      background: linear-gradient(180deg, #0077b5, #00a0dc);
+      border-radius: 2px;
+    }
+    
+    .control-group { margin-bottom: 12px; }
+    .control-group:last-child { margin-bottom: 0; }
+    label { 
+      display: block;
+      font-size: 11px; 
+      color: #888; 
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    input[type="text"], select { 
+      width: 100%;
+      padding: 11px 14px; 
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus { 
+      outline: none; 
+      border-color: #0077b5;
+      box-shadow: 0 0 0 3px rgba(0,119,181,0.15);
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      margin-top: 8px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, #0077b5, #00a0dc);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,119,181,0.4);
+    }
+    
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .theme-btn {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .theme-btn:hover, .theme-btn.active { 
+      border-color: #fff; 
+      transform: scale(1.1);
+      z-index: 1;
+    }
+    
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .option-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .option-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    
+    .option-btn {
+      padding: 10px 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #888;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .option-btn:hover { 
+      background: rgba(255,255,255,0.08); 
+      color: #fff;
+      border-color: rgba(255,255,255,0.15);
+    }
+    .option-btn.active { 
+      background: linear-gradient(135deg, rgba(0,119,181,0.2), rgba(0,160,220,0.1));
+      border-color: #0077b5; 
+      color: #0077b5;
+    }
+    
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+    }
+    .toggle-label { font-size: 12px; color: #aaa; }
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle.active { background: linear-gradient(90deg, #0077b5, #00a0dc); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: left 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .toggle.active::after { left: 23px; }
+    
+    .btn-row { display: flex; gap: 8px; margin-top: 16px; }
+    button {
+      flex: 1;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { 
+      background: linear-gradient(135deg, #0077b5, #00a0dc); 
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,119,181,0.3);
+    }
+    .btn-primary:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,119,181,0.4);
+    }
+    .btn-secondary { 
+      background: rgba(255,255,255,0.06); 
+      color: #888;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover { 
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    
+    .main-area { }
+    .canvas-wrapper {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 16px;
+    }
+    .canvas-container {
+      overflow-x: auto;
+      border-radius: 16px;
+    }
+    
+    #canvas {
+      width: 1584px;
+      height: 396px;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      position: relative;
+      border-radius: 8px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    
+    .pattern-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+    }
+    .pattern-dots {
+      background-image: radial-gradient(circle, #fff 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+    }
+    .pattern-grid {
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    .pattern-diagonal {
+      background: repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(255,255,255,0.08) 15px, rgba(255,255,255,0.08) 30px);
+    }
+    .pattern-hexagon {
+      background-color: transparent;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .pattern-circuit {
+      background-color: transparent;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50h30M60 50h30M50 10v30M50 60v30' stroke='%2300a0dc' stroke-opacity='0.3' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='50' r='4' fill='%2300a0dc' fill-opacity='0.4'/%3E%3Ccircle cx='10' cy='50' r='2' fill='%2300a0dc' fill-opacity='0.3'/%3E%3Ccircle cx='90' cy='50' r='2' fill='%2300a0dc' fill-opacity='0.3'/%3E%3C/svg%3E");
+      background-size: 100px 100px;
+    }
+    .pattern-cyber {
+      background-color: transparent;
+      background-image: 
+        linear-gradient(90deg, rgba(0,160,220,0.1) 1px, transparent 1px),
+        linear-gradient(rgba(0,160,220,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .pattern-scanlines {
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+    }
+    .pattern-matrix {
+      background-color: transparent;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='5' y='15' font-family='monospace' font-size='10' fill='%2300ff88' fill-opacity='0.15'%3E01%3C/text%3E%3Ctext x='25' y='35' font-family='monospace' font-size='10' fill='%2300ff88' fill-opacity='0.1'%3E10%3C/text%3E%3C/svg%3E");
+      background-size: 40px 40px;
+    }
+    
+    .shape {
+      position: absolute;
+      pointer-events: none;
+    }
+    .shape-orb-1 {
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,160,220,0.3) 0%, transparent 70%);
+      left: -200px;
+      top: -200px;
+    }
+    .shape-orb-2 {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 70%);
+      right: 300px;
+      bottom: -200px;
+    }
+    .shape-blob {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0,160,220,0.25) 0%, transparent 60%);
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      left: -250px;
+      top: -250px;
+    }
+    .shape-gradient-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, #00a0dc, #0077b5, transparent);
+    }
+    .shape-corner-frame {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border: 2px solid rgba(0,160,220,0.4);
+    }
+    .shape-corner-frame.tl { top: 30px; left: 30px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+    .shape-corner-frame.br { bottom: 30px; right: 30px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
+    .shape-floating-lines {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .shape-floating-lines span {
+      flex: 1;
+      background: linear-gradient(180deg, transparent, rgba(0,160,220,0.7), transparent);
+      border-radius: 2px;
+    }
+    .shape-geometric {
+      position: absolute;
+      left: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 140px;
+      height: 140px;
+      border: 2px solid rgba(0,160,220,0.25);
+      border-radius: 50%;
+    }
+    .shape-geometric::before {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border: 2px solid rgba(0,160,220,0.2);
+      border-radius: 50%;
+    }
+    .shape-geometric::after {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border: 2px solid rgba(0,160,220,0.15);
+      border-radius: 50%;
+    }
+    .shape-vertical-text {
+      position: absolute;
+      left: 45px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .shape-hud {
+      position: absolute;
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      height: 200px;
+    }
+    .shape-hud::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(0,255,136,0.3);
+      border-right: none;
+      border-bottom: none;
+    }
+    .shape-hud::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(0,255,136,0.3);
+      border-right: none;
+      border-top: none;
+    }
+    .shape-hud-inner {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 120px;
+      background: linear-gradient(180deg, transparent, rgba(0,255,136,0.5), rgba(0,255,136,0.8), rgba(0,255,136,0.5), transparent);
+    }
+    .shape-data-stream {
+      position: absolute;
+      left: 30px;
+      top: 40px;
+      bottom: 40px;
+      width: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: 'Rajdhani', monospace;
+      font-size: 10px;
+      color: rgba(0,255,136,0.5);
+      letter-spacing: 2px;
+    }
+    .shape-data-stream span {
+      opacity: 0.6;
+    }
+    .shape-hex-cluster {
+      position: absolute;
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .shape-hex-cluster .hex {
+      position: absolute;
+      width: 60px;
+      height: 52px;
+      background: rgba(0,160,220,0.1);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      border: 1px solid rgba(0,160,220,0.3);
+    }
+    .shape-hex-cluster .hex:nth-child(1) { top: -60px; left: 30px; }
+    .shape-hex-cluster .hex:nth-child(2) { top: 0; left: 0; }
+    .shape-hex-cluster .hex:nth-child(3) { top: 0; left: 60px; }
+    .shape-hex-cluster .hex:nth-child(4) { top: 60px; left: 30px; }
+    .shape-pulse-rings {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 120px;
+      height: 120px;
+    }
+    .shape-pulse-rings .ring {
+      position: absolute;
+      border: 1px solid rgba(0,160,220,0.3);
+      border-radius: 50%;
+    }
+    .shape-pulse-rings .ring:nth-child(1) { inset: 0; }
+    .shape-pulse-rings .ring:nth-child(2) { inset: 15px; border-color: rgba(0,160,220,0.4); }
+    .shape-pulse-rings .ring:nth-child(3) { inset: 30px; border-color: rgba(0,160,220,0.5); }
+    .shape-pulse-rings .ring:nth-child(4) { 
+      inset: 45px; 
+      background: rgba(0,160,220,0.3);
+      border: none;
+    }
+    
+    .overlay {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 850px;
+      transition: all 0.3s;
+    }
+    .overlay.align-right { right: 80px; text-align: right; }
+    .overlay.align-left { left: 240px; text-align: left; }
+    .overlay.align-center { left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    
+    .overlay h1 {
+      font-size: 58px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+      line-height: 1.05;
+      transition: all 0.3s;
+    }
+    .overlay h2 {
+      font-size: 24px;
+      font-weight: 400;
+      margin: 0 0 10px 0;
+      opacity: 0.9;
+      transition: all 0.3s;
+      letter-spacing: -0.3px;
+    }
+    .overlay p {
+      font-size: 17px;
+      opacity: 0.7;
+      margin: 0;
+      transition: all 0.3s;
+      letter-spacing: 0.2px;
+    }
+    
+    .font-inter h1, .font-inter h2, .font-inter p { font-family: 'Inter', sans-serif; }
+    .font-orbitron h1 { font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 2px; }
+    .font-rajdhani h1, .font-rajdhani h2 { font-family: 'Rajdhani', sans-serif; font-weight: 600; }
+    .font-exo h1, .font-exo h2 { font-family: 'Exo 2', sans-serif; font-weight: 700; }
+    .font-space h1, .font-space h2 { font-family: 'Space Grotesk', sans-serif; }
+    .font-audiowide h1 { font-family: 'Audiowide', cursive; }
+    
+    .text-shadow h1 { text-shadow: 0 4px 30px rgba(0,0,0,0.6); }
+    .text-shadow h2, .text-shadow p { text-shadow: 0 2px 15px rgba(0,0,0,0.4); }
+    .text-glow h1 { text-shadow: 0 0 60px rgba(0,160,220,0.6), 0 0 120px rgba(0,160,220,0.3); }
+    .text-neon h1 { text-shadow: 0 0 10px rgba(0,255,136,0.8), 0 0 40px rgba(0,255,136,0.4), 0 0 80px rgba(0,255,136,0.2); }
+    
+    .accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #0077b5, #00a0dc);
+      transition: all 0.3s;
+    }
+    .accent-bar.thick { height: 10px; }
+    .accent-bar.gradient-gold { background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b); }
+    .accent-bar.gradient-fire { background: linear-gradient(90deg, #ff4500, #ff8c00, #ffd700); }
+    .accent-bar.gradient-purple { background: linear-gradient(90deg, #8b5cf6, #a855f7, #ec4899); }
+    .accent-bar.gradient-green { background: linear-gradient(90deg, #059669, #10b981, #34d399); }
+    .accent-bar.gradient-rose { background: linear-gradient(90deg, #e11d48, #f43f5e, #fb7185); }
+    .accent-bar.gradient-cyber { background: linear-gradient(90deg, #00ff88, #00a0dc, #00ff88); }
+    .accent-bar.top { bottom: auto; top: 0; }
+    
+    .info { font-size: 12px; color: #555; display: flex; align-items: center; gap: 8px; }
+    .info-icon { width: 18px; height: 18px; background: linear-gradient(135deg, #0077b5, #00a0dc); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; color: #0077b5; text-decoration: none; font-size: 13px; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+    
+    .preset-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .preset-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      color: #888;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover { background: rgba(0,119,181,0.1); border-color: #0077b5; color: #0077b5; }
+    .preset-btn.cyber { border-color: rgba(0,255,136,0.3); color: #00ff88; }
+    .preset-btn.cyber:hover { background: rgba(0,255,136,0.1); }
+    
+    @media (max-width: 1200px) {
+      .studio-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/natoli-revops/downloads" class="back-link"><span>←</span> Back to Internal Assets</a>
+    
+    <div class="header">
+      <div class="logo">Li</div>
+      <div class="header-text">
+        <h1><span>LinkedIn</span> Banner Studio</h1>
+        <p>Professional banners with full design control</p>
+      </div>
+    </div>
+    
+    <div class="preset-bar">
+      <button class="preset-btn" onclick="applyPreset('minimal')">Minimal</button>
+      <button class="preset-btn" onclick="applyPreset('professional')">Professional</button>
+      <button class="preset-btn" onclick="applyPreset('executive')">Executive</button>
+      <button class="preset-btn cyber" onclick="applyPreset('cyberpunk')">Cyberpunk</button>
+      <button class="preset-btn cyber" onclick="applyPreset('hud')">HUD</button>
+      <button class="preset-btn cyber" onclick="applyPreset('neon')">Neon</button>
+      <button class="preset-btn cyber" onclick="applyPreset('matrix')">Matrix</button>
+      <button class="preset-btn cyber" onclick="applyPreset('hologram')">Hologram</button>
+    </div>
+
+    <div class="studio-layout">
+      <div class="sidebar">
+        <div class="section">
+          <div class="section-title">Content</div>
+          <div class="control-group">
+            <label>Your Name</label>
+            <input type="text" id="name" value="Tony Beal">
+          </div>
+          <div class="control-group">
+            <label>Title</label>
+            <input type="text" id="title" value="Revenue Operations & Commercial Systems Leader">
+          </div>
+          <div class="control-group">
+            <label>Tagline</label>
+            <input type="text" id="tagline" value="Driving Pipeline, Forecasting & Sales Execution">
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Color Theme</div>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Layout</div>
+          <div class="option-grid">
+            <button class="option-btn" onclick="setLayout('left')">Left</button>
+            <button class="option-btn" onclick="setLayout('center')">Center</button>
+            <button class="option-btn active" onclick="setLayout('right')">Right</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Font Style</div>
+          <div class="option-grid cols-2">
+            <button class="option-btn active" onclick="setFont('inter')">Modern</button>
+            <button class="option-btn" onclick="setFont('exo')">Tech</button>
+            <button class="option-btn" onclick="setFont('orbitron')">Cyber</button>
+            <button class="option-btn" onclick="setFont('rajdhani')">Digital</button>
+            <button class="option-btn" onclick="setFont('space')">Space</button>
+            <button class="option-btn" onclick="setFont('audiowide')">Bold</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Text Size</div>
+          <div class="control-group">
+            <label>Name Size: <span id="nameSizeVal">58</span>px</label>
+            <input type="range" id="nameSize" min="40" max="80" value="58" oninput="updateSize()">
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Background Pattern</div>
+          <div class="option-grid cols-4">
+            <button class="option-btn active" onclick="setPattern('none')">None</button>
+            <button class="option-btn" onclick="setPattern('grid')">Grid</button>
+            <button class="option-btn" onclick="setPattern('circuit')">Circuit</button>
+            <button class="option-btn" onclick="setPattern('cyber')">Cyber</button>
+            <button class="option-btn" onclick="setPattern('hexagon')">Hex</button>
+            <button class="option-btn" onclick="setPattern('scanlines')">Scan</button>
+            <button class="option-btn" onclick="setPattern('matrix')">Matrix</button>
+            <button class="option-btn" onclick="setPattern('dots')">Dots</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Left Decoration</div>
+          <div class="option-grid cols-2">
+            <button class="option-btn active" onclick="setShape('none')">None</button>
+            <button class="option-btn" onclick="setShape('orbs')">Orbs</button>
+            <button class="option-btn" onclick="setShape('blob')">Glow</button>
+            <button class="option-btn" onclick="setShape('bars')">Bars</button>
+            <button class="option-btn" onclick="setShape('hud')">HUD</button>
+            <button class="option-btn" onclick="setShape('data')">Data</button>
+            <button class="option-btn" onclick="setShape('hex')">Hex</button>
+            <button class="option-btn" onclick="setShape('pulse')">Pulse</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Accent Bar</div>
+          <div class="option-grid cols-4">
+            <button class="option-btn active" onclick="setAccent('default')">Blue</button>
+            <button class="option-btn" onclick="setAccent('cyber')">Cyber</button>
+            <button class="option-btn" onclick="setAccent('purple')">Purple</button>
+            <button class="option-btn" onclick="setAccent('green')">Green</button>
+            <button class="option-btn" onclick="setAccent('gold')">Gold</button>
+            <button class="option-btn" onclick="setAccent('fire')">Fire</button>
+            <button class="option-btn" onclick="setAccent('none')">None</button>
+            <button class="option-btn" onclick="setAccent('thick')">Thick</button>
+          </div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Text Effects</div>
+          <div class="toggle-row">
+            <span class="toggle-label">Drop Shadow</span>
+            <div class="toggle" id="shadowToggle" onclick="toggleShadow()"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Glow Effect</span>
+            <div class="toggle" id="glowToggle" onclick="toggleGlow()"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Neon Effect</span>
+            <div class="toggle" id="neonToggle" onclick="toggleNeon()"></div>
+          </div>
+        </div>
+        
+        <div class="btn-row">
+          <button class="btn-primary" onclick="download()">Download PNG</button>
+          <button class="btn-secondary" onclick="resetAll()">Reset</button>
+        </div>
+      </div>
+      
+      <div class="main-area">
+        <div class="canvas-wrapper">
+          <div class="canvas-container">
+            <div id="canvas">
+              <div class="pattern-overlay" id="patternOverlay"></div>
+              <div id="shapeContainer"></div>
+              <div class="overlay align-right" id="textOverlay">
+                <h1 id="nameText"></h1>
+                <h2 id="titleText"></h2>
+                <p id="taglineText"></p>
+              </div>
+              <div class="accent-bar" id="accentBar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="info">
+          <span class="info-icon">i</span>
+          LinkedIn recommended: 1584 x 396 pixels. Download matches preview exactly.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const themes = {
+      cyber: { bg: 'linear-gradient(120deg, #0a0a0f, #0d1520, #0a1628)', name: 'Cyber' },
+      neon: { bg: 'linear-gradient(120deg, #0f0a1a, #1a0f2e, #0f1a2e)', name: 'Neon' },
+      matrix: { bg: 'linear-gradient(120deg, #000a00, #001a0a, #000f05)', name: 'Matrix' },
+      holo: { bg: 'linear-gradient(120deg, #0a0a1a, #1a1a3a, #2a1a4a)', name: 'Hologram' },
+      midnight: { bg: 'linear-gradient(120deg, #0d0d1a, #1a1a2e, #2d2d44)', name: 'Midnight' },
+      ocean: { bg: 'linear-gradient(120deg, #0f2027, #203a43, #2c5364)', name: 'Ocean' },
+      natoli: { bg: 'linear-gradient(120deg, #0d1117, #1a2332, #2a3a50)', name: 'Natoli' },
+      slate: { bg: 'linear-gradient(120deg, #1e293b, #334155, #475569)', name: 'Slate' },
+      royal: { bg: 'linear-gradient(120deg, #1a1a3e, #2d2d5a, #3f3f7a)', name: 'Royal' },
+      emerald: { bg: 'linear-gradient(120deg, #064e3b, #065f46, #047857)', name: 'Emerald' },
+      sunset: { bg: 'linear-gradient(120deg, #2c1654, #6a2c70, #b83b5e)', name: 'Sunset' },
+      fire: { bg: 'linear-gradient(120deg, #1a0a0a, #4a1c1c, #6b2020)', name: 'Fire' },
+      aurora: { bg: 'linear-gradient(120deg, #1e3a5f, #2d5a7b, #3d7a9b)', name: 'Aurora' },
+      wine: { bg: 'linear-gradient(120deg, #2d1b2d, #4a2c4a, #5c3d5c)', name: 'Wine' },
+      storm: { bg: 'linear-gradient(120deg, #1f2937, #374151, #4b5563)', name: 'Storm' },
+      nordic: { bg: 'linear-gradient(120deg, #0c1821, #1b2838, #2a4158)', name: 'Nordic' }
+    };
+    
+    let currentTheme = 'ocean';
+    let currentLayout = 'right';
+    let currentFont = 'inter';
+    let currentPattern = 'none';
+    let currentShape = 'none';
+    let currentAccent = 'default';
+    let isThick = false;
+    let hasShadow = false;
+    let hasGlow = false;
+    let hasNeon = false;
+    
+    function initThemes() {
+      const grid = document.getElementById('themeGrid');
+      grid.innerHTML = Object.entries(themes).map(([key, val]) => 
+        `<button class="theme-btn ${key === 'ocean' ? 'active' : ''}" 
+          style="background: ${val.bg}" 
+          onclick="setTheme('${key}')" 
+          title="${val.name}"></button>`
+      ).join('');
+    }
+    
+    function sync() {
+      document.getElementById('nameText').textContent = document.getElementById('name').value;
+      document.getElementById('titleText').textContent = document.getElementById('title').value;
+      document.getElementById('taglineText').textContent = document.getElementById('tagline').value;
+    }
+    
+    function setTheme(theme) {
+      currentTheme = theme;
+      document.getElementById('canvas').style.background = themes[theme].bg;
+      document.querySelectorAll('.theme-grid .theme-btn').forEach((b, i) => {
+        b.classList.toggle('active', Object.keys(themes)[i] === theme);
+      });
+    }
+    
+    function setLayout(layout) {
+      currentLayout = layout;
+      const overlay = document.getElementById('textOverlay');
+      overlay.className = 'overlay align-' + layout;
+      applyTextClasses();
+      updateLayoutBtns(layout);
+    }
+    
+    function applyTextClasses() {
+      const overlay = document.getElementById('textOverlay');
+      if (currentFont !== 'inter') overlay.classList.add('font-' + currentFont);
+      if (hasShadow) overlay.classList.add('text-shadow');
+      if (hasGlow) overlay.classList.add('text-glow');
+      if (hasNeon) overlay.classList.add('text-neon');
+    }
+    
+    function updateLayoutBtns(active) {
+      const btns = document.querySelectorAll('.section:nth-child(3) .option-btn');
+      ['left', 'center', 'right'].forEach((l, i) => {
+        btns[i].classList.toggle('active', l === active);
+      });
+    }
+    
+    function setFont(font) {
+      currentFont = font;
+      const overlay = document.getElementById('textOverlay');
+      overlay.classList.remove('font-inter', 'font-orbitron', 'font-rajdhani', 'font-exo', 'font-space', 'font-audiowide');
+      if (font !== 'inter') overlay.classList.add('font-' + font);
+      const btns = document.querySelectorAll('.section:nth-child(4) .option-btn');
+      ['inter', 'exo', 'orbitron', 'rajdhani', 'space', 'audiowide'].forEach((f, i) => {
+        btns[i].classList.toggle('active', f === font);
+      });
+    }
+    
+    function setPattern(pattern) {
+      currentPattern = pattern;
+      const overlay = document.getElementById('patternOverlay');
+      overlay.className = 'pattern-overlay';
+      if (pattern !== 'none') overlay.classList.add('pattern-' + pattern);
+      const btns = document.querySelectorAll('.section:nth-child(6) .option-btn');
+      ['none', 'grid', 'circuit', 'cyber', 'hexagon', 'scanlines', 'matrix', 'dots'].forEach((p, i) => {
+        btns[i].classList.toggle('active', p === pattern);
+      });
+    }
+    
+    function setShape(shape) {
+      currentShape = shape;
+      const container = document.getElementById('shapeContainer');
+      container.innerHTML = '';
+      
+      if (shape === 'orbs') {
+        container.innerHTML = '<div class="shape shape-orb-1"></div><div class="shape shape-orb-2"></div>';
+      } else if (shape === 'blob') {
+        container.innerHTML = '<div class="shape shape-blob"></div>';
+      } else if (shape === 'bars') {
+        container.innerHTML = '<div class="shape shape-gradient-bar"></div>';
+      } else if (shape === 'hud') {
+        container.innerHTML = '<div class="shape shape-hud"><div class="shape-hud-inner"></div></div>';
+      } else if (shape === 'data') {
+        container.innerHTML = `<div class="shape shape-data-stream">
+          <span>SYS.ONLINE</span>
+          <span>REV.OPS.v2</span>
+          <span>PIPELINE.OK</span>
+          <span>STATUS.ACTIVE</span>
+        </div>`;
+      } else if (shape === 'hex') {
+        container.innerHTML = `<div class="shape shape-hex-cluster">
+          <div class="hex"></div><div class="hex"></div><div class="hex"></div><div class="hex"></div>
+        </div>`;
+      } else if (shape === 'pulse') {
+        container.innerHTML = `<div class="shape shape-pulse-rings">
+          <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+        </div>`;
+      }
+      
+      const btns = document.querySelectorAll('.section:nth-child(7) .option-btn');
+      ['none', 'orbs', 'blob', 'bars', 'hud', 'data', 'hex', 'pulse'].forEach((s, i) => {
+        btns[i].classList.toggle('active', s === shape);
+      });
+    }
+    
+    function setAccent(accent) {
+      if (accent === 'thick') {
+        isThick = !isThick;
+        const bar = document.getElementById('accentBar');
+        bar.classList.toggle('thick', isThick);
+        return;
+      }
+      
+      currentAccent = accent;
+      const bar = document.getElementById('accentBar');
+      bar.className = 'accent-bar';
+      if (accent === 'none') {
+        bar.style.display = 'none';
+      } else {
+        bar.style.display = 'block';
+        if (accent !== 'default') bar.classList.add('gradient-' + accent);
+      }
+      if (isThick) bar.classList.add('thick');
+      
+      const btns = document.querySelectorAll('.section:nth-child(8) .option-btn');
+      ['default', 'cyber', 'purple', 'green', 'gold', 'fire', 'none'].forEach((a, i) => {
+        btns[i].classList.toggle('active', a === accent);
+      });
+    }
+    
+    function updateSize() {
+      const size = document.getElementById('nameSize').value;
+      document.getElementById('nameSizeVal').textContent = size;
+      document.getElementById('nameText').style.fontSize = size + 'px';
+    }
+    
+    function toggleShadow() {
+      hasShadow = !hasShadow;
+      document.getElementById('shadowToggle').classList.toggle('active', hasShadow);
+      document.getElementById('textOverlay').classList.toggle('text-shadow', hasShadow);
+    }
+    
+    function toggleGlow() {
+      hasGlow = !hasGlow;
+      document.getElementById('glowToggle').classList.toggle('active', hasGlow);
+      document.getElementById('textOverlay').classList.toggle('text-glow', hasGlow);
+    }
+    
+    function toggleNeon() {
+      hasNeon = !hasNeon;
+      document.getElementById('neonToggle').classList.toggle('active', hasNeon);
+      document.getElementById('textOverlay').classList.toggle('text-neon', hasNeon);
+    }
+    
+    function clearEffects() {
+      hasShadow = false;
+      hasGlow = false;
+      hasNeon = false;
+      document.getElementById('shadowToggle').classList.remove('active');
+      document.getElementById('glowToggle').classList.remove('active');
+      document.getElementById('neonToggle').classList.remove('active');
+      document.getElementById('textOverlay').classList.remove('text-shadow', 'text-glow', 'text-neon');
+    }
+    
+    function applyPreset(preset) {
+      clearEffects();
+      isThick = false;
+      document.getElementById('accentBar').classList.remove('thick');
+      
+      if (preset === 'minimal') {
+        setTheme('slate');
+        setLayout('right');
+        setFont('inter');
+        setPattern('none');
+        setShape('none');
+        setAccent('none');
+      } else if (preset === 'professional') {
+        setTheme('natoli');
+        setLayout('right');
+        setFont('inter');
+        setPattern('none');
+        setShape('bars');
+        setAccent('default');
+        toggleShadow();
+      } else if (preset === 'executive') {
+        setTheme('midnight');
+        setLayout('right');
+        setFont('exo');
+        setPattern('none');
+        setShape('orbs');
+        setAccent('gold');
+        toggleShadow();
+      } else if (preset === 'cyberpunk') {
+        setTheme('cyber');
+        setLayout('right');
+        setFont('orbitron');
+        setPattern('circuit');
+        setShape('hud');
+        setAccent('cyber');
+        toggleNeon();
+      } else if (preset === 'hud') {
+        setTheme('neon');
+        setLayout('right');
+        setFont('rajdhani');
+        setPattern('cyber');
+        setShape('data');
+        setAccent('cyber');
+        toggleGlow();
+      } else if (preset === 'neon') {
+        setTheme('holo');
+        setLayout('center');
+        setFont('audiowide');
+        setPattern('scanlines');
+        setShape('pulse');
+        setAccent('purple');
+        toggleNeon();
+      } else if (preset === 'matrix') {
+        setTheme('matrix');
+        setLayout('right');
+        setFont('rajdhani');
+        setPattern('matrix');
+        setShape('data');
+        setAccent('green');
+        toggleNeon();
+      } else if (preset === 'hologram') {
+        setTheme('holo');
+        setLayout('right');
+        setFont('space');
+        setPattern('hexagon');
+        setShape('hex');
+        setAccent('cyber');
+        toggleGlow();
+      }
+    }
+    
+    function resetAll() {
+      document.getElementById('name').value = 'Tony Beal';
+      document.getElementById('title').value = 'Revenue Operations & Commercial Systems Leader';
+      document.getElementById('tagline').value = 'Driving Pipeline, Forecasting & Sales Execution';
+      document.getElementById('nameSize').value = 58;
+      
+      setTheme('ocean');
+      setLayout('right');
+      setFont('inter');
+      setPattern('none');
+      setShape('none');
+      setAccent('default');
+      
+      isThick = false;
+      clearEffects();
+      document.getElementById('accentBar').classList.remove('thick');
+      
+      updateSize();
+      sync();
+    }
+    
+    async function download() {
+      const canvas = document.getElementById('canvas');
+      
+      try {
+        const result = await html2canvas(canvas, {
+          width: 1584,
+          height: 396,
+          scale: 1,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: null,
+          logging: false,
+          imageTimeout: 0,
+          onclone: function(clonedDoc) {
+            const clonedCanvas = clonedDoc.getElementById('canvas');
+            clonedCanvas.style.transform = 'none';
+            clonedCanvas.style.borderRadius = '0';
+          }
+        });
+        
+        const link = document.createElement('a');
+        link.download = 'linkedin-banner.png';
+        link.href = result.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (err) {
+        console.error('Download error:', err);
+        alert('Download failed. Try refreshing the page.');
+      }
+    }
+    
+    document.querySelectorAll('input[type="text"]').forEach(i => i.oninput = sync);
+    initThemes();
+    sync();
+  </script>
+</body>
+</html>

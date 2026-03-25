@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personal Tracker - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">T</div>
+      <div>
+        <div class="brand-title">TonyOS</div>
+        <div class="brand-sub">Personal Tracker</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#/overview" data-route="overview" class="active">Overview</a>
+      <a href="#/today" data-route="today">Today</a>
+      <a href="#/proof" data-route="proof">Proof</a>
+      <a href="#/decisions" data-route="decisions">Decisions</a>
+      <a href="#/stacks" data-route="stacks">Stacks</a>
+      <a href="#/prompts" data-route="prompts">Prompts</a>
+    </nav>
+    <div class="top-actions">
+      <a href="/" class="btn btn-ghost">Back to TonyOS</a>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="toolbar">
+      <div class="search">
+        <input type="text" id="globalSearch" placeholder="Search entries...">
+        <button class="btn btn-ghost" id="clearSearch">Clear</button>
+      </div>
+      <div class="toolbar-right">
+        <span class="hint" id="viewHint">See the whole system in one place.</span>
+        <button class="btn btn-primary" id="newEntryBtn">New Entry</button>
+        <button class="btn btn-ghost" id="exportBtn">Export</button>
+        <label class="btn btn-ghost file-btn">
+          Import
+          <input type="file" id="importFile" accept=".json">
+        </label>
+      </div>
+    </div>
+
+    <div class="content" id="page"></div>
+
+    <div class="footer">TonyOS Personal Tracker - Data stored locally in your browser</div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalOverlay" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title" id="modalTitle">New Entry</div>
+          <div class="modal-sub">Add context, tags, and a date if needed.</div>
+        </div>
+        <button class="btn btn-ghost" id="modalClose">Close</button>
+      </div>
+      <form class="form" id="entryForm">
+        <input type="hidden" id="entryId">
+        <div class="field">
+          <label for="entrySection">Section</label>
+          <select id="entrySection">
+            <option value="today">Today</option>
+            <option value="proof">Proof</option>
+            <option value="decisions">Decisions</option>
+            <option value="prompts">Prompts</option>
+            <option value="stacks.job">Job Stack</option>
+            <option value="stacks.money">Money Stack</option>
+            <option value="stacks.health">Health Stack</option>
+          </select>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="entryDate">Date (optional)</label>
+            <input type="date" id="entryDate">
+          </div>
+          <div class="field">
+            <label for="entryTags">Tags (comma separated)</label>
+            <input type="text" id="entryTags" placeholder="work, win, follow-up">
+          </div>
+        </div>
+        <div class="field">
+          <label for="entryTitle">Title</label>
+          <input type="text" id="entryTitle" placeholder="Short, clear title" required>
+        </div>
+        <div class="field">
+          <label for="entryBody">Body</label>
+          <textarea id="entryBody" placeholder="Details, context, notes..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Entry</button>
+          <button type="button" class="btn btn-ghost" id="cancelEntryBtn">Cancel</button>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-danger hidden" id="deleteEntryBtn">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='tracker.js') }}"></script>
+</body>
+</html>

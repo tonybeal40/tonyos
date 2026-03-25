@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Natoli Strategic Account Brief</title>
+
+<style>
+@page {
+  size: Letter portrait;
+  margin: 0.4in;
+}
+
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 20px;
+  font-size: 10px;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 10px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.controls {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover { border-color: #000; }
+
+button.primary {
+  background: #b30000;
+  color: #fff;
+  border-color: #b30000;
+}
+
+button.primary:hover { background: #990000; }
+
+button.green {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+button.green:hover { background: #15803d; }
+
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.file-list {
+  font-size: 11px;
+  color: #333;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 4px;
+  max-width: 500px;
+}
+
+.file-list .file-item { margin: 2px 0; }
+.file-list .phone-ref { color: #b30000; font-style: italic; }
+
+.stats {
+  background: #e8f5e9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 11px;
+}
+
+.stats strong { color: #b30000; }
+
+.progress-bar {
+  background: #fef3c7;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.progress-bar .bar {
+  background: #e5e7eb;
+  border-radius: 4px;
+  height: 8px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.progress-bar .fill {
+  background: #16a34a;
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.account-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  page-break-inside: avoid;
+  font-size: 9px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-company {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  max-width: 65%;
+}
+
+.card-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.card-industry {
+  font-size: 7px;
+  background: #1f2937;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.card-model {
+  font-size: 7px;
+  background: #3b82f6;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 8px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.card-meta span { display: flex; align-items: center; gap: 2px; }
+
+.retail-badge {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.fit-strong { color: #16a34a; font-weight: 600; }
+.fit-medium { color: #ca8a04; font-weight: 600; }
+.fit-weak { color: #dc2626; font-weight: 600; }
+
+.confidence-high { color: #16a34a; font-weight: 600; }
+.confidence-medium { color: #ca8a04; font-weight: 600; }
+.confidence-low { color: #dc2626; font-weight: 600; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  font-size: 8px;
+}
+
+.card-field {
+  background: #f9f9f9;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.card-field .label {
+  font-size: 7px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.card-field .value {
+  color: #333;
+  font-size: 8px;
+}
+
+.card-fit-reason {
+  margin-top: 4px;
+  padding: 4px 6px;
+  background: #dbeafe;
+  border-radius: 3px;
+  font-size: 8px;
+}
+
+.card-fit-reason .label {
+  font-size: 7px;
+  color: #1e40af;
+  text-transform: uppercase;
+}
+
+.card-angle {
+  margin-top: 4px;
+  padding: 4px 6px;
+  background: #fef3c7;
+  border-radius: 3px;
+  font-size: 8px;
+}
+
+.card-angle .label {
+  font-size: 7px;
+  color: #92400e;
+  text-transform: uppercase;
+}
+
+.footer {
+  font-size: 8px;
+  color: #666;
+  margin-top: 12px;
+  padding-top: 6px;
+  border-top: 1px solid #ddd;
+}
+
+.persona-section {
+  background: #f0fdf4;
+  border: 2px solid #16a34a;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+  page-break-inside: avoid;
+}
+
+.persona-section h2 {
+  font-size: 13px;
+  color: #166534;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #16a34a;
+  padding-bottom: 5px;
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.persona-card {
+  background: #fff;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 8px;
+}
+
+.persona-title {
+  font-size: 10px;
+  font-weight: bold;
+  color: #166534;
+  margin-bottom: 2px;
+}
+
+.persona-hero {
+  font-style: italic;
+  color: #15803d;
+  margin-bottom: 5px;
+  font-size: 8px;
+}
+
+.persona-pains { margin-bottom: 3px; color: #dc2626; }
+.persona-look { margin-bottom: 3px; color: #0369a1; }
+.persona-approach { margin-bottom: 3px; color: #7c3aed; }
+.persona-solutions { color: #166534; }
+
+@media print {
+  .controls, h1, .subtitle, .stats, .empty-state, .file-list, .progress-bar { display: none !important; }
+  .persona-section { break-inside: avoid; }
+  body { padding: 0; }
+  .accounts-grid { gap: 4px; }
+  .account-card { margin-bottom: 4px; }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Strategic Account Brief</h1>
+<div class="subtitle">Internal evaluation - Natoli Engineering</div>
+
+<div class="controls">
+  <input type="file" id="csvFiles" accept=".csv" multiple style="display: none;">
+  <button onclick="document.getElementById('csvFiles').click()">Upload CSVs</button>
+  <input type="file" id="phoneRef" accept=".csv" style="display: none;">
+  <button onclick="document.getElementById('phoneRef').click()">Phone Reference</button>
+  <button class="green" onclick="startDeepResearch()" id="researchBtn" disabled>Deep Research All</button>
+  <button onclick="saveCSV()" id="saveBtn" disabled>Save CSV</button>
+  <button class="primary" onclick="savePDF()" id="pdfBtn" disabled>Save PDF</button>
+  <button onclick="clearAll()">Clear</button>
+</div>
+
+<div class="file-list" id="fileList" style="display: none;"></div>
+
+<div class="progress-bar" id="progressBar" style="display: none;">
+  <span id="progressText">Researching companies...</span>
+  <div class="bar"><div class="fill" id="progressFill"></div></div>
+</div>
+
+<div class="stats" id="stats" style="display: none;"></div>
+
+<div class="persona-section">
+  <h2>Apollo Target Personas (Pull 4 Contacts Per Account)</h2>
+  <div class="persona-grid">
+    <div class="persona-card">
+      <div class="persona-title">Director of R&D / Formulation Scientist</div>
+      <div class="persona-hero">"The Architect of Certainty"</div>
+      <div class="persona-pains"><b>Pain Points:</b> Scale-up failures, Weak compaction data, Unpredictable powder behavior, Launch delays</div>
+      <div class="persona-look"><b>Look For:</b> New product launches, R&D expansion, regulatory submissions, formulation challenges</div>
+      <div class="persona-approach"><b>Approach:</b> Speak in data, predictability, reproducibility</div>
+      <div class="persona-solutions"><b>Solutions:</b> Compaction studies, CT-scan defect mapping, Predictive modeling, AIM R&D</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-title">Engineering & Technical Manager</div>
+      <div class="persona-hero">"The Engineer of Integration"</div>
+      <div class="persona-pains"><b>Pain Points:</b> Equipment integration issues, Limited automation/data visibility, Vendor designs ignore constraints</div>
+      <div class="persona-look"><b>Look For:</b> New line installations, automation upgrades, equipment replacement, MES initiatives</div>
+      <div class="persona-approach"><b>Approach:</b> Speak in systems, controls, integration - technical language</div>
+      <div class="persona-solutions"><b>Solutions:</b> PLC-controlled presses, Line integration support, Custom automation</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-title">Production / Operations Manager</div>
+      <div class="persona-hero">"The Commander of Continuity"</div>
+      <div class="persona-pains"><b>Pain Points:</b> Unplanned downtime, Difficult/slow cleaning, Capacity limits, Maintenance delays</div>
+      <div class="persona-look"><b>Look For:</b> Capacity expansion, shift additions, OEE improvement, changeover complaints</div>
+      <div class="persona-approach"><b>Approach:</b> Speak in uptime, efficiency, continuity - ease, reliability, speed</div>
+      <div class="persona-solutions"><b>Solutions:</b> Production-grade presses, Tool-less changeovers, Cleaning-friendly designs</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-title">Quality Assurance / Regulatory Manager</div>
+      <div class="persona-hero">"The Guardian of Compliance"</div>
+      <div class="persona-pains"><b>Pain Points:</b> Equipment complicates validation, Documentation gaps, Audit findings risk</div>
+      <div class="persona-look"><b>Look For:</b> FDA inspections, 483s, warning letters, facility qualifications, validation projects</div>
+      <div class="persona-approach"><b>Approach:</b> Speak in standards, compliance, risk mitigation - trust, rigor</div>
+      <div class="persona-solutions"><b>Solutions:</b> Compliance-ready equipment, Validation/documentation support</div>
+    </div>
+  </div>
+</div>
+
+<div id="output">
+  <div class="empty-state">
+    <div class="icon">📄</div>
+    <p>Upload CSVs to generate account briefs<br><small>Click "Deep Research All" to enrich with Manufacturing Model & Fit Reason</small></p>
+  </div>
+</div>
+
+<div class="footer">Confidential - Internal Use Only | Natoli Engineering</div>
+
+<script>
+const INDUSTRY_KEYWORDS = {
+  'Nuclear/SMR': ['nuclear', 'uranium', 'reactor', 'fuel pellet', 'smr', 'fission', 'bwx', 'framatome', 'areva', 'gnf', 'centrus', 'urenco', 'x-energy', 'terrestrial energy'],
+  'Hydrogen Storage': ['hydrogen', 'fuel cell', 'h2 ', 'electrolyzer', 'plug power', 'nel ', 'hydrogenics', 'proton onsite', 'nuvera', 'powercell', 'giner', 'mcphy', 'hyon', 'stratosfuel'],
+  'Carbon Capture': ['carbon capture', 'carbon clean', 'direct air', 'dac ', 'co2 capture', 'climeworks', 'carboncure', 'lanzatech', 'global thermostat', 'svante', 'charm industrial', 'heirloom', 'ebb carbon', 'noya', 'remora', 'carbonbuilt', 'mission zero', 'cleano2', 'opus 12'],
+  'Catalyst Manufacturing': ['catalyst', 'catalytic', 'grace', 'uop', 'basf catalyst', 'johnson matthey', 'shell catalyst', 'albemarle'],
+  'Advanced Ceramics': ['ceramic', 'ceradyne', 'coorstek', 'corning', 'blasch', 'rauschert', 'sintering', 'alumina', 'zirconia'],
+  'Battery Manufacturing': ['battery', 'lithium', 'sodium-ion', 'solid-state', 'cathode', 'anode', 'cell manufacturing', 'quantumscape', 'solid power', 'natron energy', 'ionic materials'],
+  'Rare Earth/Magnets': ['rare earth', 'magnet', 'neodymium', 'permanent magnet', 'mp materials'],
+  'Semiconductor': ['semiconductor', 'wafer', 'chip', 'silicon', 'intel', 'tsmc', 'micron'],
+  'Explosives/Defense': ['explosive', 'propellant', 'ammunition', 'ballistic', 'defense', 'munition', 'northrop', 'raytheon', 'lockheed'],
+  'Pharmaceutical': ['pharma', 'pharmaceutical', 'drug', 'medication', 'rx ', 'therapeutics', 'pfizer', 'merck', 'novartis', 'lilly', 'abbvie', 'bristol-myers'],
+  'Generic Pharma': ['generic', 'generics', 'teva', 'mylan', 'sandoz', 'amneal', 'lupin'],
+  'Nutraceutical': ['nutraceutical', 'dietary', 'supplement', 'vitamin', 'nutrition', 'health product', 'gnc', 'nature made', 'nutrabio', 'nootropic'],
+  'Veterinary': ['veterinary', 'animal health', 'vet ', 'pet med', 'zoetis', 'elanco'],
+  'Cannabis/CBD': ['cannabis', 'marijuana', 'thc', 'cbd', 'dispensary', 'cbd living', 'koi cbd'],
+  '3D Printing/Additive': ['3d print', 'additive', 'metal powder', 'feedstock', 'binder jet', 'desktop metal', 'markforged'],
+  'Abrasives': ['abrasive', 'grinding', 'polishing compound', 'saint-gobain abrasive', 'norton'],
+  'Cosmetics': ['cosmetic', 'pressed powder', 'makeup', 'beauty', 'loreal', 'estee lauder'],
+  'Medical Devices': ['medical device', 'implant', 'orthopedic', 'dental implant', 'stryker', 'medtronic', 'zimmer'],
+  'Animal Feed': ['animal feed', 'feed supplement', 'livestock', 'poultry feed', 'cargill feed', 'purina'],
+  'Chemicals': ['chemical', 'dow ', 'basf', 'dupont', 'lyondell', 'chevron phillips', 'ineos', 'flint hills', 'american elements', 'praxair', 'linde'],
+  'Energy/Utilities': ['energy', 'utility', 'power company', 'electric', 'pge', 'pseg', 'dominion', 'southern company', 'energy harbor']
+};
+
+const RETAIL_KEYWORDS = {
+  'Amazon': ['amazon'],
+  'Walmart': ['walmart', 'wal-mart'],
+  'Target': ['target'],
+  'Home Depot': ['home depot'],
+  'CVS': ['cvs'],
+  'Walgreens': ['walgreens'],
+  'Costco': ['costco'],
+  'GNC': ['gnc'],
+  'Whole Foods': ['whole foods'],
+  'Kroger': ['kroger']
+};
+
+let allAccounts = new Map();
+let phoneReference = new Map();
+let uploadedFiles = [];
+let phoneRefFile = null;
+let isResearching = false;
+
+function detectIndustry(companyName, website, industry) {
+  if (industry && industry.length > 2 && industry.toLowerCase() !== 'manufacturing') {
+    return industry;
+  }
+  const text = (companyName + ' ' + (website || '')).toLowerCase();
+  for (const [ind, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
+    for (const kw of keywords) {
+      if (text.includes(kw.toLowerCase())) return ind;
+    }
+  }
+  return 'Manufacturing';
+}
+
+function detectRetailPresence(companyName, website, existingRetail) {
+  if (existingRetail && existingRetail.toLowerCase() !== 'none' && existingRetail.length > 1) {
+    return existingRetail;
+  }
+  const text = (companyName + ' ' + (website || '')).toLowerCase();
+  const found = [];
+  for (const [retailer, keywords] of Object.entries(RETAIL_KEYWORDS)) {
+    for (const kw of keywords) {
+      if (text.includes(kw)) { found.push(retailer); break; }
+    }
+  }
+  return found.length > 0 ? found.join(', ') : '';
+}
+
+function normalizeCompanyName(name) {
+  return (name || '').toLowerCase()
+    .replace(/[,."'()]/g, '')
+    .replace(/\s+(inc|llc|ltd|corp|corporation|company|co|lp|llp)\.?$/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseCSVLine(line) {
+  const values = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (char === ',' && !inQuotes) {
+      values.push(current.trim());
+      current = '';
+    } else { current += char; }
+  }
+  values.push(current.trim());
+  return values;
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n").filter(l => l.trim());
+  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/"/g, '').trim());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i]);
+    const row = {};
+    headers.forEach((h, idx) => {
+      row[h] = (values[idx] || '').replace(/^"|"$/g, '').trim();
+    });
+    rows.push(row);
+  }
+  return rows;
+}
+
+document.getElementById("csvFiles").addEventListener("change", function(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      uploadedFiles.push(file.name);
+      mergeAccounts(reader.result);
+      updateUI();
+    };
+    reader.readAsText(file);
+  });
+  e.target.value = '';
+});
+
+document.getElementById("phoneRef").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  phoneRefFile = file.name;
+  const reader = new FileReader();
+  reader.onload = () => {
+    loadPhoneReference(reader.result);
+    updateUI();
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+function loadPhoneReference(text) {
+  const rows = parseCSV(text);
+  phoneReference.clear();
+  rows.forEach(row => {
+    const name = normalizeCompanyName(row.company || row.name || '');
+    const phone = row.phone || '';
+    if (name && phone && phone.length > 5 && !phone.includes('xxx')) {
+      phoneReference.set(name, phone);
+    }
+  });
+}
+
+function mergeAccounts(text) {
+  const rows = parseCSV(text);
+  rows.forEach(row => {
+    const company = row.company || row.name || '';
+    if (!company) return;
+    
+    const key = normalizeCompanyName(company);
+    
+    if (allAccounts.has(key)) {
+      const existing = allAccounts.get(key);
+      if ((!existing.phone || existing.phone.includes('xxx') || existing.phone.length < 6) && row.phone && row.phone.length > 5) {
+        existing.phone = row.phone;
+      }
+      if (!existing.manufacturingModel && row.manufacturing_model) {
+        existing.manufacturingModel = row.manufacturing_model;
+      }
+      if (!existing.fitReason && (row.fit_reason || row.reason)) {
+        existing.fitReason = row.fit_reason || row.reason;
+      }
+      if (!existing.natoliFit && (row.natoli_fit || row['natoli fit'])) {
+        existing.natoliFit = row.natoli_fit || row['natoli fit'];
+      }
+      if (!existing.retailPresence && (row.retail_presence || row['retail presence'])) {
+        existing.retailPresence = row.retail_presence || row['retail presence'];
+      }
+      return;
+    }
+    
+    let phone = row.phone || '';
+    if ((!phone || phone.includes('xxx') || phone.length < 6) && phoneReference.has(key)) {
+      phone = phoneReference.get(key);
+    }
+    
+    allAccounts.set(key, {
+      company: company,
+      website: row.website || '',
+      phone: phone,
+      city: row.city || '',
+      state: row.state || '',
+      confidence: row.confidence || '',
+      natoliAngle: row.natoli_angle || row.natoliangle || '',
+      pressOem: row.press_oem || row.pressoem || '',
+      probableDefects: row.probable_defects || row.probabledefects || '',
+      productionStage: row.production_stage || row.productionstage || '',
+      toolingClass: row.tooling_class || row.toolingclass || '',
+      industry: row.industry || '',
+      retailPresence: row.retail_presence || row['retail presence'] || row['retail_presence'] || '',
+      manufacturingModel: row.manufacturing_model || row['manufacturing model'] || row.manufacturingmodel || '',
+      natoliFit: row.natoli_fit || row['natoli fit'] || row.natolifit || '',
+      fitReason: row.fit_reason || row['fit reason'] || row.fitreason || row.reason || ''
+    });
+  });
+}
+
+function clearAll() {
+  allAccounts.clear();
+  phoneReference.clear();
+  uploadedFiles = [];
+  phoneRefFile = null;
+  document.getElementById("fileList").style.display = "none";
+  document.getElementById("stats").style.display = "none";
+  document.getElementById("progressBar").style.display = "none";
+  document.getElementById("pdfBtn").disabled = true;
+  document.getElementById("saveBtn").disabled = true;
+  document.getElementById("researchBtn").disabled = true;
+  document.getElementById("output").innerHTML = `
+    <div class="empty-state">
+      <div class="icon">📄</div>
+      <p>Upload CSVs to generate account briefs<br><small>Click "Deep Research All" to enrich with Manufacturing Model & Fit Reason</small></p>
+    </div>
+  `;
+}
+
+function updateUI() {
+  const fileListEl = document.getElementById("fileList");
+  if (uploadedFiles.length > 0 || phoneRefFile) {
+    fileListEl.style.display = "block";
+    let html = '<strong>Files:</strong><br>';
+    uploadedFiles.forEach(f => { html += `<div class="file-item">📊 ${f}</div>`; });
+    if (phoneRefFile) { html += `<div class="file-item phone-ref">📞 ${phoneRefFile} (phone reference only)</div>`; }
+    fileListEl.innerHTML = html;
+  }
+  
+  if (allAccounts.size > 0) {
+    document.getElementById("stats").style.display = "block";
+    const enriched = Array.from(allAccounts.values()).filter(a => a.manufacturingModel).length;
+    document.getElementById("stats").innerHTML = `<strong>${allAccounts.size}</strong> unique accounts (${enriched} enriched). Click "Deep Research All" to enrich remaining.`;
+    document.getElementById("pdfBtn").disabled = false;
+    document.getElementById("saveBtn").disabled = false;
+    document.getElementById("researchBtn").disabled = false;
+    renderAccounts();
+  }
+}
+
+async function startDeepResearch() {
+  if (isResearching) return;
+  isResearching = true;
+  
+  const btn = document.getElementById("researchBtn");
+  btn.disabled = true;
+  btn.textContent = "Researching...";
+  
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  const progressFill = document.getElementById("progressFill");
+  progressBar.style.display = "block";
+  
+  const accounts = Array.from(allAccounts.values()).filter(a => !a.manufacturingModel || a.manufacturingModel === '');
+  const total = accounts.length;
+  let completed = 0;
+  
+  for (const acc of accounts) {
+    progressText.textContent = `Researching ${acc.company}... (${completed + 1}/${total})`;
+    progressFill.style.width = `${(completed / total) * 100}%`;
+    
+    try {
+      const response = await fetch('/api/manufacturing-intel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          company: acc.company,
+          productType: 'Auto'
+        })
+      });
+      
+      if (response.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.result) {
+          const r = data.result;
+          acc.manufacturingModel = r.manufacturingModel || '';
+          acc.natoliFit = r.natoliFit || '';
+          acc.fitReason = r.natoliFitReason || '';
+          acc.retailPresence = r.retailPresence || acc.retailPresence || '';
+          if (r.productType) acc.productType = r.productType;
+        }
+      }
+    } catch (err) {
+      console.error('Research error:', err);
+    }
+    
+    completed++;
+    renderAccounts();
+    await new Promise(r => setTimeout(r, 500));
+  }
+  
+  progressFill.style.width = '100%';
+  progressText.textContent = `Complete! ${total} companies researched.`;
+  
+  setTimeout(() => {
+    progressBar.style.display = "none";
+    btn.disabled = false;
+    btn.textContent = "Deep Research All";
+    isResearching = false;
+    updateUI();
+  }, 2000);
+}
+
+function saveCSV() {
+  const headers = ['Company', 'Website', 'Phone', 'City', 'State', 'Industry', 'Manufacturing_Model', 'Natoli_Fit', 'Fit_Reason', 'Retail_Presence', 'Confidence', 'Production_Stage', 'Tooling_Class', 'Press_OEM', 'Probable_Defects', 'Natoli_Angle'];
+  
+  let csv = headers.join(',') + '\n';
+  
+  allAccounts.forEach(acc => {
+    const industry = detectIndustry(acc.company, acc.website, acc.industry);
+    const retail = detectRetailPresence(acc.company, acc.website, acc.retailPresence);
+    
+    const row = [
+      acc.company,
+      acc.website,
+      acc.phone,
+      acc.city,
+      acc.state,
+      industry,
+      acc.manufacturingModel || '',
+      acc.natoliFit || '',
+      acc.fitReason || '',
+      retail,
+      acc.confidence,
+      acc.productionStage,
+      acc.toolingClass,
+      acc.pressOem,
+      acc.probableDefects,
+      acc.natoliAngle
+    ].map(v => `"${(v || '').replace(/"/g, '""')}"`);
+    
+    csv += row.join(',') + '\n';
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `strategic_account_brief_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function savePDF() {
+  alert("In the print dialog:\n\n1. Destination: Save as PDF\n2. Layout: PORTRAIT\n3. Click Save");
+  window.print();
+}
+
+function renderAccounts() {
+  const out = document.getElementById("output");
+  let html = '<div class="accounts-grid">';
+  
+  allAccounts.forEach(acc => {
+    const industry = detectIndustry(acc.company, acc.website, acc.industry);
+    const retail = detectRetailPresence(acc.company, acc.website, acc.retailPresence);
+    const domain = acc.website ? acc.website.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : '-';
+    const location = acc.city && acc.state ? `${acc.city}, ${acc.state}` : acc.city || acc.state || '-';
+    
+    const confClass = acc.confidence.toLowerCase() === 'high' ? 'confidence-high' : 
+                      acc.confidence.toLowerCase() === 'medium' ? 'confidence-medium' : 'confidence-low';
+    
+    const fitClass = (acc.natoliFit || '').toLowerCase().includes('strong') ? 'fit-strong' :
+                     (acc.natoliFit || '').toLowerCase().includes('medium') ? 'fit-medium' : 'fit-weak';
+
+    html += `
+      <div class="account-card">
+        <div class="card-header">
+          <div class="card-company">${acc.company || 'Unknown'}</div>
+          <div class="card-badges">
+            <div class="card-industry">${industry}</div>
+            ${acc.manufacturingModel ? `<div class="card-model">${acc.manufacturingModel}</div>` : ''}
+          </div>
+        </div>
+        <div class="card-meta">
+          <span>🌐 ${domain}</span>
+          <span>📍 ${location}</span>
+          <span>📞 ${acc.phone || '-'}</span>
+          <span class="${confClass}">● ${acc.confidence || '-'}</span>
+          ${acc.natoliFit ? `<span class="${fitClass}">Fit: ${acc.natoliFit}</span>` : ''}
+          ${retail ? `<span class="retail-badge">🛒 ${retail}</span>` : ''}
+        </div>
+        <div class="card-grid">
+          <div class="card-field">
+            <div class="label">Stage</div>
+            <div class="value">${acc.productionStage || '-'}</div>
+          </div>
+          <div class="card-field">
+            <div class="label">Tooling</div>
+            <div class="value">${acc.toolingClass || '-'}</div>
+          </div>
+          <div class="card-field">
+            <div class="label">Press OEM</div>
+            <div class="value">${acc.pressOem || '-'}</div>
+          </div>
+        </div>
+        ${acc.fitReason ? `
+        <div class="card-fit-reason">
+          <div class="label">Fit Reason</div>
+          <div class="value">${acc.fitReason}</div>
+        </div>
+        ` : ''}
+        ${acc.natoliAngle ? `
+        <div class="card-angle">
+          <div class="label">Natoli Angle</div>
+          <div class="value">${acc.natoliAngle}</div>
+        </div>
+        ` : ''}
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  out.innerHTML = html;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>International Labmate - Media Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-elevated: #101624;
+      --bg-card: #151c2c;
+      --bg-card-soft: #111929;
+      --accent: #1da1f2;
+      --accent-soft: #22344f;
+      --accent-strong: #3bb3ff;
+      --text-main: #f4f7ff;
+      --text-soft: #c0c7dd;
+      --text-muted: #8c93aa;
+      --good: #4ade80;
+      --border-subtle: #1f2a3d;
+      --pill-bg: #0b1220;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 46%);
+      color: var(--text-main);
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .logo-fixed {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 56px;
+      height: auto;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      background: #000;
+      object-fit: contain;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: 30px;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .title-block p {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 720px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .grade-card {
+      min-width: 190px;
+      max-width: 230px;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    .grade-letter {
+      font-size: 46px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #facc15;
+    }
+
+    .grade-caption {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(9, 12, 24, 0.9);
+      color: var(--text-soft);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease;
+    }
+
+    .btn-pill.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-pill.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-pill:hover:not(.primary) {
+      background: #111827;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    h2.section-title {
+      font-size: 22px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    p.section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 840px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 56%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      margin-top: 14px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card p,
+    .card ul {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bubble {
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(9, 12, 24, 0.9);
+    }
+
+    .bubble span {
+      font-weight: 600;
+      color: #fbbf24;
+      margin-left: 4px;
+    }
+
+    .pill-tagline {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 24px 12px 48px;
+      }
+      .title-block h1 {
+        font-size: 24px;
+      }
+    }
+
+    .footnote {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional: Natoli logo if natoli-logo.png is in this folder -->
+  <img src="natoli-logo.png" alt="Natoli logo" class="logo-fixed" />
+
+  <div class="shell">
+    <header>
+      <div class="title-block">
+        <h1>International Labmate - Full Media Evaluation</h1>
+        <p>
+          Qualitative review of International Labmate as part of the Natoli media mix. This page explains where this title
+          fits, what it is good for, and why it should be treated as a supporting visibility channel instead of a core
+          commercial engine for tablet tooling and presses.
+        </p>
+        <div class="chip-row">
+          <div class="chip">LAB</div>
+          <div class="chip">GENERAL SCIENCE</div>
+          <div class="chip">TIER 2 / TIER 3 VISIBILITY</div>
+        </div>
+      </div>
+
+      <div class="grade-card">
+        <div class="grade-letter">B</div>
+        <div class="grade-caption">
+          Strong lab presence, low tablet buyer focus.<br />
+          Useful for awareness, not primary for revenue.
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-row">
+      <a href="media-scorecard.html" class="btn-pill">← Back to Media Scorecard</a>
+      <a href="https://www.labmate-online.com" target="_blank" rel="noopener" class="btn-pill primary">
+        Visit Labmate site
+      </a>
+    </div>
+
+    <!-- 1. Executive summary -->
+    <h2 class="section-title">1. Executive summary - decision first</h2>
+    <p class="section-intro">
+      International Labmate serves a wide laboratory and analytical audience across many scientific fields. Only a smaller
+      portion of that audience overlaps with Natoli's solid dose buyers. The title can support Natoli Scientific visibility
+      and general lab credibility, but buyer density for tablet tooling and press decisions is modest. Compared with focused
+      pharma titles, cost per true buyer is higher.
+    </p>
+
+    <div class="card">
+      <h3>Verdict for 2026 planning</h3>
+      <p>
+        International Labmate should be treated as a selective awareness channel for Natoli Scientific and broad lab
+        branding, not as a primary commercial driver for Natoli Engineering.
+      </p>
+      <ul>
+        <li>Useful for general laboratory and analytical positioning of Natoli Scientific.</li>
+        <li>Too broad and mixed to carry the weight of tablet tooling revenue goals.</li>
+        <li>Best when paired with stronger buyer dense channels in the same time frame.</li>
+        <li>Budget should stay controlled and tied to clear scientific or event based objectives.</li>
+      </ul>
+      <p class="pill-tagline">
+        Bottom line: keep Labmate as a controlled visibility play. Do not rely on it for pipeline and quote targets.
+      </p>
+    </div>
+
+    <!-- 2. Recommended role -->
+    <h2 class="section-title">2. Recommended role in Natoli strategy</h2>
+    <div class="two-column">
+      <div class="card">
+        <h3>Use for</h3>
+        <ul>
+          <li>Natoli Scientific branding around analytical support and lab focused work.</li>
+          <li>High level pieces that position Natoli as a knowledgeable lab and technology partner.</li>
+          <li>Exhibitor and event promotion where Labmate is already a trusted name in the lab community.</li>
+          <li>Campaigns where success is defined as broad scientific reach, not direct SQL creation.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Do not use for</h3>
+        <ul>
+          <li>Tooling campaigns aimed at press operators, maintenance or reliability engineers.</li>
+          <li>Tablet press and scale up campaigns where pharma MS and T is the primary audience.</li>
+          <li>Programs where leadership expects a measurable quote pipeline from media spend.</li>
+          <li>Any work that needs a tight link between media and Natoli sales team activity.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. ICP tier analysis -->
+    <h2 class="section-title">3. ICP tier analysis - who is actually in the audience</h2>
+    <p class="section-intro">
+      Mapping the Labmate audience against the Natoli ICP tiers shows that most of the reach is broad lab science with only
+      a slice of true tablet or pharma decision makers.
+    </p>
+
+    <div class="card">
+      <h3>Tier distribution</h3>
+      <ul>
+        <li>
+          <strong>Tier 1 - true buyers:</strong> a small portion of readers work in pharma or drug product roles tied to
+          solid dose equipment and process.
+        </li>
+        <li>
+          <strong>Tier 2 - adjacent roles:</strong> lab managers, analytical chemists and QA or QC staff who may influence
+          vendor perception but do not own tooling budgets.
+        </li>
+        <li>
+          <strong>Tier 3 - broad lab base:</strong> the majority of the audience. General laboratory, environmental and
+          other sectors with no direct path to tablet tooling or press spend.
+        </li>
+      </ul>
+      <p class="pill-tagline">
+        Interpretation: Labmate delivers reach and credibility in the lab world, but most of that reach is not aligned with
+        Natoli's commercial targets.
+      </p>
+    </div>
+
+    <!-- 4. Media performance vs buyer density -->
+    <h2 class="section-title">4. Media performance compared with buyer density</h2>
+    <p class="section-intro">
+      The planned program provides print, digital and online exposure. From a media perspective the numbers are solid, but
+      the key question is how many of those impressions belong to Natoli's Tier 1 buyers.
+    </p>
+
+    <div class="card">
+      <h3>Commercial view</h3>
+      <ul>
+        <li>Campaigns can drive opens and clicks, but many engagements come from general lab and instrumentation roles.</li>
+        <li>Effective cost per true compaction buyer is higher than in focused pharma titles.</li>
+        <li>Labmate is best judged on incremental visibility, not on direct opportunity creation.</li>
+        <li>On a pure buyer basis, stronger options exist in the Tier 1 media group.</li>
+      </ul>
+      <p class="pill-tagline">
+        For a CFO, Labmate is a nice to have lab awareness layer, not a primary place to chase tablet tooling ROI.
+      </p>
+    </div>
+
+    <!-- 5. Content relevance -->
+    <h2 class="section-title">5. Content relevance check</h2>
+    <p class="section-intro">
+      Recent Labmate content leans into general laboratory technology, analytical systems and cross industry applications.
+      Solid dose and tablet compression topics appear, but they are not the center of gravity.
+    </p>
+
+    <div class="card">
+      <h3>Typical topics seen</h3>
+      <ul>
+        <li>Lab equipment, chromatography, spectroscopy and general analytical technology.</li>
+        <li>Life science and environmental analysis coverage alongside drug discovery themes.</li>
+        <li>Product and event news for a wide lab and testing audience.</li>
+      </ul>
+      <p class="pill-tagline">
+        This mix supports general lab credibility, but it does not consistently put Natoli in front of the people who own
+        tablet presses and tooling.
+      </p>
+    </div>
+
+    <!-- 6. Media grade bubbles -->
+    <h2 class="section-title">6. Media grade by category</h2>
+    <p class="section-intro">
+      Grades follow the same criteria used across the wider Natoli Media Scorecard. The letters summarise both the workbook
+      data and this qualitative review.
+    </p>
+
+    <div class="card">
+      <h3>Category grades</h3>
+      <div class="bubble-row">
+        <div class="bubble">Audience fit<span>C+</span></div>
+        <div class="bubble">Buyer density<span>C</span></div>
+        <div class="bubble">Scientific credibility<span>B+</span></div>
+        <div class="bubble">Engineering relevance<span>C</span></div>
+        <div class="bubble">Natoli fit<span>C</span></div>
+        <div class="bubble">ROI probability<span>Moderate to low</span></div>
+      </div>
+      <p class="pill-tagline">
+        Score interpretation: Labmate is a credible lab brand with limited overlap to Natoli's core compaction revenue
+        drivers. It should support awareness, not drive the commercial plan.
+      </p>
+    </div>
+
+    <!-- 7. Strategic recommendation -->
+    <h2 class="section-title">7. Strategic recommendation for Dave and leadership</h2>
+    <div class="card">
+      <h3>Tier and spend posture</h3>
+      <ul>
+        <li><strong>Assigned tier:</strong> Tier 2 to Tier 3 visibility channel.</li>
+        <li><strong>Role:</strong> optional support for Natoli Scientific and lab level branding.</li>
+        <li><strong>Sales posture:</strong> do not count Labmate in hard SQL or revenue targets.</li>
+        <li><strong>Budget posture:</strong> keep spend modest and campaign specific. Focus major budget on Tier 1 titles.</li>
+      </ul>
+      <p class="pill-tagline">
+        If Natoli invests too much in Labmate, it dilutes focus from the media that sit closest to real buyers.
+      </p>
+    </div>
+
+    <!-- 8. OS box -->
+    <h2 class="section-title">8. How to reuse this framework for other media buys</h2>
+    <p class="section-intro">
+      This page mirrors the same evaluation structure used for Scientist Live, IPT, APR and the rest of the workbook.
+      Leadership can scan any publication and understand where it fits in seconds.
+    </p>
+
+    <div class="card">
+      <h3>Media scorecard OS</h3>
+      <ul>
+        <li><strong>Audience fit</strong> - how closely the readership matches Natoli ICP.</li>
+        <li><strong>Buyer density</strong> - share of true tablet and compaction buyers.</li>
+        <li><strong>Scientific credibility</strong> - strength as a home for Natoli Scientific stories.</li>
+        <li><strong>Engineering relevance</strong> - focus on topics that touch tooling, presses and reliability.</li>
+        <li><strong>Natoli fit</strong> - combined value for Natoli Engineering and Scientific.</li>
+        <li><strong>ROI probability</strong> - realistic expectation that spend can lead to commercial outcomes.</li>
+      </ul>
+      <p class="pill-tagline">
+        Rule of thumb: Labmate stays in the awareness bucket while sales budget flows to the channels where real buyers live.
+      </p>
+    </div>
+
+    <p class="footnote">
+      Prepared as part of the Natoli Media Scorecard for 2026 planning. Summary based on the International Labmate sheet
+      in the Media Placement 2025 workbook and the Natoli ICP tiering model.
+    </p>
+  </div>
+</body>
+</html>

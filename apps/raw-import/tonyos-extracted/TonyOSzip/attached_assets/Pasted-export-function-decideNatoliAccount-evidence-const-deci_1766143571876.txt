@@ -1,0 +1,75 @@
+export function decideNatoliAccount(evidence) {
+  const decision = {
+    market_gate: "fail",
+    environment_tier: null,
+    persona_tiers: [],
+    signal_status: "Monitor",
+    division_owner: null,
+    routing_action: null,
+    disqualification_reason: null
+  };
+
+  // MARKET GATE
+  if (!evidence.compactionCritical) {
+    decision.disqualification_reason =
+      "Compaction does not materially affect performance, compliance, or uptime";
+    return decision;
+  }
+
+  decision.market_gate = "pass";
+
+  // ENVIRONMENT TIER
+  if (evidence.regulated && evidence.commercialScale) {
+    decision.environment_tier = "Tier 1 Environment";
+  } else if (evidence.rdOrPilot) {
+    decision.environment_tier = "Tier 2 Environment";
+  } else {
+    decision.disqualification_reason =
+      "No defensible compaction risk at the company environment level";
+    return decision;
+  }
+
+  // PERSONA TIERS
+  if (evidence.hasMST) {
+    decision.persona_tiers.push({
+      persona: "MS&T / Process Engineering",
+      tier: 1,
+      division: "Natoli Scientific",
+      risk: "Scale up predictability"
+    });
+  }
+
+  if (evidence.hasRD) {
+    decision.persona_tiers.push({
+      persona: "R&D / Formulation",
+      tier: 1,
+      division: "Natoli Scientific",
+      risk: "Late stage surprises"
+    });
+  }
+
+  if (evidence.hasEngineering) {
+    decision.persona_tiers.push({
+      persona: "Engineering / Production",
+      tier: 2,
+      division: "Natoli Engineering",
+      risk: "Downtime and tool failure"
+    });
+  }
+
+  // DIVISION OWNER
+  const divisions = [...new Set(decision.persona_tiers.map(p => p.division))];
+  decision.division_owner =
+    divisions.length === 1 ? divisions[0] : "Both";
+
+  // SIGNAL CHECK
+  if (evidence.scaleUpSignal || evidence.validationSignal) {
+    decision.signal_status = "Engage Now";
+    decision.routing_action = "Route to Tier 1 technical owner";
+  } else {
+    decision.signal_status = "Monitor";
+    decision.routing_action = "Hold until scale-up or validation signal appears";
+  }
+
+  return decision;
+}

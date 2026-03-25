@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TonyOS - AI Command Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <meta name="description" content="TonyOS is an AI command center for StoryBrand messaging, targeting, and revenue systems." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <script type="module">
+    import { wireTonyOS } from "/static/tonyos-sdk.js";
+    wireTonyOS();
+  </script>
+  <div class="shell">
+    <header class="top-bar">
+      <div>
+        <h1 class="app-title">TonyOS</h1>
+        <p class="app-subtitle">
+          Your personal AI command center for StoryBrand, targeting, and revenue tools.
+        </p>
+      </div>
+      <div class="top-bar-actions">
+        {% if user %}
+          <span class="user-info" style="display: flex; align-items: center; gap: 0.75rem;">
+            {% if user.profile_image_url %}
+              <img src="{{ user.profile_image_url }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+            {% endif %}
+            <span style="color: #fff; font-size: 0.9rem;">{{ user.first_name or user.email or 'User' }}</span>
+          </span>
+          <a href="{{ url_for('replit_auth.logout') }}" class="ghost-btn" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 0.85rem;">Log out</a>
+        {% else %}
+          <a href="{{ url_for('replit_auth.login') }}" class="primary-btn" style="padding: 0.5rem 1.25rem; font-size: 0.9rem;">Sign In</a>
+        {% endif %}
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-left">
+        <p class="eyebrow">AI for serious operators</p>
+        <h2 class="hero-title">
+          One simple control panel to build clear messaging, better targeting, and smarter sales.
+        </h2>
+        <p class="hero-text">
+          TonyOS runs on Tony's machine as a private AI engine, built to turn messy websites and ideas into StoryBrand grade
+          positioning, buyer targeting, and ready to ship copy. This site shows what it does and how you can tap into it.
+        </p>
+        <div class="hero-actions">
+          <a href="#tools" class="primary-btn">See the tools</a>
+          <a href="#contact" class="ghost-btn">Book a working session</a>
+          <button onclick="openCodeModal()" class="ghost-btn" style="background: #2563eb; border-color: #2563eb;">Get Code Templates</button>
+          <a href="/apollo-netlify" class="ghost-btn" style="background: #22c55e; border-color: #22c55e;">Apollo Export</a>
+        </div>
+        <p class="hero-footnote">
+          Built with OpenAI, Story style thinking, and real world sales experience.
+        </p>
+      </div>
+
+      <div class="hero-right">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="panel-title">TonyOS snapshot</span>
+          </div>
+          <div class="panel-body">
+            <p class="panel-line"><span class="label">Clarity runs:</span> Full brand script, one liner, hero, cold email.</p>
+            <p class="panel-line"><span class="label">Targeting runs:</span> Industries, titles, tiers, regions.</p>
+            <p class="panel-line"><span class="label">Funnel runs:</span> Landing outline, email ideas, LinkedIn posts.</p>
+            <p class="panel-line"><span class="label">Project memory:</span> Save projects, reload them, refine over time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="grid-section">
+      <div class="section-head">
+        <h2 class="section-title">Inside TonyOS</h2>
+        <p class="section-text">
+          These are the core modules running on the local TonyOS app. This site is the public front door, the heavy lifting happens in the background with AI.
+        </p>
+      </div>
+
+      <main class="tools-grid">
+        <a href="/static/internal/revops-command/index.html" class="card card-glass clickable" style="border: 2px solid #10b981; box-shadow: 0 0 30px rgba(16,185,129,0.4); grid-column: span 2;">
+          <p class="card-tag" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">NEW - Complete RevOps Platform</p>
+          <h2 style="color: #10b981; font-size: 1.5rem;">RevOps Command Center</h2>
+          <p style="font-size: 1rem;">
+            Complete sales intelligence platform with built-in CRM. 6-step wizard: Company → StoryBrand → Analysis → Personas → Outreach → CRM. Plus full accounts, contacts, pipeline & activity tracking.
+          </p>
+          <p class="card-foot" style="color: #10b981;">All-in-one RevOps. Works for any industry. 100% offline.</p>
+        </a>
+
+        <a href="/static/gtm-command-center.html" class="card card-glass clickable" style="border: 2px solid #06b6d4; box-shadow: 0 0 30px rgba(6,182,212,0.4); grid-column: span 2;">
+          <p class="card-tag" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6); color: white;">NEW - Full GTM Platform</p>
+          <h2 style="color: #06b6d4; font-size: 1.5rem;">Go-To-Market Inventory Command Center</h2>
+          <p style="font-size: 1rem;">
+            Complete GTM platform with ACC (1,036 items) + HAGLIN (2,298 items) pre-loaded. Rankings, Marketing strategies, Sales playbooks, RevOps execution, priority actions, and Netlify deployment.
+          </p>
+          <p class="card-foot" style="color: #06b6d4;">Inventory → Intelligence → ROI → GTM → Cash | View separately or combined</p>
+        </a>
+
+        <a href="/static/purchasing-command-center.html" class="card card-glass clickable" style="border: 2px solid #10b981; box-shadow: 0 0 30px rgba(16,185,129,0.4); grid-column: span 2;">
+          <p class="card-tag" style="background: linear-gradient(135deg, #10b981, #06b6d4); color: white;">NEW - Purchasing Operations</p>
+          <h2 style="color: #10b981; font-size: 1.5rem;">Purchasing Command Center</h2>
+          <p style="font-size: 1rem;">
+            Complete purchasing operations platform. Template library (RFQ, PO, Vendor docs), CSV intelligence hub, guided workflows, document control, and one-click Netlify deployment for team sharing.
+          </p>
+          <p class="card-foot" style="color: #10b981;">Templates → CSV Tools → Workflows → Dashboard → Netlify Deploy</p>
+        </a>
+
+        <a href="/static/market-discovery.html" class="card card-glass clickable" style="border: 2px solid #ff6b35; box-shadow: 0 0 20px rgba(255,107,53,0.3);">
+          <p class="card-tag" style="background: linear-gradient(135deg, #ff6b35, #f7931e); color: white;">AI-Powered</p>
+          <h2 style="color: #ff6b35;">Market Intelligence & Opportunity Engine</h2>
+          <p>
+            78-industry discovery + AI pressure detection. Company scanning, batch processing, competitor intelligence, planogram discovery, and opportunity pipeline tracking.
+          </p>
+          <p class="card-foot" style="color: #ff6b35;">Unified platform: Discovery + Scanner + Competitor Intel + Pipeline</p>
+        </a>
+
+        <div class="card card-glass" style="border: 2px solid #0073ea; box-shadow: 0 0 20px rgba(0,115,234,0.3);">
+          <p class="card-tag" style="background: linear-gradient(135deg, #0073ea, #0060c2); color: white;">CRM Portal</p>
+          <h2 style="color: #0073ea;">Territory Rep Portal</h2>
+          <p>
+            Monday.com-style CRM for territory reps. Accounts, contacts, pipeline, activity tracking, CSV import, and personalized outreach templates.
+          </p>
+          <p class="card-foot" style="color: #0073ea;">Full CRM with 25+ industries. 100% offline - no API needed.</p>
+          <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+            <a href="/static/internal/territory-rep-portal/index.html" class="btn" style="background:#0073ea;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">🚀 Open CRM</a>
+            <a href="/static/crm-portal.zip" download class="btn" style="background:#00d4aa;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">📥 Download ZIP</a>
+            <a href="/crm-code" class="btn" style="background:#6366f1;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">📄 View Code</a>
+          </div>
+        </div>
+
+        <a href="/journal" class="card card-glass clickable">
+          <p class="card-tag">NEW</p>
+          <h2>Journal</h2>
+          <p>
+            Your private space to think, reflect, and grow. Daily entries, mood tracking, gratitude lists, AI prompts, and streak tracking.
+          </p>
+          <p class="card-foot">A journalist's dream journaling experience.</p>
+        </a>
+
+        <a href="/chat" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>AI Chat Console</h2>
+          <p>
+            Chat layout with clean bubbles, tuned for sales, messaging clarity, and real decisions. Built for deep work, not small talk.
+          </p>
+          <p class="card-foot">Runs inside the TonyOS desktop app.</p>
+        </a>
+
+        <a href="/simple-chat" class="card card-glass clickable">
+          <p class="card-tag">NEW</p>
+          <h2>Simple Chat</h2>
+          <p>
+            Lightweight AI chat with no bells and whistles. Just type a question, get an answer. Fast and focused.
+          </p>
+          <p class="card-foot">Quick access to GPT-4o-mini.</p>
+        </a>
+
+        <a href="/storybrand" class="card card-glass clickable">
+          <p class="card-tag">Flagship</p>
+          <h2>Message Clarity Framework</h2>
+          <p>
+            Paste a website, TonyOS scrapes multiple pages, builds the brand script, personas, funnel, and a full brand score you can act on.
+          </p>
+          <p class="card-foot">Used to analyze any company in the world.</p>
+        </a>
+
+        <a href="/storybrand-scanner" class="card card-glass clickable" style="border: 2px solid #f59e0b; box-shadow: 0 0 20px rgba(245,158,11,0.3);">
+          <p class="card-tag" style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white;">NEW - RevOps</p>
+          <h2 style="color: #f59e0b;">StoryBrand Scanner</h2>
+          <p>
+            Paste any website URL. Get instant 7-part StoryBrand analysis with clarity score, messaging gaps, and priority actions for outreach.
+          </p>
+          <p class="card-foot" style="color: #f59e0b;">Integrated into Territory Rep Portal for full RevOps.</p>
+        </a>
+
+        <a href="/research" class="card card-glass clickable" style="border: 2px solid #e11d48; box-shadow: 0 0 20px rgba(225,29,72,0.3);">
+          <p class="card-tag" style="background: linear-gradient(135deg, #e11d48, #ff3b6a); color: white;">Business Intel</p>
+          <h2 style="color: #e11d48;">Website Analyzer</h2>
+          <p>
+            Scans any website for StoryBrand, personas, competition, buying signals, ROI logic, and sales strategy. Decision-ready intelligence.
+          </p>
+          <p class="card-foot" style="color: #e11d48;">Universal business intelligence scanner.</p>
+        </a>
+
+        <a href="/jobs" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>Job Search HQ</h2>
+          <p>
+            A full panel for roles, outreach, resume targeting, and interview prep, powered by the same AI stack that runs TonyOS.
+          </p>
+          <p class="card-foot">Designed for serious career moves.</p>
+        </a>
+
+        <a href="/memory" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>Money and Budget</h2>
+          <p>
+            Two week and monthly plans tied to real life, sports, kids, and bills. Simple, direct, built for stability not hype.
+          </p>
+          <p class="card-foot">Built around actual numbers, not theory.</p>
+        </a>
+
+        <a href="/builder" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>Website Builder</h2>
+          <p>
+            Fast landing page drafts. Describe the offer, audience, and blocks. Get clean HTML and a live preview you can ship.
+          </p>
+          <p class="card-foot">Build and export landing pages in minutes.</p>
+        </a>
+
+        <a href="/daily" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>Daily Command Center</h2>
+          <p>
+            Three simple inputs to focus your day. Get your one win, bust your blocker, and start a 10 minute sprint.
+          </p>
+          <p class="card-foot">Clarity in under 60 seconds.</p>
+        </a>
+
+        <a href="/crm" class="card card-glass clickable">
+          <p class="card-tag">Live tool</p>
+          <h2>Tony CRM</h2>
+          <p>
+            Paste a website, pull company info automatically, and save leads to Google Sheets. Simple lead capture for outbound.
+          </p>
+          <p class="card-foot">Website enrichment and lead tracking.</p>
+        </a>
+
+        <a href="/visual-builder" class="card card-glass clickable">
+          <p class="card-tag">NEW</p>
+          <h2>LinkedIn Visual Builder</h2>
+          <p>
+            Create influencer-style LinkedIn posts with custom backgrounds, templates, and AI-generated copy. Export as PNG.
+          </p>
+          <p class="card-foot">Professional visuals in seconds.</p>
+        </a>
+
+        <a href="javascript:void(0)" onclick="window.open(window.location.origin.replace(/-3001\./, '-5000.').replace(/:3001/, ':5000'), '_blank')" class="card card-glass clickable">
+          <p class="card-tag">Dev Tool</p>
+          <h2>CodeBench</h2>
+          <p>
+            AI-powered code sandbox. Write HTML, CSS, and JS with live preview. Debug, improve, and build with AI assistance.
+          </p>
+          <p class="card-foot">Opens in new tab on port 5000.</p>
+        </a>
+
+        <a href="/resume" class="card card-glass clickable">
+          <p class="card-tag">NEW</p>
+          <h2>Resume Builder</h2>
+          <p>
+            Enterprise-grade resume builder with ATS-clean output, PDF export, and executive-level formatting for serious job seekers.
+          </p>
+          <p class="card-foot">Fortune-grade structure. Built for credibility.</p>
+        </a>
+
+        <a href="/natoli-revops" class="card card-glass clickable">
+          <p class="card-tag">NEW</p>
+          <h2>Tony RevOps</h2>
+          <p>
+            Revenue operations command center for Natoli. System overview, targeting, buyer personas, results tracking, and downloadable playbooks.
+          </p>
+          <p class="card-foot">Full RevOps framework in one place.</p>
+        </a>
+
+        <a href="/apollo-crm" class="card card-glass clickable" style="border: 2px solid #00ff88;">
+          <p class="card-tag">APOLLO</p>
+          <h2>Apollo CRM</h2>
+          <p>
+            Full Apollo.io-powered CRM with company enrichment, Natoli division routing (Scientific vs Engineering), persona scoring, and outreach templates.
+          </p>
+          <p class="card-foot">Enrich companies, score personas, generate outreach.</p>
+        </a>
+
+        <a href="/whx-dubai" class="card card-glass clickable" style="border: 2px solid #dc2626;">
+          <p class="card-tag">TRADE SHOWS</p>
+          <h2>Trade Show Intelligence</h2>
+          <p>
+            Strategic evaluation of industry trade shows. Scoring framework for Natoli ROI, buyer density, scientific credibility, and tactical recommendations.
+          </p>
+          <p class="card-foot">WHX Dubai 2026 evaluation live now.</p>
+        </a>
+
+        <a href="/media-scorecard" class="card card-glass clickable" style="border: 2px solid #2563eb;">
+          <p class="card-tag">MEDIA</p>
+          <h2>Media Publications Scorecard</h2>
+          <p>
+            Strategic evaluation of 11 industry publications. ICP tier analysis, media grades, and tactical recommendations for Natoli content placement.
+          </p>
+          <p class="card-foot">Click to view full publication evaluations.</p>
+        </a>
+      </main>
+    </section>
+
+    <section id="how-it-works" class="how-section">
+      <div class="section-head">
+        <h2 class="section-title">How TonyOS is used in real work</h2>
+        <p class="section-text">
+          TonyOS is not a toy app. It is a working system Tony uses to study companies, build Story style messaging,
+          and line up outreach that makes sense to decision makers. The same engine can be used on your brand.
+        </p>
+      </div>
+
+      <div class="how-grid">
+        <div class="how-card">
+          <h3>1. Scan the company</h3>
+          <p>
+            Start with a website, notes, and any context from sales calls. TonyOS scrapes key pages and compresses
+            everything into a clean, readable view.
+          </p>
+        </div>
+        <div class="how-card">
+          <h3>2. Build the narrative</h3>
+          <p>
+            The engine drafts the brand script, one liner, home hero, landing outline, cold email, LinkedIn copy,
+            and a brand score with quick wins.
+          </p>
+        </div>
+        <div class="how-card">
+          <h3>3. Turn it into action</h3>
+          <p>
+            From there, Tony maps targeting, outreach, and content around real buyers, real titles, and real regions so execution is simple.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <h2 class="section-title">Work with Tony</h2>
+      <p class="section-text">
+        If you want to use this level of AI thinking on your company, you do not need a login. You need a working session.
+        Tony brings TonyOS into the call and builds live with you.
+      </p>
+
+      <div class="contact-card">
+        <p class="contact-line">
+          Send a short message with your company name, website, and what you want to improve first.
+        </p>
+        <p class="contact-line">
+          Suggested subject line: <strong>"Use TonyOS on our company."</strong>
+        </p>
+        <p class="contact-line">
+          Email: <a href="mailto:your-email-here@example.com">your-email-here@example.com</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="setup" class="setup-section" style="background: rgba(15,23,42,0.95); border-top: 1px solid rgba(255,255,255,0.1); padding: 3rem 1rem; margin-top: 3rem;">
+      <div style="max-width: 1000px; margin: 0 auto;">
+        <h2 class="section-title" style="margin-bottom: 1.5rem;">Setup Instructions</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+          <div style="background: rgba(30,41,59,0.8); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #e11d48; margin: 0 0 1rem 0; font-size: 1.1rem;">Data Sync Info</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6; margin: 0;">
+              <strong style="color: #fff;">Auto-sync is always on.</strong> Every time you save in any app, your data automatically saves to your local database AND syncs to Google Sheets. You never need to manually update files.
+            </p>
+          </div>
+          
+          <div style="background: rgba(30,41,59,0.8); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #e11d48; margin: 0 0 1rem 0; font-size: 1.1rem;">Connect Google Sheets</h3>
+            <ol style="color: #94a3b8; font-size: 0.9rem; line-height: 1.8; margin: 0; padding-left: 1.2rem;">
+              <li>Create a Google Sheet</li>
+              <li>Extensions > Apps Script</li>
+              <li>Paste code from <code style="background:#1e293b;padding:2px 6px;border-radius:4px;">docs/apps-script-endpoint.js</code></li>
+              <li>Deploy > New deployment > Web app</li>
+              <li>Click the indicator (bottom-right) and paste URL</li>
+            </ol>
+          </div>
+          
+          <div style="background: rgba(30,41,59,0.8); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #e11d48; margin: 0 0 1rem 0; font-size: 1.1rem;">Run as Desktop App</h3>
+            <ol style="color: #94a3b8; font-size: 0.9rem; line-height: 1.8; margin: 0; padding-left: 1.2rem;">
+              <li>Download zip from Replit (... menu > Download)</li>
+              <li>Extract the folder</li>
+              <li>Open terminal in <code style="background:#1e293b;padding:2px 6px;border-radius:4px;">electron/</code> folder</li>
+              <li>Run: <code style="background:#1e293b;padding:2px 6px;border-radius:4px;">npm install</code></li>
+              <li>Run: <code style="background:#1e293b;padding:2px 6px;border-radius:4px;">npm start</code></li>
+            </ol>
+          </div>
+          
+          <div style="background: rgba(30,41,59,0.8); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #e11d48; margin: 0 0 1rem 0; font-size: 1.1rem;">What Gets Synced</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6; margin: 0;">
+              Each app syncs to its own tab in your Google Sheet:
+              <br><strong style="color:#fff;">Journal</strong> - entries, mood, gratitude
+              <br><strong style="color:#fff;">CRM_Contacts</strong> - your connections
+              <br><strong style="color:#fff;">CRM_Activity</strong> - outreach logs
+              <br><strong style="color:#fff;">Budget</strong> - transactions
+              <br><strong style="color:#fff;">Daily</strong> - daily focus entries
+              <br><strong style="color:#fff;">Jobs</strong> - job tracking
+            </p>
+          </div>
+        </div>
+        
+        <p style="text-align: center; color: #64748b; margin-top: 1.5rem; font-size: 0.85rem;">
+          Full instructions in <code style="background:#1e293b;padding:2px 6px;border-radius:4px;">COMPLETE-SETUP-GUIDE.md</code> | 
+          Click the <strong style="color:#22c55e;">Live</strong> indicator (bottom-right) to configure Google Sheets
+        </p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Built by Tony, using OpenAI, Story style thinking, and real sales work.</p>
+      <p style="margin-top: 0.5rem;"><a href="/settings" style="color: #94a3b8; text-decoration: none;">Settings & Google Sheets Code</a></p>
+    </footer>
+  </div>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+
+  <!-- Code Templates Modal -->
+  <div id="codeModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; padding:20px; overflow:auto;">
+    <div style="max-width:900px; margin:0 auto; background:#1e293b; border-radius:16px; padding:28px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#fff; font-size:22px;">Code Templates</h2>
+        <button onclick="closeCodeModal()" style="background:#ef4444; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:600;">Close</button>
+      </div>
+      
+      <div id="codeSelector" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <button onclick="loadCode('playbook')" class="code-tab active" id="tab-playbook" style="flex:1; min-width:140px; padding:14px 12px; background:#2563eb; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px;">Revenue Playbook</button>
+        <button onclick="loadCode('whx')" class="code-tab" id="tab-whx" style="flex:1; min-width:140px; padding:14px 12px; background:#374151; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px;">Trade Shows</button>
+        <button onclick="loadCode('media')" class="code-tab" id="tab-media" style="flex:1; min-width:140px; padding:14px 12px; background:#374151; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px;">Media Scorecard</button>
+        <button onclick="loadCode('apollo')" class="code-tab" id="tab-apollo" style="flex:1; min-width:140px; padding:14px 12px; background:#374151; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px;">Apollo Export (Netlify)</button>
+      </div>
+
+      <p style="color:#94a3b8; margin-bottom:12px; font-size:14px;">Click the button below to copy all code, or select manually from the text box.</p>
+      
+      <button onclick="copyCode()" style="background:#22c55e; color:#fff; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:600; margin-bottom:16px; font-size:14px;">Copy All Code</button>
+      
+      <textarea id="codeArea" readonly style="width:100%; height:450px; background:#0f172a; color:#e2e8f0; border:1px solid #334155; border-radius:10px; padding:14px; font-family:ui-monospace,monospace; font-size:12px; resize:vertical; line-height:1.5;"></textarea>
+    </div>
+  </div>
+
+  <script>
+    let currentCodeType = 'playbook';
+    
+    function openCodeModal() {
+      document.getElementById('codeModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      loadCode('playbook');
+    }
+    
+    function closeCodeModal() {
+      document.getElementById('codeModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    
+    async function loadCode(type) {
+      currentCodeType = type;
+      document.getElementById('tab-playbook').style.background = type === 'playbook' ? '#2563eb' : '#374151';
+      document.getElementById('tab-whx').style.background = type === 'whx' ? '#2563eb' : '#374151';
+      document.getElementById('tab-media').style.background = type === 'media' ? '#2563eb' : '#374151';
+      document.getElementById('tab-apollo').style.background = type === 'apollo' ? '#2563eb' : '#374151';
+      
+      const urls = { playbook: '/playbook-code', whx: '/whx-dubai-code', media: '/media-scorecard-code', apollo: '/apollo-netlify-code' };
+      const url = urls[type] || '/playbook-code';
+      try {
+        document.getElementById('codeArea').value = 'Loading...';
+        const res = await fetch(url);
+        const code = await res.text();
+        document.getElementById('codeArea').value = code;
+      } catch (e) {
+        document.getElementById('codeArea').value = 'Error loading code: ' + e.message;
+      }
+    }
+    
+    function copyCode() {
+      const textarea = document.getElementById('codeArea');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        alert('Code copied to clipboard!');
+      }).catch(() => {
+        document.execCommand('copy');
+        alert('Code copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>

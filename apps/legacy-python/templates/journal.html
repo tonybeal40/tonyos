@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Journal - TonyOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .journal-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .journal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .journal-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .journal-subtitle {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #e11d48, #be185d);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .journal-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      .journal-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        order: 2;
+      }
+    }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .sidebar-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .sidebar-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e11d48;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cal-day:hover {
+      background: rgba(225, 29, 72, 0.2);
+    }
+    .cal-day.has-entry {
+      background: rgba(225, 29, 72, 0.3);
+      color: #fff;
+    }
+    .cal-day.today {
+      border: 2px solid #e11d48;
+      color: #fff;
+    }
+    .cal-day.selected {
+      background: #e11d48;
+      color: #fff;
+    }
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .cal-month {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+    .cal-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .cal-nav button {
+      background: rgba(255,255,255,0.05);
+      border: none;
+      color: #94a3b8;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .cal-nav button:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .entry-item {
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .entry-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .entry-item.active {
+      background: rgba(225, 29, 72, 0.2);
+      border-left: 3px solid #e11d48;
+    }
+    .entry-date {
+      font-size: 0.8rem;
+      color: #e11d48;
+      font-weight: 500;
+    }
+    .entry-preview {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .entry-mood {
+      font-size: 1rem;
+      margin-left: 0.5rem;
+    }
+    .main-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .editor-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .date-display {
+      font-size: 1.5rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    .date-sub {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+    .mood-selector {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .mood-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mood-btn:hover {
+      border-color: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    .mood-btn.selected {
+      border-color: #e11d48;
+      background: rgba(225, 29, 72, 0.2);
+      transform: scale(1.15);
+    }
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e11d48;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .journal-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 1rem;
+      color: #e2e8f0;
+      font-size: 1rem;
+      resize: vertical;
+      font-family: inherit;
+      line-height: 1.6;
+    }
+    .journal-input:focus {
+      outline: none;
+      border-color: rgba(225, 29, 72, 0.5);
+    }
+    .journal-input::placeholder {
+      color: #475569;
+    }
+    .main-entry {
+      min-height: 300px;
+    }
+    .gratitude-section, .goals-section, .reflection-section {
+      margin-top: 1.5rem;
+    }
+    .gratitude-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .gratitude-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .gratitude-num {
+      width: 24px;
+      height: 24px;
+      background: rgba(225, 29, 72, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #e11d48;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .gratitude-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .gratitude-input:focus {
+      outline: none;
+      border-color: rgba(225, 29, 72, 0.5);
+    }
+    .tags-section {
+      margin-top: 1.5rem;
+    }
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .tag {
+      background: rgba(225, 29, 72, 0.15);
+      color: #fb7185;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tag-remove {
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .tag-remove:hover {
+      opacity: 1;
+    }
+    .tag-input-wrap {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .tag-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      color: #e2e8f0;
+      font-size: 0.85rem;
+    }
+    .tag-input:focus {
+      outline: none;
+      border-color: rgba(225, 29, 72, 0.5);
+    }
+    .prompts-card {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.1), rgba(190, 24, 93, 0.1));
+      border: 1px solid rgba(225, 29, 72, 0.2);
+    }
+    .prompt-text {
+      font-size: 1.1rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+    .prompt-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .stat-item {
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e11d48;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+    .streak-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(190, 24, 93, 0.1));
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .streak-fire {
+      font-size: 1.5rem;
+    }
+    .streak-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .streak-text {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+    .search-box {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem 0.6rem 2.5rem;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(225, 29, 72, 0.5);
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+    }
+    .word-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+    .ai-prompt-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.2), rgba(190, 24, 93, 0.2));
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      color: #fb7185;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ai-prompt-btn:hover {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.3), rgba(190, 24, 93, 0.3));
+    }
+    .agent-section {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .agent-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      border: none;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .agent-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    }
+    .agent-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .agent-insight {
+      margin-top: 1rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(109, 40, 217, 0.1));
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: none;
+    }
+    .agent-insight.show {
+      display: block;
+    }
+    .insight-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+    .insight-summary {
+      color: #e2e8f0;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .insight-list {
+      margin-bottom: 1rem;
+    }
+    .insight-list-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-bottom: 0.5rem;
+    }
+    .insight-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .insight-list li {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      padding: 0.35rem 0;
+      padding-left: 1.25rem;
+      position: relative;
+    }
+    .insight-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #a78bfa;
+    }
+    .insight-question {
+      background: rgba(124, 58, 237, 0.15);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #c4b5fd;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+    .back-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: #e11d48;
+    }
+    .save-status {
+      font-size: 0.8rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .save-status.saved {
+      color: #22c55e;
+    }
+    .save-status.saving {
+      color: #eab308;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+    .empty-state p {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="journal-shell">
+    <div class="journal-header">
+      <div>
+        <a href="/" class="back-link">← Back to TonyOS</a>
+        <h1 class="journal-title">Journal</h1>
+        <p class="journal-subtitle">Your private space to think, reflect, and grow</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="exportBtn">Export</button>
+        <button class="btn btn-primary" id="newEntryBtn">+ New Entry</button>
+      </div>
+    </div>
+
+    <div class="journal-layout">
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <div class="streak-display">
+            <span class="streak-fire">🔥</span>
+            <span class="streak-num" id="streakCount">0</span>
+            <span class="streak-text">day streak</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="totalEntries">0</div>
+              <div class="stat-label">Total Entries</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="totalWords">0</div>
+              <div class="stat-label">Words Written</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="thisMonth">0</div>
+              <div class="stat-label">This Month</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="avgWords">0</div>
+              <div class="stat-label">Avg Words</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-title">Calendar</div>
+          <div class="cal-header">
+            <button class="cal-nav-btn" id="prevMonth">←</button>
+            <span class="cal-month" id="calMonth">December 2025</span>
+            <button class="cal-nav-btn" id="nextMonth">→</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-title">Recent Entries</div>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search entries...">
+          </div>
+          <div class="entries-list" id="entriesList">
+            <div class="empty-state">
+              <p>No entries yet</p>
+              <button class="btn btn-primary btn-sm" id="startWritingBtn">Start Writing</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <div class="editor-card prompts-card" id="promptCard">
+          <div class="sidebar-title">Writing Prompt</div>
+          <p class="prompt-text" id="promptText">"What would you do if you knew you couldn't fail?"</p>
+          <div class="prompt-actions">
+            <button class="btn btn-ghost" id="newPromptBtn">New Prompt</button>
+            <button class="ai-prompt-btn" id="aiPromptBtn">✨ AI Prompt</button>
+          </div>
+        </div>
+
+        <div class="editor-card">
+          <div class="editor-header">
+            <div>
+              <div class="date-display" id="currentDate">December 14, 2025</div>
+              <div class="date-sub" id="dayOfWeek">Saturday</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="save-status" id="saveStatus">
+                <span>●</span> Auto-save on
+              </div>
+              <div class="mood-selector">
+                <button class="mood-btn" data-mood="great" title="Great">😊</button>
+                <button class="mood-btn" data-mood="good" title="Good">🙂</button>
+                <button class="mood-btn" data-mood="okay" title="Okay">😐</button>
+                <button class="mood-btn" data-mood="low" title="Low">😔</button>
+                <button class="mood-btn" data-mood="tough" title="Tough">😢</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-label">Today's Entry</div>
+          <textarea class="journal-input main-entry" id="mainEntry" placeholder="What's on your mind today? Write freely..."></textarea>
+          <div class="word-count"><span id="wordCount">0</span> words</div>
+
+          <div class="gratitude-section">
+            <div class="section-label">Gratitude (3 things I'm thankful for)</div>
+            <div class="gratitude-list">
+              <div class="gratitude-item">
+                <span class="gratitude-num">1</span>
+                <input type="text" class="gratitude-input" id="gratitude1" placeholder="I'm grateful for...">
+              </div>
+              <div class="gratitude-item">
+                <span class="gratitude-num">2</span>
+                <input type="text" class="gratitude-input" id="gratitude2" placeholder="I'm grateful for...">
+              </div>
+              <div class="gratitude-item">
+                <span class="gratitude-num">3</span>
+                <input type="text" class="gratitude-input" id="gratitude3" placeholder="I'm grateful for...">
+              </div>
+            </div>
+          </div>
+
+          <div class="goals-section">
+            <div class="section-label">Today's Focus</div>
+            <textarea class="journal-input" id="todaysFocus" rows="2" placeholder="What's the one thing I must accomplish today?"></textarea>
+          </div>
+
+          <div class="reflection-section">
+            <div class="section-label">Evening Reflection</div>
+            <textarea class="journal-input" id="reflection" rows="3" placeholder="How did the day go? What did I learn?"></textarea>
+          </div>
+
+          <div class="tags-section">
+            <div class="section-label">Tags</div>
+            <div class="tags-container" id="tagsContainer"></div>
+            <div class="tag-input-wrap">
+              <input type="text" class="tag-input" id="tagInput" placeholder="Add a tag...">
+              <button class="btn btn-ghost" id="addTagBtn">Add</button>
+            </div>
+          </div>
+
+          <div class="agent-section">
+            <button class="agent-btn" id="askAgentBtn">
+              <span>🤖</span> Ask Agent
+            </button>
+            <div class="agent-insight" id="agentInsight">
+              <div class="insight-title">Agent Insights</div>
+              <div class="insight-summary" id="insightSummary"></div>
+              <div class="insight-list" id="patternsSection">
+                <div class="insight-list-title">Patterns</div>
+                <ul id="insightPatterns"></ul>
+              </div>
+              <div class="insight-list" id="actionsSection">
+                <div class="insight-list-title">Next Actions</div>
+                <ul id="insightActions"></ul>
+              </div>
+              <div class="insight-question" id="insightQuestion"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const PROMPTS = [
+      "What would you do if you knew you couldn't fail?",
+      "What are you avoiding that you know you need to face?",
+      "Describe your ideal day from start to finish.",
+      "What lesson took you the longest to learn?",
+      "Write a letter to your future self.",
+      "What would you tell your younger self?",
+      "What are you most proud of this year?",
+      "What fear is holding you back right now?",
+      "Describe a moment that changed your perspective.",
+      "What does success mean to you today?",
+      "Who has influenced you the most and why?",
+      "What would you do with an extra hour each day?",
+      "What habit do you want to build or break?",
+      "Describe your perfect work environment.",
+      "What makes you feel most alive?",
+      "What conversation have you been avoiding?",
+      "Write about a time you surprised yourself.",
+      "What are you curious about right now?",
+      "What would you attempt if resources weren't an issue?",
+      "How do you want to be remembered?"
+    ];
+
+    let currentEntry = null;
+    let entries = [];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let autoSaveTimer = null;
+    let tags = [];
+
+    function formatDate(date) {
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+
+    function getDateKey(date) {
+      return date.toISOString().split('T')[0];
+    }
+
+    function countWords(text) {
+      return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    }
+
+    async function loadEntries() {
+      try {
+        const resp = await fetch('/api/journal');
+        if (resp.ok) {
+          const data = await resp.json();
+          entries = data.entries || [];
+          updateStats();
+          renderCalendar();
+          renderEntriesList();
+          loadTodayEntry();
+        }
+      } catch (e) {
+        console.error('Failed to load entries:', e);
+        entries = JSON.parse(localStorage.getItem('journal_entries') || '[]');
+        updateStats();
+        renderCalendar();
+        renderEntriesList();
+        loadTodayEntry();
+      }
+    }
+
+    async function saveEntry() {
+      const dateKey = getDateKey(new Date());
+      const entryData = {
+        date: dateKey,
+        mood: document.querySelector('.mood-btn.selected')?.dataset.mood || '',
+        content: document.getElementById('mainEntry').value,
+        gratitude: [
+          document.getElementById('gratitude1').value,
+          document.getElementById('gratitude2').value,
+          document.getElementById('gratitude3').value
+        ],
+        focus: document.getElementById('todaysFocus').value,
+        reflection: document.getElementById('reflection').value,
+        tags: tags,
+        updated_at: new Date().toISOString()
+      };
+
+      document.getElementById('saveStatus').innerHTML = '<span>●</span> Saving...';
+      document.getElementById('saveStatus').className = 'save-status saving';
+
+      try {
+        const resp = await fetch('/api/journal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entryData)
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          const existingIdx = entries.findIndex(e => e.date === dateKey);
+          if (existingIdx >= 0) {
+            entries[existingIdx] = { ...entryData, id: data.id };
+          } else {
+            entries.push({ ...entryData, id: data.id });
+          }
+          document.getElementById('saveStatus').innerHTML = '<span>●</span> Saved';
+          document.getElementById('saveStatus').className = 'save-status saved';
+          updateStats();
+          renderCalendar();
+          renderEntriesList();
+          
+          if (window.SheetsSync) {
+            SheetsSync.syncJournalEntry(entryData);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to save:', e);
+        localStorage.setItem('journal_entries', JSON.stringify(entries));
+        document.getElementById('saveStatus').innerHTML = '<span>●</span> Saved locally';
+        document.getElementById('saveStatus').className = 'save-status saved';
+      }
+
+      setTimeout(() => {
+        document.getElementById('saveStatus').innerHTML = '<span>●</span> Auto-save on';
+        document.getElementById('saveStatus').className = 'save-status';
+      }, 2000);
+    }
+
+    function scheduleAutoSave() {
+      if (autoSaveTimer) clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(saveEntry, 2000);
+    }
+
+    function loadTodayEntry() {
+      const today = getDateKey(new Date());
+      const entry = entries.find(e => e.date === today);
+      
+      document.getElementById('currentDate').textContent = formatDate(new Date());
+      document.getElementById('dayOfWeek').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+
+      if (entry) {
+        document.getElementById('mainEntry').value = entry.content || '';
+        document.getElementById('gratitude1').value = entry.gratitude?.[0] || '';
+        document.getElementById('gratitude2').value = entry.gratitude?.[1] || '';
+        document.getElementById('gratitude3').value = entry.gratitude?.[2] || '';
+        document.getElementById('todaysFocus').value = entry.focus || '';
+        document.getElementById('reflection').value = entry.reflection || '';
+        tags = entry.tags || [];
+        renderTags();
+        
+        if (entry.mood) {
+          document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.mood === entry.mood);
+          });
+        }
+      }
+      updateWordCount();
+    }
+
+    function loadEntry(dateKey) {
+      const entry = entries.find(e => e.date === dateKey);
+      const date = new Date(dateKey + 'T12:00:00');
+      
+      document.getElementById('currentDate').textContent = formatDate(date);
+      document.getElementById('dayOfWeek').textContent = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+      
+      if (entry) {
+        document.getElementById('mainEntry').value = entry.content || '';
+        document.getElementById('gratitude1').value = entry.gratitude?.[0] || '';
+        document.getElementById('gratitude2').value = entry.gratitude?.[1] || '';
+        document.getElementById('gratitude3').value = entry.gratitude?.[2] || '';
+        document.getElementById('todaysFocus').value = entry.focus || '';
+        document.getElementById('reflection').value = entry.reflection || '';
+        tags = entry.tags || [];
+        renderTags();
+        
+        if (entry.mood) {
+          document.querySelector(`.mood-btn[data-mood="${entry.mood}"]`)?.classList.add('selected');
+        }
+      } else {
+        document.getElementById('mainEntry').value = '';
+        document.getElementById('gratitude1').value = '';
+        document.getElementById('gratitude2').value = '';
+        document.getElementById('gratitude3').value = '';
+        document.getElementById('todaysFocus').value = '';
+        document.getElementById('reflection').value = '';
+        tags = [];
+        renderTags();
+      }
+      updateWordCount();
+    }
+
+    function updateWordCount() {
+      const count = countWords(document.getElementById('mainEntry').value);
+      document.getElementById('wordCount').textContent = count;
+    }
+
+    function updateStats() {
+      const totalEntries = entries.length;
+      const totalWords = entries.reduce((sum, e) => sum + countWords(e.content || ''), 0);
+      const thisMonth = entries.filter(e => {
+        const d = new Date(e.date);
+        return d.getMonth() === new Date().getMonth() && d.getFullYear() === new Date().getFullYear();
+      }).length;
+      const avgWords = totalEntries > 0 ? Math.round(totalWords / totalEntries) : 0;
+
+      document.getElementById('totalEntries').textContent = totalEntries;
+      document.getElementById('totalWords').textContent = totalWords.toLocaleString();
+      document.getElementById('thisMonth').textContent = thisMonth;
+      document.getElementById('avgWords').textContent = avgWords;
+
+      const streak = calculateStreak();
+      document.getElementById('streakCount').textContent = streak;
+    }
+
+    function calculateStreak() {
+      if (entries.length === 0) return 0;
+      
+      const sortedDates = entries.map(e => e.date).sort().reverse();
+      const today = getDateKey(new Date());
+      const yesterday = getDateKey(new Date(Date.now() - 86400000));
+      
+      if (sortedDates[0] !== today && sortedDates[0] !== yesterday) return 0;
+      
+      let streak = 1;
+      let checkDate = new Date(sortedDates[0]);
+      
+      for (let i = 1; i < sortedDates.length; i++) {
+        checkDate.setDate(checkDate.getDate() - 1);
+        if (getDateKey(checkDate) === sortedDates[i]) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      document.getElementById('calMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const today = new Date();
+      const todayKey = getDateKey(today);
+      const entryDates = entries.map(e => e.date);
+      
+      grid.innerHTML = '';
+      
+      ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'cal-day';
+        cell.style.color = '#64748b';
+        cell.style.fontWeight = '600';
+        cell.textContent = d;
+        grid.appendChild(cell);
+      });
+      
+      for (let i = 0; i < firstDay; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cal-day';
+        grid.appendChild(cell);
+      }
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const cell = document.createElement('div');
+        const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        cell.className = 'cal-day';
+        cell.textContent = day;
+        
+        if (entryDates.includes(dateKey)) {
+          cell.classList.add('has-entry');
+        }
+        if (dateKey === todayKey) {
+          cell.classList.add('today');
+        }
+        
+        cell.addEventListener('click', () => loadEntry(dateKey));
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderEntriesList() {
+      const list = document.getElementById('entriesList');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      
+      let filtered = entries.filter(e => {
+        if (!search) return true;
+        return (e.content || '').toLowerCase().includes(search) ||
+               (e.tags || []).some(t => t.toLowerCase().includes(search));
+      });
+      
+      filtered.sort((a, b) => b.date.localeCompare(a.date));
+      
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <p>${search ? 'No matching entries' : 'No entries yet'}</p>
+            ${!search ? '<button class="btn btn-primary btn-sm" onclick="document.getElementById(\'mainEntry\').focus()">Start Writing</button>' : ''}
+          </div>
+        `;
+        return;
+      }
+      
+      const moodEmojis = { great: '😊', good: '🙂', okay: '😐', low: '😔', tough: '😢' };
+      
+      list.innerHTML = filtered.slice(0, 20).map(e => {
+        const date = new Date(e.date + 'T12:00:00');
+        const preview = (e.content || '').substring(0, 50) + ((e.content || '').length > 50 ? '...' : '');
+        return `
+          <div class="entry-item" data-date="${e.date}">
+            <div class="entry-date">
+              ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              <span class="entry-mood">${moodEmojis[e.mood] || ''}</span>
+            </div>
+            <div class="entry-preview">${preview || 'Empty entry'}</div>
+          </div>
+        `;
+      }).join('');
+      
+      list.querySelectorAll('.entry-item').forEach(item => {
+        item.addEventListener('click', () => loadEntry(item.dataset.date));
+      });
+    }
+
+    function renderTags() {
+      const container = document.getElementById('tagsContainer');
+      container.innerHTML = tags.map((tag, i) => `
+        <span class="tag">
+          ${tag}
+          <span class="tag-remove" data-index="${i}">×</span>
+        </span>
+      `).join('');
+      
+      container.querySelectorAll('.tag-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          tags.splice(parseInt(btn.dataset.index), 1);
+          renderTags();
+          scheduleAutoSave();
+        });
+      });
+    }
+
+    function showRandomPrompt() {
+      const prompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      document.getElementById('promptText').textContent = `"${prompt}"`;
+    }
+
+    async function getAIPrompt() {
+      document.getElementById('aiPromptBtn').textContent = 'Thinking...';
+      try {
+        const resp = await fetch('/api/journal/prompt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            recent_entries: entries.slice(-3).map(e => e.content?.substring(0, 200))
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          document.getElementById('promptText').textContent = `"${data.prompt}"`;
+        }
+      } catch (e) {
+        showRandomPrompt();
+      }
+      document.getElementById('aiPromptBtn').innerHTML = '✨ AI Prompt';
+    }
+
+    function exportJournal() {
+      const text = entries.map(e => {
+        const date = new Date(e.date + 'T12:00:00');
+        const moodEmojis = { great: '😊', good: '🙂', okay: '😐', low: '😔', tough: '😢' };
+        return `
+=== ${formatDate(date)} ${moodEmojis[e.mood] || ''} ===
+
+${e.content || '(No entry)'}
+
+GRATITUDE:
+${(e.gratitude || []).filter(g => g).map((g, i) => `${i + 1}. ${g}`).join('\n') || '(None)'}
+
+FOCUS: ${e.focus || '(None)'}
+
+REFLECTION: ${e.reflection || '(None)'}
+
+TAGS: ${(e.tags || []).join(', ') || '(None)'}
+
+---
+        `.trim();
+      }).join('\n\n');
+
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `journal-export-${getDateKey(new Date())}.txt`;
+      a.click();
+    }
+
+    document.getElementById('mainEntry').addEventListener('input', () => {
+      updateWordCount();
+      scheduleAutoSave();
+    });
+
+    ['gratitude1', 'gratitude2', 'gratitude3', 'todaysFocus', 'reflection'].forEach(id => {
+      document.getElementById(id).addEventListener('input', scheduleAutoSave);
+    });
+
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        scheduleAutoSave();
+      });
+    });
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', renderEntriesList);
+    document.getElementById('newPromptBtn').addEventListener('click', showRandomPrompt);
+    document.getElementById('aiPromptBtn').addEventListener('click', getAIPrompt);
+    document.getElementById('exportBtn').addEventListener('click', exportJournal);
+    
+    document.getElementById('newEntryBtn').addEventListener('click', () => {
+      loadEntry(getDateKey(new Date()));
+      document.getElementById('mainEntry').focus();
+    });
+
+    document.getElementById('addTagBtn').addEventListener('click', () => {
+      const input = document.getElementById('tagInput');
+      const tag = input.value.trim();
+      if (tag && !tags.includes(tag)) {
+        tags.push(tag);
+        renderTags();
+        input.value = '';
+        scheduleAutoSave();
+      }
+    });
+
+    document.getElementById('tagInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('addTagBtn').click();
+      }
+    });
+
+    async function askAgent() {
+      const btn = document.getElementById('askAgentBtn');
+      const insight = document.getElementById('agentInsight');
+      const entryText = document.getElementById('mainEntry').value.trim();
+      
+      if (!entryText) {
+        alert('Please write something in your journal entry first.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Analyzing...';
+      
+      try {
+        const resp = await fetch('/api/agent/journal-insight', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            entry_text: entryText,
+            title: formatDate(new Date()),
+            category: 'journal'
+          })
+        });
+        
+        const data = await resp.json();
+        
+        if (data.ok) {
+          document.getElementById('insightSummary').textContent = data.summary || '';
+          
+          const patternsList = document.getElementById('insightPatterns');
+          patternsList.innerHTML = (data.patterns || []).map(p => `<li>${p}</li>`).join('');
+          document.getElementById('patternsSection').style.display = data.patterns?.length ? 'block' : 'none';
+          
+          const actionsList = document.getElementById('insightActions');
+          actionsList.innerHTML = (data.next_actions || []).map(a => `<li>${a}</li>`).join('');
+          document.getElementById('actionsSection').style.display = data.next_actions?.length ? 'block' : 'none';
+          
+          const question = document.getElementById('insightQuestion');
+          if (data.one_question) {
+            question.textContent = data.one_question;
+            question.style.display = 'block';
+          } else {
+            question.style.display = 'none';
+          }
+          
+          insight.classList.add('show');
+        } else {
+          alert('Agent error: ' + (data.message || 'Unknown error'));
+        }
+      } catch (e) {
+        console.error('Agent error:', e);
+        alert('Could not reach the Agent server. Make sure it is running on port 6000.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🤖</span> Ask Agent';
+      }
+    }
+
+    document.getElementById('askAgentBtn').addEventListener('click', askAgent);
+
+    loadEntries();
+    showRandomPrompt();
+  </script>
+  <script src="{{ url_for('static', filename='sheets-sync.js') }}"></script>
+  <script src="{{ url_for('static', filename='connection-status.js') }}"></script>
+</body>
+</html>

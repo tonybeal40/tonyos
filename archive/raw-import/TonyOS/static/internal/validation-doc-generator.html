@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validation Document Generator | Natoli Engineering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --border-color: rgba(255,255,255,0.08);
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --accent-purple: #a855f7;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header h1 span { font-size: 1.75rem; }
+    .badge {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--accent-green);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .tab:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+    .tab.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 .icon { font-size: 1.25rem; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .form-group { margin-bottom: 15px; }
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--accent-blue); color: white; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-green { background: var(--accent-green); color: white; }
+    .btn-green:hover { opacity: 0.9; }
+    .btn-purple { background: var(--accent-purple); color: white; }
+    .btn-purple:hover { opacity: 0.9; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+    .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .doc-type-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .doc-type-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .doc-type-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+    .doc-type-card.selected { border-color: var(--accent-green); background: rgba(34, 197, 94, 0.05); }
+    .doc-type-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .doc-type-card p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
+    .doc-type-card .meta {
+      display: flex;
+      gap: 15px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .doc-type-card .meta span {
+      background: rgba(255,255,255,0.05);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .lifecycle-flow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+    .lifecycle-step {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 15px 20px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 120px;
+    }
+    .lifecycle-step.active { border-color: var(--accent-green); background: rgba(34, 197, 94, 0.1); }
+    .lifecycle-step.current { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); }
+    .lifecycle-step .step-name { font-size: 0.85rem; font-weight: 600; }
+    .lifecycle-step .step-id { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+    .lifecycle-arrow { color: var(--text-muted); font-size: 1.25rem; }
+    .revision-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .revision-table th, .revision-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .revision-table th {
+      background: var(--bg-secondary);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .revision-table tr:hover { background: rgba(255,255,255,0.02); }
+    .preview-frame {
+      background: white;
+      border-radius: 8px;
+      min-height: 600px;
+      padding: 40px;
+      color: #1a1a1a;
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #1a365d;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+    .preview-logo { font-size: 1.5rem; font-weight: 700; color: #1a365d; }
+    .preview-meta { text-align: right; font-size: 0.75rem; color: #666; }
+    .preview-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 10px;
+    }
+    .preview-subtitle { font-size: 0.9rem; color: #666; margin-bottom: 30px; }
+    .preview-section { margin-bottom: 25px; }
+    .preview-section h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a365d;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .preview-table th, .preview-table td {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    .preview-table th { background: #f8fafc; font-weight: 600; }
+    .signature-block {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .signature-line {
+      border-top: 1px solid #1a1a1a;
+      padding-top: 8px;
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-green);
+      padding: 15px 25px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .traceability-matrix {
+      margin: 20px 0;
+    }
+    .trace-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .trace-cell {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+    .trace-cell.header {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: var(--accent-blue);
+      font-weight: 600;
+    }
+    .trace-link {
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      display: block;
+      margin-top: 5px;
+    }
+    @media print {
+      body { background: white; }
+      .container { padding: 0; max-width: none; }
+      .header, .tabs, .card, .actions { display: none !important; }
+      .preview-frame { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><span>📋</span> Validation Document Generator</h1>
+      <span class="badge">GMP Compliant</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('select')">1. Select Type</div>
+      <div class="tab" onclick="switchTab('metadata')">2. Document Control</div>
+      <div class="tab" onclick="switchTab('branding')">3. Company Branding</div>
+      <div class="tab" onclick="switchTab('content')">4. Content</div>
+      <div class="tab" onclick="switchTab('traceability')">5. Traceability</div>
+      <div class="tab" onclick="switchTab('preview')">6. Preview & Export</div>
+    </div>
+
+    <!-- Tab 1: Select Document Type -->
+    <div id="selectTab" class="tab-content active">
+      <div class="card">
+        <h3><span class="icon">📄</span> Select Document Type</h3>
+        <div class="doc-type-cards">
+          <div class="doc-type-card" onclick="selectDocType('URS')" data-type="URS">
+            <h4>📝 URS - User Requirements Specification</h4>
+            <p>Defines what the user needs from the equipment or system. Starting point for validation lifecycle.</p>
+            <div class="meta">
+              <span>Phase: Requirements</span>
+              <span>Stage 1 of 4</span>
+            </div>
+          </div>
+          <div class="doc-type-card" onclick="selectDocType('SDS')" data-type="SDS">
+            <h4>🔧 SDS - System Design Specification</h4>
+            <p>Details how the system will meet URS requirements. Technical specifications and design elements.</p>
+            <div class="meta">
+              <span>Phase: Design</span>
+              <span>Stage 2 of 4</span>
+            </div>
+          </div>
+          <div class="doc-type-card" onclick="selectDocType('IQ')" data-type="IQ">
+            <h4>✅ IQ - Installation Qualification</h4>
+            <p>Verifies equipment is installed correctly per specifications. Documents installation evidence.</p>
+            <div class="meta">
+              <span>Phase: Qualification</span>
+              <span>Stage 3 of 4</span>
+            </div>
+          </div>
+          <div class="doc-type-card" onclick="selectDocType('OQ')" data-type="OQ">
+            <h4>🎯 OQ - Operational Qualification</h4>
+            <p>Demonstrates equipment operates as intended within specified parameters.</p>
+            <div class="meta">
+              <span>Phase: Qualification</span>
+              <span>Stage 4 of 4</span>
+            </div>
+          </div>
+          <div class="doc-type-card" onclick="selectDocType('PQ')" data-type="PQ">
+            <h4>🏆 PQ - Performance Qualification</h4>
+            <p>Confirms consistent performance under actual or simulated production conditions.</p>
+            <div class="meta">
+              <span>Phase: Validation</span>
+              <span>Optional</span>
+            </div>
+          </div>
+          <div class="doc-type-card" onclick="selectDocType('VP')" data-type="VP">
+            <h4>📊 VP - Validation Protocol</h4>
+            <p>Master plan for validation activities. Defines scope, approach, and acceptance criteria.</p>
+            <div class="meta">
+              <span>Phase: Planning</span>
+              <span>Master Doc</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">🔄</span> Validation Lifecycle Flow</h3>
+        <div class="lifecycle-flow">
+          <div class="lifecycle-step" id="step-URS">
+            <div class="step-name">URS</div>
+            <div class="step-id">Requirements</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step" id="step-SDS">
+            <div class="step-name">SDS</div>
+            <div class="step-id">Design</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step" id="step-IQ">
+            <div class="step-name">IQ</div>
+            <div class="step-id">Installation</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step" id="step-OQ">
+            <div class="step-name">OQ</div>
+            <div class="step-id">Operation</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step" id="step-PQ">
+            <div class="step-name">PQ</div>
+            <div class="step-id">Performance</div>
+          </div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 15px;">
+          Each phase traces back to requirements in the URS. Full traceability ensures regulatory compliance.
+        </p>
+      </div>
+    </div>
+
+    <!-- Tab 2: Document Control Metadata -->
+    <div id="metadataTab" class="tab-content">
+      <div class="card">
+        <h3><span class="icon">🏷️</span> Document Control Information</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Document Number</label>
+            <input type="text" id="docNumber" placeholder="VAL-2026-001">
+          </div>
+          <div class="form-group">
+            <label>Revision</label>
+            <input type="text" id="docRevision" value="A" placeholder="A">
+          </div>
+          <div class="form-group">
+            <label>Effective Date</label>
+            <input type="date" id="effectiveDate">
+          </div>
+          <div class="form-group">
+            <label>Review Date</label>
+            <input type="date" id="reviewDate">
+          </div>
+          <div class="form-group">
+            <label>Document Status</label>
+            <select id="docStatus">
+              <option value="Draft">Draft</option>
+              <option value="Pending Approval">Pending Approval</option>
+              <option value="Approved">Approved</option>
+              <option value="Superseded">Superseded</option>
+              <option value="Obsolete">Obsolete</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Security Classification</label>
+            <select id="securityClass">
+              <option value="Internal">Internal Use Only</option>
+              <option value="Confidential">Confidential</option>
+              <option value="Restricted">Restricted</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">👥</span> Document Owners</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Author</label>
+            <input type="text" id="docAuthor" placeholder="Tony Beal">
+          </div>
+          <div class="form-group">
+            <label>Author Title</label>
+            <input type="text" id="authorTitle" placeholder="Director, Revenue Operations">
+          </div>
+          <div class="form-group">
+            <label>Reviewed By</label>
+            <input type="text" id="reviewedBy" placeholder="Engineering Manager">
+          </div>
+          <div class="form-group">
+            <label>Approved By</label>
+            <input type="text" id="approvedBy" placeholder="Quality Director">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">📜</span> Revision History</h3>
+        <table class="revision-table">
+          <thead>
+            <tr>
+              <th>Rev</th>
+              <th>Date</th>
+              <th>Author</th>
+              <th>Description of Changes</th>
+            </tr>
+          </thead>
+          <tbody id="revisionHistory">
+            <tr>
+              <td>A</td>
+              <td id="revDate">-</td>
+              <td id="revAuthor">-</td>
+              <td>Initial Release</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="addRevision()">+ Add Revision</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Company Branding -->
+    <div id="brandingTab" class="tab-content">
+      <div class="card">
+        <h3><span class="icon">🏢</span> Company Branding</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" id="companyName" value="Natoli Engineering Company, Inc.">
+          </div>
+          <div class="form-group">
+            <label>Division</label>
+            <select id="companyDivision">
+              <option value="Engineering">Natoli Engineering</option>
+              <option value="Scientific">Natoli Scientific</option>
+              <option value="Both">Both Divisions</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Primary Color (Hex)</label>
+            <input type="text" id="brandColor" value="#1a365d" placeholder="#1a365d">
+          </div>
+          <div class="form-group">
+            <label>Accent Color (Hex)</label>
+            <input type="text" id="accentColor" value="#2563eb" placeholder="#2563eb">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 20px;">
+          <label>Company Address</label>
+          <input type="text" id="companyAddress" value="28 Research Park Circle, St. Charles, MO 63304">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="companyPhone" value="+1 (636) 926-8900">
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input type="text" id="companyWebsite" value="www.natoli.com">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">🎨</span> Customer Branding (Optional)</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+          For customer-facing documents, enter their branding information.
+        </p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Customer Company Name</label>
+            <input type="text" id="customerName" placeholder="ACME Pharmaceuticals">
+          </div>
+          <div class="form-group">
+            <label>Customer Project Reference</label>
+            <input type="text" id="customerProject" placeholder="Project Alpha">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Content -->
+    <div id="contentTab" class="tab-content">
+      <div class="card">
+        <h3><span class="icon">📝</span> Document Content</h3>
+        <div class="form-group">
+          <label>Document Title</label>
+          <input type="text" id="docTitle" placeholder="Tablet Press Installation Qualification Protocol">
+        </div>
+        <div class="form-group">
+          <label>Equipment / System Name</label>
+          <input type="text" id="equipmentName" placeholder="Natoli NP-RD30A Tablet Press">
+        </div>
+        <div class="form-group">
+          <label>Equipment Model / Serial</label>
+          <input type="text" id="equipmentSerial" placeholder="Model: NP-RD30A | S/N: 2026-001">
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="equipmentLocation" placeholder="Building A, Room 201, Production Floor">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">📋</span> Scope & Purpose</h3>
+        <div class="form-group">
+          <label>Purpose Statement</label>
+          <textarea id="docPurpose" placeholder="This document establishes the qualification protocol for..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Scope</label>
+          <textarea id="docScope" placeholder="This protocol applies to the installation qualification of..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Acceptance Criteria Summary</label>
+          <textarea id="acceptanceCriteria" placeholder="The installation shall be considered successful when..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">📊</span> Requirements / Test Items</h3>
+        <div id="requirementsList">
+          <div class="trace-row">
+            <div class="trace-cell header">Req ID</div>
+            <div class="trace-cell header">Description</div>
+            <div class="trace-cell header">Acceptance Criteria</div>
+            <div class="trace-cell header">Test Method</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="addRequirement()">+ Add Requirement</button>
+          <button class="btn btn-outline btn-sm" onclick="loadTemplateReqs()">📋 Load Template</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Traceability -->
+    <div id="traceabilityTab" class="tab-content">
+      <div class="card">
+        <h3><span class="icon">🔗</span> URS → SDS → IQ → OQ Traceability Matrix</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+          Link requirements across the validation lifecycle for full traceability.
+        </p>
+        <div class="traceability-matrix" id="traceMatrix">
+          <div class="trace-row">
+            <div class="trace-cell header">URS Requirement</div>
+            <div class="trace-cell header">SDS Reference</div>
+            <div class="trace-cell header">IQ Test</div>
+            <div class="trace-cell header">OQ Test</div>
+          </div>
+          <div class="trace-row" data-row="1">
+            <div class="trace-cell">
+              <input type="text" placeholder="URS-001" style="width: 100%; background: transparent; border: none; color: inherit;">
+              <span class="trace-link">User requirement</span>
+            </div>
+            <div class="trace-cell">
+              <input type="text" placeholder="SDS-001" style="width: 100%; background: transparent; border: none; color: inherit;">
+              <span class="trace-link">Design specification</span>
+            </div>
+            <div class="trace-cell">
+              <input type="text" placeholder="IQ-001" style="width: 100%; background: transparent; border: none; color: inherit;">
+              <span class="trace-link">Installation test</span>
+            </div>
+            <div class="trace-cell">
+              <input type="text" placeholder="OQ-001" style="width: 100%; background: transparent; border: none; color: inherit;">
+              <span class="trace-link">Operation test</span>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="addTraceRow()">+ Add Trace Row</button>
+          <button class="btn btn-outline btn-sm" onclick="loadTraceTemplate()">📋 Load Template</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon">📎</span> Referenced Documents</h3>
+        <div id="refDocsList">
+          <table class="revision-table">
+            <thead>
+              <tr>
+                <th>Document ID</th>
+                <th>Title</th>
+                <th>Revision</th>
+                <th>Relationship</th>
+              </tr>
+            </thead>
+            <tbody id="refDocsBody">
+              <tr>
+                <td><input type="text" placeholder="VAL-2026-URS-001" style="background: transparent; border: none; color: inherit; width: 100%;"></td>
+                <td><input type="text" placeholder="User Requirements Specification" style="background: transparent; border: none; color: inherit; width: 100%;"></td>
+                <td><input type="text" placeholder="A" style="background: transparent; border: none; color: inherit; width: 50px;"></td>
+                <td>
+                  <select style="background: transparent; border: none; color: inherit;">
+                    <option>Parent</option>
+                    <option>Child</option>
+                    <option>Reference</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="addRefDoc()">+ Add Reference</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 6: Preview & Export -->
+    <div id="previewTab" class="tab-content">
+      <div class="card">
+        <h3><span class="icon">👁️</span> Document Preview</h3>
+        <div class="actions" style="margin-bottom: 20px; margin-top: 0;">
+          <button class="btn btn-primary" onclick="generatePreview()">🔄 Refresh Preview</button>
+          <button class="btn btn-green" onclick="exportPDF()">📄 Export PDF</button>
+          <button class="btn btn-purple" onclick="exportWord()">📝 Export Word-Ready</button>
+          <button class="btn btn-outline" onclick="saveToLocal()">💾 Save Draft</button>
+        </div>
+      </div>
+
+      <div class="preview-frame" id="previewFrame">
+        <div style="text-align: center; padding: 100px; color: #666;">
+          <p style="font-size: 1.25rem; margin-bottom: 10px;">📋</p>
+          <p>Click "Refresh Preview" to generate document preview</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // State
+    let selectedDocType = null;
+    let requirements = [];
+    let traceRows = [];
+    let revisions = [{ rev: 'A', date: '', author: '', desc: 'Initial Release' }];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('effectiveDate').value = today;
+      
+      const reviewDate = new Date();
+      reviewDate.setFullYear(reviewDate.getFullYear() + 1);
+      document.getElementById('reviewDate').value = reviewDate.toISOString().split('T')[0];
+
+      loadFromLocal();
+      
+      // Auto-update revision history when metadata changes
+      document.getElementById('effectiveDate').addEventListener('change', updateInitialRevision);
+      document.getElementById('docAuthor').addEventListener('input', updateInitialRevision);
+      
+      // Auto-save on input changes (silent mode)
+      document.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('change', () => {
+          clearTimeout(window.autoSaveTimer);
+          window.autoSaveTimer = setTimeout(() => saveToLocal(true), 2000);
+        });
+        el.addEventListener('input', () => {
+          clearTimeout(window.autoSaveTimer);
+          window.autoSaveTimer = setTimeout(() => saveToLocal(true), 3000);
+        });
+      });
+    });
+
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      document.querySelectorAll('.tab')[['select','metadata','branding','content','traceability','preview'].indexOf(tabName)].classList.add('active');
+    }
+
+    // Document type selection
+    function selectDocType(type) {
+      selectedDocType = type;
+      document.querySelectorAll('.doc-type-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+      
+      // Update lifecycle visualization
+      document.querySelectorAll('.lifecycle-step').forEach(s => s.classList.remove('current', 'active'));
+      const currentStep = document.getElementById('step-' + type);
+      if (currentStep) currentStep.classList.add('current');
+      
+      // Mark previous steps as active
+      const steps = ['URS', 'SDS', 'IQ', 'OQ', 'PQ'];
+      const currentIdx = steps.indexOf(type);
+      steps.slice(0, currentIdx).forEach(s => {
+        const el = document.getElementById('step-' + s);
+        if (el) el.classList.add('active');
+      });
+
+      // Auto-generate document number
+      const year = new Date().getFullYear();
+      const docNum = `VAL-${year}-${type}-001`;
+      document.getElementById('docNumber').value = docNum;
+
+      showToast(`Selected: ${type} document type`);
+    }
+
+    // Add requirement row
+    function addRequirement() {
+      const count = document.querySelectorAll('#requirementsList .trace-row').length;
+      const reqId = selectedDocType ? `${selectedDocType}-${String(count).padStart(3, '0')}` : `REQ-${String(count).padStart(3, '0')}`;
+      
+      const row = document.createElement('div');
+      row.className = 'trace-row';
+      row.innerHTML = `
+        <div class="trace-cell">
+          <input type="text" value="${reqId}" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="Requirement description" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="Pass/Fail criteria" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="Visual / Measurement" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+      `;
+      document.getElementById('requirementsList').appendChild(row);
+    }
+
+    // Add traceability row
+    function addTraceRow() {
+      const matrix = document.getElementById('traceMatrix');
+      const count = matrix.querySelectorAll('.trace-row').length;
+      
+      const row = document.createElement('div');
+      row.className = 'trace-row';
+      row.innerHTML = `
+        <div class="trace-cell">
+          <input type="text" placeholder="URS-${String(count).padStart(3, '0')}" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="SDS-${String(count).padStart(3, '0')}" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="IQ-${String(count).padStart(3, '0')}" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+        <div class="trace-cell">
+          <input type="text" placeholder="OQ-${String(count).padStart(3, '0')}" style="width: 100%; background: transparent; border: none; color: inherit;">
+        </div>
+      `;
+      matrix.appendChild(row);
+    }
+
+    // Add revision - auto-fills from metadata
+    function addRevision() {
+      const revs = ['A','B','C','D','E','F','G','H','J','K'];
+      const tbody = document.getElementById('revisionHistory');
+      const count = tbody.querySelectorAll('tr').length;
+      const nextRev = revs[count] || String(count);
+      
+      // Auto-fill from metadata fields
+      const today = new Date().toISOString().split('T')[0];
+      const author = document.getElementById('docAuthor').value || 'Author';
+      
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${nextRev}</td>
+        <td>${today}</td>
+        <td>${author}</td>
+        <td><input type="text" placeholder="Description of changes" style="background: transparent; border: none; color: inherit; width: 100%;"></td>
+      `;
+      tbody.appendChild(row);
+      document.getElementById('docRevision').value = nextRev;
+      showToast(`Added revision ${nextRev}`);
+    }
+    
+    // Update initial revision row when author/date changes
+    function updateInitialRevision() {
+      const revDate = document.getElementById('revDate');
+      const revAuthor = document.getElementById('revAuthor');
+      if (revDate) revDate.textContent = document.getElementById('effectiveDate').value || '-';
+      if (revAuthor) revAuthor.textContent = document.getElementById('docAuthor').value || '-';
+    }
+    
+    // Generate traceability matrix HTML for preview
+    function getTraceabilityHtml(brandColor) {
+      const traceRows = document.querySelectorAll('#traceMatrix .trace-row:not(:first-child)');
+      if (traceRows.length === 0) return '';
+      
+      let rowsHtml = '';
+      traceRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs[0] && inputs[0].value) {
+          rowsHtml += `<tr>
+            <td>${inputs[0]?.value || '-'}</td>
+            <td>${inputs[1]?.value || '-'}</td>
+            <td>${inputs[2]?.value || '-'}</td>
+            <td>${inputs[3]?.value || '-'}</td>
+          </tr>`;
+        }
+      });
+      
+      if (!rowsHtml) return '';
+      
+      return `
+        <div class="preview-section">
+          <h4 style="color: ${brandColor};">5. Traceability Matrix</h4>
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>URS Requirement</th>
+                <th>SDS Reference</th>
+                <th>IQ Test</th>
+                <th>OQ Test</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Add reference document
+    function addRefDoc() {
+      const tbody = document.getElementById('refDocsBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" placeholder="DOC-ID" style="background: transparent; border: none; color: inherit; width: 100%;"></td>
+        <td><input type="text" placeholder="Document Title" style="background: transparent; border: none; color: inherit; width: 100%;"></td>
+        <td><input type="text" placeholder="Rev" style="background: transparent; border: none; color: inherit; width: 50px;"></td>
+        <td>
+          <select style="background: transparent; border: none; color: inherit;">
+            <option>Parent</option>
+            <option>Child</option>
+            <option>Reference</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    // Load template requirements
+    function loadTemplateReqs() {
+      const templates = {
+        'IQ': [
+          { id: 'IQ-001', desc: 'Verify equipment delivered matches purchase order', criteria: 'Model/Serial match PO', method: 'Visual inspection' },
+          { id: 'IQ-002', desc: 'Verify all components present per packing list', criteria: 'All items accounted for', method: 'Checklist verification' },
+          { id: 'IQ-003', desc: 'Verify documentation package complete', criteria: 'All manuals present', method: 'Document review' },
+          { id: 'IQ-004', desc: 'Verify utilities meet specifications', criteria: 'Power/air within spec', method: 'Measurement' },
+          { id: 'IQ-005', desc: 'Verify equipment properly leveled', criteria: 'Level within tolerance', method: 'Level measurement' },
+        ],
+        'OQ': [
+          { id: 'OQ-001', desc: 'Verify all controls function correctly', criteria: 'All buttons/switches respond', method: 'Functional test' },
+          { id: 'OQ-002', desc: 'Verify speed range meets specifications', criteria: 'Min/max speed achieved', method: 'Tachometer' },
+          { id: 'OQ-003', desc: 'Verify force control within range', criteria: 'Force readings accurate', method: 'Load cell verification' },
+          { id: 'OQ-004', desc: 'Verify emergency stop functions', criteria: 'Immediate stop on activation', method: 'E-stop test' },
+          { id: 'OQ-005', desc: 'Verify interlocks prevent unsafe operation', criteria: 'Guards trigger stop', method: 'Safety test' },
+        ]
+      };
+
+      const type = selectedDocType || 'IQ';
+      const reqs = templates[type] || templates['IQ'];
+      
+      const container = document.getElementById('requirementsList');
+      reqs.forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'trace-row';
+        row.innerHTML = `
+          <div class="trace-cell"><input type="text" value="${r.id}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${r.desc}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${r.criteria}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${r.method}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+        `;
+        container.appendChild(row);
+      });
+      
+      showToast(`Loaded ${reqs.length} template requirements`);
+    }
+
+    // Load trace template
+    function loadTraceTemplate() {
+      const matrix = document.getElementById('traceMatrix');
+      const template = [
+        { urs: 'URS-001', sds: 'SDS-001', iq: 'IQ-001', oq: 'OQ-001' },
+        { urs: 'URS-002', sds: 'SDS-002', iq: 'IQ-002', oq: 'OQ-002' },
+        { urs: 'URS-003', sds: 'SDS-003', iq: 'IQ-003', oq: 'OQ-003' },
+      ];
+      
+      template.forEach(t => {
+        const row = document.createElement('div');
+        row.className = 'trace-row';
+        row.innerHTML = `
+          <div class="trace-cell"><input type="text" value="${t.urs}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${t.sds}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${t.iq}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+          <div class="trace-cell"><input type="text" value="${t.oq}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+        `;
+        matrix.appendChild(row);
+      });
+      
+      showToast('Loaded traceability template');
+    }
+
+    // Generate preview
+    function generatePreview() {
+      const brandColor = document.getElementById('brandColor').value || '#1a365d';
+      const companyName = document.getElementById('companyName').value || 'Natoli Engineering';
+      const docNumber = document.getElementById('docNumber').value || 'VAL-2026-001';
+      const docRevision = document.getElementById('docRevision').value || 'A';
+      const effectiveDate = document.getElementById('effectiveDate').value || new Date().toISOString().split('T')[0];
+      const docTitle = document.getElementById('docTitle').value || 'Validation Document';
+      const equipmentName = document.getElementById('equipmentName').value || '';
+      const docPurpose = document.getElementById('docPurpose').value || '';
+      const docScope = document.getElementById('docScope').value || '';
+      const acceptanceCriteria = document.getElementById('acceptanceCriteria').value || '';
+      const docStatus = document.getElementById('docStatus').value;
+      const author = document.getElementById('docAuthor').value || 'Author';
+      const reviewer = document.getElementById('reviewedBy').value || 'Reviewer';
+      const approver = document.getElementById('approvedBy').value || 'Approver';
+
+      // Collect requirements
+      const reqRows = document.querySelectorAll('#requirementsList .trace-row:not(:first-child)');
+      let reqsHtml = '';
+      reqRows.forEach((row, i) => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs[0] && inputs[0].value) {
+          reqsHtml += `<tr>
+            <td>${inputs[0]?.value || ''}</td>
+            <td>${inputs[1]?.value || ''}</td>
+            <td>${inputs[2]?.value || ''}</td>
+            <td>${inputs[3]?.value || ''}</td>
+            <td style="text-align: center;">☐</td>
+          </tr>`;
+        }
+      });
+
+      const preview = document.getElementById('previewFrame');
+      preview.innerHTML = `
+        <div class="preview-header">
+          <div>
+            <div class="preview-logo" style="color: ${brandColor};">${companyName}</div>
+            <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">Quality Assurance Documentation</div>
+          </div>
+          <div class="preview-meta">
+            <div><strong>Document No:</strong> ${docNumber}</div>
+            <div><strong>Revision:</strong> ${docRevision}</div>
+            <div><strong>Effective:</strong> ${effectiveDate}</div>
+            <div><strong>Status:</strong> ${docStatus}</div>
+          </div>
+        </div>
+
+        <div class="preview-title" style="color: ${brandColor};">${docTitle}</div>
+        <div class="preview-subtitle">${equipmentName ? 'Equipment: ' + equipmentName : ''}</div>
+
+        ${docPurpose ? `
+        <div class="preview-section">
+          <h4 style="color: ${brandColor};">1. Purpose</h4>
+          <p style="font-size: 0.85rem; color: #333;">${docPurpose}</p>
+        </div>
+        ` : ''}
+
+        ${docScope ? `
+        <div class="preview-section">
+          <h4 style="color: ${brandColor};">2. Scope</h4>
+          <p style="font-size: 0.85rem; color: #333;">${docScope}</p>
+        </div>
+        ` : ''}
+
+        ${acceptanceCriteria ? `
+        <div class="preview-section">
+          <h4 style="color: ${brandColor};">3. Acceptance Criteria</h4>
+          <p style="font-size: 0.85rem; color: #333;">${acceptanceCriteria}</p>
+        </div>
+        ` : ''}
+
+        ${reqsHtml ? `
+        <div class="preview-section">
+          <h4 style="color: ${brandColor};">4. Test Requirements</h4>
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Acceptance Criteria</th>
+                <th>Method</th>
+                <th>Pass</th>
+              </tr>
+            </thead>
+            <tbody>${reqsHtml}</tbody>
+          </table>
+        </div>
+        ` : ''}
+
+        ${getTraceabilityHtml(brandColor)}
+
+        <div class="signature-block">
+          <div>
+            <div class="signature-line">Prepared By: ${author}</div>
+            <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 5px; font-size: 0.7rem;">Signature / Date</div>
+          </div>
+          <div>
+            <div class="signature-line">Reviewed By: ${reviewer}</div>
+            <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 5px; font-size: 0.7rem;">Signature / Date</div>
+          </div>
+          <div>
+            <div class="signature-line">Approved By: ${approver}</div>
+            <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 5px; font-size: 0.7rem;">Signature / Date</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 0.7rem; color: #999; text-align: center;">
+          ${companyName} | ${document.getElementById('companyAddress').value || ''} | ${document.getElementById('companyPhone').value || ''}<br>
+          Document: ${docNumber} Rev ${docRevision} | Page 1 of 1 | ${docStatus}
+        </div>
+      `;
+
+      showToast('Preview generated');
+    }
+
+    // Export functions
+    function exportPDF() {
+      generatePreview();
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    }
+
+    function exportWord() {
+      const content = document.getElementById('previewFrame').innerHTML;
+      const blob = new Blob([`
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f0f0f0; }
+          </style>
+        </head>
+        <body>${content}</body>
+        </html>
+      `], { type: 'application/msword' });
+      
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${document.getElementById('docNumber').value || 'validation-doc'}.doc`;
+      a.click();
+      
+      showToast('Word document exported');
+    }
+
+    // Local storage - persist ALL form fields
+    function saveToLocal(silent = false) {
+      // Collect requirements
+      const reqs = [];
+      document.querySelectorAll('#requirementsList .trace-row:not(:first-child)').forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs[0] && inputs[0].value) {
+          reqs.push([inputs[0]?.value, inputs[1]?.value, inputs[2]?.value, inputs[3]?.value]);
+        }
+      });
+      
+      // Collect traceability
+      const traces = [];
+      document.querySelectorAll('#traceMatrix .trace-row:not(:first-child)').forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs[0] && inputs[0].value) {
+          traces.push([inputs[0]?.value, inputs[1]?.value, inputs[2]?.value, inputs[3]?.value]);
+        }
+      });
+      
+      const data = {
+        docType: selectedDocType,
+        docNumber: document.getElementById('docNumber').value,
+        docRevision: document.getElementById('docRevision').value,
+        effectiveDate: document.getElementById('effectiveDate').value,
+        reviewDate: document.getElementById('reviewDate').value,
+        docStatus: document.getElementById('docStatus').value,
+        securityClass: document.getElementById('securityClass').value,
+        companyName: document.getElementById('companyName').value,
+        companyDivision: document.getElementById('companyDivision').value,
+        brandColor: document.getElementById('brandColor').value,
+        accentColor: document.getElementById('accentColor').value,
+        companyAddress: document.getElementById('companyAddress').value,
+        companyPhone: document.getElementById('companyPhone').value,
+        companyWebsite: document.getElementById('companyWebsite').value,
+        customerName: document.getElementById('customerName').value,
+        customerProject: document.getElementById('customerProject').value,
+        docTitle: document.getElementById('docTitle').value,
+        equipmentName: document.getElementById('equipmentName').value,
+        equipmentSerial: document.getElementById('equipmentSerial').value,
+        equipmentLocation: document.getElementById('equipmentLocation').value,
+        docPurpose: document.getElementById('docPurpose').value,
+        docScope: document.getElementById('docScope').value,
+        acceptanceCriteria: document.getElementById('acceptanceCriteria').value,
+        docAuthor: document.getElementById('docAuthor').value,
+        authorTitle: document.getElementById('authorTitle').value,
+        reviewedBy: document.getElementById('reviewedBy').value,
+        approvedBy: document.getElementById('approvedBy').value,
+        requirements: reqs,
+        traceability: traces,
+        savedAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('natoli_validation_doc', JSON.stringify(data));
+      if (!silent) showToast('Draft saved to browser storage');
+    }
+
+    function loadFromLocal() {
+      const saved = localStorage.getItem('natoli_validation_doc');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.docType) selectDocType(data.docType);
+        if (data.docNumber) document.getElementById('docNumber').value = data.docNumber;
+        if (data.docRevision) document.getElementById('docRevision').value = data.docRevision;
+        if (data.effectiveDate) document.getElementById('effectiveDate').value = data.effectiveDate;
+        if (data.reviewDate) document.getElementById('reviewDate').value = data.reviewDate;
+        if (data.docStatus) document.getElementById('docStatus').value = data.docStatus;
+        if (data.securityClass) document.getElementById('securityClass').value = data.securityClass;
+        if (data.companyName) document.getElementById('companyName').value = data.companyName;
+        if (data.companyDivision) document.getElementById('companyDivision').value = data.companyDivision;
+        if (data.brandColor) document.getElementById('brandColor').value = data.brandColor;
+        if (data.accentColor) document.getElementById('accentColor').value = data.accentColor;
+        if (data.companyAddress) document.getElementById('companyAddress').value = data.companyAddress;
+        if (data.companyPhone) document.getElementById('companyPhone').value = data.companyPhone;
+        if (data.companyWebsite) document.getElementById('companyWebsite').value = data.companyWebsite;
+        if (data.customerName) document.getElementById('customerName').value = data.customerName;
+        if (data.customerProject) document.getElementById('customerProject').value = data.customerProject;
+        if (data.docTitle) document.getElementById('docTitle').value = data.docTitle;
+        if (data.equipmentName) document.getElementById('equipmentName').value = data.equipmentName;
+        if (data.equipmentSerial) document.getElementById('equipmentSerial').value = data.equipmentSerial;
+        if (data.equipmentLocation) document.getElementById('equipmentLocation').value = data.equipmentLocation;
+        if (data.docPurpose) document.getElementById('docPurpose').value = data.docPurpose;
+        if (data.docScope) document.getElementById('docScope').value = data.docScope;
+        if (data.acceptanceCriteria) document.getElementById('acceptanceCriteria').value = data.acceptanceCriteria;
+        if (data.docAuthor) document.getElementById('docAuthor').value = data.docAuthor;
+        if (data.authorTitle) document.getElementById('authorTitle').value = data.authorTitle;
+        if (data.reviewedBy) document.getElementById('reviewedBy').value = data.reviewedBy;
+        if (data.approvedBy) document.getElementById('approvedBy').value = data.approvedBy;
+        
+        // Restore requirements
+        if (data.requirements && data.requirements.length > 0) {
+          data.requirements.forEach(r => {
+            const row = document.createElement('div');
+            row.className = 'trace-row';
+            row.innerHTML = `
+              <div class="trace-cell"><input type="text" value="${r[0] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${r[1] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${r[2] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${r[3] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+            `;
+            document.getElementById('requirementsList').appendChild(row);
+          });
+        }
+        
+        // Restore traceability
+        if (data.traceability && data.traceability.length > 0) {
+          data.traceability.forEach(t => {
+            const row = document.createElement('div');
+            row.className = 'trace-row';
+            row.innerHTML = `
+              <div class="trace-cell"><input type="text" value="${t[0] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${t[1] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${t[2] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+              <div class="trace-cell"><input type="text" value="${t[3] || ''}" style="width: 100%; background: transparent; border: none; color: inherit;"></div>
+            `;
+            document.getElementById('traceMatrix').appendChild(row);
+          });
+        }
+        
+        // Update revision history row after loading
+        updateInitialRevision();
+      }
+    }
+
+    // Toast notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+  </script>
+</body>
+</html>
